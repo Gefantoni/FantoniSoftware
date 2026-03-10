@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empreendedorismo — Central do Negócio</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="/assets/css/painel.css">
+    <style>
+        /* Hero */
+        .emp-hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%);
+            border-radius: 16px;
+            padding: 36px 32px;
+            color: #fff;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emp-hero::before {
+            content: '🍽️';
+            position: absolute;
+            right: 32px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 80px;
+            opacity: 0.1;
+        }
+
+        .emp-hero h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .emp-hero p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 560px;
+            line-height: 1.6;
+        }
+
+        .emp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #FCD34D;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+
+        /* Pillar cards */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .pillar-card {
+            background: var(--saas-card);
+            border: 1px solid var(--saas-border);
+            border-radius: 14px;
+            padding: 24px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--saas-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pillar-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--pillar-color, var(--saas-blue));
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--pillar-color, var(--saas-blue));
+        }
+
+        .pillar-card.expanded {
+            border-color: var(--pillar-color, var(--saas-blue));
+        }
+
+        .pillar-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .pillar-num {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--pillar-color, var(--saas-blue));
+            margin-bottom: 4px;
+        }
+
+        .pillar-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--saas-text);
+            margin-bottom: 6px;
+        }
+
+        .pillar-desc {
+            font-size: 12.5px;
+            color: var(--saas-muted);
+            line-height: 1.5;
+        }
+
+        .pillar-lessons {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--pillar-color, var(--saas-blue));
+            margin-top: 10px;
+        }
+
+        /* Lesson accordion */
+        .lesson-section {
+            background: var(--saas-card);
+            border: 1px solid var(--saas-border);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: var(--saas-shadow);
+        }
+
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 20px;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid transparent;
+            transition: background 0.15s;
+        }
+
+        .lesson-header:hover {
+            background: #F8FAFC;
+        }
+
+        .lesson-header.open {
+            border-bottom-color: var(--saas-border);
+        }
+
+        .lesson-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--saas-blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .lesson-num.done {
+            background: var(--saas-green, #10B981);
+        }
+
+        .lesson-title-wrap {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--saas-text);
+        }
+
+        .lesson-meta {
+            font-size: 12px;
+            color: var(--saas-muted);
+            margin-top: 2px;
+        }
+
+        .lesson-toggle {
+            font-size: 18px;
+            color: var(--saas-muted);
+            transition: transform 0.2s;
+        }
+
+        .lesson-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .lesson-body {
+            display: none;
+            padding: 20px;
+            background: #FAFBFC;
+            border-top: 1px solid var(--saas-border);
+        }
+
+        .lesson-body.open {
+            display: block;
+        }
+
+        /* Key points */
+        .key-points {
+            margin: 14px 0;
+        }
+
+        .key-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--saas-border);
+            font-size: 13.5px;
+            color: var(--saas-text);
+            line-height: 1.5;
+        }
+
+        .key-point:last-child {
+            border: none;
+        }
+
+        .key-point .kp-icon {
+            flex-shrink: 0;
+            font-size: 16px;
+            margin-top: 1px;
+        }
+
+        /* Stat boxes */
+        .stat-boxes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 14px 0;
+        }
+
+        .stat-box {
+            background: #fff;
+            border: 1px solid var(--saas-border);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--saas-blue);
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            color: var(--saas-muted);
+            margin-top: 2px;
+        }
+
+        /* Alert callout */
+        .callout {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 12px 0;
+            font-size: 13.5px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            line-height: 1.5;
+        }
+
+        .callout-red {
+            background: #FEE2E2;
+            color: #991B1B;
+            border-left: 3px solid #EF4444;
+        }
+
+        .callout-green {
+            background: #D1FAE5;
+            color: #065F46;
+            border-left: 3px solid #10B981;
+        }
+
+        .callout-amber {
+            background: #FEF3C7;
+            color: #92400E;
+            border-left: 3px solid #F59E0B;
+        }
+
+        .callout-blue {
+            background: #EFF6FF;
+            color: #1E40AF;
+            border-left: 3px solid #2563EB;
+        }
+
+        /* Mark complete btn */
+        .btn-concluir {
+            margin-top: 16px;
+            background: var(--saas-blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+        }
+
+        .btn-concluir:hover {
+            background: #1D4ED8;
+        }
+
+        .btn-concluir.done {
+            background: #10B981;
+            cursor: default;
+        }
+
+        /* Progress bar at top */
+        .progress-section {
+            background: var(--saas-card);
+            border: 1px solid var(--saas-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .prog-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--saas-text);
+            white-space: nowrap;
+        }
+
+        .prog-bar-wrap {
+            flex: 1;
+            background: var(--saas-border);
+            border-radius: 99px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .prog-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            background: var(--saas-blue);
+            transition: width 0.5s ease;
+        }
+
+        .prog-pct {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--saas-blue);
+            white-space: nowrap;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .pillars-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-boxes {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .emp-hero {
+                padding: 24px 20px;
+            }
+
+            .emp-hero::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <h2>Central do Negócio</h2><span>Portal do Cliente · Fantoni Software</span>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <a href="/painel/" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Operação</span>
+                    <a href="/painel/videoaulas.html" class="nav-item"><span class="nav-icon">🎓</span> Sistema PDV</a>
+                    <a href="/painel/agente-ia.html" class="nav-item"><span class="nav-icon">🤖</span> Agente IA</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Negócio</span>
+                    <a href="/painel/empreendedorismo.html" class="nav-item active"><span class="nav-icon">🍽️</span>
+                        Bares & Restaurantes</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Suporte</span>
+                    <a href="/painel/tickets.html" class="nav-item"><span class="nav-icon">🎫</span> Meus Chamados</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Conta</span>
+                    <a href="/painel/financeiro.html" class="nav-item"><span class="nav-icon">📊</span> Financeiro</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-usuario">
+                    <div class="s-avatar" id="s-avatar">?</div>
+                    <div><strong id="usuario-nome">—</strong><span id="usuario-role">Cliente</span></div>
+                </div>
+                <button class="btn-logout">↩ Sair</button>
+            </div>
+        </aside>
+
+        <div class="conteudo">
+            <div class="topbar">
+                <div class="flex items-center gap-2">
+                    <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+                    <span class="topbar-titulo">🍽️ Bares & Restaurantes — Guia do Empreendedor</span>
+                </div>
+            </div>
+
+            <div class="pagina">
+
+                <!-- HERO -->
+                <div class="emp-hero">
+                    <div class="emp-badge">⭐ Conteúdo Exclusivo</div>
+                    <h1>Guia do Empreendedor de Bar & Restaurante</h1>
+                    <p>Você está abrindo ou estruturando seu negócio no ramo de alimentação. Aqui você encontra os
+                        pilares essenciais para construir uma operação lucrativa e sustentável — e evitar os erros que
+                        fazem 70% dos restaurantes encerrarem antes dos 2 anos.</p>
+                </div>
+
+                <!-- PROGRESS -->
+                <div class="progress-section">
+                    <span class="prog-label">Seu progresso</span>
+                    <div class="prog-bar-wrap">
+                        <div class="prog-bar-fill" id="prog-fill" style="width:0%"></div>
+                    </div>
+                    <span class="prog-pct" id="prog-pct">0%</span>
+                    <span style="font-size:13px;color:var(--saas-muted)" id="prog-count">0 / 26 tópicos</span>
+                </div>
+
+                <!-- PILLARS OVERVIEW -->
+                <div
+                    style="font-size:13px;font-weight:600;color:var(--saas-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">
+                    Os 8 Pilares do Negócio</div>
+                <div class="pillars-grid" id="pillars-grid">
+                    <!-- rendered by JS -->
+                </div>
+
+                <!-- LESSONS -->
+                <div id="lessons-container"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script>
+        const usuario = protegerPagina(['cliente']);
+        if (usuario) inicializarLayout();
+
+        // ===== CONTEÚDO =====
+        const PILARES = [
+            {
+                id: 'financeiro',
+                icon: '💰',
+                cor: '#2563EB',
+                titulo: 'Gestão Financeira',
+                desc: 'CMV, precificação, fluxo de caixa e ponto de equilíbrio.',
+                aulas: 4,
+                licoes: [
+                    {
+                        titulo: 'Por que restaurantes quebram? Os números reais',
+                        tempo: '8 min',
+                        conteudo: `
+          <div class="callout callout-red">⚠️ <div><strong>Dado crítico:</strong> 70% dos restaurantes encerram antes de completar 2 anos. O principal motivo não é a comida — é a gestão financeira.</div></div>
+          <div class="stat-boxes">
+            <div class="stat-box"><div class="stat-val">70%</div><div class="stat-lbl">Fecham em 2 anos</div></div>
+            <div class="stat-box"><div class="stat-val">R$0</div><div class="stat-lbl">Capital de giro ideal: nunca zero</div></div>
+            <div class="stat-box"><div class="stat-val">30%</div><div class="stat-lbl">CMV máximo recomendado</div></div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">🔴</span><span><strong>Erro #1:</strong> Confundir faturamento com lucro. Um restaurante que fatura R$ 50 mil por mês pode estar no prejuízo.</span></div>
+            <div class="key-point"><span class="kp-icon">🔴</span><span><strong>Erro #2:</strong> Não separar conta PJ da conta pessoal. O dono "retira" do caixa sem controle e o negócio vai à falência.</span></div>
+            <div class="key-point"><span class="kp-icon">🔴</span><span><strong>Erro #3:</strong> Abrir sem capital de giro. O dinheiro do financiamento compra equipamentos, mas sobra zero para operar.</span></div>
+            <div class="key-point"><span class="kp-icon">🟢</span><span><strong>Solução:</strong> Defina seu pro-labore (salário fixo do sócio), registre cada centavo e mantenha 3 meses de custo fixo em reserva.</span></div>
+          </div>
+          <div class="callout callout-blue">💡 <div>Use o Navivendas PDV para registrar <strong>todas as vendas e cancelamentos</strong> — sem controle das vendas, não há gestão financeira possível.</div></div>
+        `
+                    },
+                    {
+                        titulo: 'CMV: o coração da precificação do seu cardápio',
+                        tempo: '10 min',
+                        conteudo: `
+          <p style="font-size:14px;color:var(--saas-muted);margin-bottom:14px">CMV = Custo de Mercadoria Vendida. É o custo direto dos insumos de cada prato. Controlar o CMV é a base da lucratividade.</p>
+          <div class="stat-boxes">
+            <div class="stat-box"><div class="stat-val">28-32%</div><div class="stat-lbl">CMV ideal (restaurante)</div></div>
+            <div class="stat-box"><div class="stat-val">18-25%</div><div class="stat-lbl">CMV ideal (bar/bebidas)</div></div>
+            <div class="stat-box"><div class="stat-val">3x</div><div class="stat-lbl">Markup mínimo sobre custo</div></div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">📋</span><span><strong>Ficha técnica:</strong> Cada prato precisa ter uma ficha com ingredientes, quantidades e custo unitário. Atualize quando fornecedor mudar preço.</span></div>
+            <div class="key-point"><span class="kp-icon">🧮</span><span><strong>Fórmula do preço:</strong> Preço de venda = Custo do prato ÷ CMV desejado. Ex: prato custa R$12 e quero 30% de CMV → R$12 ÷ 0,30 = R$40.</span></div>
+            <div class="key-point"><span class="kp-icon">⚠️</span><span><strong>Cuidado com o desperdício:</strong> Um frango de 1kg rende ~700g após limpeza. Calcule o rendimento real, não o peso bruto.</span></div>
+            <div class="key-point"><span class="kp-icon">📊</span><span><strong>Revise mensalmente:</strong> Inflação dos alimentos pode subir seu CMV sem você perceber. Ajuste preços ou troque fornecedores.</span></div>
+          </div>
+          <div class="callout callout-green">✅ <div><strong>Dica prática:</strong> Crie uma planilha com todos os seus pratos. Liste ingredientes, quantidades e custos. Calcule o CMV de cada um. Identifique os pratos mais lucrativos e os menos lucrativos.</div></div>
+        `
+                    },
+                    {
+                        titulo: 'Ponto de equilíbrio: quando você começa a lucrar?',
+                        tempo: '8 min',
+                        conteudo: `
+          <div class="callout callout-amber">📌 <div>O ponto de equilíbrio (break-even) é o faturamento mínimo para cobrir todos os seus custos. Abaixo disso, você está no prejuízo.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">1️⃣</span><span><strong>Custos fixos mensais:</strong> Aluguel + folha + energia + água + contador + sistema PDV + internet + outros. Some tudo. Ex: R$ 22.000/mês.</span></div>
+            <div class="key-point"><span class="kp-icon">2️⃣</span><span><strong>Margem de contribuição:</strong> Quanto sobra após remover o CMV. Se seu CMV médio é 30%, margem = 70% = 0,70.</span></div>
+            <div class="key-point"><span class="kp-icon">3️⃣</span><span><strong>Fórmula:</strong> Break-even = Custo Fixo ÷ Margem de Contribuição. Ex: R$ 22.000 ÷ 0,70 = <strong>R$ 31.428 de faturamento mínimo por mês.</strong></span></div>
+            <div class="key-point"><span class="kp-icon">📅</span><span><strong>Converta em diário:</strong> R$ 31.428 ÷ 26 dias úteis = R$ 1.208/dia de faturamento mínimo. Você sabe quanto fatura por dia?</span></div>
+          </div>
+          <div class="callout callout-blue">💡 <div>Acompanhe o faturamento diário pelo PDV. Se em 3 dias seguidos você não atingir a meta diária, tome uma ação imediata: promoção, ativação nas redes sociais, delivery.</div></div>
+        `
+                    },
+                    {
+                        titulo: 'Fluxo de caixa: o oxigênio do seu negócio',
+                        tempo: '7 min',
+                        conteudo: `
+          <div class="callout callout-red">⚠️ <div>Negócios quebram por <strong>falta de caixa</strong>, não por falta de lucro. Você pode ter lucro no papel e falência na conta.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">📥</span><span><strong>Entradas:</strong> Todo dinheiro que entra — vendas à vista, PIX, crédito (cuidado com o prazo de recebimento de 30 dias).</span></div>
+            <div class="key-point"><span class="kp-icon">📤</span><span><strong>Saídas:</strong> Fornecedores, salários, aluguel, impostos, energia, manutenções, embalagens, gás, telefone.</span></div>
+            <div class="key-point"><span class="kp-icon">📊</span><span><strong>Projeção semanal:</strong> Todo domingo, olhe o que vai entrar e sair na semana. Antecipe problemas antes de acontecerem.</span></div>
+            <div class="key-point"><span class="kp-icon">🏦</span><span><strong>Reserva de emergência:</strong> Mantenha 2 a 3 meses de custo fixo em conta separada, intocável, para imprevistos.</span></div>
+            <div class="key-point"><span class="kp-icon">💳</span><span><strong>Cuidado com o crédito:</strong> Venda no crédito parcelado = dinheiro que entra em 30/60/90 dias. Mas seus custos são agora.</span></div>
+          </div>
+        `
+                    }
+                ]
+            },
+            {
+                id: 'operacao',
+                icon: '⚙️',
+                cor: '#10B981',
+                titulo: 'Operação e Processos',
+                desc: 'Controle de estoque, desperdício, fornecedores e eficiência operacional.',
+                aulas: 3,
+                licoes: [
+                    {
+                        titulo: 'Controle de estoque: pare de perder dinheiro',
+                        tempo: '9 min',
+                        conteudo: `
+          <div class="callout callout-red">⚠️ <div>Estoque mal controlado é dinheiro jogado fora. Desperdício, furto e validade vencida podem consumir de 5% a 15% do seu faturamento.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">📦</span><span><strong>Estoque mínimo e máximo:</strong> Defina para cada item o estoque mínimo (ponto de reposição) e máximo. Comprar demais = capital parado e risco de vencer.</span></div>
+            <div class="key-point"><span class="kp-icon">🔄</span><span><strong>PEPS (Primeiro que Entra, Primeiro que Sai):</strong> O produto mais antigo vai para frente. Nunca coloque o produto novo na frente do antigo.</span></div>
+            <div class="key-point"><span class="kp-icon">📋</span><span><strong>Inventário semanal:</strong> Conte o estoque pelo menos 1x por semana. Compare com o que deveria ter baseado nas vendas. Diferença = furto ou desperdício.</span></div>
+            <div class="key-point"><span class="kp-icon">👨‍🍳</span><span><strong>Padronize as porções:</strong> Colher de medida, balança na cozinha, fichas técnicas visíveis. Um prato "a olho" pode custar 40% a mais que o calculado.</span></div>
+          </div>
+          <div class="callout callout-green">✅ <div>O Navivendas PDV tem módulo de controle de estoque integrado. Configure os produtos com estoque para acompanhar as baixas automáticas a cada venda.</div></div>
+        `
+                    },
+                    {
+                        titulo: 'Gestão de fornecedores e compras estratégicas',
+                        tempo: '8 min',
+                        conteudo: `
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">🤝</span><span><strong>Nunca dependa de 1 fornecedor:</strong> Tenha sempre 2 ou 3 opções para os insumos críticos. Se um não entrega, você não para.</span></div>
+            <div class="key-point"><span class="kp-icon">📅</span><span><strong>Planeje as compras:</strong> Olhe o cardápio da semana, o estoque atual e só então compre. Compra sem planejamento = excesso ou falta.</span></div>
+            <div class="key-point"><span class="kp-icon">💬</span><span><strong>Negocie sempre:</strong> Pague à vista quando possível para pedir desconto. Compras recorrentes dão poder de negociação — use isso.</span></div>
+            <div class="key-point"><span class="kp-icon">📊</span><span><strong>Monitore variações de preço:</strong> Salve as últimas notas fiscais. Se o preço subiu mais de 5%, negocie ou busque alternativas.</span></div>
+            <div class="key-point"><span class="kp-icon">🗓️</span><span><strong>Dia fixo de compras:</strong> Defina 1 ou 2 dias por semana para compras. Evita compras de emergência (sempre mais caras) e mantém a rotina.</span></div>
+          </div>
+        `
+                    },
+                    {
+                        titulo: 'Eficiência na cozinha: mais rápido gera mais lucro',
+                        tempo: '7 min',
+                        conteudo: `
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">🚀</span><span><strong>Mise en place:</strong> Prepare tudo antes do rush (almoço/jantar). Pré-cortados, molhos prontos, proteínas porcionadas. Cozinha lenta = cliente insatisfeito = avaliação ruim.</span></div>
+            <div class="key-point"><span class="kp-icon">📋</span><span><strong>Cardápio enxuto:</strong> Menos pratos = mais velocidade, menos desperdício, mais qualidade. Um cardápio com 80 itens é pesadelo de gestão. Comece com 20 a 30.</span></div>
+            <div class="key-point"><span class="kp-icon">⏱️</span><span><strong>Tempo de entrega:</strong> Defina e monitore o tempo médio de entrega de pedidos. Acima de 20 minutos no salão já causa insatisfação.</span></div>
+            <div class="key-point"><span class="kp-icon">📊</span><span><strong>Análise do cardápio:</strong> Identifique os 20% dos pratos que geram 80% do faturamento. Foque neles e considere tirar os que vendem pouco.</span></div>
+          </div>
+          <div class="callout callout-amber">⭐ <div><strong>Regra de ouro:</strong> Para cada minuto a mais no tempo de atendimento, você perde em média 15% da chance de recomendação do cliente. Velocidade com qualidade = retenção.</div></div>
+        `
+                    }
+                ]
+            },
+            {
+                id: 'equipe',
+                icon: '👥',
+                cor: '#8B5CF6',
+                titulo: 'Gestão de Equipe',
+                desc: 'Contratação, treinamento, retenção e liderança no setor de food service.',
+                aulas: 3,
+                licoes: [
+                    {
+                        titulo: 'Contratação certa: a estratégia mais barata',
+                        tempo: '8 min',
+                        conteudo: `
+          <div class="callout callout-amber">📌 <div>Uma contratação errada custa em média 3x o salário mensal do funcionário (tempo de treinamento + queda de produtividade + rescisão). Contrate devagar, demita rápido.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">🎯</span><span><strong>Perfil antes de currículo:</strong> Defina as características de comportamento que você precisa (proatividade, organização, simpatia) antes de olhar a experiência.</span></div>
+            <div class="key-point"><span class="kp-icon">🧪</span><span><strong>Teste prático no processo:</strong> Garçom atende uma mesa simulada. Cozinheiro prepara um prato. Caixa opera o PDV. Nada substitui ver a pessoa em ação.</span></div>
+            <div class="key-point"><span class="kp-icon">📃</span><span><strong>Formalize sempre:</strong> Mesmo para trabalho sazonal ou parcial. CTPS, contrato, exame admissional. A informalidade gera passivo trabalhista caro.</span></div>
+            <div class="key-point"><span class="kp-icon">📋</span><span><strong>Período de experiência de 45+45 dias:</strong> Use os 90 dias para avaliar com critério. É mais barato não efetuar do que arcar com rescisão plena depois.</span></div>
+          </div>
+        `
+                    },
+                    {
+                        titulo: 'Treinamento e padronização: a chave da consistência',
+                        tempo: '7 min',
+                        conteudo: `
+          <div class="callout callout-blue">💡 <div>McDonald's não vende o melhor hamburguer, mas vende o <strong>mesmo hamburguer</strong> em qualquer loja do mundo. A consistência é o verdadeiro produto.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">📖</span><span><strong>Manual de operações:</strong> Documente como cada função deve ser executada. Abertura, atendimento, preparo, fechamento. Se está só na cabeça do dono, o negócio depende do dono.</span></div>
+            <div class="key-point"><span class="kp-icon">🎯</span><span><strong>Treinamento inicial de 5 dias:</strong> Não jogue o funcionário na água logo. Dedique tempo para ensinar corretamente. Economia no treinamento = custo duplo depois em erros.</span></div>
+            <div class="key-point"><span class="kp-icon">🔄</span><span><strong>Reciclagem mensal:</strong> 15 minutos antes do turno para reforçar pontos, discutir problemas da semana, reconhecer acertos. A equipe melhora com feedback contínuo.</span></div>
+            <div class="key-point"><span class="kp-icon">📱</span><span><strong>Treinamento no PDV:</strong> Todo novo funcionário que usa o caixa deve ser treinado no Navivendas antes de atender clientes. Um erro no caixa pode gerar prejuízo e atrito com cliente.</span></div>
+          </div>
+        `
+                    },
+                    {
+                        titulo: 'Retenção de equipe: como parar de treinar e perder',
+                        tempo: '6 min',
+                        conteudo: `
+          <div class="callout callout-red">⚠️ <div>Food service tem o maior turnover (rotatividade) do mercado de trabalho — pode chegar a 60% ao ano. Cada saída custa dinheiro e qualidade.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">💵</span><span><strong>Remuneração competitiva:</strong> Pesquise o salário médio da região para cada função. Pagar abaixo atrai perfis ruins ou gera saída rápida dos bons.</span></div>
+            <div class="key-point"><span class="kp-icon">🌟</span><span><strong>Reconhecimento não-financeiro:</strong> "Funcionário do mês", "elogio público", "autonomia para decidir" — esses fatores retêm mais do que apenas salário.</span></div>
+            <div class="key-point"><span class="kp-icon">📈</span><span><strong>Plano de crescimento claro:</strong> "Você pode virar chefe de cozinha em X meses se atingir Y." As pessoas ficam onde enxergam futuro.</span></div>
+            <div class="key-point"><span class="kp-icon">🗣️</span><span><strong>1:1 mensais:</strong> 15 minutos com cada colaborador individualmente. Ouça o que está bom, o que está difícil, o que ele quer aprender.</span></div>
+          </div>
+        `
+                    }
+                ]
+            },
+            {
+                id: 'clientes',
+                icon: '😊',
+                cor: '#F59E0B',
+                titulo: 'Experiência do Cliente',
+                desc: 'Atendimento, fidelização, reclamações e construção de reputação.',
+                aulas: 3,
+                licoes: [
+                    {
+                        titulo: 'Atendimento que gera recomendação',
+                        tempo: '7 min',
+                        conteudo: `
+          <div class="stat-boxes">
+            <div class="stat-box"><div class="stat-val">89%</div><div class="stat-lbl">Voltam se o atendimento for excelente</div></div>
+            <div class="stat-box"><div class="stat-val">13x</div><div class="stat-lbl">Mais pessoas ouvem reclamação vs elogio</div></div>
+            <div class="stat-box"><div class="stat-val">5x</div><div class="stat-lbl">Mais caro adquirir cliente novo vs reter</div></div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">👋</span><span><strong>Boas-vindas em até 60 segundos:</strong> Cliente não pode sentar e ficar invisível. O primeiro contato define o tom de toda a experiência.</span></div>
+            <div class="key-point"><span class="kp-icon">🍽️</span><span><strong>Garçom = vendedor:</strong> Treine para sugerir, não apenas anotar. "Hoje o nosso especial é X, combina perfeitamente com Y." Ticket médio sobe com sugestão ativa.</span></div>
+            <div class="key-point"><span class="kp-icon">⏰</span><span><strong>Gerencie a espera:</strong> Se houver demora, comunique proativamente. "Mais 5 minutinhos" dito antes do cliente perguntar é muito melhor que esperar a reclamação.</span></div>
+            <div class="key-point"><span class="kp-icon">🙏</span><span><strong>Despedida memorável:</strong> "Obrigado pela visita, esperamos vê-lo novamente!" Simples, mas pouco restaurante faz. Deixa impressão positiva.</span></div>
+          </div>
+        `
+                    },
+                    {
+                        titulo: 'Gestão de reclamações: transforme crise em fidelidade',
+                        tempo: '6 min',
+                        conteudo: `
+          <div class="callout callout-blue">💡 <div>Um cliente cujo problema foi <strong>resolvido</strong> tem 70% de chance de se tornar mais fiel do que um cliente que nunca teve problema. A reclamação é uma oportunidade.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">👂</span><span><strong>Escute sem interromper:</strong> Deixe o cliente falar tudo. Nunca defenda antes de ouvir. Ele precisa se sentir ouvido antes de aceitar qualquer solução.</span></div>
+            <div class="key-point"><span class="kp-icon">🤝</span><span><strong>Assuma a responsabilidade:</strong> "Lamentamos muito, isso não deveria ter acontecido." Mesmo que não seja culpa sua, cliente não quer saber de desculpa — quer solução.</span></div>
+            <div class="key-point"><span class="kp-icon">⚡</span><span><strong>Resolva na hora:</strong> Substituição do prato, desconto, cortesia. Não deixe o cliente sair com problema. Um voucher de R$20 pode salvar um cliente que gasta R$200/mês.</span></div>
+            <div class="key-point"><span class="kp-icon">📊</span><span><strong>Registre e analise:</strong> Anote todas as reclamações. Se 3 pessoas reclamam do mesmo prato na semana, há um problema estrutural na receita ou no processo.</span></div>
+          </div>
+        `
+                    },
+                    {
+                        titulo: 'Fidelização e ticket médio: vença com quem já é seu cliente',
+                        tempo: '7 min',
+                        conteudo: `
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">🎟️</span><span><strong>Programa de fidelidade simples:</strong> Cartão físico "compre 9, ganhe 1" ainda funciona. Ou acúmulo de pontos via WhatsApp. Facilidade de usar é mais importante que sofisticação.</span></div>
+            <div class="key-point"><span class="kp-icon">📱</span><span><strong>WhatsApp como canal de relacionamento:</strong> Lista de transmissão dos seus clientes recorrentes. Mande cardápio do dia, promoção da semana, novidade. Não exagere — máximo 3x por semana.</span></div>
+            <div class="key-point"><span class="kp-icon">📈</span><span><strong>Aumente o ticket médio:</strong> Sobremesa sugerida ao final, água com gás em vez da comum, entrada para compartilhar. Pequenos upsets somam muito no mês.</span></div>
+            <div class="key-point"><span class="kp-icon">🎂</span><span><strong>Datas especiais:</strong> Aniversário do cliente? Mande uma mensagem. Ofereça algo simbólico. Cria vínculo emocional que nenhum concorrente consegue copiar facilmente.</span></div>
+          </div>
+        `
+                    }
+                ]
+            },
+            {
+                id: 'marketing',
+                icon: '📱',
+                cor: '#EC4899',
+                titulo: 'Marketing Digital',
+                desc: 'Instagram, iFood, Google e presença digital para restaurantes.',
+                aulas: 3,
+                licoes: [
+                    {
+                        titulo: 'Instagram para restaurantes: do zero ao cliente na mesa',
+                        tempo: '9 min',
+                        conteudo: `
+          <div class="callout callout-amber">📌 <div>Restaurante sem presença no Instagram hoje é como restaurante sem fachada nos anos 90. As fotos da comida são o menu que o cliente vê antes de decidir ir.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">📸</span><span><strong>Fotografia básica que funciona:</strong> Luz natural + fundo limpo + prato bem apresentado. Não precisa de fotógrafo profissional. Celular com boa luz natural resolve.</span></div>
+            <div class="key-point"><span class="kp-icon">🗓️</span><span><strong>Consistência > quantidade:</strong> 3 posts por semana bem feitos valem mais que 1 post por dia descuidado. Crie uma grade semanal: segunda (destaque do dia), quarta (bastidores), sexta (promoção).</span></div>
+            <div class="key-point"><span class="kp-icon">📍</span><span><strong>Use localização e hashtags locais:</strong> #restaurante[cidade] #bar[bairro]. Pessoas buscam por localização. Apareça nessas buscas.</span></div>
+            <div class="key-point"><span class="kp-icon">📊</span><span><strong>Stories diários:</strong> Bastidores, chegada do produto, preparo do prato, equipe trabalhando. Humaniza o negócio e gera conexão. Salve os melhores em Destaques.</span></div>
+            <div class="key-point"><span class="kp-icon">💬</span><span><strong>Responda todos os comentários:</strong> Em até 2 horas. O algoritmo prioriza posts com interação. Seu engajamento depende de você interagir também.</span></div>
+          </div>
+        `
+                    },
+                    {
+                        titulo: 'iFood e delivery: como lucrar sem quebrar',
+                        tempo: '8 min',
+                        conteudo: `
+          <div class="callout callout-red">⚠️ <div>iFood cobra entre 12% a 27% de comissão por pedido. Se você não ajustar o preço do delivery, pode estar vendendo no prejuízo achando que está ganhando.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">💰</span><span><strong>Preço do delivery deve ser maior:</strong> Inclua a comissão do app + embalagem + custo de entregador. Calcule o custo real de cada pedido antes de definir o preço.</span></div>
+            <div class="key-point"><span class="kp-icon">📸</span><span><strong>Foto boa = mais pedidos:</strong> Pedidos com foto de qualidade no iFood recebem em média 3x mais cliques. Invista nisso antes de qualquer anúncio pago.</span></div>
+            <div class="key-point"><span class="kp-icon">⭐</span><span><strong>Avaliações são vitais:</strong> Peça avaliação no bilhete da embalagem. Restaurante abaixo de 4.2 no iFood tem alcance reduzido pelo algoritmo.</span></div>
+            <div class="key-point"><span class="kp-icon">📦</span><span><strong>Embalagem adequada:</strong> Prato que chega desmontado ou frio gera avaliação ruim. A experiência do delivery começa na embalagem.</span></div>
+            <div class="key-point"><span class="kp-icon">🚗</span><span><strong>Delivery próprio:</strong> Considere entregador próprio para raio de 3km. Mais caro inicialmente, mas você tem controle da experiência e nenhuma comissão.</span></div>
+          </div>
+        `
+                    },
+                    {
+                        titulo: 'Google Meu Negócio: o cliente que busca está pronto para comprar',
+                        tempo: '5 min',
+                        conteudo: `
+          <div class="callout callout-green">✅ <div>Perfil no Google Meu Negócio é <strong>gratuito</strong> e é a ferramenta de marketing local mais poderosa que existe. Cliente que pesquisa "restaurante perto de mim" precisa te encontrar.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">1️⃣</span><span><strong>Cadastre e verifique:</strong> Acesse business.google.com. Preencha endereço, telefone, horário de funcionamento. Verifique o perfil (Google envia cartão físico com código).</span></div>
+            <div class="key-point"><span class="kp-icon">📸</span><span><strong>Fotos atualizadas:</strong> Fachada, salão, pratos, equipe. Perfis com +10 fotos recebem 42% mais pedidos de rotas e 35% mais cliques.</span></div>
+            <div class="key-point"><span class="kp-icon">⭐</span><span><strong>Peça avaliações A TODO cliente satisfied:</strong> "Pode nos avaliar no Google? Ajuda muito!" Link direto na bio do Instagram, no bilhete da comanda.</span></div>
+            <div class="key-point"><span class="kp-icon">💬</span><span><strong>Responda TODAS as avaliações:</strong> Positivas e negativas. Isso mostra que você se importa e influencia quem lê.</span></div>
+          </div>
+        `
+                    }
+                ]
+            },
+            {
+                id: 'juridico',
+                icon: '📜',
+                cor: '#6366F1',
+                titulo: 'Jurídico & Regularização',
+                desc: 'Abertura, alvarás, vigilância sanitária, regime tributário e obrigações legais.',
+                aulas: 2,
+                licoes: [
+                    {
+                        titulo: 'Abrindo o negócio do jeito certo: documentação e alvarás',
+                        tempo: '9 min',
+                        conteudo: `
+          <div class="callout callout-red">⚠️ <div>Operar sem alvará ou com licença sanitária vencida pode resultar em multa de R$ 5.000 a R$ 500.000 e interdição imediata. Não vale o risco.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">🏢</span><span><strong>CNPJ + MEI ou ME:</strong> MEI (limite R$81k/ano) ou Microempresa/Empresa de Pequeno Porte. Para a maioria dos bares e restaurantes, ME com Simples Nacional é o mais indicado. Consulte um contador.</span></div>
+            <div class="key-point"><span class="kp-icon">📋</span><span><strong>Alvará de Funcionamento:</strong> Prefeitura da cidade. Geralmente é preciso aprovação do projeto de segurança (Bombeiros) e vistoria do local. Prazo pode ser de 30 a 90 dias — comece cedo.</span></div>
+            <div class="key-point"><span class="kp-icon">🏥</span><span><strong>Licença Sanitária (VISA):</strong> Vigilância sanitária municipal. Inspeção do local, equipamentos e manipulação de alimentos. Renovação anual. Prepare manuais de BPF (Boas Práticas de Fabricação).</span></div>
+            <div class="key-point"><span class="kp-icon">🍺</span><span><strong>Licença para bebidas alcoólicas:</strong> Se vender cerveja, vinho ou destilados, verifique a exigência municipal. Em alguns municípios requer autorização especial.</span></div>
+            <div class="key-point"><span class="kp-icon">🎵</span><span><strong>ECAD (música):</strong> Se tocar música ao vivo ou mecânica, precisa pagar o ECAD. Multas por não pagamento podem ser pesadas.</span></div>
+          </div>
+        `
+                    },
+                    {
+                        titulo: 'Simples Nacional, DAS e obrigações mensais do restaurante',
+                        tempo: '7 min',
+                        conteudo: `
+          <div class="callout callout-blue">💡 <div>A maioria dos restaurantes se enquadra no Simples Nacional, que unifica 8 impostos em um único boleto (DAS). A alíquota varia de acordo com o faturamento anual.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">📊</span><span><strong>Simples Nacional — Anexo I (comércio) ou Anexo V (serviços):</strong> Restaurantes geralmente são enquadrados no Anexo I. A alíquota começa em 4% e sobe com o faturamento.</span></div>
+            <div class="key-point"><span class="kp-icon">📅</span><span><strong>Obrigações mensais:</strong> DAS (até dia 20), FGTS (até dia 7), folha de pagamento (até dia último útil), pró-labore dos sócios. Calendário fiscal com contador.</span></div>
+            <div class="key-point"><span class="kp-icon">🧾</span><span><strong>Nota Fiscal ao Consumidor (NFC-e):</strong> Obrigatória em praticamente todos os estados. O Navivendas PDV integra emissão de NFC-e diretamente do caixa.</span></div>
+            <div class="key-point"><span class="kp-icon">👨‍💼</span><span><strong>Tenha um contador especializado em food service:</strong> Não é custo — é investimento. Um contador que conhece o setor pode economizar mais em impostos do que cobra de honorários.</span></div>
+          </div>
+        `
+                    }
+                ]
+            }
+        ];
+
+        // ===== PILAR 7: PLATAFORMAS DE DELIVERY =====
+        PILARES.push({
+            id: 'delivery',
+            icon: '🛵',
+            cor: '#F97316',
+            titulo: 'Plataformas de Delivery',
+            desc: 'Como cadastrar seu restaurante no iFood, 99Food, Rappi, Ai que Fome e outras plataformas.',
+            aulas: 5,
+            licoes: [
+                {
+                    titulo: 'iFood — Como cadastrar seu restaurante (tutorial completo)',
+                    tempo: '15 min',
+                    conteudo: `
+          <div class="callout callout-blue">📌 <div>O iFood é o maior marketplace de delivery do Brasil, com mais de 300 mil restaurantes e 60 milhões de usuários. Estar no iFood é praticamente obrigatório para qualquer estabelecimento que queira fazer delivery.</div></div>
+          <div class="stat-boxes">
+            <div class="stat-box"><div class="stat-val">60M+</div><div class="stat-lbl">Usuários ativos</div></div>
+            <div class="stat-box"><div class="stat-val">12-27%</div><div class="stat-lbl">Comissão por pedido</div></div>
+            <div class="stat-box"><div class="stat-val">300k+</div><div class="stat-lbl">Restaurantes cadastrados</div></div>
+          </div>
+          <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:12px;overflow:hidden;margin:16px 0;background:#000">
+            <iframe src="https://www.youtube.com/embed/HGVHAK3qrco" style="position:absolute;top:0;left:0;width:100%;height:100%" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">1️⃣</span><span><strong>Acesse o portal:</strong> Vá em <strong>portal.ifood.com.br</strong> e clique em "Quero ser parceiro". Tenha em mãos: CNPJ, dados bancários, cardápio digital.</span></div>
+            <div class="key-point"><span class="kp-icon">2️⃣</span><span><strong>Preencha seus dados:</strong> Razão social, CNPJ, endereço do restaurante, tipo de cozinha, horários de funcionamento.</span></div>
+            <div class="key-point"><span class="kp-icon">3️⃣</span><span><strong>Configure o cardápio:</strong> Adicione fotos de qualidade para cada item. Itens com foto recebem em média 3× mais pedidos.</span></div>
+            <div class="key-point"><span class="kp-icon">4️⃣</span><span><strong>Defina tempo de preparo:</strong> Seja realista — tempo prometido e não cumprido = avaliação ruim. Comece com margens maiores e reduza conforme ganhar eficiência.</span></div>
+            <div class="key-point"><span class="kp-icon">5️⃣</span><span><strong>Configure área de entrega:</strong> Defina o raio de entrega e o valor mínimo do pedido. Comece com raio menor para garantir qualidade.</span></div>
+            <div class="key-point"><span class="kp-icon">💡</span><span><strong>Dica de preço:</strong> Adicione 20-30% sobre o preço do salão para cobrir comissão + embalagens. Clientes de delivery esperam pagar um pouco mais.</span></div>
+          </div>
+          <div class="callout callout-green">✅ <div><strong>Acesso:</strong> <a href="https://portal.ifood.com.br" target="_blank" style="color:inherit;font-weight:600">portal.ifood.com.br</a> — Clique em "Quero ser parceiro"</div></div>
+        `
+                },
+                {
+                    titulo: '99Food — Cadastre seu restaurante na plataforma da 99',
+                    tempo: '10 min',
+                    conteudo: `
+          <div class="callout callout-blue">📌 <div>O 99Food é a plataforma de delivery do grupo 99/DiDi, com forte presença de motoristas parceiros em cidades médias e grandes. Uma boa alternativa para diversificar canais de entrega.</div></div>
+          <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:12px;overflow:hidden;margin:16px 0;background:#000">
+            <iframe src="https://www.youtube.com/embed/iClyKFZyCkg" style="position:absolute;top:0;left:0;width:100%;height:100%" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">1️⃣</span><span><strong>Acesse o portal de parceiros:</strong> Busque <strong>"99 Food parceiros"</strong> ou acesse pelo app 99Moto para encontrar o link de cadastro atualizado.</span></div>
+            <div class="key-point"><span class="kp-icon">2️⃣</span><span><strong>Documentação:</strong> CNPJ ativo, comprovante de endereço, dados do responsável, tipo de culinária.</span></div>
+            <div class="key-point"><span class="kp-icon">3️⃣</span><span><strong>Cardápio:</strong> Após aprovação, você adiciona os itens com fotos e preços. Use as mesmas fotos que já preparou para o iFood — reutilize o material!</span></div>
+            <div class="key-point"><span class="kp-icon">💡</span><span><strong>Vantagem:</strong> A comissão do 99Food tende a ser mais competitiva em algumas regiões. Compare com o iFood na sua cidade antes de definir qual priorizar.</span></div>
+          </div>
+          <div class="callout callout-green">✅ <div><strong>Dica:</strong> Estar em pelo menos 2 plataformas aumenta o volume de pedidos e reduz a dependência de uma única fonte.</div></div>
+        `
+                },
+                {
+                    titulo: 'Rappi — Como colocar seu restaurante no app',
+                    tempo: '10 min',
+                    conteudo: `
+          <div class="callout callout-blue">📌 <div>O Rappi é um super-app colombiano com forte presença no Brasil, especialmente em capitais e cidades grandes. Além de comida, entrega farmácia, mercado e outros. Público com ticket médio mais alto.</div></div>
+          <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:12px;overflow:hidden;margin:16px 0;background:#000">
+            <iframe src="https://www.youtube.com/embed/lqxAHx2Nplw" style="position:absolute;top:0;left:0;width:100%;height:100%" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">1️⃣</span><span><strong>Portal de parceiros:</strong> Acesse <strong>partners.rappi.com.br</strong> e clique em "Seja um parceiro". Preencha seus dados básicos de restaurante.</span></div>
+            <div class="key-point"><span class="kp-icon">2️⃣</span><span><strong>Documentação:</strong> CNPJ, contrato social, comprovante de endereço, licença sanitária e dados bancários para repasse.</span></div>
+            <div class="key-point"><span class="kp-icon">3️⃣</span><span><strong>Onboarding:</strong> O Rappi tem equipe de onboarding que auxilia no cadastro do cardápio após aprovação. Fique atento aos e-mails do processo.</span></div>
+            <div class="key-point"><span class="kp-icon">4️⃣</span><span><strong>Turbo:</strong> O Rappi tem modalidade "Turbo" com promessa de entrega em até 10 minutos — exclusivo para restaurantes com alta capacidade operacional.</span></div>
+            <div class="key-point"><span class="kp-icon">💡</span><span><strong>Perfil do usuário Rappi:</strong> Tende a ter maior poder aquisitivo. Invista em apresentação premium dos seus itens e embalagens de qualidade.</span></div>
+          </div>
+          <div class="callout callout-green">✅ <div><strong>Acesso:</strong> <a href="https://partners.rappi.com.br" target="_blank" style="color:inherit;font-weight:600">partners.rappi.com.br</a></div></div>
+        `
+                },
+                {
+                    titulo: 'Ai Que Fome — Delivery regional com grande alcance no interior',
+                    tempo: '8 min',
+                    conteudo: `
+          <div class="callout callout-blue">📌 <div>O Aiqfome (Ai Que Fome) é uma plataforma de delivery muito popular em cidades do interior do Brasil, com forte penetração no Centro-Oeste, Sul e Sudeste fora das capitais.</div></div>
+          <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:12px;overflow:hidden;margin:16px 0;background:#000">
+            <iframe src="https://www.youtube.com/embed/Zar0K9Btz0M" style="position:absolute;top:0;left:0;width:100%;height:100%" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">1️⃣</span><span><strong>Acesse o portal:</strong> Vá em <strong>aiqfome.com/parceiros</strong> e preencha o formulário de interesse com CNPJ e dados do restaurante.</span></div>
+            <div class="key-point"><span class="kp-icon">2️⃣</span><span><strong>Aprovação:</strong> Após enviar os dados, um consultor do Aiqfome entra em contato para finalizar o cadastro e auxiliar no setup do cardápio.</span></div>
+            <div class="key-point"><span class="kp-icon">3️⃣</span><span><strong>Comissão:</strong> Geralmente menor que o iFood em cidades do interior. Pode ser mais vantajoso dependendo da sua região.</span></div>
+            <div class="key-point"><span class="kp-icon">💡</span><span><strong>Verifique a cobertura:</strong> O Aiqfome tem presença sólida no interior. Se sua cidade é coberta, a plataforma pode trazer uma fatia significativa dos pedidos de delivery.</span></div>
+          </div>
+          <div class="callout callout-green">✅ <div><strong>Acesso:</strong> <a href="https://aiqfome.com/parceiros" target="_blank" style="color:inherit;font-weight:600">aiqfome.com/parceiros</a></div></div>
+        `
+                },
+                {
+                    titulo: 'Outras plataformas: James Delivery, Zé Delivery e canais próprios',
+                    tempo: '7 min',
+                    conteudo: `
+          <div class="callout callout-amber">⭐ <div>Além das grandes plataformas, existem opções regionais e de nicho que podem ser muito relevantes dependendo do seu segmento e localização.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">🍺</span><span><strong>Zé Delivery (AB InBev):</strong> Especializado em bebidas, especialmente cervejas. Ideal para bares. Cadastro em <strong>ze.delivery/parceiros</strong>. Entrega em até 20 minutos em cidades cobertas.</span></div>
+            <div class="key-point"><span class="kp-icon">📦</span><span><strong>James Delivery:</strong> Plataforma de delivery especialmente forte na região Sul do Brasil. Cadastro pelo site <strong>jamesdelivery.com.br</strong>. Boa opção se você está no Sul.</span></div>
+            <div class="key-point"><span class="kp-icon">📱</span><span><strong>Delivery próprio pelo WhatsApp:</strong> Configure um cardápio digital gratuito no <strong>wa.me</strong> com botão de pedido. Zero comissão. Divulgue na entrada do restaurante e no Instagram.</span></div>
+            <div class="key-point"><span class="kp-icon">🌐</span><span><strong>Goomer Go:</strong> Cardápio digital e sistema de pedidos próprio. Permite delivery e retirada sem comissão de marketplace. Ideal como canal complementar.</span></div>
+            <div class="key-point"><span class="kp-icon">💡</span><span><strong>Estratégia multi-canal:</strong> Comece com iFood (maior volume), adicione 1 plataforma regional da sua cidade e configure pedidos pelo WhatsApp. Isso cobre a maioria dos clientes sem sobrecarregar a operação.</span></div>
+          </div>
+          <div class="callout callout-red">⚠️ <div><strong>Cuidado com excesso de plataformas:</strong> Cada plataforma exige atenção, atualização de cardápio e gestão de avaliações. Comece com 2 a 3 plataformas e expanda quando a operação estiver consolidada.</div></div>
+        `
+                }
+            ]
+        });
+
+        // ===== PILAR 8: IA PARA CARDÁPIO =====
+        PILARES.push({
+            id: 'ia-cardapio',
+            icon: '✨',
+            cor: '#6366F1',
+            titulo: 'IA para o seu Cardápio',
+            desc: 'Use inteligência artificial para criar nomes irresistíveis, descrições que vendem e imagens profissionais.',
+            aulas: 3,
+            licoes: [
+                {
+                    titulo: 'Por que o nome e a descrição do prato fazem tanta diferença?',
+                    tempo: '6 min',
+                    conteudo: `
+          <div class="callout callout-amber">📌 <div>Restaurantes que investem em copywriting de cardápio vendem em média <strong>27% mais</strong> que os que só listam o nome do prato. A palavra certa faz o cliente salivar antes de pedir.</div></div>
+          <div class="stat-boxes">
+            <div class="stat-box"><div class="stat-val">3×</div><div class="stat-lbl">Mais cliques com foto + boa descrição</div></div>
+            <div class="stat-box"><div class="stat-val">27%</div><div class="stat-lbl">Aumento médio nas vendas com copywriting</div></div>
+            <div class="stat-box"><div class="stat-val">30%</div><div class="stat-lbl">Preço maior aceito com nome elaborado</div></div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">🧠</span><span><strong>Psicologia do cardápio:</strong> Pratos com nomes descritivos e evocativos vendem mais. "Fraldinha da Casa com Crispy de Alho" > "Fraldinha Grelhada".</span></div>
+            <div class="key-point"><span class="kp-icon">🍫</span><span><strong>Palavras sensoriais que funcionam:</strong> crocante, cremoso, suculento, artesanal, defumado, gratinado, especial da casa, levemente apimentado, feito na hora.</span></div>
+            <div class="key-point"><span class="kp-icon">📏</span><span><strong>Limite do iFood:</strong> 200 caracteres para a descrição. Seja direto — 2 frases impactantes valem mais que 10 linhas genéricas.</span></div>
+            <div class="key-point"><span class="kp-icon">❌</span><span><strong>Evite:</strong> "prato delicioso", "muito gostoso", "sabor incrível" — são clichês sem impacto. Seja específico: o que tem de especial NESTE prato?</span></div>
+          </div>
+          <div class="callout callout-green">✅ <div><strong>Dica de ouro:</strong> Imagine que sua descrição é o único garçom. Ela precisa convencer o cliente sem você estar presente. Use o paladar, o aroma, a textura.</div></div>
+        `
+                },
+                {
+                    titulo: 'Usando a IA do portal para criar descrições do seu cardápio',
+                    tempo: '5 min',
+                    conteudo: `
+          <div class="callout callout-blue">💡 <div>Aqui no seu portal, você tem acesso ao <strong>Assistente de Cardápio com IA</strong> — uma ferramenta exclusiva que gera nomes, descrições e prompts de imagem para qualquer prato em segundos, usando GPT-4.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">1️⃣</span><span><strong>Acesse a ferramenta:</strong> No menu lateral, clique em <strong>✨ IA para Cardápio</strong>. Ou pelo botão abaixo.</span></div>
+            <div class="key-point"><span class="kp-icon">2️⃣</span><span><strong>Preencha os dados do prato:</strong> Nome atual, ingredientes principais, estilo do estabelecimento e plataforma de destino.</span></div>
+            <div class="key-point"><span class="kp-icon">3️⃣</span><span><strong>Clique em "Gerar com IA":</strong> Em poucos segundos você recebe: nome sugerido, descrição completa, versão curta e uma dica extra.</span></div>
+            <div class="key-point"><span class="kp-icon">4️⃣</span><span><strong>Copie para o app de delivery:</strong> Cada campo tem botão de cópia com 1 clique. Cole diretamente no painel do iFood ou Rappi.</span></div>
+            <div class="key-point"><span class="kp-icon">🔄</span><span><strong>Gere variações:</strong> Não gostou? Clique em "Gerar variação alternativa" para obter uma versão diferente com o mesmo prato.</span></div>
+          </div>
+          <div style="text-align:center;margin-top:16px">
+            <a href="/painel/cardapio-ia.html" class="btn-concluir" style="display:inline-block;text-decoration:none;font-size:14px">✨ Abrir Assistente de Cardápio →</a>
+          </div>
+        `
+                },
+                {
+                    titulo: 'Gerador de imagens para pratos: do rascunho ao profissional',
+                    tempo: '7 min',
+                    conteudo: `
+          <div class="callout callout-amber">📸 <div>Itens sem foto recebem até <strong>3× menos cliques</strong> no iFood. A imagem é o primeiro ponto de contato do cliente com seu prato. Não abra mão dela.</div></div>
+          <div class="key-points">
+            <div class="key-point"><span class="kp-icon">📱</span><span><strong>Foto com celular:</strong> Luz natural (perto de janela), fundo liso (tábua de madeira, mármore, superfície branca), câmera do iPhone ou Samsung mais recente. Sem flash artificial.</span></div>
+            <div class="key-point"><span class="kp-icon">🎨</span><span><strong>Bing Image Creator (gratuito):</strong> Use o prompt de imagem gerado pela nossa IA — cole em <strong>bing.com/images/create</strong> — 100 imagens por dia, sem custo, qualidade profissional.</span></div>
+            <div class="key-point"><span class="kp-icon">🤖</span><span><strong>ChatGPT (com conta Plus):</strong> Cole o prompt gerado no ChatGPT e peça para criar uma imagem com DALL-E. Funciona muito bem para pratos compostos e sobremesas.</span></div>
+            <div class="key-point"><span class="kp-icon">✏️</span><span><strong>Editar foto real:</strong> Aplicativo <strong>Snapseed</strong> (gratuito) — aumente o brilho (+15), sature um pouco as cores (+20), corte para proporção quadrada 1:1. Faz diferença enorme.</span></div>
+            <div class="key-point"><span class="kp-icon">📐</span><span><strong>Tamanho ideal no iFood:</strong> Mínimo 1200×900px, JPG ou PNG. Fundo branco ou neutro destaca o prato. Evite imagens escuras ou com muito texto.</span></div>
+          </div>
+          <div class="callout callout-green">✅ <div>O <strong>Assistente de Cardápio</strong> gera automaticamente o prompt ideal para qualquer prato. Use-o como ponto de partida e ajuste conforme necessário.</div></div>
+        `
+                }
+            ]
+        });
+
+        // Total de lições
+        const TOTAL = PILARES.reduce((sum, p) => sum + p.licoes.length, 0);
+
+        // Progresso salvo no localStorage
+        const STORAGE_KEY = 'emp_progresso_v1';
+        let progresso = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+        // ===== RENDER PILLARS =====
+        function renderPillares() {
+            const grid = document.getElementById('pillars-grid');
+            grid.innerHTML = PILARES.map((p, pi) => `
+    <div class="pillar-card" style="--pillar-color:${p.cor}" onclick="scrollToModule('mod-${p.id}')">
+      <span class="pillar-icon">${p.icon}</span>
+      <div class="pillar-num">Pilar ${pi + 1}</div>
+      <div class="pillar-title">${p.titulo}</div>
+      <div class="pillar-desc">${p.desc}</div>
+      <div class="pillar-lessons">${p.licoes.length} tópicos</div>
+    </div>
+  `).join('');
+        }
+
+        // ===== RENDER LESSONS =====
+        function renderLicoes() {
+            const container = document.getElementById('lessons-container');
+            let num = 0;
+            container.innerHTML = PILARES.map((p, pi) => {
+                const header = `
+      <div style="font-size:13px;font-weight:700;color:${p.cor};margin:28px 0 12px;
+                  text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:8px"
+           id="mod-${p.id}">
+        <span>${p.icon}</span>
+        Pilar ${pi + 1}: ${p.titulo}
+      </div>`;
+
+                const licoes = p.licoes.map(lc => {
+                    const idx = num++;
+                    const done = progresso.includes(idx);
+                    return `
+        <div class="lesson-section">
+          <div class="lesson-header" onclick="toggleLicao(${idx}, this)">
+            <div class="lesson-num ${done ? 'done' : ''}" id="num-${idx}">${done ? '✓' : idx + 1}</div>
+            <div class="lesson-title-wrap">
+              <div class="lesson-title">${lc.titulo}</div>
+              <div class="lesson-meta">⏱ ${lc.tempo}</div>
+            </div>
+            <div class="lesson-toggle" id="toggle-${idx}">⌄</div>
+          </div>
+          <div class="lesson-body" id="body-${idx}">
+            ${lc.conteudo}
+            <button class="btn-concluir ${done ? 'done' : ''}" id="btn-${idx}"
+              onclick="marcarConcluido(${idx})">
+              ${done ? '✅ Concluído' : '✓ Marcar como concluído'}
+            </button>
+          </div>
+        </div>`;
+                }).join('');
+                return header + licoes;
+            }).join('');
+
+            atualizarProgresso();
+        }
+
+        function toggleLicao(idx, headerEl) {
+            const body = document.getElementById(`body-${idx}`);
+            const toggle = document.getElementById(`toggle-${idx}`);
+            const aberto = body.classList.contains('open');
+            body.classList.toggle('open', !aberto);
+            headerEl.classList.toggle('open', !aberto);
+            toggle.classList.toggle('open', !aberto);
+        }
+
+        function marcarConcluido(idx) {
+            if (!progresso.includes(idx)) {
+                progresso.push(idx);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(progresso));
+            }
+            const numEl = document.getElementById(`num-${idx}`);
+            const btn = document.getElementById(`btn-${idx}`);
+            numEl.classList.add('done');
+            numEl.textContent = '✓';
+            btn.classList.add('done');
+            btn.textContent = '✅ Concluído';
+            atualizarProgresso();
+        }
+
+        function atualizarProgresso() {
+            const pct = Math.round((progresso.length / TOTAL) * 100);
+            document.getElementById('prog-fill').style.width = pct + '%';
+            document.getElementById('prog-pct').textContent = pct + '%';
+            document.getElementById('prog-count').textContent = `${progresso.length} / ${TOTAL} tópicos`;
+        }
+
+        function scrollToModule(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ===== INIT =====
+        renderPillares();
+        renderLicoes();
+    </script>
+</body>
+
+</html>

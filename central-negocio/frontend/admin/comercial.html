@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comercial — Admin — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><h2>Central do<br>Negócio</h2><span>Painel Admin</span></div>
+    <nav class="sidebar-nav">
+      <a href="/admin/" class="nav-item">🏠 Dashboard</a>
+      <a href="/admin/clientes.html" class="nav-item">👥 Clientes</a>
+      <a href="/admin/modulos.html" class="nav-item">🎬 Módulos e Aulas</a>
+      <a href="/admin/tickets.html" class="nav-item">🎫 Tickets</a>
+      <a href="/admin/financeiro.html" class="nav-item">💰 Financeiro</a>
+      <a href="/admin/comercial.html" class="nav-item">🤝 Comercial</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-usuario"><strong id="usuario-nome">—</strong><span id="usuario-role">Admin</span></div>
+      <button class="btn-logout">Sair</button>
+    </div>
+  </aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">🤝 Comercial</span>
+      </div>
+      <!-- Abas -->
+      <div class="flex gap-2">
+        <button class="btn btn-sm btn-outline" onclick="setTab('chatwoot')" id="tab-btn-chatwoot">💬 Chatwoot</button>
+        <button class="btn btn-sm btn-outline" onclick="setTab('disparos')" id="tab-btn-disparos">📢 Disparos</button>
+        <button class="btn btn-sm btn-outline" onclick="setTab('leads')" id="tab-btn-leads">👤 Leads</button>
+        <button class="btn btn-sm btn-outline" onclick="setTab('sdr')" id="tab-btn-sdr">🤖 SDR</button>
+      </div>
+    </div>
+
+    <div class="pagina">
+
+      <!-- Tab: Chatwoot (iframe) -->
+      <div id="tab-chatwoot">
+        <div class="card" style="padding:0;overflow:hidden;height:calc(100vh - 140px)">
+          <iframe id="chatwoot-frame" src="" style="width:100%;height:100%;border:none"></iframe>
+        </div>
+      </div>
+
+      <!-- Tab: Disparos em massa -->
+      <div id="tab-disparos" class="d-none">
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="card-titulo">📢 Disparo em Massa WhatsApp</h3>
+            <div class="form-grupo">
+              <label>Lista de Contatos (CSV)</label>
+              <input type="file" id="csv-file" accept=".csv" onchange="lerCSV(event)">
+              <span class="text-xs text-suave mt-1 d-block">Colunas: numero, nome (cabeçalho obrigatório)</span>
+            </div>
+            <div class="form-grupo">
+              <label>Mensagem <span class="text-acento">— use {{nome}} para personalizar</span></label>
+              <textarea id="msg-disparo" rows="4" placeholder="Olá {{nome}}, temos uma oferta especial para você!"></textarea>
+            </div>
+            <div id="preview-contatos" class="mb-2"></div>
+            <button class="btn btn-primario w-100" onclick="iniciarDisparo()" id="btn-disparar">📤 Iniciar Disparo</button>
+          </div>
+          <div class="card">
+            <h3 class="card-titulo">📋 Log de Envios</h3>
+            <div id="log-disparos" style="max-height:400px;overflow-y:auto;font-size:13px">
+              <p class="text-suave text-sm">Nenhum disparo realizado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Leads -->
+      <div id="tab-leads" class="d-none">
+        <div class="card mb-3">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="card-titulo" style="margin:0">👤 Leads</h3>
+            <select id="filtro-lead-status" onchange="carregarLeads()" style="padding:6px 10px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:13px">
+              <option value="">Todos</option>
+              <option value="novo">Novo</option>
+              <option value="qualificado">Qualificado</option>
+              <option value="convertido">Convertido</option>
+              <option value="perdido">Perdido</option>
+            </select>
+          </div>
+          <div class="tabela-container">
+            <table>
+              <thead><tr><th>Nome</th><th>WhatsApp</th><th>Origem</th><th>Status</th><th>Criado em</th><th>Ação</th></tr></thead>
+              <tbody id="tbody-leads"><tr><td colspan="6" class="text-center"><div class="spinner" style="margin:10px auto"></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: SDR -->
+      <div id="tab-sdr" class="d-none">
+        <div class="card">
+          <h3 class="card-titulo">🤖 Configuração do Agente SDR</h3>
+          <p class="text-suave text-sm mb-3">Configure o prompt do agente que responde automaticamente leads via WhatsApp.</p>
+          <div class="form-grupo">
+            <label>Prompt do SDR</label>
+            <textarea id="sdr-prompt" rows="10" placeholder="Você é um assistente comercial..."></textarea>
+          </div>
+          <button class="btn btn-primario" onclick="salvarPromptSDR()">💾 Salvar Prompt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Conversas do Lead -->
+<div id="modal-lead" class="modal-overlay d-none">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <h3 class="modal-titulo" id="lead-modal-titulo">Histórico do Lead</h3>
+      <button class="modal-fechar" onclick="document.getElementById('modal-lead').classList.add('d-none')">✕</button>
+    </div>
+    <div class="form-grupo">
+      <label>Status</label>
+      <select id="lead-status-sel" onchange="atualizarLead()">
+        <option value="novo">Novo</option>
+        <option value="qualificado">Qualificado</option>
+        <option value="convertido">Convertido</option>
+        <option value="perdido">Perdido</option>
+      </select>
+    </div>
+    <h4 style="margin-bottom:12px;font-size:15px">Histórico de Conversa</h4>
+    <div id="lead-conversas" style="max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script>
+  const usuario = protegerPagina(['admin','comercial']);
+  let contatosCSV = [];
+  let leadAtual = null;
+
+  if (usuario) {
+    inicializarLayout();
+    setTab('chatwoot');
+    carregarLeads();
+    carregarPromptSDR();
+    // Carrega URL do Chatwoot
+    document.getElementById('chatwoot-frame').src = ''; // Será preenchido via config
+  }
+
+  function setTab(tab) {
+    ['chatwoot','disparos','leads','sdr'].forEach(t => {
+      document.getElementById(`tab-${t}`).classList.toggle('d-none', t !== tab);
+      document.getElementById(`tab-btn-${t}`).classList.toggle('btn-primario', t === tab);
+      document.getElementById(`tab-btn-${t}`).classList.toggle('btn-outline', t !== tab);
+    });
+  }
+
+  // ---- CSV ----
+  function lerCSV(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const linhas = e.target.result.split('\n').filter(l => l.trim());
+      const cabecalho = linhas[0].split(',').map(c => c.trim().toLowerCase());
+      const iNumero = cabecalho.indexOf('numero');
+      const iNome = cabecalho.indexOf('nome');
+      if (iNumero === -1) { mostrarAlerta('CSV deve ter coluna "numero"', 'erro'); return; }
+      contatosCSV = linhas.slice(1).map(l => {
+        const cols = l.split(',');
+        return { numero: cols[iNumero]?.trim(), nome: iNome >= 0 ? cols[iNome]?.trim() : '' };
+      }).filter(c => c.numero);
+      document.getElementById('preview-contatos').innerHTML = `<div class="alerta alerta-sucesso">${contatosCSV.length} contatos carregados</div>`;
+    };
+    reader.readAsText(file);
+  }
+
+  async function iniciarDisparo() {
+    const mensagem = document.getElementById('msg-disparo').value.trim();
+    if (!mensagem) { mostrarAlerta('Digite a mensagem', 'erro'); return; }
+    if (contatosCSV.length === 0) { mostrarAlerta('Carregue um CSV com contatos', 'erro'); return; }
+    if (!confirm(`Enviar para ${contatosCSV.length} contatos?`)) return;
+
+    const btn = document.getElementById('btn-disparar');
+    btn.disabled = true; btn.textContent = 'Disparando...';
+    const log = document.getElementById('log-disparos');
+    log.innerHTML = '<p class="text-suave text-sm">Iniciando disparo...</p>';
+
+    try {
+      const { resultados } = await api.post('/whatsapp/disparar', { contatos: contatosCSV, mensagem });
+      log.innerHTML = resultados.map(r => `
+        <div style="padding:6px 0;border-bottom:1px solid var(--borda)" class="${r.status==='enviado'?'':'text-suave'}">
+          ${r.status === 'enviado' ? '✅' : '❌'} ${r.numero} — ${r.status} ${r.erro ? `<span class="text-xs">(${r.erro})</span>` : ''}
+        </div>`).join('');
+    } catch (err) { mostrarAlerta(err.erro || 'Erro no disparo', 'erro'); }
+    btn.disabled = false; btn.textContent = '📤 Iniciar Disparo';
+  }
+
+  // ---- Leads ----
+  async function carregarLeads() {
+    const status = document.getElementById('filtro-lead-status').value;
+    try {
+      const { leads } = await api.get(`/comercial/leads${status ? '?status='+status : ''}`);
+      const statusBadge = { novo:'badge-azul', qualificado:'badge-amarelo', convertido:'badge-verde', perdido:'badge-cinza' };
+      document.getElementById('tbody-leads').innerHTML = leads.map(l => `
+        <tr>
+          <td>${l.nome || '—'}</td>
+          <td>${l.whatsapp}</td>
+          <td>${l.origem || '—'}</td>
+          <td><span class="badge ${statusBadge[l.status]||'badge-cinza'}">${l.status}</span></td>
+          <td>${formatarData(l.criado_em)}</td>
+          <td><button class="btn btn-sm btn-outline" onclick="abrirLead(${l.id},'${(l.nome||l.whatsapp).replace(/'/g,"\\'")}','${l.status}')">Ver</button></td>
+        </tr>`).join('') || '<tr><td colspan="6" class="text-center text-suave">Nenhum lead.</td></tr>';
+    } catch {}
+  }
+
+  async function abrirLead(id, nome, status) {
+    leadAtual = id;
+    document.getElementById('lead-modal-titulo').textContent = `Lead: ${nome}`;
+    document.getElementById('lead-status-sel').value = status;
+    document.getElementById('modal-lead').classList.remove('d-none');
+    try {
+      const { conversas } = await api.get(`/comercial/leads/${id}/conversas`);
+      document.getElementById('lead-conversas').innerHTML = conversas.map(c => `
+        <div>
+          <div class="mensagem mensagem-outro" style="max-width:none">${c.mensagem_lead}<div class="mensagem-hora">${formatarData(c.criado_em)}</div></div>
+          <div class="mensagem mensagem-minha" style="align-self:flex-end">${c.resposta_ia}</div>
+        </div>`).join('') || '<p class="text-suave text-sm">Sem histórico de conversa.</p>';
+    } catch {}
+  }
+
+  async function atualizarLead() {
+    try {
+      await api.patch(`/comercial/leads/${leadAtual}`, { status: document.getElementById('lead-status-sel').value });
+      mostrarAlerta('Status atualizado!');
+      carregarLeads();
+    } catch { mostrarAlerta('Erro ao atualizar', 'erro'); }
+  }
+
+  // ---- SDR ----
+  async function carregarPromptSDR() {
+    try {
+      const { prompt } = await api.get('/comercial/prompt-sdr');
+      document.getElementById('sdr-prompt').value = prompt;
+    } catch {}
+  }
+
+  async function salvarPromptSDR() {
+    const prompt = document.getElementById('sdr-prompt').value.trim();
+    if (!prompt) { mostrarAlerta('Prompt não pode ser vazio', 'erro'); return; }
+    try {
+      await api.put('/comercial/prompt-sdr', { prompt });
+      mostrarAlerta('Prompt do SDR salvo!');
+    } catch { mostrarAlerta('Erro ao salvar prompt', 'erro'); }
+  }
+</script>
+</body>
+</html>

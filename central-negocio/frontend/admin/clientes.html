@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><h2>Central do<br>Negócio</h2><span>Painel Admin</span></div>
+    <nav class="sidebar-nav">
+      <a href="/admin/" class="nav-item">🏠 Dashboard</a>
+      <a href="/admin/clientes.html" class="nav-item">👥 Clientes</a>
+      <a href="/admin/modulos.html" class="nav-item">🎬 Módulos e Aulas</a>
+      <a href="/admin/tickets.html" class="nav-item">🎫 Tickets</a>
+      <a href="/admin/financeiro.html" class="nav-item">💰 Financeiro</a>
+      <a href="/admin/comercial.html" class="nav-item">🤝 Comercial</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-usuario"><strong id="usuario-nome">—</strong><span id="usuario-role">Admin</span></div>
+      <button class="btn-logout">Sair</button>
+    </div>
+  </aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">👥 Gestão de Clientes</span>
+      </div>
+      <button class="btn btn-primario btn-sm" onclick="abrirModalCliente()">+ Novo Cliente</button>
+    </div>
+
+    <div class="pagina">
+      <!-- Filtros -->
+      <div class="card mb-3">
+        <div class="flex gap-2" style="flex-wrap:wrap">
+          <input type="text" id="busca" placeholder="Buscar por nome ou email..." style="flex:1;min-width:200px;padding:8px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:14px" oninput="filtrar()">
+          <select id="filtro-plano" onchange="filtrar()" style="padding:8px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:14px">
+            <option value="">Todos os planos</option>
+            <option value="basico">Básico</option>
+            <option value="profissional">Profissional</option>
+            <option value="premium">Premium</option>
+          </select>
+          <select id="filtro-ativo" onchange="filtrar()" style="padding:8px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:14px">
+            <option value="">Todos os status</option>
+            <option value="true">Ativos</option>
+            <option value="false">Inativos</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tabela-container">
+          <table id="tabela-clientes">
+            <thead><tr><th>Nome</th><th>Email</th><th>WhatsApp</th><th>Plano</th><th>Status</th><th>Cadastro</th><th>Ações</th></tr></thead>
+            <tbody id="tbody-clientes"><tr><td colspan="7" class="text-center"><div class="spinner" style="margin:10px auto"></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Cadastro/Edição -->
+<div id="modal-cliente" class="modal-overlay d-none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-titulo" id="modal-titulo">Novo Cliente</h3>
+      <button class="modal-fechar" onclick="fecharModal()">✕</button>
+    </div>
+    <form id="form-cliente" onsubmit="salvarCliente(event)">
+      <input type="hidden" id="cl-id">
+      <div class="form-grupo"><label>Nome completo</label><input type="text" id="cl-nome" required></div>
+      <div class="form-grupo"><label>Email</label><input type="email" id="cl-email" required></div>
+      <div id="campo-senha" class="form-grupo"><label>Senha inicial</label><input type="password" id="cl-senha" minlength="6" placeholder="Mínimo 6 caracteres"></div>
+      <div class="form-grupo"><label>WhatsApp</label><input type="text" id="cl-whatsapp" placeholder="5511999999999"></div>
+      <div class="form-grupo">
+        <label>Plano</label>
+        <select id="cl-plano" required>
+          <option value="basico">Básico</option>
+          <option value="profissional">Profissional</option>
+          <option value="premium">Premium</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primario w-100" id="btn-salvar-cl">Salvar</button>
+    </form>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script>
+  const usuario = protegerPagina(['admin']);
+  let todosClientes = [];
+  let modoEdicao = false;
+
+  if (usuario) { inicializarLayout(); carregarClientes(); }
+
+  async function carregarClientes() {
+    try {
+      const { clientes } = await api.get('/clientes');
+      todosClientes = clientes;
+      renderizarTabela(clientes);
+    } catch (err) {
+      document.getElementById('tbody-clientes').innerHTML = '<tr><td colspan="7" class="text-center text-suave">Erro ao carregar clientes.</td></tr>';
+    }
+  }
+
+  function filtrar() {
+    const busca = document.getElementById('busca').value.toLowerCase();
+    const plano = document.getElementById('filtro-plano').value;
+    const ativo = document.getElementById('filtro-ativo').value;
+
+    const filtrados = todosClientes.filter(c => {
+      const matchBusca = !busca || c.nome?.toLowerCase().includes(busca) || c.email?.toLowerCase().includes(busca);
+      const matchPlano = !plano || c.plano === plano;
+      const matchAtivo = ativo === '' || String(c.ativo) === ativo;
+      return matchBusca && matchPlano && matchAtivo;
+    });
+    renderizarTabela(filtrados);
+  }
+
+  function renderizarTabela(clientes) {
+    const tbody = document.getElementById('tbody-clientes');
+    if (!clientes.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-suave">Nenhum cliente encontrado.</td></tr>'; return; }
+
+    const planoBadge = { basico:'badge-cinza', profissional:'badge-azul', premium:'badge-amarelo' };
+    tbody.innerHTML = clientes.map(c => `
+      <tr>
+        <td><strong>${c.nome}</strong></td>
+        <td>${c.email}</td>
+        <td>${c.whatsapp || '—'}</td>
+        <td><span class="badge ${planoBadge[c.plano]||'badge-cinza'}">${c.plano}</span></td>
+        <td><span class="badge ${c.ativo ? 'badge-verde' : 'badge-vermelho'}">${c.ativo ? 'Ativo' : 'Inativo'}</span></td>
+        <td>${formatarData(c.criado_em)}</td>
+        <td style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-outline" onclick="editarCliente('${c.id}')">✏️</button>
+          <button class="btn btn-sm ${c.ativo ? 'btn-perigo' : 'btn-acento'}" onclick="toggleAtivo('${c.id}', ${!c.ativo})">${c.ativo ? 'Desativar' : 'Ativar'}</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  function abrirModalCliente() {
+    modoEdicao = false;
+    document.getElementById('modal-titulo').textContent = 'Novo Cliente';
+    document.getElementById('form-cliente').reset();
+    document.getElementById('cl-id').value = '';
+    document.getElementById('campo-senha').style.display = 'block';
+    document.getElementById('cl-senha').required = true;
+    document.getElementById('modal-cliente').classList.remove('d-none');
+  }
+
+  function editarCliente(id) {
+    const c = todosClientes.find(x => x.id === id);
+    if (!c) return;
+    modoEdicao = true;
+    document.getElementById('modal-titulo').textContent = 'Editar Cliente';
+    document.getElementById('cl-id').value = c.id;
+    document.getElementById('cl-nome').value = c.nome;
+    document.getElementById('cl-email').value = c.email;
+    document.getElementById('cl-whatsapp').value = c.whatsapp || '';
+    document.getElementById('cl-plano').value = c.plano;
+    document.getElementById('campo-senha').style.display = 'none';
+    document.getElementById('cl-senha').required = false;
+    document.getElementById('modal-cliente').classList.remove('d-none');
+  }
+
+  function fecharModal() { document.getElementById('modal-cliente').classList.add('d-none'); }
+
+  async function salvarCliente(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-salvar-cl');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+
+    const dados = {
+      nome: document.getElementById('cl-nome').value,
+      email: document.getElementById('cl-email').value,
+      whatsapp: document.getElementById('cl-whatsapp').value,
+      plano: document.getElementById('cl-plano').value
+    };
+
+    try {
+      if (modoEdicao) {
+        await api.put(`/clientes/${document.getElementById('cl-id').value}`, dados);
+        mostrarAlerta('Cliente atualizado!');
+      } else {
+        dados.senha = document.getElementById('cl-senha').value;
+        await api.post('/clientes', dados);
+        mostrarAlerta('Cliente cadastrado!');
+      }
+      fecharModal();
+      carregarClientes();
+    } catch (err) {
+      mostrarAlerta(err.erro || 'Erro ao salvar cliente', 'erro');
+    }
+    btn.disabled = false; btn.textContent = 'Salvar';
+  }
+
+  async function toggleAtivo(id, ativo) {
+    try {
+      await api.patch(`/clientes/${id}/ativar`, { ativo });
+      mostrarAlerta(`Cliente ${ativo ? 'ativado' : 'desativado'}!`);
+      carregarClientes();
+    } catch (err) { mostrarAlerta('Erro ao alterar status', 'erro'); }
+  }
+</script>
+</body>
+</html>

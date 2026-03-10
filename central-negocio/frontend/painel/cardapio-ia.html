@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente de Cardápio IA — Central do Negócio</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="/assets/css/painel.css">
+    <style>
+        .ai-hero {
+            background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: #fff;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-hero-bg-icon {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 180px;
+            opacity: 0.08;
+            color: #fff;
+        }
+
+        .ai-hero h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .ai-hero p {
+            font-size: 13.5px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 520px;
+            line-height: 1.6;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(167, 139, 250, 0.2);
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            color: #C4B5FD;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        /* Form card */
+        .form-card {
+            background: var(--saas-card);
+            border: 1px solid var(--saas-border);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 20px;
+            box-shadow: var(--saas-shadow);
+        }
+
+        .form-card h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--saas-text);
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--saas-muted);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 11px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--saas-border);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: var(--saas-text);
+            background: #fff;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #6366F1;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .btn-gerar {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4338CA, #6366F1);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-gerar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-gerar:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Result card */
+        .result-card {
+            background: var(--saas-card);
+            border: 1px solid var(--saas-border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--saas-shadow);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .result-card.visible {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, #4338CA, #6366F1);
+            color: #fff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .result-body {
+            padding: 24px;
+        }
+
+        .result-field {
+            margin-bottom: 20px;
+        }
+
+        .result-field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--saas-muted);
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            background: #F8FAFC;
+            border: 1px solid var(--saas-border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 14px;
+            color: var(--saas-text);
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .result-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: #4338CA;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: 1px solid var(--saas-border);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--saas-muted);
+            transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .copy-btn:hover {
+            background: var(--saas-blue);
+            color: #fff;
+            border-color: var(--saas-blue);
+        }
+
+        .copy-btn.copied {
+            background: #10B981;
+            color: #fff;
+            border-color: #10B981;
+        }
+
+        .image-prompt-box {
+            background: #1E1B4B;
+            color: #C4B5FD;
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 13px;
+            font-family: monospace;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tips-list li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--saas-border);
+            font-size: 13.5px;
+            color: var(--saas-text);
+        }
+
+        .tips-list li:last-child {
+            border: none;
+        }
+
+        /* Platform chips */
+        .plat-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .plat-chip {
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1.5px solid var(--saas-border);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            background: #fff;
+            color: var(--saas-text);
+            transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .plat-chip.active {
+            background: #4338CA;
+            color: #fff;
+            border-color: #4338CA;
+        }
+
+        /* Loader */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .loader.visible {
+            display: block;
+        }
+
+        .loader-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .loader-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #6366F1;
+            animation: bounce 0.8s ease-in-out infinite;
+        }
+
+        .loader-dot:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .loader-dot:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: scale(0.8);
+                opacity: 0.4
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 1
+            }
+        }
+
+        .loader p {
+            color: var(--saas-muted);
+            font-size: 13px;
+            margin-top: 14px;
+        }
+
+        /* History */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #fff;
+            border: 1px solid var(--saas-border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .history-item:hover {
+            border-color: #6366F1;
+            background: #F5F3FF;
+        }
+
+        .history-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--saas-text);
+        }
+
+        .history-plat {
+            font-size: 11px;
+            color: var(--saas-muted);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-hero {
+                padding: 24px 20px;
+            }
+
+            .ai-hero::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <h2>Central do Negócio</h2><span>Portal do Cliente · Fantoni Software</span>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <a href="/painel/" class="nav-item"><i class="ph ph-squares-four nav-icon" style="font-size: 18px"></i> Dashboard</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Operação</span>
+                    <a href="/painel/videoaulas.html" class="nav-item"><i class="ph ph-graduation-cap nav-icon" style="font-size: 18px"></i> Sistema PDV</a>
+                    <a href="/painel/agente-ia.html" class="nav-item"><i class="ph ph-robot nav-icon" style="font-size: 18px"></i> Agente IA</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Negócio</span>
+                    <a href="/painel/empreendedorismo.html" class="nav-item"><i class="ph ph-fork-knife nav-icon" style="font-size: 18px"></i> Bares
+                        &amp; Restaurantes</a>
+                    <a href="/painel/cardapio-ia.html" class="nav-item active"><i class="ph ph-sparkle nav-icon" style="font-size: 18px"></i> IA para
+                        Cardápio</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Suporte</span>
+                    <a href="/painel/tickets.html" class="nav-item"><i class="ph ph-ticket nav-icon" style="font-size: 18px"></i> Meus Chamados</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Conta</span>
+                    <a href="/painel/financeiro.html" class="nav-item"><i class="ph ph-chart-bar nav-icon" style="font-size: 18px"></i> Financeiro</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-usuario">
+                    <div class="s-avatar" id="s-avatar">?</div>
+                    <div><strong id="usuario-nome">—</strong><span id="usuario-role">Cliente</span></div>
+                </div>
+                <button class="btn-logout"><i class="ph ph-sign-out"></i> Sair</button>
+            </div>
+        </aside>
+
+        <div class="conteudo">
+            <div class="topbar">
+                <div class="flex items-center gap-2">
+                    <button class="sidebar-toggle" id="sidebar-toggle"><i class="ph ph-list"></i></button>
+                    <span class="topbar-titulo"><i class="ph-fill ph-sparkle text-indigo-500"></i> Assistente de Cardápio com IA</span>
+                </div>
+            </div>
+
+            <div class="pagina">
+
+                <!-- HERO -->
+                <div class="ai-hero">
+                    <div class="ai-badge"><i class="ph-fill ph-sparkle"></i> Powered by GPT-4o-mini</div>
+                    <h1>Assistente de Cardápio com IA</h1>
+                    <p>Gere nomes profissionais, descrições irresistíveis e prompts de imagem para seus pratos no iFood,
+                        Rappi e outras plataformas — em segundos.</p>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start" id="main-grid">
+
+                    <!-- FORMULÁRIO -->
+                    <div>
+                        <div class="form-card">
+                            <h2 style="display:flex;align-items:center;gap:8px"><i class="ph-fill ph-cooking-pot text-indigo-500" style="font-size:20px"></i> Dados do Prato</h2>
+
+                            <div class="form-group">
+                                <label>Nome do prato *</label>
+                                <input type="text" id="inp-nome"
+                                    placeholder="Ex: hamburguer artesanal, frango grelhado, pizza..." maxlength="80">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Foto do prato (Opcional, melhora muito o resultado)</label>
+                                <div style="border:1.5px dashed var(--saas-border);border-radius:8px;padding:12px;text-align:center;background:#F8FAFC;cursor:pointer;position:relative"
+                                    id="img-dropzone" onclick="document.getElementById('inp-imagem').click()">
+                                    <input type="file" id="inp-imagem" accept="image/jpeg,image/png,image/webp"
+                                        style="display:none" onchange="previewImagem(this)">
+                                    <div id="img-placeholder">
+                                        <div style="font-size:32px;margin-bottom:4px;color:#94a3b8"><i class="ph-fill ph-camera"></i></div>
+                                        <div style="font-size:13px;color:var(--saas-muted)">Clique para enviar imagem
+                                        </div>
+                                    </div>
+                                    <img id="img-preview" src=""
+                                        style="display:none;width:100%;max-height:160px;object-fit:cover;border-radius:6px">
+                                    <button id="img-remove"
+                                        style="display:none;position:absolute;top:-8px;right:-8px;background:#EF4444;color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.2)"
+                                        onclick="event.stopPropagation(); removerImagem()">✕</button>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Ingredientes principais *</label>
+                                <textarea id="inp-ingredientes"
+                                    placeholder="Ex: carne angus 150g, queijo cheddar, bacon crocante, molho especial da casa, pão brioche tostado..."></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Estilo do estabelecimento</label>
+                                    <select id="inp-estilo">
+                                        <option value="bar e restaurante popular">Bar / Restaurante popular</option>
+                                        <option value="restaurante premium">Restaurante premium</option>
+                                        <option value="lanchonete e hamburguer artesanal">Hamburgueria artesanal
+                                        </option>
+                                        <option value="pizzaria">Pizzaria</option>
+                                        <option value="comida japonesa">Japonês / Sushi</option>
+                                        <option value="churrascaria">Churrascaria</option>
+                                        <option value="food truck">Food Truck</option>
+                                        <option value="café e confeitaria">Café / Confeitaria</option>
+                                        <option value="padaria e pão de queijo">Padaria</option>
+                                        <option value="bar de petiscos">Bar de petiscos</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Plataforma de destino</label>
+                                    <select id="inp-plataforma">
+                                        <option value="iFood">iFood</option>
+                                        <option value="Rappi">Rappi</option>
+                                        <option value="99Food">99Food</option>
+                                        <option value="Aiqfome">Ai que Fome</option>
+                                        <option value="iFood e Rappi">iFood + Rappi</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Instruções adicionais e estilo visual (Opcional)</label>
+                                <textarea id="inp-instrucoes" style="min-height:60px"
+                                    placeholder="Ex: Focar no queijo derretido, tom de voz divertido, quero a imagem da pizza numa mesa rústica de madeira..."></textarea>
+                            </div>
+
+                            <div class="form-group"
+                                style="margin-bottom:24px;background:#F8FAFC;padding:16px;border-radius:10px;border:1px solid var(--saas-border)">
+                                <label style="margin-bottom:12px;display:block;color:#4338CA">O que você deseja
+                                    gerar?</label>
+                                <div style="display:flex;gap:24px;flex-wrap:wrap">
+                                    <label
+                                        style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--saas-text);font-weight:600">
+                                        <input type="checkbox" id="chk-texto" checked
+                                            style="width:18px;height:18px;accent-color:#4338CA"> <i class="ph-fill ph-text-aa text-indigo-500"></i> Textos (Nome + Copy)
+                                    </label>
+                                    <label
+                                        style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--saas-text);font-weight:600">
+                                        <input type="checkbox" id="chk-imagem"
+                                            style="width:18px;height:18px;accent-color:#4338CA"> 🎨 Imagem do prato com
+                                        IA <span
+                                            style="font-size:12px;color:var(--saas-muted);text-decoration:line-through">R$
+                                            0,56</span> <span style="color:#10B981;font-size:12px">Grátis hoje!</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button class="btn-gerar" id="btn-gerar" onclick="gerarDescricao()">
+                                <span id="btn-txt"><i class="ph-fill ph-magic-wand"></i> Gerar com IA</span>
+                            </button>
+                        </div>
+
+                        <!-- LOADER -->
+                        <div class="loader" id="loader">
+                            <div class="loader-dots">
+                                <div class="loader-dot"></div>
+                                <div class="loader-dot"></div>
+                                <div class="loader-dot"></div>
+                            </div>
+                            <p>A IA está criando seu conteúdo...</p>
+                        </div>
+
+                        <!-- RESULTADO -->
+                        <div class="result-card" id="result-card">
+                            <div class="result-header">
+                                <i class="ph-fill ph-sparkle" style="font-size:22px"></i>
+                                <h3>Resultado gerado — copie e use no seu app!</h3>
+                            </div>
+                            <div class="result-body">
+
+                                <div class="result-field" id="f-nome">
+                                    <label style="display:flex;align-items:center;gap:6px"><i class="ph-fill ph-tag"></i> Nome sugerido para o cardápio</label>
+                                    <div class="result-value result-name" id="r-nome">
+                                        <button class="copy-btn" onclick="copiar('r-nome', this)">Copiar</button>
+                                        —
+                                    </div>
+                                </div>
+
+                                <div class="result-field" id="f-descricao">
+                                    <label style="display:flex;align-items:center;gap:6px"><i class="ph-fill ph-text-align-left"></i> Descrição completa (para o app)</label>
+                                    <div class="result-value" id="r-descricao" style="position:relative">
+                                        <button class="copy-btn" onclick="copiar('r-descricao', this)">Copiar</button>
+                                        —
+                                    </div>
+                                </div>
+
+                                <div class="result-field" id="f-curta">
+                                    <label style="display:flex;align-items:center;gap:6px"><i class="ph-fill ph-lightning"></i> Descrição curta (lista do cardápio)</label>
+                                    <div class="result-value" id="r-curta" style="position:relative">
+                                        <button class="copy-btn" onclick="copiar('r-curta', this)">Copiar</button>
+                                        —
+                                    </div>
+                                </div>
+
+                                <div class="result-field" id="f-prompt">
+                                    <label style="display:flex;align-items:center;gap:6px"><i class="ph-fill ph-palette"></i> Prompt de imagem — cole no ChatGPT, Midjourney ou DALL-E</label>
+                                    <div class="image-prompt-box" id="r-prompt" style="position:relative">
+                                        <button class="copy-btn" style="color:#C4B5FD"
+                                            onclick="copiar('r-prompt', this)">Copiar</button>
+                                        —
+                                    </div>
+                                    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                                        <button id="btn-dalle" onclick="gerarImagemDalle()"
+                                            style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;background:linear-gradient(135deg,#9333EA,#6366F1);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:transform 0.2s">
+                                            <i class="ph-fill ph-image"></i> Gerar Imagem <span
+                                                style="font-size:11px;opacity:0.7;text-decoration:line-through;margin-left:4px">R$
+                                                0,56</span> <span
+                                                style="font-size:11px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:4px;margin-left:2px">100%
+                                                OFF</span>
+                                        </button>
+                                        <span style="color:var(--saas-muted);font-size:12px;margin:0 4px">ou usar
+                                            externo:</span>
+                                        <a id="link-chatgpt" href="https://chat.openai.com" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;
+                           background:#10A37F;color:#fff;font-size:12px;font-weight:600;text-decoration:none">
+                                            <i class="ph-fill ph-chat-circle"></i> Abrir ChatGPT
+                                        </a>
+                                        <a href="https://www.bing.com/images/create" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;
+                           background:#0078D4;color:#fff;font-size:12px;font-weight:600;text-decoration:none">
+                                            <i class="ph-fill ph-microsoft-logo"></i> Bing Image Creator (gratuito)
+                                        </a>
+                                    </div>
+                                    <div id="dalle-result" style="display:none;margin-top:16px;text-align:center">
+                                        <img id="dalle-img" src=""
+                                            style="width:100%;max-width:400px;border-radius:12px;box-shadow:var(--saas-shadow);margin-bottom:10px">
+                                        <a id="dalle-download" href="#" target="_blank"
+                                            style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;background:#4338CA;color:#fff;font-size:13px;font-weight:600;text-decoration:none">
+                                            <i class="ph-bold ph-download-simple"></i> Baixar Imagem Original
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="result-field" id="f-dicas">
+                                    <label style="display:flex;align-items:center;gap:6px"><i class="ph-fill ph-lightbulb"></i> Dicas da IA para você</label>
+                                    <ul class="tips-list" id="r-dicas"></ul>
+                                </div>
+
+                                <button class="btn-gerar" onclick="gerarDescricao()"
+                                    style="background:linear-gradient(135deg,#059669,#10B981)">
+                                    <i class="ph-bold ph-arrows-clockwise"></i> Gerar variação alternativa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SIDEBAR: dicas + histórico -->
+                    <div style="display:flex;flex-direction:column;gap:16px">
+
+                        <!-- Dicas de copywriting -->
+                        <div class="form-card" style="padding:20px">
+                            <h2 style="font-size:14px">📚 Boas práticas de cardápio</h2>
+                            <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+                                <div style="display:flex;gap:10px;font-size:13px;color:var(--saas-text)">
+                                    <i class="ph-fill ph-star" style="color:#f59e0b;font-size:16px;margin-top:2px"></i><span>Palavras como <strong>"artesanal", "caseiro", "especial da
+                                            casa"</strong> aumentam o valor percebido</span>
+                                </div>
+                                <div style="display:flex;gap:10px;font-size:13px;color:var(--saas-text)">
+                                    <i class="ph-fill ph-cookie" style="color:#8b5cf6;font-size:16px;margin-top:2px"></i><span>Use <strong>adjetivos sensoriais</strong>: crocante, cremoso,
+                                        suculento, gratinado, defumado</span>
+                                </div>
+                                <div style="display:flex;gap:10px;font-size:13px;color:var(--saas-text)">
+                                    <i class="ph-fill ph-ruler" style="color:#ef4444;font-size:16px;margin-top:2px"></i><span>Descrições do iFood têm <strong>limite de 200
+                                            caracteres</strong> — seja direto ao ponto</span>
+                                </div>
+                                <div style="display:flex;gap:10px;font-size:13px;color:var(--saas-text)">
+                                    <i class="ph-fill ph-camera" style="color:#10b981;font-size:16px;margin-top:2px"></i><span>Foto + descrição = até <strong>5x mais pedidos</strong>. Nunca
+                                        cadastre sem imagem</span>
+                                </div>
+                                <div style="display:flex;gap:10px;font-size:13px;color:var(--saas-text)">
+                                    <i class="ph-fill ph-money" style="color:#14b8a6;font-size:16px;margin-top:2px"></i><span>Pratos com nomes elaborados permitem preços <strong>20-30%
+                                            maiores</strong> sem perder pedidos</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gerador de imagem gratuito -->
+                        <div class="form-card"
+                            style="padding:20px;background:linear-gradient(135deg,#1E1B4B,#312E81);color:#fff;border-color:#4338CA">
+                            <div style="font-size:28px;margin-bottom:8px;color:#c4b5fd"><i class="ph-fill ph-palette"></i></div>
+                            <div style="font-size:14px;font-weight:700;margin-bottom:6px">Gerador de imagem gratuito
+                            </div>
+                            <div style="font-size:12.5px;color:rgba(255,255,255,0.7);margin-bottom:14px">
+                                Use o <strong style="color:#C4B5FD">Bing Image Creator</strong> (Microsoft) — até 100
+                                imagens gratuitas por dia com qualidade profissional.
+                            </div>
+                            <a href="https://www.bing.com/images/create" target="_blank"
+                                style="display:block;text-align:center;padding:10px;background:#4338CA;color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">
+                                <i class="ph-bold ph-arrow-square-out"></i> Abrir Bing Image Creator
+                            </a>
+                        </div>
+
+                        <!-- Histórico -->
+                        <div class="form-card" style="padding:20px" id="historico-card">
+                            <h2 style="font-size:14px;margin-bottom:12px">🕐 Últimas gerações</h2>
+                            <div class="history-list" id="historico-lista">
+                                <div style="font-size:13px;color:var(--saas-muted)">Nenhuma geração ainda.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script>
+        const usuario = protegerPagina(['cliente']);
+        if (usuario) inicializarLayout();
+
+        const STORAGE_KEY = 'cardapio_ia_historico';
+        let historico = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let base64Image = null;
+
+        function previewImagem(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (file.size > 4 * 1024 * 1024) {
+                alert('A imagem deve ter no máximo 4MB.');
+                input.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                base64Image = e.target.result;
+                document.getElementById('img-preview').src = base64Image;
+                document.getElementById('img-preview').style.display = 'block';
+                document.getElementById('img-remove').style.display = 'block';
+                document.getElementById('img-placeholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removerImagem() {
+            base64Image = null;
+            document.getElementById('inp-imagem').value = '';
+            document.getElementById('img-preview').src = '';
+            document.getElementById('img-preview').style.display = 'none';
+            document.getElementById('img-remove').style.display = 'none';
+            document.getElementById('img-placeholder').style.display = 'block';
+        }
+
+        async function gerarDescricao() {
+            const nome = document.getElementById('inp-nome').value.trim();
+            const ingredientes = document.getElementById('inp-ingredientes').value.trim();
+            const estilo = document.getElementById('inp-estilo').value;
+            const plataforma = document.getElementById('inp-plataforma').value;
+            const instrucoes = document.getElementById('inp-instrucoes').value.trim();
+            const querTexto = document.getElementById('chk-texto').checked;
+            const querImagem = document.getElementById('chk-imagem').checked;
+
+            if (!querTexto && !querImagem) {
+                alert('Selecione pelo menos uma opção para gerar (Textos ou Imagem).');
+                return;
+            }
+
+            if (!nome) { document.getElementById('inp-nome').focus(); return; }
+            if (!ingredientes) { document.getElementById('inp-ingredientes').focus(); return; }
+
+            // Show loader
+            const btn = document.getElementById('btn-gerar');
+            btn.disabled = true;
+            document.getElementById('loader').classList.add('visible');
+            document.getElementById('result-card').classList.remove('visible');
+
+            try {
+                const res = await api.post('/cardapio-ia/gerar', {
+                    nomePrato: nome,
+                    ingredientes,
+                    estilo,
+                    plataforma,
+                    instrucoes,
+                    imagemBase64: base64Image
+                });
+
+
+                // Populate result
+                setResultField('r-nome', res.nome_sugerido);
+                setResultField('r-descricao', res.descricao_completa);
+                setResultField('r-curta', res.descricao_curta);
+                setResultField('r-prompt', res.prompt_imagem, true);
+
+                // Tips
+                const tipsEl = document.getElementById('r-dicas');
+                tipsEl.innerHTML = (res.dicas || []).map(d => `<li><span style="font-size:16px">💡</span><span>${d}</span></li>`).join('');
+
+                // Toggle visibility based on choices
+                document.getElementById('f-nome').style.display = querTexto ? 'block' : 'none';
+                document.getElementById('f-descricao').style.display = querTexto ? 'block' : 'none';
+                document.getElementById('f-curta').style.display = querTexto ? 'block' : 'none';
+                document.getElementById('f-dicas').style.display = querTexto ? 'block' : 'none';
+
+                // Show result
+                document.getElementById('result-card').classList.add('visible');
+                document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Auto-generate image if requested
+                if (querImagem) {
+                    gerarImagemDalle();
+                } else {
+                    document.getElementById('dalle-result').style.display = 'none';
+                    const btnDalle = document.getElementById('btn-dalle');
+                    btnDalle.innerHTML = '<i class="ph-fill ph-image"></i> Gerar Imagem <span style="font-size:11px;opacity:0.7;text-decoration:line-through;margin-left:4px">R$ 0,56</span> <span style="font-size:11px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:4px;margin-left:2px">100% OFF</span>';
+                    btnDalle.disabled = false;
+                }
+
+                // Save to history
+                if (querTexto) {
+                    historico.unshift({ nome: res.nome_sugerido, plataforma, original: nome, ts: Date.now() });
+                    historico = historico.slice(0, 10);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(historico));
+                    renderHistorico();
+                }
+
+            } catch (err) {
+                alert('Erro ao gerar: ' + (err?.erro || err?.message || 'Tente novamente.'));
+            } finally {
+                btn.disabled = false;
+                document.getElementById('loader').classList.remove('visible');
+            }
+        }
+
+        function setResultField(id, value, isMono = false) {
+            const el = document.getElementById(id);
+            const btn = el.querySelector('.copy-btn');
+            el.textContent = value || '—';
+            if (btn) el.prepend(btn); // keep copy button
+        }
+
+        function copiar(id, btn) {
+            const el = document.getElementById(id);
+            const text = el.textContent.replace('Copiar', '').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = '✓ Copiado!';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        async function gerarImagemDalle() {
+            const prompt = document.getElementById('r-prompt').textContent.replace('Copiar', '').trim();
+            if (!prompt || prompt === '—') return;
+
+            const btn = document.getElementById('btn-dalle');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '⏳ Gerando (pode levar 10-15s)...';
+            btn.disabled = true;
+            document.getElementById('dalle-result').style.display = 'none';
+
+            try {
+                const res = await api.post('/cardapio-ia/gerar-imagem', { prompt });
+
+                document.getElementById('dalle-img').src = res.url;
+                document.getElementById('dalle-download').href = res.url;
+                document.getElementById('dalle-result').style.display = 'block';
+
+            } catch (err) {
+                alert('Erro ao gerar imagem: ' + (err?.erro || err?.message || 'Tente novamente.'));
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function renderHistorico() {
+            const el = document.getElementById('historico-lista');
+            if (!historico.length) {
+                el.innerHTML = '<div style="font-size:13px;color:var(--saas-muted)">Nenhuma geração ainda.</div>';
+                return;
+            }
+            el.innerHTML = historico.map(h => `
+    <div class="history-item" onclick="reusar('${h.original.replace(/'/g, "\\'")}')">
+      <div>
+        <div class="history-name">${h.nome}</div>
+        <div class="history-plat">${h.plataforma} · ${new Date(h.ts).toLocaleDateString('pt-BR')}</div>
+      </div>
+      <span style="color:var(--saas-muted)">→</span>
+    </div>`).join('');
+        }
+
+        function reusar(original) {
+            document.getElementById('inp-nome').value = original;
+            document.getElementById('inp-nome').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('inp-nome').focus();
+        }
+
+        // Responsividade: grid colapsa no mobile
+        function ajustarGrid() {
+            const grid = document.getElementById('main-grid');
+            if (grid) grid.style.gridTemplateColumns = window.innerWidth < 900 ? '1fr' : '1fr 360px';
+        }
+        window.addEventListener('resize', ajustarGrid);
+        ajustarGrid();
+
+        renderHistorico();
+    </script>
+</body>
+
+</html>

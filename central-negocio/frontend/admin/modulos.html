@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulos e Aulas — Admin — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><h2>Central do<br>Negócio</h2><span>Painel Admin</span></div>
+    <nav class="sidebar-nav">
+      <a href="/admin/" class="nav-item">🏠 Dashboard</a>
+      <a href="/admin/clientes.html" class="nav-item">👥 Clientes</a>
+      <a href="/admin/modulos.html" class="nav-item">🎬 Módulos e Aulas</a>
+      <a href="/admin/tickets.html" class="nav-item">🎫 Tickets</a>
+      <a href="/admin/financeiro.html" class="nav-item">💰 Financeiro</a>
+      <a href="/admin/comercial.html" class="nav-item">🤝 Comercial</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-usuario"><strong id="usuario-nome">—</strong><span id="usuario-role">Admin</span></div>
+      <button class="btn-logout">Sair</button>
+    </div>
+  </aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">🎬 Módulos e Aulas</span>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-outline btn-sm" onclick="abrirTab('base')">🤖 Base de Conhecimento</button>
+        <button class="btn btn-primario btn-sm" onclick="abrirModalModulo()">+ Módulo</button>
+      </div>
+    </div>
+
+    <div class="pagina">
+      <!-- Tab: Módulos -->
+      <div id="tab-modulos">
+        <div id="lista-modulos"><div class="spinner"></div></div>
+      </div>
+
+      <!-- Tab: Base de conhecimento -->
+      <div id="tab-base" class="d-none">
+        <div class="card mb-3">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="card-titulo" style="margin:0">🤖 Base de Conhecimento da IA</h3>
+            <button class="btn btn-primario btn-sm" onclick="abrirModalBase()">+ Adicionar</button>
+          </div>
+          <div id="lista-base"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Módulo -->
+<div id="modal-modulo" class="modal-overlay d-none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-titulo" id="mod-titulo-modal">Novo Módulo</h3>
+      <button class="modal-fechar" onclick="fecharModais()">✕</button>
+    </div>
+    <form onsubmit="salvarModulo(event)">
+      <input type="hidden" id="mod-id">
+      <div class="form-grupo"><label>Título</label><input type="text" id="mod-titulo" required></div>
+      <div class="form-grupo"><label>Descrição</label><textarea id="mod-desc"></textarea></div>
+      <div class="grid-2">
+        <div class="form-grupo">
+          <label>Plano mínimo</label>
+          <select id="mod-plano">
+            <option value="basico">Básico</option>
+            <option value="profissional">Profissional</option>
+            <option value="premium">Premium</option>
+          </select>
+        </div>
+        <div class="form-grupo"><label>Ordem</label><input type="number" id="mod-ordem" value="0" min="0"></div>
+      </div>
+      <button type="submit" class="btn btn-primario w-100">Salvar Módulo</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Aula -->
+<div id="modal-aula" class="modal-overlay d-none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-titulo" id="aula-titulo-modal">Nova Aula</h3>
+      <button class="modal-fechar" onclick="fecharModais()">✕</button>
+    </div>
+    <form onsubmit="salvarAula(event)">
+      <input type="hidden" id="aula-id">
+      <input type="hidden" id="aula-modulo-id">
+      <div class="form-grupo"><label>Título</label><input type="text" id="aula-titulo" required></div>
+      <div class="form-grupo"><label>Descrição</label><textarea id="aula-desc"></textarea></div>
+      <div class="form-grupo"><label>URL do Vídeo (embed)</label><input type="url" id="aula-url" required placeholder="https://www.youtube.com/embed/..."></div>
+      <div class="form-grupo"><label>URL da Thumbnail</label><input type="url" id="aula-thumb"></div>
+      <div class="grid-2">
+        <div class="form-grupo"><label>Duração (segundos)</label><input type="number" id="aula-duracao" min="0"></div>
+        <div class="form-grupo"><label>Ordem</label><input type="number" id="aula-ordem" value="0" min="0"></div>
+      </div>
+      <button type="submit" class="btn btn-primario w-100">Salvar Aula</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Base de Conhecimento -->
+<div id="modal-base" class="modal-overlay d-none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-titulo">Item da Base de Conhecimento</h3>
+      <button class="modal-fechar" onclick="fecharModais()">✕</button>
+    </div>
+    <form onsubmit="salvarBase(event)">
+      <input type="hidden" id="base-id">
+      <div class="form-grupo"><label>Pergunta / Tema</label><input type="text" id="base-pergunta" required placeholder="ex: Como fazer abertura de caixa?"></div>
+      <div class="form-grupo"><label>Resposta</label><textarea id="base-resposta" required style="min-height:120px"></textarea></div>
+      <div class="form-grupo"><label>URL do vídeo relacionado (opcional)</label><input type="url" id="base-video"></div>
+      <div class="form-grupo"><label>Tags (separadas por vírgula)</label><input type="text" id="base-tags" placeholder="caixa, abertura, pdv"></div>
+      <button type="submit" class="btn btn-primario w-100">Salvar</button>
+    </form>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script>
+  const usuario = protegerPagina(['admin']);
+  if (usuario) { inicializarLayout(); carregarModulos(); }
+
+  let tabAtual = 'modulos';
+
+  function abrirTab(tab) {
+    tabAtual = tab;
+    document.getElementById('tab-modulos').classList.toggle('d-none', tab !== 'modulos');
+    document.getElementById('tab-base').classList.toggle('d-none', tab !== 'base');
+    if (tab === 'base') carregarBase();
+  }
+
+  async function carregarModulos() {
+    try {
+      const { modulos } = await api.get('/videoaulas/admin/modulos');
+      renderizarModulos(modulos);
+    } catch { document.getElementById('lista-modulos').innerHTML = '<p class="alerta alerta-erro">Erro ao carregar.</p>'; }
+  }
+
+  function renderizarModulos(modulos) {
+    const el = document.getElementById('lista-modulos');
+    if (!modulos.length) { el.innerHTML = '<div class="card text-center text-suave">Nenhum módulo cadastrado.</div>'; return; }
+
+    el.innerHTML = modulos.map(m => `
+      <div class="card mb-2">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 style="font-size:17px;color:var(--primaria)">${m.titulo}</h3>
+            <span class="badge badge-azul">${m.plano_minimo}</span>
+            <span class="badge ${m.ativo ? 'badge-verde' : 'badge-cinza'} ml-1">${m.ativo ? 'Ativo' : 'Inativo'}</span>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-acento" onclick="abrirModalAula(${m.id})">+ Aula</button>
+            <button class="btn btn-sm btn-outline" onclick="editarModulo(${m.id},'${m.titulo.replace(/'/g,"\\'")}','${m.descricao||''}','${m.plano_minimo}',${m.ordem})">✏️ Editar</button>
+            <button class="btn btn-sm btn-perigo" onclick="excluirModulo(${m.id})">🗑</button>
+          </div>
+        </div>
+        ${m.videoaulas?.length ? `
+          <div style="display:flex;flex-direction:column;gap:6px">
+            ${m.videoaulas.sort((a,b)=>a.ordem-b.ordem).map(a => `
+              <div class="flex items-center justify-between" style="padding:8px 12px;background:var(--fundo);border-radius:var(--radius)">
+                <div><strong class="text-sm">${a.titulo}</strong> <span class="text-xs text-suave">(${a.duracao_seg || 0}s)</span></div>
+                <div class="flex gap-1">
+                  <button class="btn btn-sm btn-outline" onclick="editarAula(${a.id},${m.id},'${a.titulo.replace(/'/g,"\\'")}','${a.descricao||''}','${a.url_video}','${a.thumb_url||''}',${a.duracao_seg||0},${a.ordem})">✏️</button>
+                  <button class="btn btn-sm btn-perigo" onclick="excluirAula(${a.id})">🗑</button>
+                </div>
+              </div>`).join('')}
+          </div>` : '<p class="text-suave text-sm">Nenhuma aula neste módulo.</p>'}
+      </div>`).join('');
+  }
+
+  function abrirModalModulo() {
+    document.getElementById('mod-id').value = '';
+    document.getElementById('mod-titulo-modal').textContent = 'Novo Módulo';
+    document.getElementById('mod-titulo').value = '';
+    document.getElementById('mod-desc').value = '';
+    document.getElementById('mod-plano').value = 'basico';
+    document.getElementById('mod-ordem').value = 0;
+    document.getElementById('modal-modulo').classList.remove('d-none');
+  }
+
+  function editarModulo(id, titulo, desc, plano, ordem) {
+    document.getElementById('mod-id').value = id;
+    document.getElementById('mod-titulo-modal').textContent = 'Editar Módulo';
+    document.getElementById('mod-titulo').value = titulo;
+    document.getElementById('mod-desc').value = desc;
+    document.getElementById('mod-plano').value = plano;
+    document.getElementById('mod-ordem').value = ordem;
+    document.getElementById('modal-modulo').classList.remove('d-none');
+  }
+
+  async function salvarModulo(e) {
+    e.preventDefault();
+    const id = document.getElementById('mod-id').value;
+    const dados = { titulo: document.getElementById('mod-titulo').value, descricao: document.getElementById('mod-desc').value, plano_minimo: document.getElementById('mod-plano').value, ordem: parseInt(document.getElementById('mod-ordem').value) };
+    try {
+      if (id) await api.put(`/videoaulas/admin/modulos/${id}`, dados);
+      else await api.post('/videoaulas/admin/modulos', dados);
+      fecharModais(); mostrarAlerta('Módulo salvo!'); carregarModulos();
+    } catch (err) { mostrarAlerta(err.erro || 'Erro ao salvar', 'erro'); }
+  }
+
+  function abrirModalAula(moduloId) {
+    document.getElementById('aula-id').value = '';
+    document.getElementById('aula-modulo-id').value = moduloId;
+    document.getElementById('aula-titulo-modal').textContent = 'Nova Aula';
+    document.getElementById('modal-aula').querySelectorAll('input,textarea').forEach(el => { if(el.type !== 'hidden') el.value = ''; });
+    document.getElementById('modal-aula').classList.remove('d-none');
+  }
+
+  function editarAula(id, modId, titulo, desc, url, thumb, dur, ordem) {
+    document.getElementById('aula-id').value = id;
+    document.getElementById('aula-modulo-id').value = modId;
+    document.getElementById('aula-titulo').value = titulo;
+    document.getElementById('aula-desc').value = desc;
+    document.getElementById('aula-url').value = url;
+    document.getElementById('aula-thumb').value = thumb;
+    document.getElementById('aula-duracao').value = dur;
+    document.getElementById('aula-ordem').value = ordem;
+    document.getElementById('modal-aula').classList.remove('d-none');
+  }
+
+  async function salvarAula(e) {
+    e.preventDefault();
+    const id = document.getElementById('aula-id').value;
+    const dados = { modulo_id: parseInt(document.getElementById('aula-modulo-id').value), titulo: document.getElementById('aula-titulo').value, descricao: document.getElementById('aula-desc').value, url_video: document.getElementById('aula-url').value, thumb_url: document.getElementById('aula-thumb').value, duracao_seg: parseInt(document.getElementById('aula-duracao').value) || 0, ordem: parseInt(document.getElementById('aula-ordem').value) || 0 };
+    try {
+      if (id) await api.put(`/videoaulas/admin/aulas/${id}`, dados);
+      else await api.post('/videoaulas/admin/aulas', dados);
+      fecharModais(); mostrarAlerta('Aula salva!'); carregarModulos();
+    } catch (err) { mostrarAlerta(err.erro || 'Erro ao salvar', 'erro'); }
+  }
+
+  async function excluirModulo(id) {
+    if (!confirm('Excluir este módulo e todas as suas aulas?')) return;
+    try { await api.delete(`/videoaulas/admin/modulos/${id}`); mostrarAlerta('Módulo excluído'); carregarModulos(); }
+    catch { mostrarAlerta('Erro ao excluir', 'erro'); }
+  }
+
+  async function excluirAula(id) {
+    if (!confirm('Excluir esta aula?')) return;
+    try { await api.delete(`/videoaulas/admin/aulas/${id}`); mostrarAlerta('Aula excluída'); carregarModulos(); }
+    catch { mostrarAlerta('Erro ao excluir', 'erro'); }
+  }
+
+  async function carregarBase() {
+    try {
+      const { base } = await api.get('/agente-ia/base');
+      document.getElementById('lista-base').innerHTML = base.map(b => `
+        <div class="flex items-center justify-between" style="padding:12px;background:var(--fundo);border-radius:var(--radius);margin-bottom:8px">
+          <div class="flex-1 mr-2">
+            <div class="fw-600 text-sm">${b.pergunta}</div>
+            <div class="text-xs text-suave">${b.resposta.substring(0,80)}...</div>
+          </div>
+          <div class="flex gap-1">
+            <button class="btn btn-sm btn-outline" onclick='editarBase(${JSON.stringify(b)})'>✏️</button>
+            <button class="btn btn-sm btn-perigo" onclick="excluirBase(${b.id})">🗑</button>
+          </div>
+        </div>`).join('') || '<p class="text-suave text-sm">Nenhum item cadastrado.</p>';
+    } catch {}
+  }
+
+  function abrirModalBase() {
+    document.getElementById('base-id').value = '';
+    document.getElementById('modal-base').querySelectorAll('input,textarea').forEach(el => { if(el.type!=='hidden') el.value=''; });
+    document.getElementById('modal-base').classList.remove('d-none');
+  }
+
+  function editarBase(b) {
+    document.getElementById('base-id').value = b.id;
+    document.getElementById('base-pergunta').value = b.pergunta;
+    document.getElementById('base-resposta').value = b.resposta;
+    document.getElementById('base-video').value = b.url_video || '';
+    document.getElementById('base-tags').value = (b.tags || []).join(', ');
+    document.getElementById('modal-base').classList.remove('d-none');
+  }
+
+  async function salvarBase(e) {
+    e.preventDefault();
+    const id = document.getElementById('base-id').value;
+    const dados = { pergunta: document.getElementById('base-pergunta').value, resposta: document.getElementById('base-resposta').value, url_video: document.getElementById('base-video').value || null, tags: document.getElementById('base-tags').value.split(',').map(t=>t.trim()).filter(Boolean) };
+    try {
+      if (id) await api.put(`/agente-ia/base/${id}`, dados);
+      else await api.post('/agente-ia/base', dados);
+      fecharModais(); mostrarAlerta('Item salvo!'); carregarBase();
+    } catch (err) { mostrarAlerta(err.erro || 'Erro ao salvar', 'erro'); }
+  }
+
+  async function excluirBase(id) {
+    if (!confirm('Excluir este item?')) return;
+    try { await api.delete(`/agente-ia/base/${id}`); mostrarAlerta('Item excluído'); carregarBase(); }
+    catch { mostrarAlerta('Erro ao excluir', 'erro'); }
+  }
+
+  function fecharModais() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('d-none'));
+  }
+</script>
+</body>
+</html>

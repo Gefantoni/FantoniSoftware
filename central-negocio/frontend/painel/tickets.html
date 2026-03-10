@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chamados — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+</head>
+
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <h2>Central do Negócio</h2><span>Portal do Cliente · Fantoni Software</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-group">
+          <a href="/painel/" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Operação</span>
+          <a href="/painel/videoaulas.html" class="nav-item"><span class="nav-icon">🎓</span> Sistema PDV</a>
+          <a href="/painel/agente-ia.html" class="nav-item"><span class="nav-icon">🤖</span> Agente IA</a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Negócio</span>
+          <a href="/painel/empreendedorismo.html" class="nav-item"><span class="nav-icon">🍽️</span> Bares &amp;
+            Restaurantes</a>
+          <a href="/painel/cardapio-ia.html" class="nav-item"><span class="nav-icon">✨</span> IA para Cardápio</a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Suporte</span>
+          <a href="/painel/tickets.html" class="nav-item active"><span class="nav-icon">🎫</span> Meus Chamados</a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Conta</span>
+          <a href="/painel/financeiro.html" class="nav-item"><span class="nav-icon">📊</span> Financeiro</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-usuario">
+          <div class="s-avatar" id="s-avatar">?</div>
+          <div><strong id="usuario-nome">—</strong><span id="usuario-role">Cliente</span></div>
+        </div>
+        <button class="btn-logout">↩ Sair</button>
+      </div>
+    </aside>
+
+    <div class="conteudo">
+      <div class="topbar">
+        <div class="flex items-center gap-2">
+          <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+          <span class="topbar-titulo">Meus Chamados</span>
+        </div>
+        <button class="btn btn-primario btn-sm" onclick="abrirModalNovoTicket()">+ Novo Chamado</button>
+      </div>
+
+      <div class="pagina">
+        <div id="lista-tickets">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Novo Ticket -->
+  <div id="modal-ticket" class="modal-overlay d-none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-titulo">Abrir Chamado</h3>
+        <button class="modal-fechar" onclick="fecharModal()">✕</button>
+      </div>
+      <form id="form-ticket" onsubmit="criarTicket(event)">
+        <div class="form-grupo">
+          <label>Categoria</label>
+          <select id="tk-categoria" required>
+            <option value="">Selecione...</option>
+            <option value="suporte">Suporte Técnico</option>
+            <option value="financeiro">Financeiro</option>
+            <option value="comercial">Comercial</option>
+          </select>
+        </div>
+        <div class="form-grupo">
+          <label>Prioridade</label>
+          <select id="tk-prioridade">
+            <option value="normal">Normal</option>
+            <option value="baixa">Baixa</option>
+            <option value="urgente">Urgente</option>
+          </select>
+        </div>
+        <div class="form-grupo">
+          <label>Título</label>
+          <input type="text" id="tk-titulo" placeholder="Resumo do problema" required>
+        </div>
+        <div class="form-grupo">
+          <label>Descrição</label>
+          <textarea id="tk-descricao" placeholder="Descreva o problema com detalhes..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primario w-100" id="btn-criar-ticket">Abrir Chamado</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Chat do Ticket -->
+  <div id="modal-chat" class="modal-overlay d-none" style="padding:16px">
+    <div
+      style="width:100%;max-width:700px;height:90vh;background:#fff;border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden">
+      <!-- Header -->
+      <div
+        style="padding:16px 20px;border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+        <div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:17px;color:var(--primaria)" id="chat-titulo">Chat do
+            Chamado</h3>
+          <span class="text-xs text-suave" id="chat-status-label"></span>
+        </div>
+        <button onclick="fecharChat()"
+          style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--texto-suave)">✕</button>
+      </div>
+
+      <!-- Mensagens -->
+      <div id="chat-msgs"
+        style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--fundo)">
+      </div>
+
+      <!-- Preview de imagem antes de enviar -->
+      <div id="preview-img" style="display:none;padding:8px 16px;background:#fff;border-top:1px solid var(--borda)">
+        <div style="position:relative;display:inline-block">
+          <img id="preview-img-el" style="max-height:80px;border-radius:8px;border:2px solid var(--acento)">
+          <button onclick="cancelarImagem()"
+            style="position:absolute;top:-6px;right:-6px;background:var(--erro);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center">✕</button>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div
+        style="padding:12px 16px;border-top:1px solid var(--borda);background:#fff;display:flex;gap:8px;align-items:flex-end;flex-shrink:0">
+        <!-- Botão imagem -->
+        <label title="Enviar imagem"
+          style="cursor:pointer;background:var(--fundo);border:1.5px solid var(--borda);border-radius:var(--radius);width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">
+          🖼️
+          <input type="file" id="input-imagem" accept="image/*" style="display:none" onchange="selecionarImagem(event)">
+        </label>
+        <!-- Botão áudio -->
+        <button id="btn-gravar" onclick="toggleGravacao()" title="Gravar áudio"
+          style="background:var(--fundo);border:1.5px solid var(--borda);border-radius:var(--radius);width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;cursor:pointer">
+          🎤
+        </button>
+        <!-- Textarea -->
+        <textarea id="chat-msg-input" placeholder="Digite sua mensagem..."
+          style="flex:1;padding:9px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;resize:none;max-height:100px;outline:none"
+          rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMensagem()}"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+        <!-- Enviar -->
+        <button onclick="enviarMensagem()" id="btn-enviar-msg"
+          style="background:var(--primaria);color:#fff;border:none;border-radius:var(--radius);width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0">
+          ➤
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Áudio de notificação -->
+  <audio id="notif-audio" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFh"
+    preload="auto"></audio>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script>
+    const usuario = protegerPagina(['cliente']);
+    let ticketAtual = null;
+    let pollingInterval = null;
+    let ultimaMensagemId = 0;
+    let arquivoSelecionado = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let gravando = false;
+
+    if (usuario) { inicializarLayout(); carregarTickets(); }
+
+    // ── TICKETS ──────────────────────────────────────────
+    async function carregarTickets() {
+      try {
+        const { tickets } = await api.get('/tickets');
+        renderizarTickets(tickets);
+      } catch {
+        document.getElementById('lista-tickets').innerHTML = '<p class="alerta alerta-erro">Erro ao carregar chamados.</p>';
+      }
+    }
+
+    function renderizarTickets(tickets) {
+      const el = document.getElementById('lista-tickets');
+      if (!tickets.length) {
+        el.innerHTML = '<div class="card text-center"><p class="text-suave">Nenhum chamado encontrado.</p><button class="btn btn-primario mt-2" onclick="abrirModalNovoTicket()">Abrir primeiro chamado</button></div>';
+        return;
+      }
+      const badge = { aberto: 'badge-azul', aceito: 'badge-amarelo', em_andamento: 'badge-amarelo', resolvido: 'badge-verde' };
+      const cat = { suporte: '🛠', financeiro: '💰', comercial: '🤝' };
+      el.innerHTML = `<div class="card">
+      <div class="tabela-container"><table>
+        <thead><tr><th>Chamado</th><th>Categoria</th><th>Prioridade</th><th>Status</th><th>Data</th><th>Ação</th></tr></thead>
+        <tbody>${tickets.map(t => `
+          <tr>
+            <td><strong>${t.titulo}</strong></td>
+            <td>${cat[t.categoria] || ''} ${t.categoria}</td>
+            <td>${t.prioridade}</td>
+            <td><span class="badge ${badge[t.status] || 'badge-cinza'}">${t.status.replace('_', ' ')}</span></td>
+            <td>${formatarData(t.criado_em)}</td>
+            <td>${['aceito', 'em_andamento'].includes(t.status)
+          ? `<button class="btn btn-sm btn-primario" onclick="abrirChat(${t.id},'${t.titulo.replace(/'/g, "\\'")}','${t.status}')">💬 Chat</button>`
+          : '—'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+    }
+
+    // ── MODAL TICKET ─────────────────────────────────────
+    function abrirModalNovoTicket() { document.getElementById('modal-ticket').classList.remove('d-none'); }
+    function fecharModal() { document.getElementById('modal-ticket').classList.add('d-none'); }
+
+    async function criarTicket(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-criar-ticket');
+      btn.disabled = true; btn.textContent = 'Enviando...';
+      try {
+        await api.post('/tickets', {
+          titulo: document.getElementById('tk-titulo').value,
+          categoria: document.getElementById('tk-categoria').value,
+          prioridade: document.getElementById('tk-prioridade').value,
+          descricao: document.getElementById('tk-descricao').value
+        });
+        fecharModal();
+        mostrarAlerta('Chamado aberto! Em breve nossa equipe irá atendê-lo.');
+        carregarTickets();
+        document.getElementById('form-ticket').reset();
+      } catch (err) {
+        mostrarAlerta(err.erro || 'Erro ao criar chamado', 'erro');
+      }
+      btn.disabled = false; btn.textContent = 'Abrir Chamado';
+    }
+
+    // ── CHAT ─────────────────────────────────────────────
+    async function abrirChat(ticketId, titulo, status) {
+      ticketAtual = ticketId;
+      ultimaMensagemId = 0;
+      document.getElementById('chat-titulo').textContent = `💬 ${titulo}`;
+      document.getElementById('chat-status-label').textContent = 'Status: ' + status.replace('_', ' ');
+      document.getElementById('modal-chat').classList.remove('d-none');
+      document.getElementById('chat-msgs').innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner"></div></div>';
+
+      await recarregarMensagens();
+
+      // Polling a cada 4 segundos para novas mensagens
+      pollingInterval = setInterval(verificarNovasMensagem, 4000);
+    }
+
+    function fecharChat() {
+      document.getElementById('modal-chat').classList.add('d-none');
+      clearInterval(pollingInterval);
+      pollingInterval = null;
+      ticketAtual = null;
+      ultimaMensagemId = 0;
+      cancelarImagem();
+    }
+
+    async function recarregarMensagens() {
+      try {
+        const { mensagens } = await api.get(`/tickets/${ticketAtual}/mensagens`);
+        renderizarMensagens(mensagens);
+        if (mensagens.length) ultimaMensagemId = mensagens[mensagens.length - 1].id;
+      } catch {
+        document.getElementById('chat-msgs').innerHTML = '<p style="text-align:center;color:var(--texto-suave);font-size:14px">Erro ao carregar mensagens.</p>';
+      }
+    }
+
+    async function verificarNovasMensagem() {
+      if (!ticketAtual) return;
+      try {
+        const { mensagens } = await api.get(`/tickets/${ticketAtual}/mensagens`);
+        const novas = mensagens.filter(m => m.id > ultimaMensagemId);
+        if (!novas.length) return;
+
+        const eu = getUsuario().id;
+        const container = document.getElementById('chat-msgs');
+        novas.forEach(m => {
+          // Toca notificação apenas para mensagens do atendente
+          if (m.autor_id !== eu) tocarNotificacao();
+          container.appendChild(criarElMensagem(m, eu));
+        });
+        container.scrollTop = container.scrollHeight;
+        ultimaMensagemId = mensagens[mensagens.length - 1].id;
+      } catch { }
+    }
+
+    function renderizarMensagens(mensagens) {
+      const container = document.getElementById('chat-msgs');
+      const eu = getUsuario().id;
+      if (!mensagens.length) {
+        container.innerHTML = '<p style="text-align:center;color:var(--texto-suave);font-size:14px;margin-top:20px">Nenhuma mensagem ainda.</p>';
+        return;
+      }
+      container.innerHTML = '';
+      mensagens.forEach(m => container.appendChild(criarElMensagem(m, eu)));
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function criarElMensagem(m, euId) {
+      const minha = m.autor_id === euId;
+      const wrap = document.createElement('div');
+      wrap.style.cssText = `display:flex;flex-direction:column;align-items:${minha ? 'flex-end' : 'flex-start'}`;
+
+      const bolha = document.createElement('div');
+      bolha.style.cssText = `max-width:70%;padding:10px 14px;border-radius:${minha ? '14px 14px 4px 14px' : '14px 14px 14px 4px'};background:${minha ? 'var(--primaria)' : '#fff'};color:${minha ? '#fff' : 'var(--texto)'};box-shadow:0 1px 4px rgba(0,0,0,0.08)`;
+
+      if (m.tipo === 'imagem') {
+        bolha.innerHTML = `<img src="${m.conteudo}" style="max-width:220px;border-radius:8px;display:block;cursor:pointer" onclick="window.open('${m.conteudo}','_blank')">`;
+      } else if (m.tipo === 'audio') {
+        bolha.innerHTML = `<audio controls src="${m.conteudo}" style="max-width:220px"></audio>`;
+      } else {
+        bolha.textContent = m.conteudo;
+      }
+
+      const hora = document.createElement('div');
+      hora.style.cssText = 'font-size:11px;margin-top:4px;opacity:0.6;color:var(--texto-suave)';
+      hora.textContent = `${m.perfis?.nome || (minha ? 'Você' : 'Atendente')} · ${new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+
+      wrap.appendChild(bolha);
+      wrap.appendChild(hora);
+      return wrap;
+    }
+
+    // ── ENVIO DE TEXTO ────────────────────────────────────
+    async function enviarMensagem() {
+      // Se tem imagem selecionada, envia a imagem
+      if (arquivoSelecionado) { await enviarImagem(); return; }
+
+      const input = document.getElementById('chat-msg-input');
+      const texto = input.value.trim();
+      if (!texto || !ticketAtual) return;
+
+      const btn = document.getElementById('btn-enviar-msg');
+      btn.disabled = true;
+      input.value = '';
+      input.style.height = 'auto';
+
+      try {
+        await api.post(`/tickets/${ticketAtual}/mensagens`, { conteudo: texto });
+        await recarregarMensagens();
+      } catch { mostrarAlerta('Erro ao enviar mensagem', 'erro'); }
+      btn.disabled = false;
+    }
+
+    // ── ENVIO DE IMAGEM ───────────────────────────────────
+    function selecionarImagem(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      arquivoSelecionado = file;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById('preview-img-el').src = e.target.result;
+        document.getElementById('preview-img').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+      document.getElementById('chat-msg-input').placeholder = 'Clique em ➤ para enviar a imagem...';
+    }
+
+    function cancelarImagem() {
+      arquivoSelecionado = null;
+      document.getElementById('input-imagem').value = '';
+      document.getElementById('preview-img').style.display = 'none';
+      document.getElementById('preview-img-el').src = '';
+      document.getElementById('chat-msg-input').placeholder = 'Digite sua mensagem...';
+    }
+
+    async function enviarImagem() {
+      if (!arquivoSelecionado || !ticketAtual) return;
+      const btn = document.getElementById('btn-enviar-msg');
+      btn.disabled = true; btn.textContent = '⏳';
+
+      try {
+        const form = new FormData();
+        form.append('arquivo', arquivoSelecionado);
+        form.append('ticket_id', ticketAtual);
+
+        const token = localStorage.getItem('cn_token');
+        const resp = await fetch('/api/upload/chat', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: form
+        });
+        if (!resp.ok) throw new Error('Falha no upload');
+
+        cancelarImagem();
+        await recarregarMensagens();
+      } catch (err) {
+        mostrarAlerta('Erro ao enviar imagem: ' + err.message, 'erro');
+      }
+      btn.disabled = false; btn.textContent = '➤';
+    }
+
+    // ── GRAVAÇÃO DE ÁUDIO ─────────────────────────────────
+    async function toggleGravacao() {
+      const btn = document.getElementById('btn-gravar');
+      if (!gravando) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+          mediaRecorder.onstop = async () => {
+            stream.getTracks().forEach(t => t.stop());
+            const blob = new Blob(audioChunks, { type: 'audio/webm' });
+            await enviarAudio(blob);
+          };
+          mediaRecorder.start();
+          gravando = true;
+          btn.textContent = '⏹';
+          btn.style.background = 'var(--erro)';
+          btn.style.borderColor = 'var(--erro)';
+          btn.title = 'Parar gravação';
+        } catch { mostrarAlerta('Permissão de microfone negada', 'erro'); }
+      } else {
+        mediaRecorder?.stop();
+        gravando = false;
+        btn.textContent = '🎤';
+        btn.style.background = 'var(--fundo)';
+        btn.style.borderColor = 'var(--borda)';
+        btn.title = 'Gravar áudio';
+      }
+    }
+
+    async function enviarAudio(blob) {
+      if (!ticketAtual) return;
+      try {
+        const form = new FormData();
+        form.append('arquivo', blob, 'audio.webm');
+        form.append('ticket_id', ticketAtual);
+
+        const token = localStorage.getItem('cn_token');
+        const resp = await fetch('/api/upload/chat', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: form
+        });
+        if (!resp.ok) throw new Error('Falha no upload do áudio');
+
+        await recarregarMensagens();
+      } catch (err) {
+        mostrarAlerta('Erro ao enviar áudio: ' + err.message, 'erro');
+      }
+    }
+
+    // ── NOTIFICAÇÃO ───────────────────────────────────────
+    function tocarNotificacao() {
+      try { document.getElementById('notif-audio').play(); } catch { }
+    }
+  </script>
+</body>
+
+</html>

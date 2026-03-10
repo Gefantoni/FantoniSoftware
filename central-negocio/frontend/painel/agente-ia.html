@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agente IA — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+</head>
+
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <h2>Central do Negócio</h2><span>Portal do Cliente · Fantoni Software</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-group">
+          <a href="/painel/" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Operação</span>
+          <a href="/painel/videoaulas.html" class="nav-item"><span class="nav-icon">🎓</span> Sistema PDV</a>
+          <a href="/painel/agente-ia.html" class="nav-item active"><span class="nav-icon">🤖</span> Agente IA</a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Negócio</span>
+          <a href="/painel/empreendedorismo.html" class="nav-item"><span class="nav-icon">🍽️</span> Bares &amp;
+            Restaurantes</a>
+          <a href="/painel/cardapio-ia.html" class="nav-item"><span class="nav-icon">✨</span> IA para Cardápio</a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Suporte</span>
+          <a href="/painel/tickets.html" class="nav-item"><span class="nav-icon">🎫</span> Meus Chamados</a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Conta</span>
+          <a href="/painel/financeiro.html" class="nav-item"><span class="nav-icon">📊</span> Financeiro</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-usuario">
+          <div class="s-avatar" id="s-avatar">?</div>
+          <div><strong id="usuario-nome">—</strong><span id="usuario-role">Cliente</span></div>
+        </div>
+        <button class="btn-logout">↩ Sair</button>
+      </div>
+    </aside>
+
+    <div class="conteudo">
+      <div class="topbar">
+        <div class="flex items-center gap-2">
+          <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+          <span class="topbar-titulo">🤖 Agente IA de Suporte</span>
+        </div>
+        <button class="btn btn-sm btn-outline" onclick="limparConversa()">🗑 Limpar conversa</button>
+      </div>
+
+      <div class="pagina" style="display:flex;flex-direction:column;height:calc(100vh - 73px);padding-bottom:0">
+        <div class="chat-container"
+          style="flex:1;margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0">
+          <div class="chat-mensagens" id="chat-mensagens">
+            <!-- Mensagem de boas-vindas -->
+            <div class="mensagem mensagem-outro">
+              👋 Olá! Sou o assistente de suporte do sistema PDV. Posso te ajudar com dúvidas sobre o sistema.
+              <div class="mensagem-hora">Agora</div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <textarea class="chat-input" id="chat-input" placeholder="Digite sua dúvida..." rows="1"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarPergunta()}"></textarea>
+            <button class="btn btn-primario" onclick="enviarPergunta()" id="btn-enviar">Enviar</button>
+          </div>
+        </div>
+
+        <!-- Sugestões rápidas -->
+        <div style="padding:12px 0;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como fazer abertura de caixa?')">Abertura de
+            caixa</button>
+          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como emitir nota fiscal?')">Nota
+            fiscal</button>
+          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como cadastrar produto?')">Cadastro de
+            produto</button>
+          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como fazer fechamento de caixa?')">Fechamento
+            de caixa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script>
+    const usuario = protegerPagina(['cliente']);
+    let historico = [];
+
+    if (usuario) inicializarLayout();
+
+    function perguntaRapida(texto) {
+      document.getElementById('chat-input').value = texto;
+      enviarPergunta();
+    }
+
+    async function enviarPergunta() {
+      const input = document.getElementById('chat-input');
+      const pergunta = input.value.trim();
+      if (!pergunta) return;
+
+      const btn = document.getElementById('btn-enviar');
+      input.value = '';
+      btn.disabled = true;
+      btn.textContent = '...';
+
+      // Adiciona mensagem do usuário
+      adicionarMensagem(pergunta, 'minha');
+      historico.push({ role: 'user', content: pergunta });
+
+      // Indicador de digitação
+      const typingId = adicionarMensagem('🤖 Pensando...', 'outro', true);
+
+      try {
+        const { resposta, videoRelacionado } = await api.post('/agente-ia/perguntar', { pergunta, historico: historico.slice(-10) });
+
+        // Remove indicador e adiciona resposta
+        document.getElementById(typingId)?.remove();
+
+        let respostaCompleta = resposta;
+        if (videoRelacionado) {
+          respostaCompleta += `\n\n📹 Existe um vídeo tutorial disponível para essa dúvida.`;
+        }
+
+        adicionarMensagem(respostaCompleta, 'outro');
+        historico.push({ role: 'assistant', content: resposta });
+
+        // Botão de vídeo se houver
+        if (videoRelacionado) {
+          adicionarBotaoVideo(videoRelacionado);
+        }
+      } catch (err) {
+        document.getElementById(typingId)?.remove();
+        adicionarMensagem('Desculpe, ocorreu um erro. Por favor, tente novamente ou abra um chamado.', 'outro');
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Enviar';
+    }
+
+    function adicionarMensagem(texto, tipo, comId = false) {
+      const container = document.getElementById('chat-mensagens');
+      const id = comId ? 'msg-' + Date.now() : '';
+      const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+      const el = document.createElement('div');
+      el.className = `mensagem mensagem-${tipo}`;
+      if (id) el.id = id;
+      el.innerHTML = `${texto.replace(/\n/g, '<br>')}<div class="mensagem-hora">${hora}</div>`;
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+      return id;
+    }
+
+    function adicionarBotaoVideo(url) {
+      const container = document.getElementById('chat-mensagens');
+      const el = document.createElement('div');
+      el.style.cssText = 'align-self:flex-start;margin-top:4px';
+      el.innerHTML = `<a href="${url}" target="_blank" class="btn btn-acento btn-sm">▶ Assistir vídeo tutorial</a>`;
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function limparConversa() {
+      historico = [];
+      const container = document.getElementById('chat-mensagens');
+      container.innerHTML = `
+      <div class="mensagem mensagem-outro">
+        👋 Olá! Sou o assistente de suporte do sistema PDV. Posso te ajudar com dúvidas sobre o sistema.
+        <div class="mensagem-hora">Agora</div>
+      </div>`;
+    }
+  </script>
+</body>
+
+</html>
