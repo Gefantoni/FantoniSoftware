@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central do Negócio — Login</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <style>
+    body { background: var(--primaria); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-container { width: 100%; max-width: 420px; padding: 20px; }
+    .login-card { background: #fff; border-radius: 20px; padding: 48px 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .login-logo { text-align: center; margin-bottom: 32px; }
+    .login-logo h1 { font-family: 'Playfair Display', serif; color: var(--primaria); font-size: 26px; }
+    .login-logo p { color: var(--texto-suave); font-size: 14px; margin-top: 4px; }
+    .login-logo .logo-icon { font-size: 52px; display: block; margin-bottom: 12px; }
+    .login-divider { border: none; border-top: 1px solid var(--borda); margin: 24px 0; }
+    .login-rodape { text-align: center; font-size: 13px; color: var(--texto-suave); margin-top: 20px; }
+    .btn-login { width: 100%; padding: 14px; font-size: 16px; font-family: 'Playfair Display', serif; }
+    #erro-login { display: none; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="logo-icon">🏢</span>
+        <h1>Central do Negócio</h1>
+        <p>Plataforma de gestão integrada</p>
+      </div>
+
+      <div id="erro-login" class="alerta alerta-erro">
+        <span id="erro-msg">Email ou senha inválidos.</span>
+      </div>
+
+      <form id="form-login">
+        <div class="form-grupo">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required autocomplete="email">
+        </div>
+        <div class="form-grupo">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primario btn-login" id="btn-entrar">Entrar</button>
+      </form>
+
+      <hr class="login-divider">
+      <p class="login-rodape">Problemas para acessar? Entre em contato com o suporte.</p>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script>
+    // Redireciona se já estiver logado
+    const usuario = getUsuario();
+    if (usuario && getToken()) {
+      window.location.href = usuario.role === 'cliente' ? '/painel/' : '/admin/';
+    }
+
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-entrar');
+      const erroEl = document.getElementById('erro-login');
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+
+      btn.disabled = true;
+      btn.textContent = 'Entrando...';
+      erroEl.style.display = 'none';
+
+      try {
+        const user = await fazerLogin(email, senha);
+        window.location.href = user.role === 'cliente' ? '/painel/' : '/admin/';
+      } catch (err) {
+        erroEl.style.display = 'flex';
+        document.getElementById('erro-msg').textContent = err.erro || 'Falha ao fazer login.';
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><h2>Central do<br>Negócio</h2><span>Painel Admin</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Geral</div>
+      <a href="/admin/" class="nav-item">🏠 Dashboard</a>
+      <a href="/admin/clientes.html" class="nav-item">👥 Clientes</a>
+      <div class="nav-section-title">Conteúdo</div>
+      <a href="/admin/modulos.html" class="nav-item">🎬 Módulos e Aulas</a>
+      <div class="nav-section-title">Atendimento</div>
+      <a href="/admin/tickets.html" class="nav-item">🎫 Tickets</a>
+      <div class="nav-section-title">Financeiro</div>
+      <a href="/admin/financeiro.html" class="nav-item">💰 Financeiro</a>
+      <div class="nav-section-title">Comercial</div>
+      <a href="/admin/comercial.html" class="nav-item">🤝 Comercial</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-usuario"><strong id="usuario-nome">—</strong><span id="usuario-role">Admin</span></div>
+      <button class="btn-logout">Sair</button>
+    </div>
+  </aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">Dashboard Administrativo</span>
+      </div>
+      <span id="data-hoje" class="text-suave text-sm"></span>
+    </div>
+
+    <div class="pagina">
+      <!-- Métricas principais -->
+      <div class="grid-4 mb-3">
+        <div class="metrica-card">
+          <div class="metrica-label">Receita do Mês</div>
+          <div class="metrica-valor" id="receita-mes">—</div>
+        </div>
+        <div class="metrica-card">
+          <div class="metrica-label">Despesas do Mês</div>
+          <div class="metrica-valor" id="despesa-mes">—</div>
+        </div>
+        <div class="metrica-card">
+          <div class="metrica-label">Lucro</div>
+          <div class="metrica-valor" id="lucro-mes">—</div>
+        </div>
+        <div class="metrica-card">
+          <div class="metrica-label">Clientes Ativos</div>
+          <div class="metrica-valor" id="clientes-ativos">—</div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-3">
+        <!-- Tickets recentes -->
+        <div class="card">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="card-titulo" style="margin:0">Tickets Recentes</h3>
+            <a href="/admin/tickets.html" class="btn btn-sm btn-outline">Ver todos</a>
+          </div>
+          <div id="tickets-recentes"><div class="spinner"></div></div>
+        </div>
+
+        <!-- Gráfico receita x despesa -->
+        <div class="card">
+          <h3 class="card-titulo">Receita vs Despesa (ano)</h3>
+          <canvas id="grafico-receita" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script>
+  const usuario = protegerPagina(['admin','suporte','financeiro','comercial']);
+  if (usuario) { inicializarLayout(); carregarDashboard(); }
+
+  document.getElementById('data-hoje').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  async function carregarDashboard() {
+    try {
+      const [dashboard, { clientes }, { tickets }] = await Promise.all([
+        api.get('/financeiro-admin/dashboard').catch(() => ({})),
+        api.get('/clientes').catch(() => ({ clientes: [] })),
+        api.get('/tickets').catch(() => ({ tickets: [] }))
+      ]);
+
+      document.getElementById('receita-mes').textContent = formatarMoeda(dashboard.receita);
+      document.getElementById('despesa-mes').textContent = formatarMoeda(dashboard.despesa);
+      document.getElementById('lucro-mes').textContent = formatarMoeda(dashboard.lucro);
+      document.getElementById('clientes-ativos').textContent = clientes.filter(c => c.ativo).length;
+
+      // Tickets recentes
+      const badge = { aberto:'badge-azul', aceito:'badge-amarelo', em_andamento:'badge-amarelo', resolvido:'badge-verde' };
+      document.getElementById('tickets-recentes').innerHTML = tickets.slice(0,5).map(t => `
+        <div class="flex items-center justify-between" style="padding:10px 0;border-bottom:1px solid var(--borda)">
+          <div>
+            <div class="fw-600 text-sm">${t.titulo}</div>
+            <div class="text-xs text-suave">${t.perfis?.nome || 'Cliente'} · ${t.categoria}</div>
+          </div>
+          <span class="badge ${badge[t.status]||'badge-cinza'}">${t.status.replace('_',' ')}</span>
+        </div>`).join('') || '<p class="text-suave text-sm">Nenhum ticket.</p>';
+
+      // Gráfico DRE
+      const { dre } = await api.get('/financeiro-admin/dre');
+      const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+      const ctx = document.getElementById('grafico-receita').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: meses,
+          datasets: [
+            { label: 'Receita', data: dre.map(d => d.receita), borderColor: '#27ae60', backgroundColor: 'rgba(39,174,96,0.1)', fill: true, tension: 0.4 },
+            { label: 'Despesa', data: dre.map(d => d.despesa), borderColor: '#e74c3c', backgroundColor: 'rgba(231,76,60,0.1)', fill: true, tension: 0.4 }
+          ]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+      });
+    } catch (err) { console.error('Erro ao carregar dashboard admin:', err); }
+  }
+</script>
+</body>
+</html>
