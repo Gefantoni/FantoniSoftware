@@ -2,7 +2,9 @@
 const OpenAI = require('openai');
 const { supabaseAdmin } = require('../supabase');
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function getOpenAI() {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 // Busca artigos da base de conhecimento por palavras-chave (busca simples)
 async function buscarBaseConhecimento(pergunta) {
@@ -59,7 +61,7 @@ ${contexto}`;
       { role: 'user', content: pergunta }
     ];
 
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: mensagens,
       max_tokens: 500,
@@ -119,7 +121,7 @@ Responda SEMPRE em JSON válido, sem texto fora do JSON.`;
   }
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
       model: 'gpt-4o-mini',
       messages,
       max_tokens: 800,
@@ -138,7 +140,7 @@ Responda SEMPRE em JSON válido, sem texto fora do JSON.`;
 // Gera imagem com DALL-E 3 a partir do prompt
 async function gerarUrlImagem(prompt) {
   try {
-    const image = await openai.images.generate({
+    const image = await getOpenAI().images.generate({
       model: "dall-e-3",
       prompt: prompt,
       n: 1,
