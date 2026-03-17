@@ -80,11 +80,14 @@ app.use((err, req, res, next) => {
   res.status(500).json({ erro: 'Erro interno do servidor' });
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Central do Negócio rodando na porta ${PORT}`);
-  console.log(`   Ambiente: ${process.env.NODE_ENV}`);
-  console.log(`   API: http://localhost:${PORT}/api`);
-  console.log(`   Frontend: http://localhost:${PORT}\n`);
-});
+// Em ambiente Vercel (serverless) não chamamos listen
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 Central do Negócio rodando na porta ${PORT}`);
+    console.log(`   Ambiente: ${process.env.NODE_ENV}`);
+    console.log(`   API: http://localhost:${PORT}/api`);
+    console.log(`   Frontend: http://localhost:${PORT}\n`);
+  });
+}
 
 module.exports = app;
