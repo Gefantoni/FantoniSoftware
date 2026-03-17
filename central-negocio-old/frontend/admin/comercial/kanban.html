@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban — Comercial — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
+</head>
+<body class="com-page">
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="conteudo" style="overflow:hidden">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">📋 Kanban Comercial</span>
+      </div>
+      <div class="flex gap-2">
+        <select id="f-responsavel" onchange="aplicarFiltros()" style="background:var(--com-bg2);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px">
+          <option value="">Todos responsáveis</option>
+        </select>
+        <select id="f-temperatura" onchange="aplicarFiltros()" style="background:var(--com-bg2);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px">
+          <option value="">Todas temperaturas</option>
+          <option value="quente">🔥 Quente</option>
+          <option value="morno">🌤 Morno</option>
+          <option value="frio">❄️ Frio</option>
+        </select>
+        <button class="com-btn com-btn-primario com-btn-sm" onclick="abrirModalNovaOp()">+ Nova Oportunidade</button>
+      </div>
+    </div>
+
+    <!-- Board -->
+    <div style="height:calc(100vh - 60px);overflow:hidden;display:flex;flex-direction:column">
+      <div class="kanban-board" id="kanban-board" style="flex:1;overflow-x:auto;padding:16px;gap:14px">
+        <div style="display:flex;align-items:center;gap:12px;padding:40px;color:var(--com-suave)">
+          <div class="com-spinner"></div><span>Carregando Kanban...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Detalhes da Oportunidade -->
+<div class="com-modal-overlay com-d-none" id="modal-op">
+  <div class="com-modal" style="max-width:680px;max-height:90vh;overflow-y:auto">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo" id="modal-op-titulo">Oportunidade</span>
+      <button class="com-modal-fechar" onclick="fecharModalOp()">✕</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="com-tabs" style="margin-bottom:20px">
+      <button class="com-tab-btn ativo" onclick="setTabOp('detalhes', this)">Detalhes</button>
+      <button class="com-tab-btn" onclick="setTabOp('movimentacoes', this)">Movimentações</button>
+      <button class="com-tab-btn" onclick="setTabOp('acoes', this)">Ações</button>
+    </div>
+
+    <!-- Tab: Detalhes -->
+    <div class="com-tab-panel ativo" id="tab-op-detalhes">
+      <div class="com-grid-2 com-mb-2">
+        <div id="op-info-lead" style="display:flex;flex-direction:column;gap:8px"></div>
+        <div id="op-info-op" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div class="com-form-grupo">
+        <label>Resumo IA</label>
+        <div id="op-resumo-ia" style="background:var(--com-bg2);border-radius:10px;padding:14px;font-size:13px;line-height:1.7;color:var(--com-texto);white-space:pre-wrap"></div>
+      </div>
+      <div id="op-proxima-reuniao-box" style="margin-top:12px"></div>
+    </div>
+
+    <!-- Tab: Movimentações -->
+    <div class="com-tab-panel" id="tab-op-movimentacoes">
+      <div id="op-movimentacoes-lista" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+
+    <!-- Tab: Ações -->
+    <div class="com-tab-panel" id="tab-op-acoes">
+      <!-- Mover Etapa -->
+      <div class="com-card" style="margin-bottom:16px">
+        <div class="com-card-titulo com-mb-2">Mover de Etapa</div>
+        <div class="com-form-grupo">
+          <label>Nova Etapa</label>
+          <select id="op-nova-etapa" style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:8px 12px;font-size:14px;width:100%">
+            <option value="novo_interesse">Novo Interesse</option>
+            <option value="qualificacao">Em Qualificação</option>
+            <option value="qualificado">Qualificado</option>
+            <option value="reuniao_agendada">Reunião Agendada</option>
+            <option value="proposta">Proposta</option>
+            <option value="negociacao">Negociação</option>
+            <option value="fechado">Fechado</option>
+            <option value="perdido">Perdido</option>
+          </select>
+        </div>
+        <div class="com-form-grupo">
+          <label>Motivo / Observação</label>
+          <textarea id="op-motivo-mover" rows="2" placeholder="Descreva o motivo da movimentação..."></textarea>
+        </div>
+        <button class="com-btn com-btn-primario com-btn-sm" onclick="moverEtapa()">Mover</button>
+      </div>
+
+      <!-- Registrar Observação -->
+      <div class="com-card" style="margin-bottom:16px">
+        <div class="com-card-titulo com-mb-2">Registrar Observação</div>
+        <div class="com-form-grupo">
+          <label>Observação</label>
+          <textarea id="op-observacao" rows="3" placeholder="Descreva o que aconteceu na conversa, negociação..."></textarea>
+        </div>
+        <button class="com-btn com-btn-outline com-btn-sm" onclick="registrarObservacao()">Salvar Observação</button>
+      </div>
+
+      <!-- Editar Responsável -->
+      <div class="com-card" style="margin-bottom:16px">
+        <div class="com-card-titulo com-mb-2">Responsável</div>
+        <div class="com-form-grupo">
+          <label>Vendedor Responsável</label>
+          <input type="text" id="op-responsavel-input" placeholder="Nome do responsável">
+        </div>
+        <button class="com-btn com-btn-outline com-btn-sm" onclick="salvarResponsavel()">Atualizar</button>
+      </div>
+
+      <!-- Ações Finais -->
+      <div class="flex gap-2" style="flex-wrap:wrap">
+        <button class="com-btn com-btn-outline com-btn-sm" onclick="agendarReuniaoOp()">📅 Agendar Reunião</button>
+        <button class="com-btn com-btn-perigo com-btn-sm" onclick="marcarPerdido()">❌ Marcar como Perdido</button>
+        <button class="com-btn com-btn-ghost com-btn-sm" onclick="marcarFechado()">✅ Marcar como Fechado</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal: Nova Oportunidade -->
+<div class="com-modal-overlay com-d-none" id="modal-nova-op">
+  <div class="com-modal" style="max-width:520px">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo">Nova Oportunidade</span>
+      <button class="com-modal-fechar" onclick="fecharModalNovaOp()">✕</button>
+    </div>
+    <form onsubmit="salvarNovaOp(event)">
+      <div class="com-form-grupo">
+        <label>Lead *</label>
+        <input type="text" id="nop-lead-busca" placeholder="Buscar lead por nome ou WhatsApp..." oninput="buscarLeadOp()" autocomplete="off">
+        <div id="nop-lead-sugestoes" style="position:relative"></div>
+        <input type="hidden" id="nop-lead-id">
+      </div>
+      <div class="com-form-grupo">
+        <label>Título *</label>
+        <input type="text" id="nop-titulo" placeholder="Ex: Proposta para Restaurante XYZ" required>
+      </div>
+      <div class="com-form-grupo">
+        <label>Etapa Inicial</label>
+        <select id="nop-etapa">
+          <option value="novo_interesse">Novo Interesse</option>
+          <option value="qualificacao">Em Qualificação</option>
+          <option value="qualificado">Qualificado</option>
+        </select>
+      </div>
+      <div class="com-form-grupo">
+        <label>Motivo de Qualificação</label>
+        <textarea id="nop-motivo" rows="2" placeholder="Por que este lead foi qualificado?"></textarea>
+      </div>
+      <div class="com-flex-between com-mt-2">
+        <button type="button" class="com-btn com-btn-ghost" onclick="fecharModalNovaOp()">Cancelar</button>
+        <button type="submit" class="com-btn com-btn-primario" id="btn-salvar-nop">Criar Oportunidade</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+const usuario = protegerPagina(['admin','comercial']);
+let oportunidadesCache = [];
+let opAtualId = null;
+let opAtualDados = null;
+
+const COLUNAS = [
+  { etapa: 'novo_interesse',    label: 'Novo Interesse',     cor: '#3b82f6' },
+  { etapa: 'qualificacao',      label: 'Em Qualificação',    cor: '#8b5cf6' },
+  { etapa: 'qualificado',       label: 'Qualificado',        cor: '#06b6d4' },
+  { etapa: 'reuniao_agendada',  label: 'Reunião Agendada',   cor: '#f59e0b' },
+  { etapa: 'proposta',          label: 'Proposta',           cor: '#f97316' },
+  { etapa: 'negociacao',        label: 'Negociação',         cor: '#ec4899' },
+  { etapa: 'fechado',           label: 'Fechado',            cor: '#22c55e' },
+  { etapa: 'perdido',           label: 'Perdido',            cor: '#6b7280' },
+];
+
+if (usuario) {
+  inicializarLayout();
+  carregarOportunidades();
+}
+
+// ── Carregar e renderizar ────────────────────────────────────────────────────
+
+async function carregarOportunidades() {
+  try {
+    const { oportunidades } = await api.get('/oportunidades');
+    oportunidadesCache = oportunidades || [];
+    preencherFiltroResponsavel(oportunidadesCache);
+    aplicarFiltros();
+  } catch(err) {
+    document.getElementById('kanban-board').innerHTML =
+      `<div style="padding:40px;color:var(--com-vermelho)">Erro ao carregar oportunidades: ${err.erro || ''}</div>`;
+  }
+}
+
+function preencherFiltroResponsavel(ops) {
+  const responsaveis = [...new Set(ops.map(o => o.responsavel).filter(Boolean))];
+  const sel = document.getElementById('f-responsavel');
+  sel.innerHTML = `<option value="">Todos responsáveis</option>` +
+    responsaveis.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join('');
+}
+
+function aplicarFiltros() {
+  const fResp = document.getElementById('f-responsavel').value;
+  const fTemp = document.getElementById('f-temperatura').value;
+
+  const filtradas = oportunidadesCache.filter(o => {
+    if (fResp && o.responsavel !== fResp) return false;
+    if (fTemp && o.temperatura !== fTemp) return false;
+    return true;
+  });
+
+  renderizarKanban(filtradas);
+}
+
+function renderizarKanban(ops) {
+  const board = document.getElementById('kanban-board');
+  board.style.display = 'flex';
+
+  const porEtapa = {};
+  COLUNAS.forEach(c => { porEtapa[c.etapa] = []; });
+  ops.forEach(o => {
+    const etapa = o.etapa || 'novo_interesse';
+    if (porEtapa[etapa]) porEtapa[etapa].push(o);
+    else porEtapa['novo_interesse'].push(o);
+  });
+
+  board.innerHTML = COLUNAS.map(col => {
+    const cards = porEtapa[col.etapa] || [];
+    return `
+    <div class="kanban-coluna" style="min-width:240px;max-width:260px;display:flex;flex-direction:column;flex-shrink:0">
+      <div class="kanban-col-header" style="border-top:3px solid ${col.cor};background:var(--com-card);border-radius:10px 10px 0 0;padding:12px 14px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;font-weight:700;color:var(--com-texto)">${col.label}</span>
+        <span style="background:${col.cor}22;color:${col.cor};border-radius:999px;padding:2px 8px;font-size:12px;font-weight:700">${cards.length}</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;background:var(--com-bg2);border-radius:0 0 10px 10px;padding:8px;display:flex;flex-direction:column;gap:8px;min-height:100px">
+        ${cards.length ? cards.map(o => renderizarCard(o, col.cor)).join('') : `<div style="padding:20px;text-align:center;color:var(--com-suave);font-size:12px">Vazio</div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const tempCor = { quente: '#ef4444', morno: '#f59e0b', frio: '#3b82f6' };
+const tempEmoji = { quente: '🔥', morno: '🌤', frio: '❄️' };
+
+function renderizarCard(o, corColuna) {
+  const lead = o.leads || {};
+  const temp = o.temperatura || 'frio';
+  const score = o.score || lead.score || 0;
+  const scoreColor = score >= 70 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
+
+  return `
+  <div class="kanban-card" onclick="abrirOp(${o.id})"
+       style="background:var(--com-card);border-radius:10px;padding:12px;cursor:pointer;border:1px solid var(--com-borda);transition:all 0.15s;border-left:3px solid ${corColuna}">
+    <div class="com-flex-between com-mb-1">
+      <span style="font-size:13px;font-weight:700;color:var(--com-texto);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px">${esc(lead.nome || lead.empresa || 'Lead')}</span>
+      <span style="font-size:11px;color:${tempCor[temp]}">${tempEmoji[temp]} ${temp}</span>
+    </div>
+    ${lead.empresa && lead.nome ? `<div class="com-text-xs com-text-suave com-mb-1">${esc(lead.empresa)}</div>` : ''}
+    ${o.resumo_ia ? `<div style="font-size:11px;color:var(--com-suave);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:8px">${esc(o.resumo_ia)}</div>` : ''}
+    ${o.proxima_acao ? `<div style="font-size:11px;background:rgba(37,99,235,0.1);border-radius:6px;padding:4px 8px;color:var(--com-azul-brilho);margin-bottom:8px">→ ${esc(o.proxima_acao)}</div>` : ''}
+    <div class="com-flex-between" style="margin-top:4px">
+      <span style="font-size:11px;font-weight:700;color:${scoreColor}">${score}pts</span>
+      <span style="font-size:10px;color:var(--com-suave)">${formatarData(o.ultimo_contato || o.atualizado_em)}</span>
+    </div>
+    ${o.responsavel ? `<div style="font-size:10px;color:var(--com-suave);margin-top:4px">👤 ${esc(o.responsavel)}</div>` : ''}
+  </div>`;
+}
+
+// ── Modal Oportunidade ───────────────────────────────────────────────────────
+
+async function abrirOp(id) {
+  opAtualId = id;
+  document.getElementById('modal-op').classList.remove('com-d-none');
+  document.getElementById('modal-op-titulo').textContent = 'Carregando...';
+  document.getElementById('op-info-lead').innerHTML = '<div class="com-spinner"></div>';
+  document.getElementById('op-info-op').innerHTML = '';
+  document.getElementById('op-resumo-ia').textContent = '';
+  document.getElementById('op-movimentacoes-lista').innerHTML = '<div class="com-spinner"></div>';
+  setTabOp('detalhes', document.querySelector('#modal-op .com-tab-btn.ativo'));
+
+  try {
+    const { oportunidade, movimentacoes: movsList, reunioes: reunioesList } = await api.get(`/oportunidades/${id}`);
+    opAtualDados = oportunidade;
+    const lead = oportunidade.leads || {};
+
+    document.getElementById('modal-op-titulo').textContent = oportunidade.titulo || 'Oportunidade';
+
+    // Pré-preencher ações
+    document.getElementById('op-nova-etapa').value = oportunidade.etapa || 'novo_interesse';
+    document.getElementById('op-responsavel-input').value = oportunidade.responsavel || '';
+
+    // Info lead
+    document.getElementById('op-info-lead').innerHTML = `
+      <div class="com-card-titulo com-mb-1">Lead</div>
+      ${infoItem('Nome', lead.nome)} ${infoItem('Empresa', lead.empresa)}
+      ${infoItem('WhatsApp', lead.whatsapp)} ${infoItem('Cidade', lead.cidade)}
+      ${infoItem('Segmento', lead.segmento)} ${infoItem('Score', (lead.score || 0) + '/100')}
+    `;
+
+    // Info oportunidade
+    const temp = oportunidade.temperatura || '—';
+    document.getElementById('op-info-op').innerHTML = `
+      <div class="com-card-titulo com-mb-1">Oportunidade</div>
+      ${infoItem('Etapa', COLUNAS.find(c=>c.etapa===oportunidade.etapa)?.label || oportunidade.etapa || '—')}
+      ${infoItem('Temperatura', `<span style="color:${tempCor[temp]||'inherit'}">${tempEmoji[temp]||''} ${temp}</span>`)}
+      ${infoItem('Responsável', oportunidade.responsavel || '—')}
+      ${infoItem('Criada em', formatarData(oportunidade.criado_em))}
+      ${infoItem('Último contato', formatarData(oportunidade.ultimo_contato || oportunidade.atualizado_em))}
+    `;
+
+    // Resumo IA
+    document.getElementById('op-resumo-ia').textContent = oportunidade.resumo_ia || 'Sem resumo gerado pela IA.';
+
+    // Próxima reunião
+    const reunioes = reunioesList || [];
+    const proxReuniao = reunioes.find(r => r.status === 'agendada');
+    document.getElementById('op-proxima-reuniao-box').innerHTML = proxReuniao ? `
+      <div style="background:rgba(37,99,235,0.1);border-radius:10px;padding:12px;border-left:3px solid var(--com-azul-brilho)">
+        <div class="com-text-sm com-fw-600" style="color:var(--com-azul-brilho);margin-bottom:4px">📅 Próxima Reunião</div>
+        <div class="com-text-sm">${esc(proxReuniao.titulo)}</div>
+        <div class="com-text-xs com-text-suave">${formatarDataHora(proxReuniao.data_hora)}</div>
+      </div>` : '';
+
+    // Movimentações
+    const movs = movsList || [];
+    document.getElementById('op-movimentacoes-lista').innerHTML = movs.length
+      ? movs.map(m => `
+        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--com-borda-suave)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--com-azul-brilho);margin-top:5px;flex-shrink:0"></div>
+          <div>
+            <div class="com-text-sm" style="font-weight:600">${esc(m.etapa_anterior||'—')} → ${esc(m.etapa_nova||'—')}</div>
+            ${m.observacao ? `<div class="com-text-xs com-text-suave" style="margin-top:3px">${esc(m.observacao)}</div>` : ''}
+            <div class="com-text-xs com-text-suave" style="margin-top:4px">${formatarDataHora(m.criado_em)}</div>
+          </div>
+        </div>`).join('')
+      : '<p class="com-text-suave com-text-sm">Nenhuma movimentação registrada</p>';
+
+  } catch(err) {
+    mostrarAlerta(err.erro || 'Erro ao carregar oportunidade', 'erro');
+  }
+}
+
+function fecharModalOp() {
+  document.getElementById('modal-op').classList.add('com-d-none');
+  opAtualId = null; opAtualDados = null;
+}
+
+function setTabOp(tab, btn) {
+  document.querySelectorAll('#modal-op .com-tab-btn').forEach(b => b.classList.remove('ativo'));
+  document.querySelectorAll('#modal-op .com-tab-panel').forEach(p => p.classList.remove('ativo'));
+  if (btn) btn.classList.add('ativo');
+  const panel = document.getElementById(`tab-op-${tab}`);
+  if (panel) panel.classList.add('ativo');
+}
+
+async function moverEtapa() {
+  if (!opAtualId) return;
+  const novaEtapa = document.getElementById('op-nova-etapa').value;
+  const motivo = document.getElementById('op-motivo-mover').value.trim();
+  try {
+    await api.post(`/oportunidades/${opAtualId}/mover`, { etapa_nova: novaEtapa, observacao: motivo });
+    mostrarAlerta('Etapa atualizada!');
+    fecharModalOp();
+    carregarOportunidades();
+  } catch(err) { mostrarAlerta(err.erro || 'Erro ao mover', 'erro'); }
+}
+
+async function registrarObservacao() {
+  if (!opAtualId) return;
+  const obs = document.getElementById('op-observacao').value.trim();
+  if (!obs) return mostrarAlerta('Digite uma observação', 'erro');
+  try {
+    await api.patch(`/oportunidades/${opAtualId}`, { observacao: obs });
+    mostrarAlerta('Observação registrada!');
+    document.getElementById('op-observacao').value = '';
+  } catch(err) { mostrarAlerta(err.erro || 'Erro ao salvar', 'erro'); }
+}
+
+async function salvarResponsavel() {
+  if (!opAtualId) return;
+  const responsavel = document.getElementById('op-responsavel-input').value.trim();
+  try {
+    await api.patch(`/oportunidades/${opAtualId}`, { responsavel });
+    mostrarAlerta('Responsável atualizado!');
+    carregarOportunidades();
+  } catch(err) { mostrarAlerta(err.erro || 'Erro ao salvar', 'erro'); }
+}
+
+function agendarReuniaoOp() {
+  if (!opAtualDados?.lead_id) return;
+  window.location.href = `/admin/comercial/calendario.html?lead_id=${opAtualDados.lead_id}`;
+}
+
+async function marcarPerdido() {
+  if (!opAtualId) return;
+  const motivo = prompt('Motivo da perda (opcional):');
+  if (motivo === null) return;
+  try {
+    await api.post(`/oportunidades/${opAtualId}/mover`, { etapa_nova: 'perdido', observacao: motivo || 'Marcado como perdido' });
+    mostrarAlerta('Marcado como perdido');
+    fecharModalOp(); carregarOportunidades();
+  } catch(err) { mostrarAlerta(err.erro || 'Erro', 'erro'); }
+}
+
+async function marcarFechado() {
+  if (!opAtualId) return;
+  if (!confirm('Marcar esta oportunidade como fechada (convertida)?')) return;
+  try {
+    await api.post(`/oportunidades/${opAtualId}/mover`, { etapa_nova: 'fechado', observacao: 'Negócio fechado!' });
+    mostrarAlerta('Parabéns! Oportunidade fechada! 🎉');
+    fecharModalOp(); carregarOportunidades();
+  } catch(err) { mostrarAlerta(err.erro || 'Erro', 'erro'); }
+}
+
+// ── Modal Nova Oportunidade ──────────────────────────────────────────────────
+
+function abrirModalNovaOp() {
+  document.getElementById('modal-nova-op').classList.remove('com-d-none');
+}
+function fecharModalNovaOp() {
+  document.getElementById('modal-nova-op').classList.add('com-d-none');
+  document.getElementById('modal-nova-op').querySelector('form').reset();
+  document.getElementById('nop-lead-id').value = '';
+  document.getElementById('nop-lead-sugestoes').innerHTML = '';
+}
+
+let buscaLeadTimer;
+function buscarLeadOp() {
+  clearTimeout(buscaLeadTimer);
+  const busca = document.getElementById('nop-lead-busca').value.trim();
+  if (busca.length < 2) { document.getElementById('nop-lead-sugestoes').innerHTML = ''; return; }
+  buscaLeadTimer = setTimeout(async () => {
+    try {
+      const { leads } = await api.get(`/comercial/leads?busca=${encodeURIComponent(busca)}&limit=6`);
+      document.getElementById('nop-lead-sugestoes').innerHTML = leads.length
+        ? `<div style="position:absolute;z-index:100;background:var(--com-card);border:1px solid var(--com-borda);border-radius:10px;padding:6px;min-width:100%;max-height:200px;overflow-y:auto;margin-top:4px">` +
+          leads.map(l => `<div onclick="selecionarLeadOp(${l.id},'${esc(l.nome||l.empresa||l.whatsapp).replace(/'/g,"\\'")}')"
+            style="padding:8px 12px;cursor:pointer;border-radius:8px;font-size:13px;transition:background 0.1s"
+            onmouseover="this.style.background='var(--com-bg2)'" onmouseout="this.style.background=''"
+            >${esc(l.nome || l.empresa || l.whatsapp)} <span class="com-text-xs com-text-suave">${l.whatsapp || ''}</span></div>`).join('')
+          + `</div>`
+        : '';
+    } catch {}
+  }, 300);
+}
+
+function selecionarLeadOp(id, nome, empresa) {
+  document.getElementById('nop-lead-id').value = id;
+  document.getElementById('nop-lead-busca').value = nome;
+  if (!document.getElementById('nop-titulo').value)
+    document.getElementById('nop-titulo').value = `Oportunidade — ${nome}`;
+  document.getElementById('nop-lead-sugestoes').innerHTML = '';
+}
+
+async function salvarNovaOp(e) {
+  e.preventDefault();
+  const leadId = document.getElementById('nop-lead-id').value;
+  if (!leadId) return mostrarAlerta('Selecione um lead da lista', 'erro');
+  const btn = document.getElementById('btn-salvar-nop');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  try {
+    await api.post('/oportunidades', {
+      lead_id: parseInt(leadId),
+      titulo: document.getElementById('nop-titulo').value.trim(),
+      etapa: document.getElementById('nop-etapa').value,
+      motivo_qualificacao: document.getElementById('nop-motivo').value.trim()
+    });
+    mostrarAlerta('Oportunidade criada!');
+    fecharModalNovaOp();
+    carregarOportunidades();
+  } catch(err) { mostrarAlerta(err.erro || 'Erro ao criar', 'erro'); }
+  finally { btn.disabled = false; btn.textContent = 'Criar Oportunidade'; }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function infoItem(label, valor) {
+  if (!valor && valor !== 0) return '';
+  return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--com-borda-suave)">
+    <span class="com-text-xs com-text-suave">${label}</span>
+    <span style="font-size:13px;font-weight:500;color:var(--com-texto)">${valor}</span>
+  </div>`;
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatarDataHora(iso) {
+  if (!iso) return '—';
+  return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
+}
+</script>
+</body>
+</html>

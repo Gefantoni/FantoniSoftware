@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <style>
+    .role-badge { display:inline-block; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+    .role-admin      { background:#EEF2FF; color:#4338CA; }
+    .role-cliente    { background:#F0FDF4; color:#166534; }
+    .role-suporte    { background:#FFF7ED; color:#9A3412; }
+    .role-financeiro { background:#FDF4FF; color:#7E22CE; }
+    .role-comercial  { background:#ECFDF5; color:#065F46; }
+    .tabs { display:flex; gap:0; border-bottom:2px solid var(--borda); margin-bottom:20px; }
+    .tab { padding:10px 20px; font-size:14px; font-weight:500; color:var(--texto-suave); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .15s; }
+    .tab.ativo { color:var(--primario); border-color:var(--primario); font-weight:600; }
+    .permissao-item { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--borda); }
+    .permissao-item:last-child { border:none; }
+    .permissao-label { display:flex; align-items:center; gap:8px; font-size:14px; }
+    .toggle { position:relative; width:44px; height:24px; cursor:pointer; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; inset:0; background:#CBD5E1; border-radius:24px; transition:.3s; }
+    .toggle-slider::before { content:''; position:absolute; height:18px; width:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.3s; }
+    .toggle input:checked + .toggle-slider { background:var(--primario,#2563EB); }
+    .toggle input:checked + .toggle-slider::before { transform:translateX(20px); }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">👥 Gestão de Usuários</span>
+      </div>
+      <button class="btn btn-primario btn-sm" onclick="abrirModalNovoUsuario()">+ Novo Usuário</button>
+    </div>
+
+    <div class="pagina">
+
+      <!-- Tabs de filtro por role -->
+      <div class="tabs">
+        <div class="tab ativo" data-role="" onclick="mudarTab(this, '')">Todos</div>
+        <div class="tab" data-role="cliente" onclick="mudarTab(this, 'cliente')">Clientes</div>
+        <div class="tab" data-role="admin" onclick="mudarTab(this, 'admin')">Admin</div>
+        <div class="tab" data-role="suporte" onclick="mudarTab(this, 'suporte')">Suporte</div>
+        <div class="tab" data-role="financeiro" onclick="mudarTab(this, 'financeiro')">Financeiro</div>
+        <div class="tab" data-role="comercial" onclick="mudarTab(this, 'comercial')">Comercial</div>
+      </div>
+
+      <!-- Busca -->
+      <div class="card mb-3">
+        <input type="text" id="busca" placeholder="Buscar por nome ou email..."
+          style="width:100%;padding:8px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:14px"
+          oninput="filtrar()">
+      </div>
+
+      <!-- Tabela -->
+      <div class="card">
+        <div class="tabela-container">
+          <table id="tabela-usuarios">
+            <thead>
+              <tr>
+                <th>Nome</th><th>Email</th><th>WhatsApp</th>
+                <th>Tipo</th><th>Plano</th><th>Status</th><th>Cadastro</th><th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-usuarios">
+              <tr><td colspan="8" class="text-center"><div class="spinner" style="margin:10px auto"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Modal Cadastro/Edição ─────────────────────────────── -->
+<div id="modal-usuario" class="modal-overlay d-none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-titulo" id="modal-titulo">Novo Usuário</h3>
+      <button class="modal-fechar" onclick="fecharModal('modal-usuario')">✕</button>
+    </div>
+    <form id="form-usuario" onsubmit="salvarUsuario(event)">
+      <input type="hidden" id="u-id">
+      <div class="form-grupo">
+        <label>Tipo de usuário</label>
+        <select id="u-role" required onchange="atualizarCamposRole()">
+          <option value="cliente">Cliente</option>
+          <option value="admin">Administrador</option>
+          <option value="suporte">Suporte</option>
+          <option value="financeiro">Financeiro</option>
+          <option value="comercial">Comercial</option>
+        </select>
+      </div>
+      <div class="form-grupo"><label>Nome completo</label><input type="text" id="u-nome" required></div>
+      <div class="form-grupo"><label>Email</label><input type="email" id="u-email" required></div>
+      <div id="campo-senha" class="form-grupo">
+        <label>Senha inicial</label>
+        <input type="password" id="u-senha" minlength="6" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-grupo"><label>WhatsApp</label><input type="text" id="u-whatsapp" placeholder="5511999999999"></div>
+      <div id="campo-plano" class="form-grupo">
+        <label>Plano</label>
+        <select id="u-plano">
+          <option value="basico">Básico</option>
+          <option value="profissional">Profissional</option>
+          <option value="premium">Premium</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primario w-100" id="btn-salvar-u">Salvar</button>
+    </form>
+  </div>
+</div>
+
+<!-- ─── Modal Permissões ──────────────────────────────────── -->
+<div id="modal-permissoes" class="modal-overlay d-none">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <h3 class="modal-titulo">🔐 Permissões de Telas</h3>
+      <button class="modal-fechar" onclick="fecharModal('modal-permissoes')">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--texto-suave);margin-bottom:16px" id="perm-nome-usuario"></p>
+
+    <div id="lista-permissoes"></div>
+
+    <button class="btn btn-primario w-100" style="margin-top:20px" onclick="salvarPermissoes()">
+      Salvar Permissões
+    </button>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+  const usuario = protegerPagina(['admin']);
+  let todosUsuarios = [];
+  let modoEdicao = false;
+  let idPermissaoAtual = null;
+  let tabAtual = '';
+
+  const TELAS_CLIENTE = [
+    { id: 'videoaulas',       label: 'Sistema PDV / Videoaulas', icone: '🎓' },
+    { id: 'agente_ia',        label: 'Agente IA',                icone: '🤖' },
+    { id: 'cardapio_ia',      label: 'IA para Cardápio',         icone: '✨' },
+    { id: 'financeiro',       label: 'Financeiro',               icone: '📊' },
+    { id: 'tickets',          label: 'Chamados / Suporte',        icone: '🎫' },
+    { id: 'empreendedorismo', label: 'Bares & Restaurantes',     icone: '🍽️' },
+  ];
+
+  if (usuario) { inicializarLayout(); carregarUsuarios(); }
+
+  async function carregarUsuarios() {
+    try {
+      const url = tabAtual ? `/clientes?role=${tabAtual}` : '/clientes';
+      const { clientes } = await api.get(url);
+      todosUsuarios = clientes;
+      filtrar();
+    } catch {
+      document.getElementById('tbody-usuarios').innerHTML =
+        '<tr><td colspan="8" class="text-center text-suave">Erro ao carregar usuários.</td></tr>';
+    }
+  }
+
+  function mudarTab(el, role) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+    el.classList.add('ativo');
+    tabAtual = role;
+    carregarUsuarios();
+  }
+
+  function filtrar() {
+    const busca = document.getElementById('busca').value.toLowerCase();
+    const filtrados = todosUsuarios.filter(c =>
+      !busca || c.nome?.toLowerCase().includes(busca) || c.email?.toLowerCase().includes(busca)
+    );
+    renderizarTabela(filtrados);
+  }
+
+  function renderizarTabela(lista) {
+    const tbody = document.getElementById('tbody-usuarios');
+    if (!lista.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center text-suave">Nenhum usuário encontrado.</td></tr>';
+      return;
+    }
+    const planoBadge = { basico:'badge-cinza', profissional:'badge-azul', premium:'badge-amarelo' };
+    tbody.innerHTML = lista.map(c => `
+      <tr>
+        <td><strong>${c.nome}</strong></td>
+        <td>${c.email}</td>
+        <td>${c.whatsapp || '—'}</td>
+        <td><span class="role-badge role-${c.role}">${mapearRole(c.role)}</span></td>
+        <td>${c.role === 'cliente' ? `<span class="badge ${planoBadge[c.plano]||'badge-cinza'}">${c.plano||'—'}</span>` : '—'}</td>
+        <td><span class="badge ${c.ativo ? 'badge-verde' : 'badge-vermelho'}">${c.ativo ? 'Ativo' : 'Inativo'}</span></td>
+        <td>${formatarData(c.criado_em)}</td>
+        <td style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-outline" onclick="editarUsuario('${c.id}')">✏️</button>
+          ${c.role === 'cliente' ? `<button class="btn btn-sm btn-outline" onclick="abrirPermissoes('${c.id}')" title="Permissões de telas">🔐</button>` : ''}
+          <button class="btn btn-sm ${c.ativo ? 'btn-perigo' : 'btn-acento'}" onclick="toggleAtivo('${c.id}', ${!c.ativo})">${c.ativo ? 'Desativar' : 'Ativar'}</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  // ─── Modal Criar/Editar ───────────────────────────────────────
+
+  function abrirModalNovoUsuario() {
+    modoEdicao = false;
+    document.getElementById('modal-titulo').textContent = 'Novo Usuário';
+    document.getElementById('form-usuario').reset();
+    document.getElementById('u-id').value = '';
+    document.getElementById('campo-senha').style.display = 'block';
+    document.getElementById('u-senha').required = true;
+    atualizarCamposRole();
+    document.getElementById('modal-usuario').classList.remove('d-none');
+  }
+
+  function editarUsuario(id) {
+    const c = todosUsuarios.find(x => x.id === id);
+    if (!c) return;
+    modoEdicao = true;
+    document.getElementById('modal-titulo').textContent = 'Editar Usuário';
+    document.getElementById('u-id').value = c.id;
+    document.getElementById('u-role').value = c.role;
+    document.getElementById('u-nome').value = c.nome;
+    document.getElementById('u-email').value = c.email;
+    document.getElementById('u-whatsapp').value = c.whatsapp || '';
+    document.getElementById('u-plano').value = c.plano || 'basico';
+    document.getElementById('campo-senha').style.display = 'none';
+    document.getElementById('u-senha').required = false;
+    atualizarCamposRole();
+    document.getElementById('modal-usuario').classList.remove('d-none');
+  }
+
+  function atualizarCamposRole() {
+    const role = document.getElementById('u-role').value;
+    const campoPlan = document.getElementById('campo-plano');
+    campoPlan.style.display = role === 'cliente' ? 'block' : 'none';
+  }
+
+  function fecharModal(id) { document.getElementById(id).classList.add('d-none'); }
+
+  async function salvarUsuario(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-salvar-u');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+
+    const dados = {
+      nome:      document.getElementById('u-nome').value,
+      email:     document.getElementById('u-email').value,
+      whatsapp:  document.getElementById('u-whatsapp').value,
+      role:      document.getElementById('u-role').value,
+      plano:     document.getElementById('u-plano').value,
+    };
+
+    try {
+      if (modoEdicao) {
+        await api.put(`/clientes/${document.getElementById('u-id').value}`, dados);
+        mostrarAlerta('Usuário atualizado!');
+      } else {
+        dados.senha = document.getElementById('u-senha').value;
+        await api.post('/clientes', dados);
+        mostrarAlerta('Usuário cadastrado!');
+      }
+      fecharModal('modal-usuario');
+      carregarUsuarios();
+    } catch (err) {
+      mostrarAlerta(err.erro || 'Erro ao salvar usuário', 'erro');
+    }
+    btn.disabled = false; btn.textContent = 'Salvar';
+  }
+
+  async function toggleAtivo(id, ativo) {
+    try {
+      await api.patch(`/clientes/${id}/ativar`, { ativo });
+      mostrarAlerta(`Usuário ${ativo ? 'ativado' : 'desativado'}!`);
+      carregarUsuarios();
+    } catch { mostrarAlerta('Erro ao alterar status', 'erro'); }
+  }
+
+  // ─── Modal Permissões ─────────────────────────────────────────
+
+  function abrirPermissoes(id) {
+    const c = todosUsuarios.find(x => x.id === id);
+    if (!c) return;
+    idPermissaoAtual = id;
+
+    document.getElementById('perm-nome-usuario').textContent =
+      `Cliente: ${c.nome} (${c.email})`;
+
+    const perms = c.permissoes_telas || {};
+    const lista = document.getElementById('lista-permissoes');
+    lista.innerHTML = TELAS_CLIENTE.map(t => `
+      <div class="permissao-item">
+        <div class="permissao-label">
+          <span>${t.icone}</span>
+          <span>${t.label}</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="perm-${t.id}" ${perms[t.id] !== false ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    `).join('');
+
+    document.getElementById('modal-permissoes').classList.remove('d-none');
+  }
+
+  async function salvarPermissoes() {
+    if (!idPermissaoAtual) return;
+    const permissoes_telas = {};
+    TELAS_CLIENTE.forEach(t => {
+      permissoes_telas[t.id] = document.getElementById(`perm-${t.id}`).checked;
+    });
+    try {
+      await api.patch(`/clientes/${idPermissaoAtual}/permissoes`, { permissoes_telas });
+      // Atualiza cache local
+      const idx = todosUsuarios.findIndex(u => u.id === idPermissaoAtual);
+      if (idx !== -1) todosUsuarios[idx].permissoes_telas = permissoes_telas;
+      mostrarAlerta('Permissões salvas!');
+      fecharModal('modal-permissoes');
+    } catch { mostrarAlerta('Erro ao salvar permissões', 'erro'); }
+  }
+</script>
+</body>
+</html>
