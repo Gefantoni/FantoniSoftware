@@ -4,23 +4,12 @@
     {
       "src": "central-negocio-old/backend/src/server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "central-negocio-old/frontend/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "central-negocio-old/backend/src/server.js"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
       "src": "/(.*)",
-      "dest": "central-negocio-old/frontend/index.html"
+      "dest": "central-negocio-old/backend/src/server.js"
     }
   ]
 }
