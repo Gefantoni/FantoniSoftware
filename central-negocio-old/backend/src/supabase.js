@@ -1,17 +1,25 @@
-// Clientes Supabase — um com anon key (para auth) e outro com service key (admin)
+// Clientes Supabase com inicialização lazy (evita crash no startup se env vars não estiverem prontas)
 const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
 
-// Cliente padrão (anon key) — usado para operações com RLS
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+function criarClienteLazy(chaveUrl, chaveKey) {
+  let cliente = null;
+  return new Proxy({}, {
+    get(_, prop) {
+      if (!cliente) {
+        const url = process.env[chaveUrl];
+        const key = process.env[chaveKey];
+        if (!url || !key) {
+          throw new Error(`Variável de ambiente não configurada: ${chaveUrl} ou ${chaveKey}`);
+        }
+        cliente = createClient(url, key);
+      }
+      const valor = cliente[prop];
+      return typeof valor === 'function' ? valor.bind(cliente) : valor;
+    }
+  });
+}
 
-// Cliente admin (service key) — bypassa RLS, use com cuidado
-const supabaseAdmin = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+const supabase = criarClienteLazy('SUPABASE_URL', 'SUPABASE_ANON_KEY');
+const supabaseAdmin = criarClienteLazy('SUPABASE_URL', 'SUPABASE_SERVICE_KEY');
 
 module.exports = { supabase, supabaseAdmin };
