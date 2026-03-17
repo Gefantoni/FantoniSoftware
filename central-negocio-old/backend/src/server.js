@@ -36,10 +36,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api', limiteGlobal);
 
-// Serve arquivos estáticos do frontend (apenas fora do Vercel — no Vercel são servidos como CDN)
-if (!process.env.VERCEL) {
-  app.use(express.static(path.join(__dirname, '../../frontend')));
-}
+// Serve arquivos estáticos do frontend
+app.use(express.static(path.join(__dirname, '../../frontend')));
 
 // ---- Rotas da API ----
 app.use('/api/auth/login', limiteAuth);
