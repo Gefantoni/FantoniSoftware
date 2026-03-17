@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campanhas — Comercial — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
+</head>
+<body class="com-page">
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">📢 Campanhas</span>
+      </div>
+      <div class="flex gap-2">
+        <button class="com-btn com-btn-primario com-btn-sm" onclick="abrirModalNova()">+ Nova Campanha</button>
+      </div>
+    </div>
+
+    <div class="pagina" style="padding:24px">
+
+      <!-- Vista: Lista de Campanhas -->
+      <div id="vista-lista">
+        <div id="lista-campanhas">
+          <div style="text-align:center;padding:60px"><div class="com-spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- Vista: Detalhe da Campanha -->
+      <div id="vista-detalhe" class="com-d-none">
+        <div class="com-flex-between com-mb-3">
+          <div class="flex items-center gap-2">
+            <button class="com-btn com-btn-ghost com-btn-sm" onclick="voltarLista()">← Voltar</button>
+            <h2 style="margin:0;font-size:20px;font-weight:700" id="detalhe-titulo">Campanha</h2>
+            <span id="detalhe-badge"></span>
+          </div>
+          <div class="flex gap-2">
+            <button class="com-btn com-btn-outline com-btn-sm" id="btn-pausar-detalhe">⏸ Pausar</button>
+            <button class="com-btn com-btn-perigo com-btn-sm" id="btn-encerrar-detalhe">■ Encerrar</button>
+          </div>
+        </div>
+
+        <!-- Stats da campanha -->
+        <div class="kpi-grid com-mb-3" id="detalhe-kpis"></div>
+
+        <!-- Info da campanha -->
+        <div class="com-grid-2 com-mb-3">
+          <div class="com-card">
+            <div class="com-card-titulo">Informações</div>
+            <div id="detalhe-info" style="display:flex;flex-direction:column;gap:10px"></div>
+          </div>
+          <div class="com-card">
+            <div class="com-card-titulo">Mensagem</div>
+            <pre id="detalhe-mensagem" style="white-space:pre-wrap;font-size:13px;color:var(--com-texto);background:var(--com-bg2);border-radius:8px;padding:12px;line-height:1.6;margin:0"></pre>
+          </div>
+        </div>
+
+        <!-- Leads da Campanha -->
+        <div class="com-card" style="padding:0;overflow:hidden">
+          <div class="com-flex-between" style="padding:16px 20px;border-bottom:1px solid var(--com-borda)">
+            <div class="com-card-titulo" style="margin:0">Leads da Campanha</div>
+            <div class="flex gap-2">
+              <select id="filtro-status-lead" onchange="filtrarLeadsCampanha()" style="background:var(--com-bg2);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px">
+                <option value="">Todos os status</option>
+                <option value="aguardando">Aguardando</option>
+                <option value="enviado">Enviado</option>
+                <option value="respondeu">Respondeu</option>
+                <option value="interesse">Com Interesse</option>
+                <option value="sem_resposta">Sem Resposta</option>
+                <option value="perdido">Perdido</option>
+              </select>
+              <input type="search" id="busca-lead-detalhe" placeholder="Buscar..." style="padding:6px 10px;border:1px solid var(--com-borda);border-radius:8px;background:var(--com-bg2);color:var(--com-texto);font-size:13px" oninput="filtrarLeadsCampanha()">
+            </div>
+          </div>
+          <div class="com-tabela-container">
+            <table class="com-tabela">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Empresa</th>
+                  <th>WhatsApp</th>
+                  <th>Status Campanha</th>
+                  <th>Última Atividade</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-leads-campanha">
+                <tr><td colspan="6" style="text-align:center;padding:40px"><div class="com-spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:14px 20px;border-top:1px solid var(--com-borda)">
+            <span class="com-text-suave com-text-sm" id="detalhe-leads-count"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nova Campanha -->
+<div class="com-modal-overlay com-d-none" id="modal-nova">
+  <div class="com-modal" style="max-width:680px">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo">Nova Campanha</span>
+      <button class="com-modal-fechar" onclick="fecharModalNova()">✕</button>
+    </div>
+    <form onsubmit="salvarCampanha(event)">
+      <div class="com-grid-2">
+        <div class="com-form-grupo" style="grid-column:1/-1">
+          <label>Nome da Campanha *</label>
+          <input type="text" id="nc-nome" placeholder="Ex: Prospecção Restaurantes SP" required>
+        </div>
+        <div class="com-form-grupo" style="grid-column:1/-1">
+          <label>Descrição</label>
+          <textarea id="nc-descricao" rows="2" placeholder="Descreva o objetivo desta campanha..."></textarea>
+        </div>
+        <div class="com-form-grupo">
+          <label>Instância WhatsApp *</label>
+          <select id="nc-instancia" required>
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+        <div class="com-form-grupo">
+          <label>Agente SDR</label>
+          <select id="nc-agente">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+        <div class="com-form-grupo">
+          <label>Tipo de Fluxo</label>
+          <select id="nc-tipo_fluxo">
+            <option value="unico">Único (uma mensagem)</option>
+            <option value="followup_resposta">Follow-up por Resposta</option>
+            <option value="followup_interesse">Follow-up por Interesse</option>
+          </select>
+        </div>
+        <div class="com-form-grupo">
+          <label>Origem dos Leads</label>
+          <input type="text" id="nc-origem" placeholder="Ex: Lista importada, Site...">
+        </div>
+        <div class="com-form-grupo">
+          <label>Tags (separadas por vírgula)</label>
+          <input type="text" id="nc-tags" placeholder="Ex: sp, restaurante, prospecção">
+        </div>
+        <div class="com-form-grupo" style="grid-column:1/-1">
+          <label>
+            Mensagem de Abertura *
+            <span style="float:right;font-size:12px;color:var(--com-suave)">
+              Variáveis: <code onclick="inserirVariavel('{{nome}}')" style="cursor:pointer;color:var(--com-azul-brilho)">{{nome}}</code>
+              <code onclick="inserirVariavel('{{empresa}}')" style="cursor:pointer;color:var(--com-azul-brilho)">{{empresa}}</code>
+              <code onclick="inserirVariavel('{{cidade}}')" style="cursor:pointer;color:var(--com-azul-brilho)">{{cidade}}</code>
+              <code onclick="inserirVariavel('{{segmento}}')" style="cursor:pointer;color:var(--com-azul-brilho)">{{segmento}}</code>
+            </span>
+          </label>
+          <textarea id="nc-mensagem" rows="5" placeholder="Olá {{nome}}! Sou da Central do Negócio..." required></textarea>
+          <div style="font-size:12px;color:var(--com-suave);margin-top:4px">Clique nas variáveis acima para inserir no cursor</div>
+        </div>
+      </div>
+      <div class="com-flex-between com-mt-2">
+        <button type="button" class="com-btn com-btn-ghost" onclick="fecharModalNova()">Cancelar</button>
+        <button type="submit" class="com-btn com-btn-primario" id="btn-salvar-campanha">Criar Campanha</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+const usuario = protegerPagina(['admin','comercial']);
+let campanhasCache = [];
+let campanhaSelecionadaId = null;
+let leadsDetalheBruto = [];
+
+if (usuario) {
+  inicializarLayout();
+  carregarCampanhas();
+}
+
+// ── Carregar lista de campanhas ──────────────────────────────────────────────
+
+async function carregarCampanhas() {
+  try {
+    const { campanhas } = await api.get('/campanhas');
+    campanhasCache = campanhas || [];
+    renderizarCampanhas(campanhasCache);
+  } catch(err) {
+    document.getElementById('lista-campanhas').innerHTML =
+      `<div class="com-alerta com-alerta-erro">Erro ao carregar campanhas: ${err.erro || err.message || 'Erro desconhecido'}</div>`;
+  }
+}
+
+const statusCorCampanha = {
+  ativa: 'verde', pausada: 'amarelo', encerrada: 'cinza', rascunho: 'azul'
+};
+
+function renderizarCampanhas(campanhas) {
+  const container = document.getElementById('lista-campanhas');
+  if (!campanhas.length) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:80px 20px">
+        <div style="font-size:48px;margin-bottom:16px">📢</div>
+        <h3 style="color:var(--com-suave);margin:0 0 8px">Nenhuma campanha criada</h3>
+        <p class="com-text-suave com-text-sm">Crie sua primeira campanha para começar a prospectar leads via WhatsApp</p>
+        <button class="com-btn com-btn-primario com-btn-lg" style="margin-top:20px" onclick="abrirModalNova()">+ Nova Campanha</button>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="com-grid-2" style="gap:20px">` +
+    campanhas.map(c => {
+      const taxa_resp = c.total_enviados > 0 ? Math.round((c.total_respostas / c.total_enviados) * 100) : 0;
+      const taxa_int  = c.total_respostas > 0 ? Math.round((c.total_interesse / c.total_respostas) * 100) : 0;
+      return `
+      <div class="com-card" style="display:flex;flex-direction:column;gap:16px">
+        <div class="com-flex-between">
+          <div>
+            <div style="font-size:16px;font-weight:700;color:var(--com-texto);margin-bottom:4px">${esc(c.nome)}</div>
+            ${c.descricao ? `<div class="com-text-suave com-text-sm">${esc(c.descricao)}</div>` : ''}
+          </div>
+          <span class="com-badge com-badge-${statusCorCampanha[c.status]||'cinza'}">${c.status}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;text-align:center">
+          <div style="background:var(--com-bg2);border-radius:10px;padding:10px">
+            <div style="font-size:20px;font-weight:700;color:var(--com-azul-brilho)">${c.total_enviados || 0}</div>
+            <div style="font-size:11px;color:var(--com-suave)">Enviados</div>
+          </div>
+          <div style="background:var(--com-bg2);border-radius:10px;padding:10px">
+            <div style="font-size:20px;font-weight:700;color:var(--com-verde)">${c.total_respostas || 0}</div>
+            <div style="font-size:11px;color:var(--com-suave)">Respostas</div>
+          </div>
+          <div style="background:var(--com-bg2);border-radius:10px;padding:10px">
+            <div style="font-size:20px;font-weight:700;color:var(--com-amarelo)">${c.total_interesse || 0}</div>
+            <div style="font-size:11px;color:var(--com-suave)">Interesse</div>
+          </div>
+          <div style="background:var(--com-bg2);border-radius:10px;padding:10px">
+            <div style="font-size:20px;font-weight:700;color:var(--com-roxo, #a855f7)">${c.total_oportunidades || 0}</div>
+            <div style="font-size:11px;color:var(--com-suave)">Oport.</div>
+          </div>
+        </div>
+        <div class="com-flex-between" style="font-size:12px;color:var(--com-suave)">
+          <span>Taxa resposta: <strong style="color:var(--com-texto)">${taxa_resp}%</strong></span>
+          <span>Taxa interesse: <strong style="color:var(--com-texto)">${taxa_int}%</strong></span>
+          <span>Criada em: <strong style="color:var(--com-texto)">${formatarData(c.data_criacao || c.criado_em)}</strong></span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--com-borda);padding-top:12px">
+          <button class="com-btn com-btn-outline com-btn-sm" onclick="verDetalhe(${c.id})">🔍 Ver Detalhes</button>
+          ${c.status === 'ativa'
+            ? `<button class="com-btn com-btn-ghost com-btn-sm" onclick="pausar(${c.id})">⏸ Pausar</button>`
+            : c.status === 'pausada'
+              ? `<button class="com-btn com-btn-ghost com-btn-sm" onclick="ativar(${c.id})">▶ Ativar</button>`
+              : ''}
+          ${c.status !== 'encerrada'
+            ? `<button class="com-btn com-btn-perigo com-btn-sm" onclick="encerrar(${c.id}, '${esc(c.nome).replace(/'/g,"\\'")}')">■ Encerrar</button>`
+            : ''}
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+}
+
+// ── Modal Nova Campanha ──────────────────────────────────────────────────────
+
+async function abrirModalNova() {
+  document.getElementById('modal-nova').classList.remove('com-d-none');
+  // Carregar instâncias e agentes
+  try {
+    const [{ instancias }, { agentes }] = await Promise.all([
+      api.get('/comercial/instancias'),
+      api.get('/agentes')
+    ]);
+    document.getElementById('nc-instancia').innerHTML =
+      `<option value="">Selecione a instância...</option>` +
+      (instancias || []).map(i => `<option value="${i.id}">${esc(i.nome)} — ${i.numero || ''}</option>`).join('');
+    document.getElementById('nc-agente').innerHTML =
+      `<option value="">Sem agente (manual)</option>` +
+      (agentes || []).map(a => `<option value="${a.id}">${esc(a.nome)}</option>`).join('');
+  } catch {
+    document.getElementById('nc-instancia').innerHTML = `<option value="">Erro ao carregar</option>`;
+    document.getElementById('nc-agente').innerHTML = `<option value="">Erro ao carregar</option>`;
+  }
+}
+
+function fecharModalNova() {
+  document.getElementById('modal-nova').classList.add('com-d-none');
+  document.getElementById('modal-nova').querySelector('form').reset();
+}
+
+function inserirVariavel(variavel) {
+  const ta = document.getElementById('nc-mensagem');
+  const pos = ta.selectionStart;
+  ta.value = ta.value.slice(0, pos) + variavel + ta.value.slice(ta.selectionEnd);
+  ta.selectionStart = ta.selectionEnd = pos + variavel.length;
+  ta.focus();
+}
+
+async function salvarCampanha(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-salvar-campanha');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+
+  const body = {
+    nome: document.getElementById('nc-nome').value.trim(),
+    descricao: document.getElementById('nc-descricao').value.trim(),
+    instancia: document.getElementById('nc-instancia').value,
+    agente_id: document.getElementById('nc-agente').value || null,
+    mensagem: document.getElementById('nc-mensagem').value.trim(),
+    tipo_fluxo: document.getElementById('nc-tipo_fluxo').value,
+    origem: document.getElementById('nc-origem').value.trim(),
+    tags: document.getElementById('nc-tags').value.split(',').map(t => t.trim()).filter(Boolean)
+  };
+
+  try {
+    await api.post('/campanhas', body);
+    mostrarAlerta('Campanha criada com sucesso!');
+    fecharModalNova();
+    carregarCampanhas();
+  } catch(err) {
+    mostrarAlerta(err.erro || 'Erro ao criar campanha', 'erro');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Criar Campanha';
+  }
+}
+
+// ── Ações sobre campanhas ────────────────────────────────────────────────────
+
+async function pausar(id) {
+  if (!confirm('Pausar esta campanha? Nenhuma nova mensagem será enviada.')) return;
+  try {
+    await api.post(`/campanhas/${id}/pausar`, {});
+    mostrarAlerta('Campanha pausada');
+    carregarCampanhas();
+  } catch(err) { mostrarAlerta(err.erro || 'Erro ao pausar', 'erro'); }
+}
+
+async function ativar(id) {
+  if (!confirm('Ativar esta campanha? Envios serão retomados.')) return;
+  try {
+    await api.post(`/campanhas/${id}/ativar`, {});
+    mostrarAlerta('Campanha ativada');
+    carregarCampanhas();
+  } catch(err) { mostrarAlerta(err.erro || 'Erro ao ativar', 'erro'); }
+}
+
+async function encerrar(id, nome) {
+  if (!confirm(`Encerrar a campanha "${nome}"? Esta ação não pode ser desfeita.`)) return;
+  try {
+    await api.post(`/campanhas/${id}/encerrar`, {});
+    mostrarAlerta('Campanha encerrada');
+    if (campanhaSelecionadaId === id) voltarLista();
+    else carregarCampanhas();
+  } catch(err) { mostrarAlerta(err.erro || 'Erro ao encerrar', 'erro'); }
+}
+
+// ── Detalhe da Campanha ──────────────────────────────────────────────────────
+
+async function verDetalhe(id) {
+  campanhaSelecionadaId = id;
+  document.getElementById('vista-lista').classList.add('com-d-none');
+  document.getElementById('vista-detalhe').classList.remove('com-d-none');
+  document.getElementById('detalhe-titulo').textContent = 'Carregando...';
+  document.getElementById('detalhe-kpis').innerHTML = '<div class="com-spinner"></div>';
+  document.getElementById('detalhe-info').innerHTML = '<div class="com-spinner"></div>';
+  document.getElementById('tbody-leads-campanha').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px"><div class="com-spinner"></div></td></tr>`;
+
+  try {
+    const { campanha, campanha_leads } = await api.get(`/campanhas/${id}`);
+
+    leadsDetalheBruto = campanha_leads || [];
+
+    // Título e badge
+    document.getElementById('detalhe-titulo').textContent = campanha.nome;
+    document.getElementById('detalhe-badge').innerHTML =
+      `<span class="com-badge com-badge-${statusCorCampanha[campanha.status]||'cinza'}">${campanha.status}</span>`;
+
+    // Botões do detalhe
+    const btnPausar = document.getElementById('btn-pausar-detalhe');
+    const btnEncerrar = document.getElementById('btn-encerrar-detalhe');
+    if (campanha.status === 'ativa') {
+      btnPausar.textContent = '⏸ Pausar'; btnPausar.onclick = () => pausar(id);
+      btnPausar.classList.remove('com-d-none');
+    } else if (campanha.status === 'pausada') {
+      btnPausar.textContent = '▶ Ativar'; btnPausar.onclick = () => ativar(id);
+      btnPausar.classList.remove('com-d-none');
+    } else {
+      btnPausar.classList.add('com-d-none');
+    }
+    if (campanha.status !== 'encerrada') {
+      btnEncerrar.onclick = () => encerrar(id, campanha.nome);
+      btnEncerrar.classList.remove('com-d-none');
+    } else {
+      btnEncerrar.classList.add('com-d-none');
+    }
+
+    // KPIs
+    const taxa_resp = campanha.total_enviados > 0 ? Math.round((campanha.total_respostas / campanha.total_enviados) * 100) : 0;
+    document.getElementById('detalhe-kpis').innerHTML = `
+      <div class="kpi-card kpi-azul"><div class="kpi-valor">${campanha.total_enviados || 0}</div><div class="kpi-label">Enviados</div></div>
+      <div class="kpi-card kpi-verde"><div class="kpi-valor">${campanha.total_respostas || 0}</div><div class="kpi-label">Respostas</div></div>
+      <div class="kpi-card kpi-amarelo"><div class="kpi-valor">${campanha.total_interesse || 0}</div><div class="kpi-label">Com Interesse</div></div>
+      <div class="kpi-card kpi-azul"><div class="kpi-valor">${campanha.total_oportunidades || 0}</div><div class="kpi-label">Oportunidades</div></div>
+      <div class="kpi-card kpi-verde"><div class="kpi-valor">${taxa_resp}%</div><div class="kpi-label">Taxa Resposta</div></div>
+    `;
+
+    // Info
+    document.getElementById('detalhe-info').innerHTML = `
+      ${infoLinha('Instância', campanha.instancia || '—')}
+      ${infoLinha('Agente SDR', campanha.agentes_ia_comercial?.nome || 'Nenhum')}
+      ${infoLinha('Tipo de Fluxo', campanha.tipo_fluxo || '—')}
+      ${infoLinha('Origem', campanha.origem || '—')}
+      ${campanha.tags?.length ? infoLinha('Tags', campanha.tags.join(', ')) : ''}
+      ${infoLinha('Criada em', formatarData(campanha.data_criacao || campanha.criado_em))}
+    `;
+
+    // Mensagem
+    document.getElementById('detalhe-mensagem').textContent = campanha.mensagem || '—';
+
+    // Leads
+    renderizarLeadsDetalhe(leadsDetalheBruto);
+  } catch(err) {
+    mostrarAlerta(err.erro || 'Erro ao carregar detalhe', 'erro');
+  }
+}
+
+function infoLinha(label, valor) {
+  return `<div class="com-flex-between" style="padding:8px 0;border-bottom:1px solid var(--com-borda-suave)">
+    <span class="com-text-suave com-text-sm">${esc(label)}</span>
+    <span style="font-size:14px;font-weight:500;color:var(--com-texto)">${esc(String(valor ?? '—'))}</span>
+  </div>`;
+}
+
+const statusLeadCor = {
+  aguardando:'cinza', enviado:'azul', respondeu:'verde', interesse:'verde',
+  sem_resposta:'amarelo', perdido:'vermelho'
+};
+
+function renderizarLeadsDetalhe(leads) {
+  const filtro = document.getElementById('filtro-status-lead').value;
+  const busca = (document.getElementById('busca-lead-detalhe').value || '').toLowerCase();
+  const filtrados = leads.filter(l => {
+    const matchStatus = !filtro || l.status === filtro;
+    const matchBusca = !busca ||
+      (l.leads?.nome || '').toLowerCase().includes(busca) ||
+      (l.leads?.empresa || '').toLowerCase().includes(busca) ||
+      (l.leads?.whatsapp || '').toLowerCase().includes(busca);
+    return matchStatus && matchBusca;
+  });
+
+  document.getElementById('detalhe-leads-count').textContent = `${filtrados.length} lead(s)`;
+
+  if (!filtrados.length) {
+    document.getElementById('tbody-leads-campanha').innerHTML =
+      `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--com-suave)">Nenhum lead encontrado</td></tr>`;
+    return;
+  }
+
+  document.getElementById('tbody-leads-campanha').innerHTML = filtrados.map(l => {
+    const lead = l.leads || {};
+    return `<tr>
+      <td><div style="font-weight:600">${esc(lead.nome || '—')}</div></td>
+      <td class="td-suave">${esc(lead.empresa || '—')}</td>
+      <td class="td-suave">${lead.whatsapp || '—'}</td>
+      <td><span class="com-badge com-badge-${statusLeadCor[l.status]||'cinza'}">${l.status || '—'}</span></td>
+      <td class="td-suave">${formatarData(l.respondeu_em || l.enviado_em || l.atualizado_em)}</td>
+      <td>
+        <a href="/admin/comercial/leads.html" class="com-btn com-btn-ghost com-btn-sm">Ver Lead →</a>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filtrarLeadsCampanha() {
+  renderizarLeadsDetalhe(leadsDetalheBruto);
+}
+
+function voltarLista() {
+  campanhaSelecionadaId = null;
+  document.getElementById('vista-detalhe').classList.add('com-d-none');
+  document.getElementById('vista-lista').classList.remove('com-d-none');
+  carregarCampanhas();
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendário — Comercial — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
+</head>
+<body class="com-page">
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">📅 Calendário</span>
+      </div>
+      <button class="com-btn com-btn-primario com-btn-sm" onclick="abrirModalNova()">+ Nova Reunião</button>
+    </div>
+
+    <div class="pagina" style="padding:24px">
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:20px">
+
+        <!-- Calendário principal -->
+        <div class="com-card" style="padding:20px">
+          <!-- Navegação -->
+          <div class="com-flex-between com-mb-3">
+            <div class="com-flex com-gap-1">
+              <button class="com-btn com-btn-ghost com-btn-sm" onclick="navegarMes(-1)">←</button>
+              <button class="com-btn com-btn-ghost com-btn-sm" onclick="irHoje()">Hoje</button>
+              <button class="com-btn com-btn-ghost com-btn-sm" onclick="navegarMes(1)">→</button>
+            </div>
+            <h3 id="mes-titulo" style="color:var(--com-texto);font-size:18px;font-weight:700"></h3>
+            <div class="com-flex com-gap-1">
+              <button class="com-btn com-btn-ghost com-btn-sm ativo" id="view-mes" onclick="setView('mes')">Mês</button>
+              <button class="com-btn com-btn-ghost com-btn-sm" id="view-semana" onclick="setView('semana')">Semana</button>
+            </div>
+          </div>
+
+          <!-- Cabeçalho dias da semana -->
+          <div class="cal-header">
+            <div class="cal-dia-header">Dom</div>
+            <div class="cal-dia-header">Seg</div>
+            <div class="cal-dia-header">Ter</div>
+            <div class="cal-dia-header">Qua</div>
+            <div class="cal-dia-header">Qui</div>
+            <div class="cal-dia-header">Sex</div>
+            <div class="cal-dia-header">Sáb</div>
+          </div>
+
+          <!-- Grid do calendário -->
+          <div class="cal-grid" id="cal-grid">
+            <div class="com-spinner" style="grid-column:1/-1"></div>
+          </div>
+        </div>
+
+        <!-- Painel lateral: próximas reuniões -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="com-card">
+            <div class="com-card-titulo">Próximas Reuniões</div>
+            <div id="proximas-reunioes"><div class="com-spinner"></div></div>
+          </div>
+          <div class="com-card">
+            <div class="com-card-titulo">Resumo do Mês</div>
+            <div id="resumo-mes" style="display:flex;flex-direction:column;gap:8px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nova / Editar Reunião -->
+<div class="com-modal-overlay com-d-none" id="modal-reuniao">
+  <div class="com-modal">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo" id="modal-reuniao-titulo">Nova Reunião</span>
+      <button class="com-modal-fechar" onclick="fecharModal()">✕</button>
+    </div>
+
+    <div class="com-form-grupo">
+      <label>Título *</label>
+      <input type="text" id="r-titulo" placeholder="Ex.: Apresentação de proposta">
+    </div>
+    <div class="com-grid-2">
+      <div class="com-form-grupo">
+        <label>Lead</label>
+        <input type="text" id="r-lead-busca" placeholder="Buscar lead..." oninput="buscarLeads(this.value)">
+        <input type="hidden" id="r-lead-id">
+        <div id="r-lead-resultados" style="position:relative"></div>
+      </div>
+      <div class="com-form-grupo">
+        <label>Oportunidade</label>
+        <select id="r-oportunidade-id">
+          <option value="">Nenhuma</option>
+        </select>
+      </div>
+      <div class="com-form-grupo">
+        <label>Data *</label>
+        <input type="date" id="r-data">
+      </div>
+      <div class="com-form-grupo">
+        <label>Horário *</label>
+        <input type="time" id="r-hora">
+      </div>
+      <div class="com-form-grupo">
+        <label>Duração (min)</label>
+        <select id="r-duracao">
+          <option value="30">30 min</option>
+          <option value="60" selected>1 hora</option>
+          <option value="90">1h30</option>
+          <option value="120">2 horas</option>
+        </select>
+      </div>
+      <div class="com-form-grupo">
+        <label>Origem</label>
+        <select id="r-origem">
+          <option value="manual">Manual</option>
+          <option value="ia">IA</option>
+          <option value="campanha">Campanha</option>
+        </select>
+      </div>
+    </div>
+    <div class="com-form-grupo">
+      <label>Observações</label>
+      <textarea id="r-observacoes" placeholder="Pauta, contexto, pontos a abordar..."></textarea>
+    </div>
+
+    <!-- Ações de reunião existente -->
+    <div id="acoes-existente" class="com-d-none com-mb-2" style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="com-btn com-btn-ghost com-btn-sm" onclick="concluirReuniao()" style="color:var(--com-verde)">✓ Concluir</button>
+      <button class="com-btn com-btn-ghost com-btn-sm" onclick="cancelarReuniao()" style="color:var(--com-vermelho)">✕ Cancelar</button>
+    </div>
+
+    <div class="com-flex-between com-mt-2">
+      <button class="com-btn com-btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="com-btn com-btn-primario" id="btn-salvar-reuniao" onclick="salvarReuniao()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+const usuario = protegerPagina(['admin','comercial']);
+let mesAtual = new Date();
+let todasReunioes = [];
+let reuniaoEditandoId = null;
+let debounceLeadTimer;
+
+if (usuario) {
+  inicializarLayout();
+  renderizarCalendario();
+  carregarReunioes();
+
+  // URL param: ?lead_id=X
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('lead_id')) {
+    setTimeout(() => {
+      abrirModalNova();
+      document.getElementById('r-lead-id').value = params.get('lead_id');
+      api.get(`/comercial/leads/${params.get('lead_id')}`).then(({ lead }) => {
+        document.getElementById('r-lead-busca').value = lead.nome || lead.empresa || lead.whatsapp;
+        carregarOportunidadesDoLead(params.get('lead_id'));
+      }).catch(() => {});
+    }, 300);
+  }
+}
+
+function setView(v) {
+  document.getElementById('view-mes').classList.toggle('ativo', v === 'mes');
+  document.getElementById('view-semana').classList.toggle('ativo', v === 'semana');
+  if (v === 'semana') mostrarAlerta('Visão semanal em desenvolvimento', 'aviso');
+}
+
+function navegarMes(dir) {
+  mesAtual.setMonth(mesAtual.getMonth() + dir);
+  renderizarCalendario();
+  carregarReunioes();
+}
+
+function irHoje() {
+  mesAtual = new Date();
+  renderizarCalendario();
+  carregarReunioes();
+}
+
+async function carregarReunioes() {
+  const inicio = new Date(mesAtual.getFullYear(), mesAtual.getMonth(), 1).toISOString();
+  const fim = new Date(mesAtual.getFullYear(), mesAtual.getMonth() + 1, 0, 23, 59, 59).toISOString();
+  try {
+    const { reunioes } = await api.get(`/reunioes?data_inicio=${inicio}&data_fim=${fim}`);
+    todasReunioes = reunioes;
+    renderizarCalendario();
+    renderizarProximas();
+    renderizarResumo();
+  } catch {}
+}
+
+function renderizarCalendario() {
+  const ano = mesAtual.getFullYear();
+  const mes = mesAtual.getMonth();
+  document.getElementById('mes-titulo').textContent =
+    mesAtual.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+      .replace(/^\w/, c => c.toUpperCase());
+
+  const hoje = new Date();
+  const primeiroDia = new Date(ano, mes, 1);
+  const ultimoDia = new Date(ano, mes + 1, 0);
+  const inicioPainel = new Date(primeiroDia);
+  inicioPainel.setDate(1 - primeiroDia.getDay());
+
+  const dias = [];
+  const cur = new Date(inicioPainel);
+  while (cur <= ultimoDia || dias.length % 7 !== 0) {
+    dias.push(new Date(cur));
+    cur.setDate(cur.getDate() + 1);
+    if (dias.length > 42) break;
+  }
+
+  document.getElementById('cal-grid').innerHTML = dias.map(dia => {
+    const isHoje = dia.toDateString() === hoje.toDateString();
+    const foraDoMes = dia.getMonth() !== mes;
+    const diaStr = dia.toISOString().split('T')[0];
+    const reunioesDia = todasReunioes.filter(r => r.data_hora?.startsWith(diaStr));
+
+    return `<div class="cal-dia${isHoje ? ' hoje' : ''}${foraDoMes ? ' fora-mes' : ''}"
+                 onclick="clicouDia('${diaStr}')">
+      <div class="cal-dia-num">${dia.getDate()}</div>
+      ${reunioesDia.map(r => `
+        <div class="cal-evento ${r.status}" title="${r.titulo}" onclick="event.stopPropagation();abrirEdicao(${r.id})">
+          ${new Date(r.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} ${r.titulo}
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function renderizarProximas() {
+  const agora = new Date();
+  const proximas = todasReunioes
+    .filter(r => new Date(r.data_hora) >= agora && r.status === 'agendada')
+    .slice(0, 8);
+
+  document.getElementById('proximas-reunioes').innerHTML = proximas.length
+    ? proximas.map(r => `
+      <div style="padding:10px 0;border-bottom:1px solid var(--com-borda-suave);cursor:pointer" onclick="abrirEdicao(${r.id})">
+        <div style="font-size:14px;font-weight:600;color:var(--com-texto)">${r.titulo}</div>
+        <div class="com-text-suave com-text-xs">${r.leads?.nome || r.leads?.empresa || '—'}</div>
+        <div class="com-text-xs" style="color:var(--com-azul-brilho);margin-top:3px">
+          📅 ${new Date(r.data_hora).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
+        </div>
+      </div>`).join('')
+    : '<p class="com-text-suave com-text-sm" style="text-align:center;padding:12px">Nenhuma reunião próxima</p>';
+}
+
+function renderizarResumo() {
+  const agendadas  = todasReunioes.filter(r => r.status === 'agendada').length;
+  const concluidas = todasReunioes.filter(r => r.status === 'concluida').length;
+  const canceladas = todasReunioes.filter(r => r.status === 'cancelada').length;
+
+  document.getElementById('resumo-mes').innerHTML = `
+    ${linhaResumo('📅 Agendadas', agendadas, 'azul')}
+    ${linhaResumo('✅ Concluídas', concluidas, 'verde')}
+    ${linhaResumo('❌ Canceladas', canceladas, 'vermelho')}`;
+}
+
+function linhaResumo(label, val, cor) {
+  return `<div class="com-flex-between"><span class="com-text-sm com-text-suave">${label}</span>
+    <span class="com-badge com-badge-${cor}">${val}</span></div>`;
+}
+
+function clicouDia(dataStr) {
+  abrirModalNova();
+  document.getElementById('r-data').value = dataStr;
+}
+
+function abrirModalNova() {
+  reuniaoEditandoId = null;
+  document.getElementById('modal-reuniao-titulo').textContent = 'Nova Reunião';
+  document.getElementById('acoes-existente').classList.add('com-d-none');
+  document.getElementById('btn-salvar-reuniao').textContent = 'Salvar';
+  ['r-titulo','r-lead-busca','r-lead-id','r-observacoes'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('r-data').value = '';
+  document.getElementById('r-hora').value = '';
+  document.getElementById('r-lead-resultados').innerHTML = '';
+  document.getElementById('r-oportunidade-id').innerHTML = '<option value="">Nenhuma</option>';
+  document.getElementById('modal-reuniao').classList.remove('com-d-none');
+}
+
+async function abrirEdicao(id) {
+  reuniaoEditandoId = id;
+  document.getElementById('modal-reuniao-titulo').textContent = 'Editar Reunião';
+  document.getElementById('modal-reuniao').classList.remove('com-d-none');
+  try {
+    const { reuniao } = await api.get(`/reunioes/${id}`);
+    document.getElementById('r-titulo').value = reuniao.titulo || '';
+    document.getElementById('r-lead-busca').value = reuniao.leads?.nome || reuniao.leads?.empresa || '';
+    document.getElementById('r-lead-id').value = reuniao.lead_id || '';
+    const dt = new Date(reuniao.data_hora);
+    document.getElementById('r-data').value = dt.toISOString().split('T')[0];
+    document.getElementById('r-hora').value = dt.toTimeString().slice(0,5);
+    document.getElementById('r-duracao').value = reuniao.duracao_min || 60;
+    document.getElementById('r-origem').value = reuniao.origem || 'manual';
+    document.getElementById('r-observacoes').value = reuniao.observacoes || '';
+    if (reuniao.oportunidade_id) {
+      const opt = document.createElement('option');
+      opt.value = reuniao.oportunidade_id;
+      opt.textContent = reuniao.oportunidades?.titulo || 'Oportunidade';
+      opt.selected = true;
+      document.getElementById('r-oportunidade-id').appendChild(opt);
+    }
+    if (reuniao.status === 'agendada') {
+      document.getElementById('acoes-existente').classList.remove('com-d-none');
+      document.getElementById('acoes-existente').style.display = 'flex';
+    }
+    document.getElementById('btn-salvar-reuniao').textContent = 'Atualizar';
+  } catch { mostrarAlerta('Erro ao carregar reunião', 'erro'); }
+}
+
+function fecharModal() {
+  document.getElementById('modal-reuniao').classList.add('com-d-none');
+}
+
+async function salvarReuniao() {
+  const titulo = document.getElementById('r-titulo').value.trim();
+  const data   = document.getElementById('r-data').value;
+  const hora   = document.getElementById('r-hora').value;
+  if (!titulo || !data || !hora) { mostrarAlerta('Título, data e horário são obrigatórios', 'erro'); return; }
+
+  const body = {
+    titulo,
+    data_hora: new Date(`${data}T${hora}:00`).toISOString(),
+    duracao_min: Number(document.getElementById('r-duracao').value),
+    lead_id: document.getElementById('r-lead-id').value || null,
+    oportunidade_id: document.getElementById('r-oportunidade-id').value || null,
+    origem: document.getElementById('r-origem').value,
+    observacoes: document.getElementById('r-observacoes').value
+  };
+
+  try {
+    if (reuniaoEditandoId) {
+      await api.patch(`/reunioes/${reuniaoEditandoId}`, body);
+      mostrarAlerta('Reunião atualizada!');
+    } else {
+      await api.post('/reunioes', body);
+      mostrarAlerta('Reunião criada!');
+    }
+    fecharModal();
+    carregarReunioes();
+  } catch { mostrarAlerta('Erro ao salvar reunião', 'erro'); }
+}
+
+async function concluirReuniao() {
+  if (!reuniaoEditandoId) return;
+  try {
+    await api.patch(`/reunioes/${reuniaoEditandoId}`, { status: 'concluida' });
+    mostrarAlerta('Reunião concluída!');
+    fecharModal();
+    carregarReunioes();
+  } catch { mostrarAlerta('Erro', 'erro'); }
+}
+
+async function cancelarReuniao() {
+  if (!reuniaoEditandoId || !confirm('Cancelar esta reunião?')) return;
+  try {
+    await api.patch(`/reunioes/${reuniaoEditandoId}`, { status: 'cancelada' });
+    mostrarAlerta('Reunião cancelada');
+    fecharModal();
+    carregarReunioes();
+  } catch { mostrarAlerta('Erro', 'erro'); }
+}
+
+function buscarLeads(q) {
+  clearTimeout(debounceLeadTimer);
+  if (!q.trim()) { document.getElementById('r-lead-resultados').innerHTML = ''; return; }
+  debounceLeadTimer = setTimeout(async () => {
+    try {
+      const { leads } = await api.get(`/comercial/leads?busca=${encodeURIComponent(q)}&limit=6`);
+      document.getElementById('r-lead-resultados').innerHTML = leads.length
+        ? `<div style="position:absolute;z-index:10;background:var(--com-card);border:1px solid var(--com-borda);border-radius:8px;width:100%;top:4px">${
+          leads.map(l => `<div style="padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--com-borda-suave)"
+            onmouseover="this.style.background='var(--com-card-hover)'"
+            onmouseout="this.style.background=''"
+            onclick="selecionarLead(${l.id},'${(l.nome||l.empresa||l.whatsapp).replace(/'/g,"\\'")}')">
+            <div style="font-size:13px;font-weight:600;color:var(--com-texto)">${l.nome||l.empresa||'—'}</div>
+            <div class="com-text-xs com-text-suave">${l.whatsapp}</div>
+          </div>`).join('')}</div>` : '';
+    } catch {}
+  }, 300);
+}
+
+async function selecionarLead(id, nome) {
+  document.getElementById('r-lead-id').value = id;
+  document.getElementById('r-lead-busca').value = nome;
+  document.getElementById('r-lead-resultados').innerHTML = '';
+  await carregarOportunidadesDoLead(id);
+}
+
+async function carregarOportunidadesDoLead(leadId) {
+  try {
+    const { oportunidades } = await api.get(`/oportunidades?lead_id=${leadId}`);
+    const sel = document.getElementById('r-oportunidade-id');
+    sel.innerHTML = '<option value="">Nenhuma</option>';
+    oportunidades.forEach(op => {
+      const opt = document.createElement('option');
+      opt.value = op.id; opt.textContent = op.titulo;
+      sel.appendChild(opt);
+    });
+  } catch {}
+}
+</script>
+</body>
+</html>

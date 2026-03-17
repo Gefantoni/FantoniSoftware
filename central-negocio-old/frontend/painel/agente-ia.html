@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agente IA — Central do Negócio</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+</head>
+
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar"></aside>
+
+    <main class="app-content">
+      <header class="app-header" id="topbar"></header>
+
+      <div class="pagina" style="display:flex;flex-direction:column;min-height:calc(100vh - 73px);padding-bottom:0">
+        <div class="chat-container"
+          style="flex:1;margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0">
+          <div class="chat-mensagens" id="chat-mensagens">
+            <!-- Mensagem de boas-vindas -->
+            <div class="mensagem mensagem-outro">
+              👋 Olá! Sou o assistente de suporte do sistema PDV. Posso te ajudar com dúvidas sobre o sistema.
+              <div class="mensagem-hora">Agora</div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <textarea class="chat-input" id="chat-input" placeholder="Digite sua dúvida..." rows="1"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarPergunta()}"></textarea>
+            <button class="btn btn-primario" onclick="enviarPergunta()" id="btn-enviar">Enviar</button>
+          </div>
+        </div>
+
+        <!-- Sugestões rápidas -->
+        <div style="padding:12px 0;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como fazer abertura de caixa?')">Abertura de
+            caixa</button>
+          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como emitir nota fiscal?')">Nota
+            fiscal</button>
+          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como cadastrar produto?')">Cadastro de
+            produto</button>
+          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como fazer fechamento de caixa?')">Fechamento
+            de caixa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/sidebar-painel.js"></script>
+  <script>
+    const usuario = protegerPagina(['cliente']);
+    let historico = [];
+
+    if (usuario) inicializarLayout();
+
+    function perguntaRapida(texto) {
+      document.getElementById('chat-input').value = texto;
+      enviarPergunta();
+    }
+
+    async function enviarPergunta() {
+      const input = document.getElementById('chat-input');
+      const pergunta = input.value.trim();
+      if (!pergunta) return;
+
+      const btn = document.getElementById('btn-enviar');
+      input.value = '';
+      btn.disabled = true;
+      btn.textContent = '...';
+
+      // Adiciona mensagem do usuário
+      adicionarMensagem(pergunta, 'minha');
+      historico.push({ role: 'user', content: pergunta });
+
+      // Indicador de digitação
+      const typingId = adicionarMensagem('🤖 Pensando...', 'outro', true);
+
+      try {
+        const { resposta, videoRelacionado } = await api.post('/agente-ia/perguntar', { pergunta, historico: historico.slice(-10) });
+
+        // Remove indicador e adiciona resposta
+        document.getElementById(typingId)?.remove();
+
+        let respostaCompleta = resposta;
+        if (videoRelacionado) {
+          respostaCompleta += `\n\n📹 Existe um vídeo tutorial disponível para essa dúvida.`;
+        }
+
+        adicionarMensagem(respostaCompleta, 'outro');
+        historico.push({ role: 'assistant', content: resposta });
+
+        // Botão de vídeo se houver
+        if (videoRelacionado) {
+          adicionarBotaoVideo(videoRelacionado);
+        }
+      } catch (err) {
+        document.getElementById(typingId)?.remove();
+        adicionarMensagem('Desculpe, ocorreu um erro. Por favor, tente novamente ou abra um chamado.', 'outro');
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Enviar';
+    }
+
+    function adicionarMensagem(texto, tipo, comId = false) {
+      const container = document.getElementById('chat-mensagens');
+      const id = comId ? 'msg-' + Date.now() : '';
+      const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+      const el = document.createElement('div');
+      el.className = `mensagem mensagem-${tipo}`;
+      if (id) el.id = id;
+      el.innerHTML = `${esc(texto).replace(/\n/g, '<br>')}<div class="mensagem-hora">${hora}</div>`;
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+      return id;
+    }
+
+    function adicionarBotaoVideo(url) {
+      const container = document.getElementById('chat-mensagens');
+      const el = document.createElement('div');
+      el.style.cssText = 'align-self:flex-start;margin-top:4px';
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.target = '_blank';
+      a.className = 'btn btn-acento btn-sm';
+      a.textContent = '▶ Assistir vídeo tutorial';
+      el.appendChild(a);
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function limparConversa() {
+      historico = [];
+      const container = document.getElementById('chat-mensagens');
+      container.innerHTML = `
+      <div class="mensagem mensagem-outro">
+        👋 Olá! Sou o assistente de suporte do sistema PDV. Posso te ajudar com dúvidas sobre o sistema.
+        <div class="mensagem-hora">Agora</div>
+      </div>`;
+    }
+  </script>
+      </div><!-- /pagina -->
+    </main><!-- /app-content -->
+  </div><!-- /app-layout -->
+
+</html>

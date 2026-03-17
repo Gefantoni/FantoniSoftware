@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Importar Leads — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
+</head>
+<body class="com-page">
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <a href="/admin/comercial/leads.html" class="com-btn com-btn-ghost com-btn-sm">← Voltar</a>
+        <span class="topbar-titulo">⬆️ Importar Lista de Leads</span>
+      </div>
+    </div>
+
+    <div class="pagina" style="padding:24px;max-width:900px;margin:0 auto">
+
+      <!-- Stepper -->
+      <div style="display:flex;gap:0;margin-bottom:32px;border:1px solid var(--com-borda);border-radius:12px;overflow:hidden">
+        <div class="step-item ativo" id="step-1-btn">1. Upload</div>
+        <div class="step-item" id="step-2-btn">2. Mapeamento</div>
+        <div class="step-item" id="step-3-btn">3. Validação</div>
+        <div class="step-item" id="step-4-btn">4. Regras</div>
+        <div class="step-item" id="step-5-btn">5. Confirmar</div>
+      </div>
+
+      <!-- Etapa 1: Upload -->
+      <div id="step-1">
+        <div class="com-card">
+          <div class="com-card-titulo">Enviar Arquivo</div>
+          <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+            <div class="upload-zona-icone">📁</div>
+            <div class="upload-zona-texto">
+              <strong>Clique para selecionar</strong> ou arraste o arquivo aqui<br>
+              Formatos aceitos: <strong>.CSV, .XLS, .XLSX</strong>
+            </div>
+          </div>
+          <input type="file" id="file-input" accept=".csv,.xls,.xlsx" style="display:none" onchange="lerArquivo(event)">
+          <div id="preview-arquivo" class="com-mt-2"></div>
+          <div class="com-mt-3">
+            <button class="com-btn com-btn-primario" id="btn-step1" onclick="irStep(2)" disabled>Próximo →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 2: Mapeamento -->
+      <div id="step-2" class="com-d-none">
+        <div class="com-card">
+          <div class="com-card-titulo">Mapeamento de Colunas</div>
+          <p class="com-text-suave com-text-sm com-mb-3">Associe as colunas do seu arquivo aos campos do sistema.</p>
+          <div id="mapeamento-grid" class="com-grid-2"></div>
+          <div class="com-flex-between com-mt-3">
+            <button class="com-btn com-btn-ghost" onclick="irStep(1)">← Voltar</button>
+            <button class="com-btn com-btn-primario" onclick="validarImportacao()">Validar →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 3: Validação -->
+      <div id="step-3" class="com-d-none">
+        <div class="com-card">
+          <div class="com-card-titulo">Resultado da Validação</div>
+          <div id="validacao-resultado"></div>
+          <div id="preview-tabela" style="max-height:300px;overflow-y:auto;margin-top:16px"></div>
+          <div class="com-flex-between com-mt-3">
+            <button class="com-btn com-btn-ghost" onclick="irStep(2)">← Voltar</button>
+            <button class="com-btn com-btn-primario" onclick="irStep(4)">Próximo →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 4: Regras -->
+      <div id="step-4" class="com-d-none">
+        <div class="com-card">
+          <div class="com-card-titulo">Regras de Importação</div>
+          <div class="com-form-grupo">
+            <div class="toggle-wrap">
+              <label class="toggle"><input type="checkbox" id="r-ignorar" checked><span class="toggle-slider"></span></label>
+              <span class="toggle-label">Ignorar duplicados (mesmo WhatsApp)</span>
+            </div>
+          </div>
+          <div class="com-form-grupo">
+            <div class="toggle-wrap">
+              <label class="toggle"><input type="checkbox" id="r-atualizar"><span class="toggle-slider"></span></label>
+              <span class="toggle-label">Atualizar dados faltantes de leads existentes</span>
+            </div>
+          </div>
+          <div class="com-grid-2">
+            <div class="com-form-grupo">
+              <label>Vincular à Campanha</label>
+              <select id="r-campanha">
+                <option value="">Nenhuma</option>
+              </select>
+            </div>
+            <div class="com-form-grupo">
+              <label>Origem padrão</label>
+              <input type="text" id="r-origem" placeholder="Ex.: planilha-outubro, evento-abc">
+            </div>
+          </div>
+          <div class="com-flex-between com-mt-3">
+            <button class="com-btn com-btn-ghost" onclick="irStep(3)">← Voltar</button>
+            <button class="com-btn com-btn-primario" onclick="irStep(5)">Próximo →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 5: Confirmação -->
+      <div id="step-5" class="com-d-none">
+        <div class="com-card">
+          <div class="com-card-titulo">Confirmar Importação</div>
+          <div id="resumo-final" class="com-mb-3"></div>
+          <div id="resultado-importacao" class="com-d-none com-mb-3"></div>
+          <div class="com-flex-between">
+            <button class="com-btn com-btn-ghost" id="btn-voltar-5" onclick="irStep(4)">← Voltar</button>
+            <button class="com-btn com-btn-primario" id="btn-importar" onclick="executarImportacao()">✅ Importar Agora</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+.step-item {
+  flex:1; padding:12px 8px; text-align:center;
+  font-size:13px; font-weight:500; color:var(--com-suave);
+  border-right:1px solid var(--com-borda);
+  background:var(--com-card);
+}
+.step-item:last-child { border-right:none; }
+.step-item.ativo { color:var(--com-azul-brilho); background:rgba(37,99,235,0.1); font-weight:600; }
+.step-item.concluido { color:var(--com-verde); }
+</style>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+const usuario = protegerPagina(['admin','comercial']);
+if (usuario) { inicializarLayout(); carregarCampanhas(); }
+
+let dadosBrutos = [];
+let colunas = [];
+let mapeamento = {};
+let dadosValidados = [];
+
+const CAMPOS_SISTEMA = [
+  { valor: '', label: '— Ignorar' },
+  { valor: 'nome', label: 'Nome' },
+  { valor: 'empresa', label: 'Empresa' },
+  { valor: 'whatsapp', label: 'WhatsApp / Telefone *' },
+  { valor: 'cidade', label: 'Cidade' },
+  { valor: 'segmento', label: 'Segmento' },
+  { valor: 'observacoes', label: 'Observações' },
+  { valor: 'origem', label: 'Origem' }
+];
+
+// Drag and drop
+const uploadZone = document.getElementById('upload-zone');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processarArquivo(file);
+});
+
+function lerArquivo(event) {
+  const file = event.target.files[0];
+  if (file) processarArquivo(file);
+}
+
+function processarArquivo(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['csv','xls','xlsx'].includes(ext)) {
+    mostrarAlerta('Formato inválido. Use CSV, XLS ou XLSX', 'erro'); return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (ext === 'csv') processarCSV(e.target.result);
+    else mostrarAlerta('XLS/XLSX: use "Salvar como CSV" para importar', 'aviso');
+  };
+  reader.readAsText(file, 'UTF-8');
+  document.getElementById('preview-arquivo').innerHTML = `<div class="com-alerta com-alerta-info">📁 Arquivo selecionado: <strong>${file.name}</strong> (${(file.size/1024).toFixed(1)} KB)</div>`;
+}
+
+function processarCSV(texto) {
+  const linhas = texto.split('\n').filter(l => l.trim());
+  if (linhas.length < 2) { mostrarAlerta('Arquivo vazio ou sem dados', 'erro'); return; }
+
+  const separador = linhas[0].includes(';') ? ';' : ',';
+  colunas = linhas[0].split(separador).map(c => c.trim().replace(/"/g,''));
+  dadosBrutos = linhas.slice(1).map(l => {
+    const cols = l.split(separador).map(c => c.trim().replace(/"/g,''));
+    const obj = {};
+    colunas.forEach((col, i) => { obj[col] = cols[i] || ''; });
+    return obj;
+  }).filter(r => Object.values(r).some(v => v));
+
+  document.getElementById('preview-arquivo').innerHTML += `
+    <div class="com-alerta com-alerta-sucesso">✓ ${dadosBrutos.length} registros lidos · ${colunas.length} colunas</div>`;
+  document.getElementById('btn-step1').disabled = false;
+
+  // Auto-mapeamento inteligente
+  mapeamento = {};
+  colunas.forEach(col => {
+    const c = col.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if (/nome|name/.test(c)) mapeamento[col] = 'nome';
+    else if (/empresa|company|razao|fantasia/.test(c)) mapeamento[col] = 'empresa';
+    else if (/whats|phone|tel|fone|numero/.test(c)) mapeamento[col] = 'whatsapp';
+    else if (/cidade|city/.test(c)) mapeamento[col] = 'cidade';
+    else if (/segmento|setor|ramo/.test(c)) mapeamento[col] = 'segmento';
+    else if (/obs|nota|comment/.test(c)) mapeamento[col] = 'observacoes';
+    else if (/origem|source/.test(c)) mapeamento[col] = 'origem';
+    else mapeamento[col] = '';
+  });
+}
+
+function irStep(n) {
+  [1,2,3,4,5].forEach(i => {
+    document.getElementById(`step-${i}`).classList.toggle('com-d-none', i !== n);
+    const btn = document.getElementById(`step-${i}-btn`);
+    btn.className = 'step-item' + (i === n ? ' ativo' : i < n ? ' concluido' : '');
+  });
+  if (n === 2) renderizarMapeamento();
+  if (n === 5) renderizarResumoFinal();
+}
+
+function renderizarMapeamento() {
+  document.getElementById('mapeamento-grid').innerHTML = colunas.map(col => `
+    <div class="com-form-grupo">
+      <label>${col} <span class="com-text-suave">(ex: "${dadosBrutos[0]?.[col] || ''}")</span></label>
+      <select onchange="mapeamento['${col}'] = this.value">
+        ${CAMPOS_SISTEMA.map(c => `<option value="${c.valor}" ${mapeamento[col]===c.valor?'selected':''}>${c.label}</option>`).join('')}
+      </select>
+    </div>
+  `).join('');
+}
+
+function validarImportacao() {
+  const temWhatsapp = Object.values(mapeamento).includes('whatsapp');
+  if (!temWhatsapp) { mostrarAlerta('Mapeie pelo menos a coluna WhatsApp / Telefone', 'erro'); return; }
+
+  dadosValidados = [];
+  let semTelefone = 0, duplicados = new Set();
+
+  dadosBrutos.forEach(row => {
+    const tel = (row[Object.keys(mapeamento).find(k => mapeamento[k] === 'whatsapp')] || '').replace(/\D/g,'');
+    if (!tel) { semTelefone++; return; }
+    const lead = { whatsapp: tel };
+    Object.entries(mapeamento).forEach(([col, campo]) => { if (campo && campo !== 'whatsapp') lead[campo] = row[col]; });
+    if (duplicados.has(tel)) return;
+    duplicados.add(tel);
+    dadosValidados.push(lead);
+  });
+
+  document.getElementById('validacao-resultado').innerHTML = `
+    <div class="com-grid-2 com-mb-2">
+      <div class="com-alerta com-alerta-sucesso">✓ <strong>${dadosValidados.length}</strong> registros válidos para importar</div>
+      ${semTelefone ? `<div class="com-alerta com-alerta-aviso">⚠️ <strong>${semTelefone}</strong> sem telefone (serão ignorados)</div>` : ''}
+      ${dadosBrutos.length - dadosValidados.length - semTelefone > 0 ? `<div class="com-alerta com-alerta-aviso">♻️ <strong>${dadosBrutos.length - dadosValidados.length - semTelefone}</strong> duplicados na lista</div>` : ''}
+    </div>`;
+
+  // Preview dos primeiros 5
+  document.getElementById('preview-tabela').innerHTML = `
+    <table class="com-tabela" style="font-size:12px">
+      <thead><tr>${Object.keys(dadosValidados[0]||{}).map(k=>`<th>${k}</th>`).join('')}</tr></thead>
+      <tbody>${dadosValidados.slice(0,5).map(r=>`<tr>${Object.values(r).map(v=>`<td>${v||'—'}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+    <p class="com-text-suave com-text-xs com-mt-1">Mostrando 5 de ${dadosValidados.length} registros</p>`;
+
+  irStep(3);
+}
+
+function renderizarResumoFinal() {
+  const campanha = document.getElementById('r-campanha').value;
+  const campanhaNome = campanha ? document.getElementById('r-campanha').options[document.getElementById('r-campanha').selectedIndex].text : 'Nenhuma';
+  document.getElementById('resumo-final').innerHTML = `
+    <div class="com-grid-2">
+      <div class="com-alerta com-alerta-info">📊 <strong>${dadosValidados.length}</strong> leads serão importados</div>
+      <div class="com-alerta com-alerta-info">📢 Campanha: <strong>${campanhaNome}</strong></div>
+      <div class="com-alerta com-alerta-info">🔄 Duplicados: <strong>${document.getElementById('r-ignorar').checked ? 'Ignorar' : 'Atualizar dados'}</strong></div>
+      <div class="com-alerta com-alerta-info">🏷️ Origem: <strong>${document.getElementById('r-origem').value || 'importacao'}</strong></div>
+    </div>`;
+}
+
+async function executarImportacao() {
+  if (!dadosValidados.length) return mostrarAlerta('Nenhum dado para importar', 'erro');
+  const btn = document.getElementById('btn-importar');
+  const voltar = document.getElementById('btn-voltar-5');
+  btn.disabled = true; btn.textContent = 'Importando...';
+  voltar.disabled = true;
+
+  try {
+    const { resultados } = await api.post('/comercial/leads/importar', {
+      leads: dadosValidados,
+      campanha_id: document.getElementById('r-campanha').value || null,
+      origem: document.getElementById('r-origem').value || 'importacao',
+      ignorar_duplicados: document.getElementById('r-ignorar').checked
+    });
+
+    document.getElementById('resultado-importacao').classList.remove('com-d-none');
+    document.getElementById('resultado-importacao').innerHTML = `
+      <div class="com-alerta com-alerta-sucesso">✅ Importação concluída! <strong>${resultados.importados}</strong> importados · ${resultados.duplicados} duplicados · ${resultados.invalidos} inválidos</div>
+      <div style="margin-top:12px">
+        <a href="/admin/comercial/leads.html" class="com-btn com-btn-primario">Ver Leads →</a>
+      </div>`;
+    btn.style.display = 'none';
+    voltar.style.display = 'none';
+  } catch {
+    mostrarAlerta('Erro ao importar. Verifique o arquivo.', 'erro');
+    btn.disabled = false; btn.textContent = '✅ Importar Agora';
+    voltar.disabled = false;
+  }
+}
+
+async function carregarCampanhas() {
+  try {
+    const { campanhas } = await api.get('/campanhas');
+    const sel = document.getElementById('r-campanha');
+    campanhas.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id; opt.textContent = c.nome;
+      sel.appendChild(opt);
+    });
+  } catch {}
+}
+</script>
+</body>
+</html>

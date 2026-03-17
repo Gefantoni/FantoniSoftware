@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leads — Comercial — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
+</head>
+<body class="com-page">
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">👤 Leads</span>
+      </div>
+      <div class="flex gap-2">
+        <a href="/admin/comercial/importar.html" class="com-btn com-btn-outline com-btn-sm">⬆️ Importar Lista</a>
+        <button class="com-btn com-btn-primario com-btn-sm" onclick="abrirModalNovoLead()">+ Novo Lead</button>
+      </div>
+    </div>
+
+    <div class="pagina" style="padding:24px">
+
+      <!-- Filtros -->
+      <div class="filtros-barra">
+        <input type="search" id="busca" placeholder="🔍 Buscar por nome, empresa, WhatsApp..." style="min-width:260px" oninput="debounceCarregar()">
+        <select id="f-status" onchange="carregarLeads()">
+          <option value="">Todos os status</option>
+          <option value="novo">Novo</option>
+          <option value="qualificado">Qualificado</option>
+          <option value="convertido">Convertido</option>
+          <option value="perdido">Perdido</option>
+        </select>
+        <select id="f-interesse" onchange="carregarLeads()">
+          <option value="">Todos</option>
+          <option value="true">Com interesse</option>
+          <option value="false">Sem interesse</option>
+        </select>
+        <select id="f-kanban" onchange="carregarLeads()">
+          <option value="">Kanban: todos</option>
+          <option value="true">No Kanban</option>
+          <option value="false">Fora do Kanban</option>
+        </select>
+        <input type="text" id="f-cidade" placeholder="Cidade..." oninput="debounceCarregar()" style="width:130px">
+        <select id="f-segmento" onchange="carregarLeads()">
+          <option value="">Segmento</option>
+          <option value="restaurante">Restaurante</option>
+          <option value="varejo">Varejo</option>
+          <option value="servicos">Serviços</option>
+          <option value="industria">Indústria</option>
+          <option value="outro">Outro</option>
+        </select>
+        <button class="com-btn com-btn-ghost com-btn-sm" onclick="limparFiltros()">Limpar</button>
+      </div>
+
+      <!-- Ações em massa -->
+      <div id="bulk-actions" class="com-d-none" style="background:rgba(37,99,235,0.1);border:1px solid var(--com-borda);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:center">
+        <span class="com-text-sm com-text-suave"><strong id="bulk-count" style="color:var(--com-azul-brilho)">0</strong> selecionados</span>
+        <select id="bulk-acao" style="background:var(--com-card);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px">
+          <option value="">Ação em massa...</option>
+          <option value="campanha">Adicionar à campanha</option>
+          <option value="status">Atualizar status</option>
+          <option value="arquivar">Arquivar</option>
+        </select>
+        <select id="bulk-valor" class="com-d-none" style="background:var(--com-card);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px"></select>
+        <button class="com-btn com-btn-primario com-btn-sm" onclick="executarBulk()">Aplicar</button>
+        <button class="com-btn com-btn-ghost com-btn-sm" onclick="limparSelecao()">Cancelar</button>
+      </div>
+
+      <!-- Tabela -->
+      <div class="com-card" style="padding:0;overflow:hidden">
+        <div class="com-tabela-container">
+          <table class="com-tabela">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="check-all" onchange="toggleAll(this)"></th>
+                <th>Nome / Empresa</th>
+                <th>Telefone</th>
+                <th>Cidade</th>
+                <th>Segmento</th>
+                <th>Origem</th>
+                <th>Interesse</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Criado em</th>
+                <th>Responsável</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tbody-leads">
+              <tr><td colspan="12" style="text-align:center;padding:40px"><div class="com-spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:16px;border-top:1px solid var(--com-borda);display:flex;justify-content:space-between;align-items:center">
+          <span class="com-text-suave com-text-sm" id="paginacao-info"></span>
+          <div class="com-flex com-gap-1">
+            <button class="com-btn com-btn-ghost com-btn-sm" id="btn-anterior" onclick="mudarPagina(-1)">← Anterior</button>
+            <button class="com-btn com-btn-ghost com-btn-sm" id="btn-proximo" onclick="mudarPagina(1)">Próximo →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer: Detalhes do Lead -->
+<div class="com-drawer" id="drawer-lead">
+  <div class="com-drawer-header">
+    <span class="com-modal-titulo" id="drawer-titulo">Lead</span>
+    <button class="com-modal-fechar" onclick="fecharDrawer()">✕</button>
+  </div>
+  <div class="com-drawer-body" id="drawer-body">
+    <div class="com-spinner"></div>
+  </div>
+</div>
+<div id="drawer-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:499" onclick="fecharDrawer()"></div>
+
+<!-- Modal: Novo Lead -->
+<div class="com-modal-overlay com-d-none" id="modal-novo-lead">
+  <div class="com-modal">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo">Novo Lead</span>
+      <button class="com-modal-fechar" onclick="fecharModalNovoLead()">✕</button>
+    </div>
+    <form onsubmit="salvarNovoLead(event)">
+      <div class="com-grid-2">
+        <div class="com-form-grupo">
+          <label>Nome</label>
+          <input type="text" id="nl-nome" placeholder="João Silva">
+        </div>
+        <div class="com-form-grupo">
+          <label>Empresa</label>
+          <input type="text" id="nl-empresa" placeholder="Empresa Ltda">
+        </div>
+        <div class="com-form-grupo">
+          <label>WhatsApp *</label>
+          <input type="text" id="nl-whatsapp" placeholder="5511999999999" required>
+        </div>
+        <div class="com-form-grupo">
+          <label>Cidade</label>
+          <input type="text" id="nl-cidade" placeholder="São Paulo">
+        </div>
+        <div class="com-form-grupo">
+          <label>Segmento</label>
+          <select id="nl-segmento">
+            <option value="">Selecione...</option>
+            <option value="restaurante">Restaurante</option>
+            <option value="varejo">Varejo</option>
+            <option value="servicos">Serviços</option>
+            <option value="industria">Indústria</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="com-form-grupo">
+          <label>Origem</label>
+          <input type="text" id="nl-origem" placeholder="Site, Indicação, etc.">
+        </div>
+      </div>
+      <div class="com-form-grupo">
+        <label>Observações</label>
+        <textarea id="nl-notas" placeholder="Notas sobre o lead..."></textarea>
+      </div>
+      <div class="com-flex-between com-mt-2">
+        <button type="button" class="com-btn com-btn-ghost" onclick="fecharModalNovoLead()">Cancelar</button>
+        <button type="submit" id="btn-salvar-lead" class="com-btn com-btn-primario">Salvar Lead</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+const usuario = protegerPagina(['admin','comercial']);
+let leadSelecionados = [];
+let paginaAtual = 0;
+const POR_PAGINA = 50;
+let totalLeads = 0;
+let debounceTimer;
+
+if (usuario) { inicializarLayout(); carregarLeads(); carregarCampanhasParaBulk(); }
+
+function debounceCarregar() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => carregarLeads(), 400);
+}
+
+function limparFiltros() {
+  ['busca','f-status','f-interesse','f-kanban','f-cidade','f-segmento'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  paginaAtual = 0;
+  carregarLeads();
+}
+
+function mudarPagina(dir) {
+  const novaPagina = paginaAtual + dir;
+  if (novaPagina < 0) return;
+  if (novaPagina * POR_PAGINA >= totalLeads) return;
+  paginaAtual = novaPagina;
+  carregarLeads();
+}
+
+async function carregarLeads() {
+  const params = new URLSearchParams({
+    limit: POR_PAGINA, offset: paginaAtual * POR_PAGINA
+  });
+  const busca = document.getElementById('busca').value.trim();
+  if (busca) params.set('busca', busca);
+  const status = document.getElementById('f-status').value;
+  if (status) params.set('status', status);
+  const interesse = document.getElementById('f-interesse').value;
+  if (interesse) params.set('com_interesse', interesse);
+  const kanban = document.getElementById('f-kanban').value;
+  if (kanban) params.set('no_kanban', kanban);
+  const cidade = document.getElementById('f-cidade').value.trim();
+  if (cidade) params.set('cidade', cidade);
+  const segmento = document.getElementById('f-segmento').value;
+  if (segmento) params.set('segmento', segmento);
+
+  document.getElementById('tbody-leads').innerHTML = `<tr><td colspan="12" style="text-align:center;padding:40px"><div class="com-spinner"></div></td></tr>`;
+  try {
+    const { leads, total } = await api.get('/comercial/leads?' + params.toString());
+    totalLeads = total || leads.length;
+    renderizarLeads(leads);
+    const de = paginaAtual * POR_PAGINA + 1;
+    const ate = Math.min(de + leads.length - 1, totalLeads);
+    document.getElementById('paginacao-info').textContent = `${de}–${ate} de ${totalLeads} leads`;
+    document.getElementById('btn-anterior').disabled = paginaAtual === 0;
+    document.getElementById('btn-proximo').disabled = ate >= totalLeads;
+  } catch { document.getElementById('tbody-leads').innerHTML = `<tr><td colspan="12" style="text-align:center;color:var(--com-vermelho)">Erro ao carregar leads</td></tr>`; }
+}
+
+const statusBadge = { novo:'azul', qualificado:'amarelo', convertido:'verde', perdido:'vermelho' };
+
+function renderizarLeads(leads) {
+  if (!leads.length) {
+    document.getElementById('tbody-leads').innerHTML = `<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--com-suave)">Nenhum lead encontrado</td></tr>`;
+    return;
+  }
+  document.getElementById('tbody-leads').innerHTML = leads.map(l => `
+    <tr>
+      <td><input type="checkbox" class="lead-check" value="${l.id}" onchange="atualizarSelecao()"></td>
+      <td>
+        <div style="font-weight:600;color:var(--com-texto)">${esc(l.nome || l.empresa || '—')}</div>
+        ${l.nome && l.empresa ? `<div class="com-text-suave com-text-xs">${esc(l.empresa)}</div>` : ''}
+      </td>
+      <td class="td-suave">${esc(l.whatsapp || '—')}</td>
+      <td class="td-suave">${esc(l.cidade || '—')}</td>
+      <td class="td-suave">${esc(l.segmento || '—')}</td>
+      <td class="td-suave">${esc(l.origem || '—')}</td>
+      <td>${l.interesse_detectado ? '<span class="com-badge com-badge-verde">✓ Sim</span>' : '<span class="com-badge com-badge-cinza">—</span>'}</td>
+      <td>
+        <div class="score-bar ${l.score >= 70 ? 'score-alto' : l.score >= 40 ? 'score-medio' : 'score-baixo'}">
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:${l.score || 0}%"></div></div>
+          <span class="com-text-xs com-text-suave">${l.score || 0}</span>
+        </div>
+      </td>
+      <td><span class="com-badge com-badge-${statusBadge[l.status]||'cinza'}">${esc(l.status)}</span></td>
+      <td class="td-suave">${formatarData(l.criado_em)}</td>
+      <td class="td-suave">${esc(l.perfis?.nome || '—')}</td>
+      <td>
+        <button class="com-btn com-btn-ghost com-btn-sm" onclick="abrirLead(${l.id})">Ver →</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function atualizarSelecao() {
+  leadSelecionados = Array.from(document.querySelectorAll('.lead-check:checked')).map(c => Number(c.value));
+  const bulkDiv = document.getElementById('bulk-actions');
+  const bulkCount = document.getElementById('bulk-count');
+  if (leadSelecionados.length > 0) {
+    bulkDiv.classList.remove('com-d-none');
+    bulkDiv.style.display = 'flex';
+    bulkCount.textContent = leadSelecionados.length;
+  } else {
+    bulkDiv.classList.add('com-d-none');
+  }
+}
+
+function toggleAll(cb) {
+  document.querySelectorAll('.lead-check').forEach(c => { c.checked = cb.checked; });
+  atualizarSelecao();
+}
+
+function limparSelecao() {
+  document.querySelectorAll('.lead-check').forEach(c => { c.checked = false; });
+  document.getElementById('check-all').checked = false;
+  leadSelecionados = [];
+  document.getElementById('bulk-actions').classList.add('com-d-none');
+}
+
+document.getElementById('bulk-acao')?.addEventListener('change', function() {
+  const bulkValor = document.getElementById('bulk-valor');
+  if (this.value === 'status') {
+    bulkValor.innerHTML = '<option value="novo">Novo</option><option value="qualificado">Qualificado</option><option value="convertido">Convertido</option><option value="perdido">Perdido</option>';
+    bulkValor.classList.remove('com-d-none');
+  } else if (this.value === 'campanha') {
+    api.get('/campanhas').then(({ campanhas }) => {
+      bulkValor.innerHTML = campanhas.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+      bulkValor.classList.remove('com-d-none');
+    });
+  } else {
+    bulkValor.classList.add('com-d-none');
+  }
+});
+
+async function executarBulk() {
+  const acao = document.getElementById('bulk-acao').value;
+  const valor = document.getElementById('bulk-valor').value;
+  if (!acao) return mostrarAlerta('Selecione uma ação', 'erro');
+  if (!leadSelecionados.length) return mostrarAlerta('Selecione leads', 'erro');
+  try {
+    await api.post('/comercial/leads/bulk', { lead_ids: leadSelecionados, acao, valor });
+    mostrarAlerta(`${leadSelecionados.length} leads atualizados`);
+    limparSelecao();
+    carregarLeads();
+  } catch { mostrarAlerta('Erro na operação', 'erro'); }
+}
+
+async function abrirLead(id) {
+  document.getElementById('drawer-titulo').textContent = '…';
+  document.getElementById('drawer-body').innerHTML = '<div class="com-spinner"></div>';
+  document.getElementById('drawer-lead').classList.add('aberto');
+  document.getElementById('drawer-overlay').style.display = 'block';
+
+  try {
+    const { lead, conversas, campanhas, reunioes, oportunidade } = await api.get(`/comercial/leads/${id}`);
+    document.getElementById('drawer-titulo').textContent = lead.nome || lead.empresa || 'Lead';
+    document.getElementById('drawer-body').innerHTML = `
+      <div class="contexto-secao">
+        <h4>Dados Cadastrais</h4>
+        ${campo('Nome', lead.nome)} ${campo('Empresa', lead.empresa)}
+        ${campo('WhatsApp', lead.whatsapp)} ${campo('Cidade', lead.cidade)}
+        ${campo('Segmento', lead.segmento)} ${campo('Origem', lead.origem)}
+      </div>
+      <div class="contexto-secao">
+        <h4>Status Comercial</h4>
+        <div class="com-form-grupo">
+          <label>Status</label>
+          <select id="lead-status-sel" onchange="atualizarStatusLead(${id})" style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:8px 12px;font-size:14px;width:100%">
+            ${['novo','qualificado','convertido','perdido'].map(s => `<option value="${s}" ${lead.status===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        ${campo('Score', (lead.score || 0) + '/100')}
+        ${campo('Interesse', lead.interesse_detectado ? '✓ Detectado' : 'Não')}
+        ${campo('No Kanban', lead.no_kanban ? '✓ Sim' : 'Não')}
+        ${oportunidade ? `<div style="margin-top:12px"><a href="/admin/comercial/kanban.html" class="com-btn com-btn-outline com-btn-sm com-w-100">Ver no Kanban →</a></div>` : `<div style="margin-top:12px"><button class="com-btn com-btn-ghost com-btn-sm com-w-100" onclick="enviarKanban(${id})">+ Enviar para Kanban</button></div>`}
+      </div>
+      ${campanhas.length ? `<div class="contexto-secao"><h4>Campanhas (${campanhas.length})</h4>${campanhas.map(c => `<div class="com-flex-between com-mb-1"><span class="com-text-sm">${esc(c.campanhas?.nome)}</span><span class="com-badge com-badge-${c.status==='respondeu'||c.status==='interesse'?'verde':'cinza'}">${esc(c.status)}</span></div>`).join('')}</div>` : ''}
+      ${reunioes.length ? `<div class="contexto-secao"><h4>Reuniões (${reunioes.length})</h4>${reunioes.map(r => `<div class="com-mb-1"><div class="com-text-sm com-fw-600">${esc(r.titulo)}</div><div class="com-text-xs com-text-suave">${formatarDataHora(r.data_hora)} · <span class="com-badge com-badge-${r.status==='concluida'?'verde':r.status==='cancelada'?'vermelho':'azul'}">${esc(r.status)}</span></div></div>`).join('')}</div>` : ''}
+      <div class="contexto-secao">
+        <h4>Histórico SDR (${conversas.length})</h4>
+        ${conversas.length ? conversas.slice(-6).map(c => `
+          <div class="msg-bubble msg-lead com-mb-1">${esc(c.mensagem_lead)}<div class="msg-hora">${formatarData(c.criado_em)}</div></div>
+          <div class="msg-bubble msg-ia com-mb-2">${esc(c.resposta_ia)}</div>
+        `).join('') : '<p class="com-text-suave com-text-sm">Sem histórico</p>'}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <button class="com-btn com-btn-ghost com-btn-sm" onclick="alert('Integração Chatwoot necessária')">💬 Abrir Conversa</button>
+        <button class="com-btn com-btn-outline com-btn-sm" onclick="abrirModalReuniao(${id})">📅 Agendar Reunião</button>
+      </div>`;
+  } catch { document.getElementById('drawer-body').innerHTML = '<p class="com-text-suave">Erro ao carregar lead</p>'; }
+}
+
+function campo(label, valor) {
+  return `<div class="contexto-item"><span>${esc(label)}</span><span>${esc(valor || '—')}</span></div>`;
+}
+
+function fecharDrawer() {
+  document.getElementById('drawer-lead').classList.remove('aberto');
+  document.getElementById('drawer-overlay').style.display = 'none';
+}
+
+async function atualizarStatusLead(id) {
+  const status = document.getElementById('lead-status-sel').value;
+  try {
+    await api.patch(`/comercial/leads/${id}`, { status });
+    mostrarAlerta('Status atualizado!');
+    carregarLeads();
+  } catch { mostrarAlerta('Erro ao atualizar', 'erro'); }
+}
+
+async function enviarKanban(leadId) {
+  try {
+    await api.post('/oportunidades', { lead_id: leadId, motivo_qualificacao: 'Enviado manualmente' });
+    mostrarAlerta('Lead enviado para o Kanban!');
+    abrirLead(leadId);
+    carregarLeads();
+  } catch { mostrarAlerta('Erro ao enviar para Kanban', 'erro'); }
+}
+
+function abrirModalNovoLead() { document.getElementById('modal-novo-lead').classList.remove('com-d-none'); }
+function fecharModalNovoLead() { document.getElementById('modal-novo-lead').classList.add('com-d-none'); }
+
+async function salvarNovoLead(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-salvar-lead');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  const body = {
+    nome: document.getElementById('nl-nome').value,
+    empresa: document.getElementById('nl-empresa').value,
+    whatsapp: document.getElementById('nl-whatsapp').value,
+    cidade: document.getElementById('nl-cidade').value,
+    segmento: document.getElementById('nl-segmento').value,
+    origem: document.getElementById('nl-origem').value,
+    notas: document.getElementById('nl-notas').value
+  };
+  try {
+    await api.post('/comercial/leads', body);
+    mostrarAlerta('Lead cadastrado!');
+    fecharModalNovoLead();
+    carregarLeads();
+  } catch { mostrarAlerta('Erro ao salvar lead', 'erro'); }
+  finally { btn.disabled = false; btn.textContent = 'Salvar Lead'; }
+}
+
+async function carregarCampanhasParaBulk() {
+  // Pre-load se necessário (lazy loading via evento de change)
+}
+
+function abrirModalReuniao(leadId) {
+  window.location.href = `/admin/comercial/calendario.html?lead_id=${leadId}`;
+}
+
+function formatarDataHora(iso) {
+  if (!iso) return '—';
+  return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
+}
+</script>
+</body>
+</html>

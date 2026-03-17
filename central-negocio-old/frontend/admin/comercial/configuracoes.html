@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações — Comercial — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
+</head>
+<body class="com-page">
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">⚙️ Configurações Comerciais</span>
+      </div>
+    </div>
+
+    <div class="pagina" style="padding:24px">
+      <div class="com-tabs">
+        <button class="com-tab-btn ativo" onclick="setTab('instancias',this)">📱 Instâncias</button>
+        <button class="com-tab-btn" onclick="setTab('tags',this)">🏷️ Tags</button>
+        <button class="com-tab-btn" onclick="setTab('campos',this)">📋 Campos</button>
+        <button class="com-tab-btn" onclick="setTab('regras',this)">📏 Regras Globais</button>
+      </div>
+
+      <!-- Tab: Instâncias WhatsApp -->
+      <div class="com-tab-panel ativo" id="tab-instancias">
+        <div class="com-flex-between com-mb-3">
+          <div>
+            <div class="com-page-titulo">Instâncias WhatsApp</div>
+            <div class="com-text-suave com-text-sm">Configure os números, nomes na Evolution e API Keys</div>
+          </div>
+          <button class="com-btn com-btn-primario com-btn-sm" onclick="abrirModalInstancia()">+ Nova Instância</button>
+        </div>
+        <div id="lista-instancias"><div class="com-spinner"></div></div>
+
+        <!-- Webhook Info Card -->
+        <div class="com-card com-mt-3" style="border-left: 4px solid var(--com-azul)">
+          <div class="com-card-titulo">🔗 Integração Webhook</div>
+          <p class="com-text-suave com-text-sm com-mb-2">Para que os Agentes respondam no WhatsApp, configure este Webhook em todas as suas instâncias na Evolution API:</p>
+          <div class="com-flex-between" style="background:var(--com-bg2); padding:10px; border-radius:8px; border:1px dashed var(--com-borda)">
+            <code id="webhook-url" class="com-text-sm" style="color:var(--com-azul); font-weight:600">Carregando...</code>
+            <button class="com-btn com-btn-ghost com-btn-xs" onclick="copiarWebhook()">Copiar</button>
+          </div>
+          <div class="com-mt-2 com-text-xs com-text-suave">
+            <strong>Eventos recomendados:</strong> MESSAGES_UPSERT, MESSAGES_UPDATE
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Tags -->
+      <div class="com-tab-panel" id="tab-tags">
+        <div class="com-flex-between com-mb-3">
+          <div>
+            <div class="com-page-titulo">Tags Comerciais</div>
+            <div class="com-text-suave com-text-sm">Etiquetas para categorizar leads e oportunidades</div>
+          </div>
+          <button class="com-btn com-btn-primario com-btn-sm" onclick="abrirModalTag()">+ Nova Tag</button>
+        </div>
+        <div id="lista-tags"><div class="com-spinner"></div></div>
+      </div>
+
+      <!-- Tab: Campos -->
+      <div class="com-tab-panel" id="tab-campos">
+        <div class="com-page-titulo com-mb-3">Campos e Categorias</div>
+        <div class="com-grid-2">
+          <div class="com-card">
+            <div class="com-card-titulo">Segmentos de Mercado</div>
+            <div style="display:flex;flex-direction:column;gap:8px" id="segmentos-lista">
+              <!-- Preenchido via JS ou fixo -->
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><div style="width:8px;height:8px;border-radius:50%;background:var(--com-azul)"></div><span style="font-size:14px;color:var(--com-texto)">Restaurante / Alimentação</span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><div style="width:8px;height:8px;border-radius:50%;background:var(--com-azul)"></div><span style="font-size:14px;color:var(--com-texto)">Varejo / Comércio</span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><div style="width:8px;height:8px;border-radius:50%;background:var(--com-azul)"></div><span style="font-size:14px;color:var(--com-texto)">Serviços</span></div>
+            </div>
+            <p class="com-text-suave com-text-xs com-mt-2">Segmentos são campos fixos. Para adicionar novos, edite o código-fonte.</p>
+          </div>
+          <div class="com-card">
+            <div class="com-card-titulo">Origens dos Leads</div>
+            <div style="display:flex;flex-direction:column;gap:8px" id="origens-lista">
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><div style="width:8px;height:8px;border-radius:50%;background:var(--com-verde)"></div><span style="font-size:14px;color:var(--com-texto)">Importação CSV</span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><div style="width:8px;height:8px;border-radius:50%;background:var(--com-verde)"></div><span style="font-size:14px;color:var(--com-texto)">WhatsApp Orgânico</span></div>
+            </div>
+          </div>
+          <div class="com-card">
+            <div class="com-card-titulo">Etapas do Kanban</div>
+            <div style="display:flex;flex-direction:column;gap:8px" id="kanban-lista">
+              <div style="padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><span class="com-badge com-badge-azul">Novo Interesse</span></div>
+              <div style="padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><span class="com-badge com-badge-roxo">Em Qualificação</span></div>
+            </div>
+          </div>
+          <div class="com-card">
+            <div class="com-card-titulo">Status dos Leads</div>
+            <div style="display:flex;flex-direction:column;gap:8px" id="status-lista">
+              <div style="padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><span class="com-badge com-badge-azul">novo</span></div>
+              <div style="padding:8px 0;border-bottom:1px solid var(--com-borda-suave)"><span class="com-badge com-badge-amarelo">qualificado</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Regras Globais -->
+      <div class="com-tab-panel" id="tab-regras">
+        <div class="com-page-titulo com-mb-3">Regras Globais</div>
+        <div class="com-alerta com-alerta-info com-mb-3">⚠️ Estas configurações são informativas. A aplicação real das regras é feita via configuração dos Agentes IA.</div>
+        <div class="com-grid-2">
+          <div class="com-card">
+            <div class="com-card-titulo">Horário Comercial</div>
+            <div class="com-grid-2">
+              <div class="com-form-grupo"><label>Início</label><input type="time" value="08:00" style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:14px;width:100%"></div>
+              <div class="com-form-grupo"><label>Fim</label><input type="time" value="18:00" style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:14px;width:100%"></div>
+            </div>
+            <div class="com-form-grupo">
+              <label>Dias da Semana</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:var(--com-texto);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--com-azul)">Seg</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:var(--com-texto);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--com-azul)">Ter</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:var(--com-texto);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--com-azul)">Qua</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:var(--com-texto);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--com-azul)">Qui</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:var(--com-texto);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--com-azul)">Sex</label>
+              </div>
+            </div>
+            <button class="com-btn com-btn-ghost com-btn-sm com-mt-1" onclick="mostrarAlerta('Regras globais em desenvolvimento — configure nos Agentes IA', 'aviso')">Salvar (em dev)</button>
+          </div>
+          <div class="com-card">
+            <div class="com-card-titulo">Limites de Follow-up</div>
+            <div class="com-form-grupo"><label>Máximo de tentativas por lead</label><input type="number" value="3" min="1" max="10" style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:14px;width:100%"></div>
+            <div class="com-form-grupo"><label>Intervalo entre follow-ups (horas)</label><input type="number" value="24" min="1" style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:14px;width:100%"></div>
+            <div class="com-form-grupo"><label>Dias para marcar como perdido (sem resposta)</label><input type="number" value="7" min="1" style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:14px;width:100%"></div>
+          </div>
+          <div class="com-card">
+            <div class="com-card-titulo">Integrações</div>
+            <div style="display:flex;flex-direction:column;gap:16px">
+              ${integBlock('Evolution API', 'WhatsApp Business', 'Disparos de campanha', 'ativa')}
+              ${integBlock('Chatwoot', 'CRM de conversas', 'Interface de atendimento', 'ativa')}
+              ${integBlock('OpenAI', 'GPT-4o mini', 'Respostas dos agentes IA', 'ativa')}
+              ${integBlock('Supabase', 'Banco de dados', 'Armazenamento e auth', 'ativa')}
+            </div>
+          </div>
+          <div class="com-card">
+            <div class="com-card-titulo">Mensagens Padrão</div>
+            <div class="com-form-grupo"><label>Mensagem de boas-vindas</label><textarea style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:13px;width:100%;min-height:80px">Olá {{nome}}! Tudo bem? 😊</textarea></div>
+            <div class="com-form-grupo"><label>Follow-up padrão</label><textarea style="background:var(--com-bg2);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:13px;width:100%;min-height:80px">Olá {{nome}}, passando para saber se ainda tem interesse!</textarea></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nova/Editar Instância -->
+<div class="com-modal-overlay com-d-none" id="modal-instancia">
+  <div class="com-modal" style="max-width:480px">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo" id="modal-inst-titulo">Nova Instância</span>
+      <button class="com-modal-fechar" onclick="fecharModalInstancia()">✕</button>
+    </div>
+    <input type="hidden" id="inst-id">
+    <div class="com-form-grupo"><label>Nome de Exibição</label><input type="text" id="inst-nome" placeholder="Ex.: WhatsApp Comercial"></div>
+    <div class="com-form-grupo"><label>Número (com DDI)</label><input type="text" id="inst-numero" placeholder="5511999999999"></div>
+    <div class="com-grid-2">
+      <div class="com-form-grupo"><label>Nome na Evolution API</label><input type="text" id="inst-evo" placeholder="nome_instancia"></div>
+      <div class="com-form-grupo"><label>Agente IA (Opcional)</label>
+        <select id="inst-agente-modal"><option value="">Nenhum (conectar depois)</option></select>
+      </div>
+    </div>
+    <div class="com-form-grupo"><label>API Key da Instância</label><input type="password" id="inst-key" placeholder="Sua API Key"></div>
+    <div class="com-form-grupo"><label>URL da Evolution API (Opcional)</label><input type="text" id="inst-url" placeholder="https://sua-evo-api.com"></div>
+    
+    <div class="com-flex-between com-mt-2">
+      <button class="com-btn com-btn-ghost" onclick="fecharModalInstancia()">Cancelar</button>
+      <button class="com-btn com-btn-primario" onclick="salvarInstanciaModal()">Salvar Instância</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nova/Editar Tag -->
+<div class="com-modal-overlay com-d-none" id="modal-tag">
+  <div class="com-modal" style="max-width:420px">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo" id="modal-tag-titulo">Nova Tag</span>
+      <button class="com-modal-fechar" onclick="fecharModalTag()">✕</button>
+    </div>
+    <div class="com-form-grupo"><label>Nome da Tag</label><input type="text" id="tag-nome" placeholder="Ex.: Urgente, VIP, Retornar..."></div>
+    <div class="com-form-grupo">
+      <label>Cor</label>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px" id="cor-opcoes">
+        <div onclick="selecionarCor('#2563eb')" style="width:28px;height:28px;border-radius:50%;background:#2563eb;cursor:pointer;border:3px solid transparent;transition:all .2s" data-cor="#2563eb"></div>
+        <div onclick="selecionarCor('#10b981')" style="width:28px;height:28px;border-radius:50%;background:#10b981;cursor:pointer;border:3px solid transparent;transition:all .2s" data-cor="#10b981"></div>
+        <div onclick="selecionarCor('#f59e0b')" style="width:28px;height:28px;border-radius:50%;background:#f59e0b;cursor:pointer;border:3px solid transparent;transition:all .2s" data-cor="#f59e0b"></div>
+        <div onclick="selecionarCor('#ef4444')" style="width:28px;height:28px;border-radius:50%;background:#ef4444;cursor:pointer;border:3px solid transparent;transition:all .2s" data-cor="#ef4444"></div>
+      </div>
+      <input type="hidden" id="tag-cor" value="#2563eb">
+    </div>
+    <div class="com-flex-between com-mt-2">
+      <button class="com-btn com-btn-ghost" onclick="fecharModalTag()">Cancelar</button>
+      <button class="com-btn com-btn-primario" onclick="salvarTag()">Salvar Tag</button>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+const usuario = protegerPagina(['admin','comercial']);
+if (usuario) { 
+  inicializarLayout(); 
+  carregarInstancias(); 
+  if (typeof initWebhook === 'function') initWebhook();
+}
+
+function setTab(tab, btn) {
+  document.querySelectorAll('.com-tab-btn').forEach(b => b.classList.remove('ativo'));
+  document.querySelectorAll('.com-tab-panel').forEach(p => p.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  document.getElementById('tab-' + tab).classList.add('ativo');
+  if (tab === 'instancias') carregarInstancias();
+  if (tab === 'tags') carregarTags();
+}
+
+// ---- Instâncias ----
+let agentesCache = [];
+
+async function carregarInstancias() {
+  try {
+    const [{ instancias }, { agentes }] = await Promise.all([
+      api.get('/comercial/instancias'),
+      api.get('/agentes')
+    ]);
+    agentesCache = agentes;
+    // Atualiza select no modal
+    document.getElementById('inst-agente-modal').innerHTML = '<option value="">Nenhum (conectar depois)</option>' + 
+      agentes.map(a => `<option value="${a.id}">${a.nome}</option>`).join('');
+
+    document.getElementById('lista-instancias').innerHTML = instancias.map(inst => `
+      <div class="com-card com-mb-2">
+        <div class="com-flex-between com-mb-2">
+          <div>
+            <div style="font-size:16px;font-weight:700;color:var(--com-texto)">${inst.nome}</div>
+            <div class="com-text-suave com-text-sm">${inst.numero || 'Número não configurado'}</div>
+          </div>
+          <div class="com-flex com-items-center com-gap-1">
+            <span class="com-badge com-badge-${inst.status==='ativo'?'verde':'cinza'}">${inst.status}</span>
+            <button class="com-btn com-btn-ghost com-btn-xs" onclick="excluirInstancia(${inst.id}, '${inst.nome}')">🗑️</button>
+          </div>
+        </div>
+        <div class="com-grid-2 com-mb-1">
+          <div class="com-text-xs">
+            <b style="color:var(--com-texto)">Evolution:</b> ${inst.instancia_evo || '---'}<br>
+            <b style="color:var(--com-texto)">Agente:</b> ${inst.agentes_ia_comercial?.nome || 'Nenhum'}
+          </div>
+          <div class="com-text-xs">
+            <b style="color:var(--com-texto)">API Key:</b> ${inst.apikey ? '••••••••' : '---'}
+          </div>
+        </div>
+        <div class="com-flex com-gap-1 com-mt-1">
+          <button class="com-btn com-btn-${inst.status==='ativo'?'perigo':'primario'} com-btn-sm"
+            onclick="toggleInstancia(${inst.id}, '${inst.status}')">
+            ${inst.status==='ativo'?'Desconectar':'Conectar'}
+          </button>
+          <button class="com-btn com-btn-outline com-btn-sm" onclick="abrirModalInstancia(${JSON.stringify(inst).replace(/"/g, '&quot;')})">Editar</button>
+        </div>
+      </div>
+    `).join('');
+  } catch { document.getElementById('lista-instancias').innerHTML = '<p class="com-text-suave">Erro ao carregar instâncias</p>'; }
+}
+
+function abrirModalInstancia(dados = null) {
+  const modal = document.getElementById('modal-instancia');
+  modal.classList.remove('com-d-none');
+  if (dados) {
+    document.getElementById('modal-inst-titulo').innerText = 'Editar Instância';
+    document.getElementById('inst-id').value = dados.id;
+    document.getElementById('inst-nome').value = dados.nome || '';
+    document.getElementById('inst-numero').value = dados.numero || '';
+    document.getElementById('inst-evo').value = dados.instancia_evo || '';
+    document.getElementById('inst-agente-modal').value = dados.agente_id || '';
+    document.getElementById('inst-key').value = dados.apikey || '';
+    document.getElementById('inst-url').value = dados.api_url || '';
+  } else {
+    document.getElementById('modal-inst-titulo').innerText = 'Nova Instância';
+    document.getElementById('inst-id').value = '';
+    document.getElementById('inst-nome').value = '';
+    document.getElementById('inst-numero').value = '';
+    document.getElementById('inst-evo').value = '';
+    document.getElementById('inst-agente-modal').value = '';
+    document.getElementById('inst-key').value = '';
+    document.getElementById('inst-url').value = '';
+  }
+}
+
+function fecharModalInstancia() {
+  document.getElementById('modal-instancia').classList.add('com-d-none');
+}
+
+async function salvarInstanciaModal() {
+  const id = document.getElementById('inst-id').value;
+  const body = {
+    nome: document.getElementById('inst-nome').value.trim(),
+    numero: document.getElementById('inst-numero').value.trim(),
+    instancia_evo: document.getElementById('inst-evo').value.trim(),
+    agente_id: document.getElementById('inst-agente-modal').value || null,
+    apikey: document.getElementById('inst-key').value.trim(),
+    api_url: document.getElementById('inst-url').value.trim()
+  };
+  
+  if (!body.nome) return mostrarAlerta('Nome é obrigatório', 'erro');
+
+  try {
+    if (id) {
+      await api.patch(`/comercial/instancias/${id}`, body);
+      mostrarAlerta('Instância atualizada!');
+    } else {
+      await api.post('/comercial/instancias', body);
+      mostrarAlerta('Instância criada!');
+    }
+    fecharModalInstancia();
+    carregarInstancias();
+  } catch (err) {
+    mostrarAlerta(err.erro || 'Erro ao salvar instância', 'erro');
+  }
+}
+
+async function excluirInstancia(id, nome) {
+  if (!confirm(`Excluir a instância "${nome}"?`)) return;
+  try {
+    await api.delete(`/comercial/instancias/${id}`);
+    mostrarAlerta('Instância removida');
+    carregarInstancias();
+  } catch { mostrarAlerta('Erro ao excluir', 'erro'); }
+}
+
+async function toggleInstancia(id, statusAtual) {
+  const novoStatus = statusAtual === 'ativo' ? 'inativo' : 'ativo';
+  try {
+    await api.patch(`/comercial/instancias/${id}`, { status: novoStatus });
+    mostrarAlerta(`Instância ${novoStatus}`);
+    carregarInstancias();
+  } catch { mostrarAlerta('Erro', 'erro'); }
+}
+
+// ---- Tags ----
+async function carregarTags() {
+  try {
+    const { tags } = await api.get('/comercial/tags');
+    document.getElementById('lista-tags').innerHTML = tags.length
+      ? `<div style="display:flex;flex-wrap:wrap;gap:12px">${tags.map(t => `
+          <div style="display:flex;align-items:center;gap:8px;background:var(--com-card);border:1px solid var(--com-borda);border-radius:10px;padding:10px 14px">
+            <div style="width:12px;height:12px;border-radius:50%;background:${t.cor||'#2563eb'}"></div>
+            <span style="font-size:14px;color:var(--com-texto);font-weight:500">${t.nome}</span>
+            <button onclick="excluirTag(${t.id},'${t.nome}')" style="background:none;border:none;color:var(--com-suave);cursor:pointer;font-size:16px;padding:0;margin-left:4px">✕</button>
+          </div>`).join('')}</div>`
+      : '<p class="com-text-suave com-text-sm">Nenhuma tag cadastrada</p>';
+  } catch { document.getElementById('lista-tags').innerHTML = '<p class="com-text-suave">Erro ao carregar</p>'; }
+}
+
+function initWebhook() {
+  const url = `${window.location.origin}/api/whatsapp/webhook`;
+  document.getElementById('webhook-url').innerText = url;
+}
+
+function copiarWebhook() {
+  const url = document.getElementById('webhook-url').innerText;
+  navigator.clipboard.writeText(url);
+  mostrarAlerta('Link copiado!');
+}
+
+let corSelecionada = '#2563eb';
+function abrirModalTag() { document.getElementById('modal-tag').classList.remove('com-d-none'); selecionarCor('#2563eb'); }
+function fecharModalTag() { document.getElementById('modal-tag').classList.add('com-d-none'); document.getElementById('tag-nome').value = ''; }
+
+function selecionarCor(cor) {
+  corSelecionada = cor;
+  document.getElementById('tag-cor').value = cor;
+  document.querySelectorAll('[data-cor]').forEach(el => {
+    el.style.borderColor = el.dataset.cor === cor ? '#fff' : 'transparent';
+    el.style.transform = el.dataset.cor === cor ? 'scale(1.2)' : 'scale(1)';
+  });
+}
+
+async function salvarTag() {
+  const nome = document.getElementById('tag-nome').value.trim();
+  if (!nome) return mostrarAlerta('Nome obrigatório', 'erro');
+  try {
+    await api.post('/comercial/tags', { nome, cor: corSelecionada });
+    mostrarAlerta('Tag criada!');
+    fecharModalTag();
+    carregarTags();
+  } catch { mostrarAlerta('Erro ao criar tag', 'erro'); }
+}
+
+async function excluirTag(id, nome) {
+  if (!confirm(`Excluir a tag "${nome}"?`)) return;
+  try {
+    await api.delete(`/comercial/tags/${id}`);
+    mostrarAlerta('Tag removida');
+    carregarTags();
+  } catch { mostrarAlerta('Erro ao excluir', 'erro'); }
+}
+
+function integBlock(nome, sub, desc, status) {
+  return `<div style="display:flex;align-items:center;gap:12px">
+    <div style="width:40px;height:40px;border-radius:10px;background:rgba(37,99,235,0.1);display:flex;align-items:center;justify-content:center;font-size:18px">🔗</div>
+    <div style="flex:1"><div style="font-weight:600;color:var(--com-texto);font-size:14px">${nome}</div><div class="com-text-xs com-text-suave">${sub} · ${desc}</div></div>
+    <span class="com-badge com-badge-${status==='ativa'?'verde':'cinza'}">${status}</span>
+  </div>`;
+}
+</script>
+</body>
+</html>

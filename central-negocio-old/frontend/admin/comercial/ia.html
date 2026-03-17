@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IA Comercial — Central do Negócio</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/painel.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
+</head>
+<body class="com-page">
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <div class="flex items-center gap-2">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <span class="topbar-titulo">🤖 IA Comercial</span>
+      </div>
+    </div>
+
+    <div class="pagina" style="padding:24px">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start">
+
+        <!-- Painel esquerdo: lista de agentes -->
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="com-card-titulo" style="color:var(--com-suave);font-size:11px;text-transform:uppercase;letter-spacing:.06em">Agentes Ativos</div>
+          <div id="lista-agentes"><div class="com-spinner"></div></div>
+          <button class="com-btn com-btn-outline com-btn-sm com-w-100" onclick="novoAgente()">+ Novo Agente</button>
+        </div>
+
+        <!-- Painel direito: editor -->
+        <div class="com-card" id="editor-agente" style="display:none">
+          <div class="com-flex-between com-mb-3">
+            <div>
+              <div class="com-page-titulo" id="editor-titulo">Agente</div>
+              <div class="com-text-suave com-text-sm" id="editor-inst">—</div>
+            </div>
+            <div class="com-flex com-gap-1">
+              <button class="com-btn com-btn-ghost com-btn-sm" id="btn-toggle-ativo" onclick="toggleAtivo()">Desativar</button>
+              <button class="com-btn com-btn-ghost com-btn-sm" style="color:var(--com-vermelho)" onclick="excluirAgente()">🗑️ Excluir</button>
+              <button class="com-btn com-btn-primario" onclick="salvarAgente()">💾 Salvar</button>
+            </div>
+          </div>
+
+          <div class="com-tabs">
+            <button class="com-tab-btn ativo" onclick="setTab('identidade',this)">Identidade</button>
+            <button class="com-tab-btn" onclick="setTab('prompt',this)">Prompt</button>
+            <button class="com-tab-btn" onclick="setTab('tom',this)">Tom de Voz</button>
+            <button class="com-tab-btn" onclick="setTab('regras',this)">Regras</button>
+            <button class="com-tab-btn" onclick="setTab('qualificacao',this)">Qualificação</button>
+            <button class="com-tab-btn" onclick="setTab('autonomia',this)">Autonomia</button>
+          </div>
+
+          <!-- Tab: Identidade -->
+          <div class="com-tab-panel ativo" id="tab-identidade">
+            <div class="com-grid-2">
+              <div class="com-form-grupo"><label>Nome do Agente</label><input type="text" id="a-nome" placeholder="Ex.: Agente Alfa"></div>
+              <div class="com-form-grupo"><label>Instância Vinculada</label>
+                <select id="a-instancia">
+                  <option value="">Nenhum (usar avulso)</option>
+                </select>
+              </div>
+              <div class="com-form-grupo">
+                <label>Provedor de IA</label>
+                <select id="a-provider">
+                  <option value="openai">OpenAI (Chatbot)</option>
+                  <option value="gemini">Google Gemini</option>
+                </select>
+              </div>
+              <div class="com-form-grupo"><label>API Key Individual</label><input type="password" id="a-key" placeholder="Deixe vazio para usar a chave padrão"></div>
+              <div class="com-form-grupo"><label>Função</label><input type="text" id="a-funcao" placeholder="SDR, Qualificador, Closer..."></div>
+              <div class="com-form-grupo"><label>Nicho</label><input type="text" id="a-nicho" placeholder="Restaurantes, Varejo, B2B..."></div>
+            </div>
+            <div class="com-form-grupo"><label>Objetivo Principal</label><input type="text" id="a-objetivo" placeholder="Qualificar leads e gerar oportunidades..."></div>
+            <div class="com-form-grupo"><label>Descrição Operacional</label><textarea id="a-descricao" placeholder="Descreva detalhadamente como este agente deve operar..."></textarea></div>
+          </div>
+
+          <!-- Tab: Prompt -->
+          <div class="com-tab-panel" id="tab-prompt">
+            <div class="com-alerta com-alerta-info com-mb-2">💡 O prompt é a instrução principal da IA. Seja específico e claro.</div>
+            <div class="com-form-grupo"><label>System Prompt Principal</label><textarea id="a-system-prompt" rows="10" placeholder="Você é um assistente comercial da empresa X. Seu objetivo é..."></textarea></div>
+            <div class="com-form-grupo"><label>Instruções Complementares</label><textarea id="a-instrucoes" rows="5" placeholder="Regras adicionais, contexto do produto, preços..."></textarea></div>
+            <div class="com-form-grupo"><label>Regras Negativas (o que nunca fazer)</label><textarea id="a-regras-neg" placeholder="Nunca mencione concorrentes. Não prometa prazos. Não confirme pedidos..."></textarea></div>
+            <div class="com-form-grupo"><label>Exemplos de Comportamento</label><textarea id="a-exemplos" placeholder="Lead: Quanto custa?\nAgente: Ótima pergunta! Posso te mostrar..."></textarea></div>
+          </div>
+
+          <!-- Tab: Tom de Voz -->
+          <div class="com-tab-panel" id="tab-tom">
+            <div class="com-grid-2">
+              <div class="com-form-grupo">
+                <label>Tom de Voz</label>
+                <select id="a-tom">
+                  <option value="consultivo">Consultivo</option>
+                  <option value="direto">Direto</option>
+                  <option value="formal">Formal</option>
+                  <option value="humano">Humano / Casual</option>
+                  <option value="comercial">Comercial</option>
+                  <option value="tecnico">Técnico</option>
+                </select>
+              </div>
+              <div class="com-form-grupo">
+                <label>Tamanho das Respostas</label>
+                <select id="a-tamanho">
+                  <option value="curto">Curto (1-2 frases)</option>
+                  <option value="medio">Médio (3-5 frases)</option>
+                  <option value="longo">Longo (detalhado)</option>
+                </select>
+              </div>
+            </div>
+            <div class="com-form-grupo">
+              <div class="toggle-wrap">
+                <label class="toggle"><input type="checkbox" id="a-emoji"><span class="toggle-slider"></span></label>
+                <span class="toggle-label">Usar emojis nas respostas</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Regras Comerciais -->
+          <div class="com-tab-panel" id="tab-regras">
+            <div class="com-form-grupo">
+              <div class="toggle-wrap com-mb-2">
+                <label class="toggle"><input type="checkbox" id="a-pode-preco" onchange="togglePreco()"><span class="toggle-slider"></span></label>
+                <span class="toggle-label">Pode falar preço</span>
+              </div>
+              <div id="wrap-situacoes-preco" style="display:none">
+                <label>Em quais situações pode mencionar preço?</label>
+                <textarea id="a-situacoes-preco" placeholder="Somente quando lead perguntar diretamente..."></textarea>
+              </div>
+            </div>
+            <div class="com-form-grupo"><label>Objetivo da Conversa</label><textarea id="a-obj-conv" placeholder="Qualificar o lead, entender a dor e agendar uma demonstração..."></textarea></div>
+            <div class="com-grid-2">
+              <div class="com-form-grupo"><label>Quando Insistir</label><textarea id="a-insistir" placeholder="Se o lead demonstrou interesse mas parou de responder..."></textarea></div>
+              <div class="com-form-grupo"><label>Quando Parar</label><textarea id="a-parar" placeholder="Após 3 follow-ups sem resposta..."></textarea></div>
+              <div class="com-form-grupo"><label>Quando Chamar Humano</label><textarea id="a-chamar-humano" placeholder="Quando lead pedir proposta formal, quando tiver objeção técnica..."></textarea></div>
+              <div class="com-form-grupo"><label>Quando Criar Oportunidade</label><textarea id="a-criar-op" placeholder="Quando lead confirmar dor real e demonstrar intenção..."></textarea></div>
+              <div class="com-form-grupo"><label>Quando Mover no Kanban</label><textarea id="a-kanban" placeholder="Após qualificação confirmada..."></textarea></div>
+              <div class="com-form-grupo"><label>Quando Agendar</label><textarea id="a-agendar-regra" placeholder="Quando lead pedir reunião ou demonstração..."></textarea></div>
+            </div>
+          </div>
+
+          <!-- Tab: Qualificação -->
+          <div class="com-tab-panel" id="tab-qualificacao">
+            <div class="com-form-grupo"><label>Critérios de Dor Real</label><textarea id="a-criterios-dor" rows="4" placeholder="Lead menciona perda de vendas, problema com gestão, falta de controle..."></textarea></div>
+            <div class="com-form-grupo"><label>Critérios de Interesse (pediu mais info)</label><textarea id="a-criterios-int" rows="4" placeholder="Lead perguntou como funciona, pediu demonstração, quis saber o preço..."></textarea></div>
+            <div class="com-form-grupo"><label>Regra de Follow-up</label><textarea id="a-followup" placeholder="Enviar follow-up após 24h sem resposta. Máximo 3 tentativas..."></textarea></div>
+            <div class="com-form-grupo"><label>Regra de Perda</label><textarea id="a-perda" placeholder="Marcar como perdido após 7 dias sem resposta após 3 follow-ups..."></textarea></div>
+          </div>
+
+          <!-- Tab: Autonomia -->
+          <div class="com-tab-panel" id="tab-autonomia">
+            <div class="com-alerta com-alerta-aviso com-mb-3">⚠️ Configure com cuidado. Autonomias mal configuradas podem causar ações indesejadas.</div>
+            <div style="display:flex;flex-direction:column;gap:20px">
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="a-sozinha"><span class="toggle-slider"></span></label><span class="toggle-label">Pode responder sozinha sem intervenção humana</span></div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="a-mover-lead"><span class="toggle-slider"></span></label><span class="toggle-label">Pode alterar o status do lead</span></div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="a-pode-agendar"><span class="toggle-slider"></span></label><span class="toggle-label">Pode agendar reuniões automaticamente</span></div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="a-encerrar"><span class="toggle-slider"></span></label><span class="toggle-label">Pode encerrar a conversa</span></div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="a-pausar"><span class="toggle-slider"></span></label><span class="toggle-label">Pode pausar follow-ups</span></div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="a-marcar-int"><span class="toggle-slider"></span></label><span class="toggle-label">Pode marcar interesse detectado</span></div>
+            </div>
+          </div>
+
+          <!-- Seção de Teste -->
+          <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--com-borda)">
+            <div class="com-card-titulo com-mb-2">🧪 Testar Agente</div>
+            <div class="com-form-grupo">
+              <label>Mensagem do lead</label>
+              <textarea id="teste-mensagem" rows="3" placeholder="Digite uma mensagem como se fosse um lead..."></textarea>
+            </div>
+            <button class="com-btn com-btn-outline" onclick="testarAgente()">▶ Testar</button>
+            <div id="teste-resultado" class="com-d-none com-mt-2" style="background:var(--com-bg2);border:1px solid var(--com-borda);border-radius:10px;padding:16px">
+              <div class="com-grid-2 com-mb-2">
+                <div><div class="com-text-xs com-text-suave">Intenção detectada</div><div id="t-intencao" style="color:var(--com-azul-brilho);font-weight:600;margin-top:4px">—</div></div>
+                <div><div class="com-text-xs com-text-suave">Score estimado</div><div id="t-score" style="color:var(--com-verde);font-weight:600;margin-top:4px">—</div></div>
+                <div><div class="com-text-xs com-text-suave">Ação prevista</div><div id="t-acao" style="color:var(--com-amarelo);font-weight:600;margin-top:4px">—</div></div>
+              </div>
+              <div class="com-text-xs com-text-suave com-mb-1">Resposta gerada</div>
+              <div id="t-resposta" style="font-size:14px;color:var(--com-texto);line-height:1.6;white-space:pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado vazio -->
+        <div id="editor-vazio" class="com-card" style="text-align:center;padding:60px 20px">
+          <div style="font-size:48px;margin-bottom:16px">🤖</div>
+          <div style="color:var(--com-texto);font-size:16px;font-weight:600;margin-bottom:8px">Selecione um agente</div>
+          <div class="com-text-suave com-text-sm">Escolha um agente na lista ao lado para editar sua configuração</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Novo Agente -->
+<div class="com-modal-overlay com-d-none" id="modal-novo-agente">
+  <div class="com-modal" style="max-width:420px">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo">Novo Agente de IA</span>
+      <button class="com-modal-fechar" onclick="fecharModalNovo()">✕</button>
+    </div>
+    <div style="padding:20px">
+      <div class="com-form-grupo"><label>Nome do Agente</label><input type="text" id="n-nome" placeholder="Ex.: Agente de Vendas"></div>
+      <div class="com-form-grupo">
+        <label>Instância de WhatsApp (Opcional)</label>
+        <select id="n-instancia">
+          <option value="">Nenhum (usar avulso)</option>
+        </select>
+      </div>
+      <div class="com-grid-2">
+        <div class="com-form-grupo">
+          <label>Provedor</label>
+          <select id="n-provider">
+            <option value="openai">OpenAI</option>
+            <option value="gemini">Gemini</option>
+          </select>
+        </div>
+        <div class="com-form-grupo"><label>API Key (opcional)</label><input type="password" id="n-key"></div>
+      </div>
+      <div class="com-flex-between com-mt-2">
+        <button class="com-btn com-btn-ghost" onclick="fecharModalNovo()">Cancelar</button>
+        <button class="com-btn com-btn-primario" onclick="confirmarNovoAgente()">Criar Agente</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+const usuario = protegerPagina(['admin','comercial']);
+let agenteAtualId = null;
+let agenteAtualAtivo = true;
+let instanciasCache = [];
+
+if (usuario) { inicializarLayout(); carregarDados(); }
+
+async function carregarDados() {
+  await Promise.all([carregarAgentes(), carregarInstancias()]);
+}
+
+function toggleItem(id, label) {
+  return `<div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="${id}"><span class="toggle-slider"></span></label><span class="toggle-label">${label}</span></div>`;
+}
+
+async function carregarAgentes() {
+  try {
+    const { agentes } = await api.get('/agentes');
+    document.getElementById('lista-agentes').innerHTML = agentes.length
+      ? agentes.map(a => `
+          <div class="agente-card" id="card-${a.id}" onclick="selecionarAgente(${a.id})">
+            <div class="agente-avatar">${a.provider === 'gemini' ? '✨' : '🤖'}</div>
+            <div class="agente-info">
+              <div class="agente-nome">${a.nome}</div>
+              <div class="agente-inst">${a.instancia || 'Sem instância'}</div>
+            </div>
+            <div class="agente-status ${a.ativo ? 'ativo' : 'inativo'}"></div>
+          </div>`).join('')
+      : '<p class="com-text-suave com-text-sm">Nenhum agente cadastrado</p>';
+  } catch { document.getElementById('lista-agentes').innerHTML = '<p class="com-text-suave com-text-sm">Erro ao carregar</p>'; }
+}
+
+async function carregarInstancias() {
+  try {
+    const { instancias } = await api.get('/comercial/instancias');
+    instanciasCache = instancias;
+    const options = '<option value="">Nenhum (usar avulso)</option>' + 
+      instancias.map(i => `<option value="${i.instancia_evo || i.nome}">${i.nome} (${i.instancia_evo || 'sem evo'})</option>`).join('');
+    document.getElementById('a-instancia').innerHTML = options;
+    document.getElementById('n-instancia').innerHTML = options;
+  } catch { console.error('Erro ao carregar instâncias'); }
+}
+
+async function selecionarAgente(id) {
+  document.querySelectorAll('.agente-card').forEach(c => c.classList.remove('ativo'));
+  document.getElementById(`card-${id}`)?.classList.add('ativo');
+  agenteAtualId = id;
+  document.getElementById('editor-vazio').style.display = 'none';
+  document.getElementById('editor-agente').style.display = 'block';
+
+  try {
+    const { agente: a } = await api.get(`/agentes/${id}`);
+    agenteAtualAtivo = a.ativo;
+
+    // Identidade
+    document.getElementById('a-nome').value = a.nome || '';
+    document.getElementById('a-instancia').value = a.instancia || '';
+    document.getElementById('a-provider').value = a.provider || 'openai';
+    document.getElementById('a-key').value = a.api_key || '';
+    document.getElementById('a-funcao').value = a.funcao || '';
+    document.getElementById('a-nicho').value = a.nicho || '';
+    document.getElementById('a-objetivo').value = a.objetivo || '';
+    document.getElementById('a-descricao').value = a.descricao_operacional || '';
+    document.getElementById('editor-titulo').textContent = a.nome;
+    document.getElementById('editor-inst').textContent = a.instancia;
+    document.getElementById('btn-toggle-ativo').textContent = a.ativo ? 'Desativar' : 'Ativar';
+
+    // Prompt
+    document.getElementById('a-system-prompt').value = a.system_prompt || '';
+    document.getElementById('a-instrucoes').value = a.instrucoes_complementares || '';
+    document.getElementById('a-regras-neg').value = a.regras_negativas || '';
+    document.getElementById('a-exemplos').value = a.exemplos_comportamento || '';
+
+    // Tom
+    document.getElementById('a-tom').value = a.tom_voz || 'consultivo';
+    document.getElementById('a-tamanho').value = a.tamanho_resposta || 'medio';
+    document.getElementById('a-emoji').checked = a.usar_emoji || false;
+
+    // Regras
+    document.getElementById('a-pode-preco').checked = a.pode_falar_preco || false;
+    document.getElementById('a-situacoes-preco').value = a.situacoes_preco || '';
+    document.getElementById('wrap-situacoes-preco').style.display = a.pode_falar_preco ? 'block' : 'none';
+    document.getElementById('a-obj-conv').value = a.objetivo_conversa || '';
+    document.getElementById('a-insistir').value = a.quando_insistir || '';
+    document.getElementById('a-parar').value = a.quando_parar || '';
+    document.getElementById('a-chamar-humano').value = a.quando_chamar_humano || '';
+    document.getElementById('a-criar-op').value = a.quando_criar_oportunidade || '';
+    document.getElementById('a-kanban').value = a.quando_mover_kanban || '';
+    document.getElementById('a-agendar-regra').value = a.quando_agendar || '';
+
+    // Qualificação
+    document.getElementById('a-criterios-dor').value = a.criterios_dor || '';
+    document.getElementById('a-criterios-int').value = a.criterios_interesse || '';
+    document.getElementById('a-followup').value = a.regra_followup || '';
+    document.getElementById('a-perda').value = a.regra_perda || '';
+
+    // Autonomia
+    document.getElementById('a-sozinha').checked = a.pode_responder_sozinha ?? true;
+    document.getElementById('a-mover-lead').checked = a.pode_mover_lead || false;
+    document.getElementById('a-pode-agendar').checked = a.pode_agendar || false;
+    document.getElementById('a-encerrar').checked = a.pode_encerrar_conversa || false;
+    document.getElementById('a-pausar').checked = a.pode_pausar_followup || false;
+    document.getElementById('a-marcar-int').checked = a.pode_marcar_interesse ?? true;
+  } catch { mostrarAlerta('Erro ao carregar agente', 'erro'); }
+}
+
+function novoAgente() {
+  document.getElementById('modal-novo-agente').classList.remove('com-d-none');
+}
+
+function fecharModalNovo() {
+  document.getElementById('modal-novo-agente').classList.add('com-d-none');
+}
+
+async function confirmarNovoAgente() {
+  const nome = document.getElementById('n-nome').value.trim();
+  const instancia = document.getElementById('n-instancia').value;
+  const provider = document.getElementById('n-provider').value;
+  const api_key = document.getElementById('n-key').value.trim();
+
+  if (!nome) return mostrarAlerta('Nome obrigatório', 'erro');
+
+  try {
+    const { agente } = await api.post('/agentes', { nome, instancia, provider, api_key });
+    mostrarAlerta('Agente criado!');
+    fecharModalNovo();
+    await carregarAgentes();
+    selecionarAgente(agente.id);
+    // Limpa campos
+    document.getElementById('n-nome').value = '';
+    document.getElementById('n-key').value = '';
+  } catch { mostrarAlerta('Erro ao criar agente', 'erro'); }
+}
+
+async function excluirAgente() {
+  if (!agenteAtualId) return;
+  if (!confirm('Tem certeza que deseja remover este agente?')) return;
+
+  try {
+    await api.delete(`/agentes/${agenteAtualId}`);
+    mostrarAlerta('Agente removido');
+    agenteAtualId = null;
+    document.getElementById('editor-agente').style.display = 'none';
+    document.getElementById('editor-vazio').style.display = 'block';
+    carregarAgentes();
+  } catch { mostrarAlerta('Erro ao remover agente', 'erro'); }
+}
+
+async function salvarAgente() {
+  if (!agenteAtualId) return mostrarAlerta('Nenhum agente selecionado', 'erro');
+  const body = {
+    nome: document.getElementById('a-nome').value,
+    instancia: document.getElementById('a-instancia').value,
+    provider: document.getElementById('a-provider').value,
+    api_key: document.getElementById('a-key').value,
+    funcao: document.getElementById('a-funcao').value,
+    nicho: document.getElementById('a-nicho').value,
+    objetivo: document.getElementById('a-objetivo').value,
+    descricao_operacional: document.getElementById('a-descricao').value,
+    system_prompt: document.getElementById('a-system-prompt').value,
+    instrucoes_complementares: document.getElementById('a-instrucoes').value,
+    regras_negativas: document.getElementById('a-regras-neg').value,
+    exemplos_comportamento: document.getElementById('a-exemplos').value,
+    tom_voz: document.getElementById('a-tom').value,
+    tamanho_resposta: document.getElementById('a-tamanho').value,
+    usar_emoji: document.getElementById('a-emoji').checked,
+    pode_falar_preco: document.getElementById('a-pode-preco').checked,
+    situacoes_preco: document.getElementById('a-situacoes-preco').value,
+    objetivo_conversa: document.getElementById('a-obj-conv').value,
+    quando_insistir: document.getElementById('a-insistir').value,
+    quando_parar: document.getElementById('a-parar').value,
+    quando_chamar_humano: document.getElementById('a-chamar-humano').value,
+    quando_criar_oportunidade: document.getElementById('a-criar-op').value,
+    quando_mover_kanban: document.getElementById('a-kanban').value,
+    quando_agendar: document.getElementById('a-agendar-regra').value,
+    criterios_dor: document.getElementById('a-criterios-dor').value,
+    criterios_interesse: document.getElementById('a-criterios-int').value,
+    regra_followup: document.getElementById('a-followup').value,
+    regra_perda: document.getElementById('a-perda').value,
+    pode_responder_sozinha: document.getElementById('a-sozinha').checked,
+    pode_mover_lead: document.getElementById('a-mover-lead').checked,
+    pode_agendar: document.getElementById('a-pode-agendar').checked,
+    pode_encerrar_conversa: document.getElementById('a-encerrar').checked,
+    pode_pausar_followup: document.getElementById('a-pausar').checked,
+    pode_marcar_interesse: document.getElementById('a-marcar-int').checked
+  };
+  try {
+    await api.patch(`/agentes/${agenteAtualId}`, body);
+    mostrarAlerta('Agente salvo!');
+    carregarAgentes();
+  } catch { mostrarAlerta('Erro ao salvar', 'erro'); }
+}
+
+async function toggleAtivo() {
+  if (!agenteAtualId) return;
+  try {
+    await api.patch(`/agentes/${agenteAtualId}`, { ativo: !agenteAtualAtivo });
+    agenteAtualAtivo = !agenteAtualAtivo;
+    document.getElementById('btn-toggle-ativo').textContent = agenteAtualAtivo ? 'Desativar' : 'Ativar';
+    mostrarAlerta(agenteAtualAtivo ? 'Agente ativado' : 'Agente desativado');
+    carregarAgentes();
+  } catch { mostrarAlerta('Erro', 'erro'); }
+}
+
+async function testarAgente() {
+  if (!agenteAtualId) return mostrarAlerta('Selecione um agente', 'erro');
+  const mensagem = document.getElementById('teste-mensagem').value.trim();
+  if (!mensagem) return mostrarAlerta('Digite uma mensagem', 'erro');
+
+  const resultDiv = document.getElementById('teste-resultado');
+  resultDiv.classList.remove('com-d-none');
+  document.getElementById('t-resposta').textContent = '⏳ Gerando resposta...';
+
+  try {
+    const r = await api.post(`/agentes/${agenteAtualId}/testar`, { mensagem });
+    document.getElementById('t-intencao').textContent = r.intencao || '—';
+    document.getElementById('t-score').textContent = (r.score || 0) + '/100';
+    document.getElementById('t-acao').textContent = r.acao_prevista || '—';
+    document.getElementById('t-resposta').textContent = r.resposta || '—';
+  } catch(err) {
+    document.getElementById('t-resposta').textContent = 'Erro: ' + (err.erro || 'Falha ao testar');
+  }
+}
+
+function setTab(tab, btn) {
+  document.querySelectorAll('.com-tab-btn').forEach(b => b.classList.remove('ativo'));
+  document.querySelectorAll('.com-tab-panel').forEach(p => p.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  document.getElementById('tab-' + tab).classList.add('ativo');
+}
+
+function togglePreco() {
+  const checked = document.getElementById('a-pode-preco').checked;
+  document.getElementById('wrap-situacoes-preco').style.display = checked ? 'block' : 'none';
+}
+</script>
+</body>
+</html>
