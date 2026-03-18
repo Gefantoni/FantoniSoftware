@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fantoni PDV — Sistema PDV para Bares, Restaurantes e Varejo | Santa Cruz do Sul, Venâncio Aires, Lajeado</title>
+  <meta name="description" content="Sistema PDV completo para bares, restaurantes e varejo no RS. Emita NFC-e, controle estoque, gerencie delivery. Atendemos Santa Cruz do Sul, Venâncio Aires, Lajeado e região. R$ 99/mês." />
+
+  <!-- SEO: Keywords -->
+  <meta name="keywords" content="PDV, sistema PDV, ponto de venda, venda rápida, nota fiscal, nota fiscal eletrônica, NF-e, NFC-e, NFE, NFC, sistema de vendas, ERP, ERP para restaurante, vendas, vender online, vender no bar, sistema para bar, sistema para restaurante, sistema para lanchonete, sistema para varejo, controle de caixa, controle de estoque, delivery, iFood integrado, maquininha integrada, Santa Cruz do Sul, Venâncio Aires, Lajeado, Vale do Rio Pardo, Taquari, Rio Grande do Sul, RS, sistema PDV RS, PDV barato, PDV para MEI, PDV para Simples Nacional, Fantoni Software, Fantoni PDV, Navivendas" />
+
+  <!-- SEO: Open Graph (compartilhamento em redes sociais) -->
+  <meta property="og:title" content="Fantoni PDV — Sistema PDV para Bares, Restaurantes e Varejo" />
+  <meta property="og:description" content="Controle suas vendas, emita NFC-e e gerencie delivery por apenas R$ 99/mês. Teste 7 dias grátis, sem cartão." />
+  <meta property="og:image" content="assets/Arte.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fantonisoftware.com.br" />
+  <meta property="og:locale" content="pt_BR" />
+
+  <!-- SEO: Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fantoni PDV — Sistema para Bares, Restaurantes e Varejo" />
+  <meta name="twitter:description" content="PDV completo com NFC-e, delivery e controle de estoque. R$ 99/mês." />
+  <meta name="twitter:image" content="assets/Arte.png" />
+
+  <!-- SEO: Dados estruturados (Google) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Fantoni Software",
+    "description": "Sistema PDV completo para bares, restaurantes e varejo no RS. NFC-e, delivery, controle de estoque.",
+    "url": "https://fantonisoftware.com.br",
+    "telephone": "+55-51-99603-4862",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "RS",
+      "addressCountry": "BR"
+    },
+    "areaServed": ["Santa Cruz do Sul", "Venâncio Aires", "Lajeado", "Taquari", "Vale do Rio Pardo", "Rio Grande do Sul"],
+    "priceRange": "R$ 99/mês",
+    "offers": {
+      "@type": "Offer",
+      "name": "Fantoni PDV Completo",
+      "price": "99.00",
+      "priceCurrency": "BRL",
+      "description": "Sistema PDV com NFC-e ilimitada, usuários ilimitados, delivery, cardápio digital e suporte prioritário"
+    },
+    "sameAs": ["https://wa.me/5551996034862"]
+  }
+  </script>
+
+  <!-- SEO: Canônico -->
+  <link rel="canonical" href="https://fantonisoftware.com.br" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --azul: #1d4ed8;
+      --azul-hover: #1e40af;
+      --azul-claro: #eff6ff;
+      --azul-medio: #3b82f6;
+      --escuro: #0f172a;
+      --texto: #1e293b;
+      --cinza: #64748b;
+      --borda: #e2e8f0;
+      --bg: #f8fafc;
+      --branco: #ffffff;
+      --verde: #16a34a;
+      --laranja: #f59e0b;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--texto); background: var(--branco); line-height: 1.6; }
+
+    /* ---- NAVBAR ---- */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 20px; font-weight: 800; color: var(--azul); text-decoration: none;
+    }
+    .nav-logo svg { width: 32px; height: 32px; }
+    .nav-links { display: flex; gap: 8px; list-style: none; }
+    .nav-links a {
+      padding: 8px 14px; border-radius: 8px;
+      color: var(--texto); text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: background .15s, color 0.15s ease;
+    }
+    .nav-links a:hover { background: var(--azul-claro); color: #1d4ed8; }
+    .nav-cta {
+      background: var(--azul); color: var(--branco);
+      padding: 10px 22px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; text-decoration: none;
+      transition: background .15s;
+    }
+    .nav-cta:hover { background: var(--azul-hover); }
+    .nav-menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+    .nav-mobile { display: none; }
+
+    /* ---- HERO ---- */
+    .hero {
+      background: radial-gradient(ellipse at 20% 50%, #1e3a8a 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, #1d4ed8 0%, transparent 50%), radial-gradient(ellipse at 60% 80%, #0f172a 0%, transparent 60%), #0c1225;
+      color: var(--branco);
+      padding: 80px 24px;
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,.2); border: 1px solid rgba(59,130,246,.4);
+      color: #93c5fd; padding: 6px 14px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 4vw, 52px); font-weight: 800; line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: #60a5fa; }
+    .hero p {
+      font-size: 18px; color: #cbd5e1; margin-bottom: 36px; line-height: 1.7;
+    }
+    .hero-btns { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 48px; }
+    .btn-primary {
+      background: var(--azul-medio); color: var(--branco);
+      padding: 14px 28px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .btn-primary:hover { background: #2563eb; transform: scale(1.02) translateY(-1px); box-shadow: 0 8px 28px rgba(29,78,216,0.45); }
+    .btn-outline {
+      background: transparent; color: var(--branco);
+      border: 2px solid rgba(255,255,255,.3);
+      padding: 14px 28px; border-radius: 10px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,.7); background: rgba(255,255,255,.05); transform: scale(1.02) translateY(-1px); box-shadow: 0 8px 24px rgba(255,255,255,0.15); }
+    .hero-downloads { display: flex; flex-wrap: wrap; gap: 12px; }
+    .download-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+      padding: 10px 18px; border-radius: 10px; text-decoration: none; color: var(--branco);
+      font-size: 13px; font-weight: 500; transition: background .15s;
+    }
+    .download-badge:hover { background: rgba(255,255,255,.15); }
+    .download-badge svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+    /* ---- HERO FOTO (placeholder) ---- */
+    .hero-img {
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .hero-foto-placeholder {
+      width: 100%; max-width: 460px;
+      aspect-ratio: 4/5;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(59,130,246,.2), rgba(99,102,241,.2));
+      border: 2px dashed rgba(255,255,255,.2);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; color: rgba(255,255,255,.5); font-size: 14px; text-align: center; padding: 32px;
+    }
+    .hero-foto-placeholder svg { width: 64px; height: 64px; opacity: .4; }
+    /* Quando você adicionar a foto real, substitua .hero-foto-placeholder por: <img src="sua-foto.jpg" ...> */
+
+    /* ---- STATS ---- */
+    .stats { background: var(--azul); padding: 40px 24px; }
+    .stats-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; text-align: center;
+    }
+    .stat-num { font-size: clamp(24px,5vw,36px); font-weight: 800; color: var(--branco); }
+    .stat-label { font-size: clamp(11px,2.5vw,14px); color: #bfdbfe; margin-top: 4px; }
+
+    /* ---- SEÇÃO GENÉRICA ---- */
+    section { padding: 80px 24px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; background: var(--azul-claro); color: var(--azul);
+      padding: 4px 14px; border-radius: 100px; font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em; margin-bottom: 16px;
+    }
+    .section-title { font-size: clamp(26px, 3vw, 38px); font-weight: 800; color: var(--escuro); margin-bottom: 16px; }
+    .section-sub { font-size: 17px; color: var(--cinza); max-width: 600px; line-height: 1.7; }
+    .section-header { margin-bottom: 56px; }
+    .section-header.center { text-align: center; }
+    .section-header.center .section-sub { margin: 0 auto; }
+
+    /* ---- VÍDEO ---- */
+    .video-section { background: var(--bg); }
+    .video-wrapper {
+      max-width: 800px; margin: 0 auto;
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+      aspect-ratio: 16/9;
+    }
+    .video-wrapper iframe { width: 100%; height: 100%; border: none; }
+
+    /* ---- MAQUININHAS ---- */
+    .maquinas-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px;
+    }
+    .maquina-card {
+      border: 1px solid var(--borda); border-radius: 12px;
+      padding: 20px 16px; text-align: center; background: var(--branco);
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .maquina-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); border-color: var(--azul-medio); }
+    .maquina-icon { font-size: 32px; margin-bottom: 8px; }
+    .maquina-nome { font-size: 14px; font-weight: 700; color: var(--escuro); }
+    .maquina-modelos { font-size: 12px; color: var(--cinza); margin-top: 4px; }
+
+    /* ---- RECURSOS ---- */
+    .recursos-section { background: var(--bg); }
+    .recursos-grid { display: flex; flex-direction: column; gap: 80px; }
+    .recurso-item {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    .recurso-item.reverse { direction: rtl; }
+    .recurso-item.reverse > * { direction: ltr; }
+    .recurso-icon-wrap {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: var(--azul-claro); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .recurso-icon-wrap svg { width: 28px; height: 28px; color: var(--azul); }
+    .recurso-title { font-size: 26px; font-weight: 800; color: var(--escuro); margin-bottom: 12px; }
+    .recurso-desc { font-size: 16px; color: var(--cinza); margin-bottom: 20px; line-height: 1.7; }
+    .recurso-lista { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .recurso-lista li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; color: var(--texto); }
+    .recurso-lista li::before {
+      content: '✓'; color: var(--verde); font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+    .recurso-visual {
+      border-radius: 16px; overflow: hidden;
+      background: linear-gradient(135deg, var(--azul-claro), #e0e7ff);
+      aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px;
+    }
+
+    /* ---- CARDS INTELIGENTES ---- */
+    .smart-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;
+    }
+    .smart-card {
+      background: var(--branco); border: 1px solid var(--borda); border-radius: 16px;
+      padding: 28px; transition: box-shadow .2s, transform .2s;
+    }
+    .smart-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.1); transform: translateY(-4px); }
+    .smart-card-icon {
+      width: 52px; height: 52px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 16px;
+    }
+    .smart-card h3 { font-size: 17px; font-weight: 700; color: var(--escuro); margin-bottom: 8px; }
+    .smart-card p { font-size: 14px; color: var(--cinza); line-height: 1.6; }
+
+    /* ---- APPS ADICIONAIS ---- */
+    .apps-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px;
+    }
+    .app-card {
+      background: var(--escuro); color: var(--branco); border-radius: 16px; padding: 28px;
+      transition: transform .2s;
+    }
+    .app-card:hover { transform: translateY(-4px); }
+    .app-card-emoji { font-size: 40px; margin-bottom: 16px; }
+    .app-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .app-card p { font-size: 14px; color: #94a3b8; line-height: 1.6; margin-bottom: 16px; }
+    .app-platforms { display: flex; flex-wrap: wrap; gap: 6px; }
+    .app-platform {
+      background: rgba(255,255,255,.1); color: #cbd5e1;
+      padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600;
+    }
+
+
+    /* ---- DEPOIMENTOS ---- */
+    .depo-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;
+    }
+    .depo-card {
+      background: var(--branco); border: 1px solid var(--borda); border-radius: 16px;
+      padding: 28px; position: relative;
+    }
+    .depo-stars { color: var(--laranja); font-size: 18px; margin-bottom: 16px; }
+    .depo-texto { font-size: 15px; color: var(--texto); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .depo-autor { display: flex; align-items: center; gap: 12px; }
+    .depo-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--azul-claro); display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .depo-nome { font-size: 14px; font-weight: 700; color: var(--escuro); }
+    .depo-cargo { font-size: 12px; color: var(--cinza); }
+
+    /* ---- CTA FINAL ---- */
+    .cta-final {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: var(--branco); text-align: center; padding: 100px 24px;
+    }
+    .cta-final h2 { font-size: clamp(28px, 3.5vw, 44px); font-weight: 800; margin-bottom: 16px; }
+    .cta-final p { font-size: 18px; color: #cbd5e1; margin-bottom: 40px; }
+    .cta-final-btns { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+
+    /* ---- WHATSAPP FLOAT ---- */
+    .whatsapp-float {
+      position: fixed; bottom: 28px; right: 28px; z-index: 999;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #25d366; color: var(--branco);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.4);
+      text-decoration: none; transition: transform .2s;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); }
+    .whatsapp-float svg { width: 32px; height: 32px; }
+
+    /* ---- FOOTER ---- */
+    footer { background: radial-gradient(ellipse at 10% 90%, #1e3a8a 0%, transparent 50%), radial-gradient(ellipse at 90% 10%, #1d4ed8 0%, transparent 40%), #0c1225; color: #94a3b8; padding: 60px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+      margin-bottom: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .footer-brand { color: var(--branco); font-size: 20px; font-weight: 800; margin-bottom: 12px; display: block; }
+    .footer-desc { font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+    .footer-social { display: flex; gap: 12px; }
+    .footer-social a {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(255,255,255,.08); color: #cbd5e1;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; font-size: 14px; transition: background .15s;
+    }
+    .footer-social a:hover { background: var(--azul); color: var(--branco); }
+    .footer-col h4 { color: var(--branco); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 20px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul a { color: #94a3b8; text-decoration: none; font-size: 14px; transition: color .15s; }
+    .footer-col ul a:hover { color: var(--branco); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      font-size: 13px;
+    }
+
+    /* ---- RESPONSIVO ---- */
+    @media (max-width: 900px) {
+      .hero-inner, .recurso-item { grid-template-columns: 1fr; }
+      .recurso-item.reverse { direction: ltr; }
+      .hero-img { display: none; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .stats-inner { grid-template-columns: repeat(3,1fr); gap: 12px; }
+    }
+    @media (max-width: 640px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-menu-btn { display: block; }
+      .footer-top { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span style="font-size:22px;font-weight:900;color:#1d4ed8;letter-spacing:-0.5px;line-height:1;">Fantoni <span style="color:#111827;">Software</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#integrado">Integração</a></li>
+      <li><a href="#videos">Demonstração</a></li>
+      <li><a href="#depoimentos">Depoimentos</a></li>
+    </ul>
+    <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" class="nav-cta" target="_blank">Testar grátis</a>
+    <button class="nav-menu-btn" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="24" height="24" fill="none" stroke="#1e293b" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="nav-mobile" id="navMobile" style="display:none; padding: 16px 0; border-top: 1px solid #e2e8f0;">
+    <a href="#integrado" style="display:block;padding:10px 0;color:#1e293b;text-decoration:none;font-weight:500" onclick="toggleMenu()">Integração</a>
+    <a href="#videos" style="display:block;padding:10px 0;color:#1e293b;text-decoration:none;font-weight:500" onclick="toggleMenu()">Demonstração</a>
+    <a href="#depoimentos" style="display:block;padding:10px 0;color:#1e293b;text-decoration:none;font-weight:500" onclick="toggleMenu()">Depoimentos</a>
+    <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" style="display:block;margin-top:12px;background:#1d4ed8;color:#fff;padding:12px;border-radius:8px;text-align:center;text-decoration:none;font-weight:700" target="_blank">Testar 7 dias grátis</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="inicio" style="padding: 56px 24px; position:relative; overflow:hidden;">
+  <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;"></canvas>
+  <div style="position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(10,14,40,0.55) 0%,rgba(15,23,80,0.35) 100%);pointer-events:none;"></div>
+  <div class="hero-inner" data-aos="fade-up" style="position:relative;z-index:2;">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Sistema PDV para bares, restaurantes e varejo
+      </div>
+      <h1>Controle suas vendas e emita <span>NFC-e</span> de forma rápida e fácil</h1>
+      <p style="margin-bottom:24px;">Para MEI, Simples e pequenas empresas. Funciona offline, em qualquer dispositivo.</p>
+      <div class="hero-btns" style="margin-bottom:20px;">
+        <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" class="btn-primary" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Testar 7 dias grátis
+        </a>
+        <a href="#videos" class="btn-outline">Ver demonstração</a>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" fill="#22c55e" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+          Sem cartão de crédito
+        </span>
+        <span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" fill="#22c55e" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+          Funciona offline
+        </span>
+        <span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" fill="#22c55e" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+          Cancele quando quiser
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTAINER SCROLL ===== -->
+<section style="padding:80px 24px 0; background:#fff; overflow:hidden;">
+  <div style="max-width:800px;margin:0 auto;text-align:center;margin-bottom:40px;" data-aos="fade-up">
+    <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:100px;padding:4px 14px;margin-bottom:14px;">Sistema completo</span>
+    <h2 style="font-size:clamp(24px,4vw,38px);font-weight:800;color:#0f172a;margin:0 0 12px;line-height:1.2;">Veja o Fantoni PDV na prática</h2>
+    <p style="font-size:16px;color:#64748b;">Rápido, intuitivo e pensado para o seu tipo de negócio.</p>
+  </div>
+  <div id="cs-perspective" style="perspective:1200px;max-width:860px;margin:0 auto;">
+    <div id="cs-card" style="
+      transform: rotateX(20deg) scale(1.04);
+      transform-origin: center top;
+      will-change: transform;
+      border: 4px solid #2d2d2d;
+      border-radius: 28px;
+      background: #1a1a1a;
+      padding: 8px;
+      box-shadow: 0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a;
+    ">
+      <div style="border-radius:20px;overflow:hidden;background:#f1f5f9;">
+        <img src="assets/Arte.png" alt="Fantoni PDV — Sistema completo" style="width:100%;display:block;border-radius:20px;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CARTAZ (logo abaixo do hero) ===== -->
+<section style="padding:0; background:#fff;">
+  <div style="max-width:1200px;margin:0 auto;padding:48px 24px;" class="grid-responsive" data-aos="fade-up">
+    <img src="assets/Cartaz.png" alt="Fantoni PDV — Recursos completos" style="width:100%;max-width:480px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.1);">
+    <div>
+      <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;padding:4px 14px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">PDV Completo</span>
+      <h2 style="font-size:clamp(24px,3vw,36px);font-weight:800;color:#0f172a;margin-bottom:16px;line-height:1.2;">Tudo que seu negócio precisa em um só aplicativo</h2>
+      <p style="font-size:16px;color:#64748b;line-height:1.8;margin-bottom:28px;">Desenvolvido para funcionar em celular, tablet, computador e maquininha smart — sem complicação, sem custo extra por dispositivo.</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px;">
+        <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#1e293b;font-weight:500;">
+          <span style="background:#dcfce7;color:#16a34a;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700;">✓</span>
+          NFC-e ilimitada com contingência offline
+        </li>
+        <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#1e293b;font-weight:500;">
+          <span style="background:#dcfce7;color:#16a34a;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700;">✓</span>
+          Cadastro automático de produtos por código de barras
+        </li>
+        <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#1e293b;font-weight:500;">
+          <span style="background:#dcfce7;color:#16a34a;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700;">✓</span>
+          Relatórios, impressões e exportação XML
+        </li>
+        <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#1e293b;font-weight:500;">
+          <span style="background:#dcfce7;color:#16a34a;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700;">✓</span>
+          Alerta de estoque mínimo e notas pendentes
+        </li>
+        <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#1e293b;font-weight:500;">
+          <span style="background:#dcfce7;color:#16a34a;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700;">✓</span>
+          Conexão com impressoras e leitores via USB e Bluetooth
+        </li>
+      </ul>
+      <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" class="btn-primary" target="_blank" style="display:inline-flex;">Testar 7 dias grátis</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<div class="stats">
+  <div class="stats-inner">
+    <div>
+      <div class="stat-num">+100</div>
+      <div class="stat-label">clientes ativados</div>
+    </div>
+    <div>
+      <div class="stat-num">100%</div>
+      <div class="stat-label">de aprovação dos clientes</div>
+    </div>
+    <div>
+      <div class="stat-num">100%</div>
+      <div class="stat-label">funciona offline</div>
+    </div>
+  </div>
+</div>
+
+<style>
+.feat-grid { display:grid; grid-template-columns: repeat(4,1fr); gap:20px; max-width:1200px; margin:0 auto; }
+.feat-card {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius:14px; padding:24px;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.feat-card:hover { box-shadow: 0 12px 36px rgba(29,78,216,0.13); transform: translateY(-5px) scale(1.01); }
+.feat-icon { width:48px; height:48px; background:#eff6ff; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:14px; }
+.feat-icon svg { width:24px; height:24px; color:#1d4ed8; }
+.feat-card h3 { font-size:15px; font-weight:700; color:#0f172a; margin-bottom:6px; }
+.feat-card p { font-size:13px; color:#64748b; line-height:1.55; }
+@media(max-width:900px){ .feat-grid { grid-template-columns: repeat(2,1fr); } }
+@media(max-width:480px){
+  .feat-grid { grid-template-columns: repeat(2,1fr); gap:10px; }
+  .feat-card { padding:14px; }
+  .feat-icon { width:36px; height:36px; border-radius:9px; margin-bottom:10px; }
+  .feat-icon svg { width:18px; height:18px; }
+  .feat-card h3 { font-size:13px; margin-bottom:4px; }
+  .feat-card p { font-size:11px; line-height:1.45; }
+}
+.seg-grid { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; max-width:1000px; margin:0 auto; }
+.seg-item { background:#fff; border:1.5px solid #e2e8f0; border-radius:100px; padding:12px 20px; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:600; color:#1e293b; transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease; cursor:default; }
+.seg-item:hover { border-color:#1d4ed8; box-shadow: 0 2px 10px rgba(29,78,216,.12); transform: translateY(-2px); }
+.seg-item svg { width:20px; height:20px; flex-shrink:0; color:#1d4ed8; }
+</style>
+
+<!-- ===== FUNCIONALIDADES ===== -->
+<section id="funcionalidades" style="background:#f8fafc; padding:72px 24px;">
+  <div style="text-align:center; margin-bottom:48px;" data-aos="fade-up">
+    <span style="display:inline-block; background:#eff6ff; color:#1d4ed8; font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; border-radius:100px; padding:4px 14px; margin-bottom:16px;">Tudo incluso</span>
+    <h2 style="font-size:clamp(24px,4vw,36px); font-weight:800; color:#0f172a; margin:0 0 14px;">Um sistema completo para o seu negócio</h2>
+    <p style="font-size:16px; color:#64748b; max-width:520px; margin:0 auto;">Cada funcionalidade pensada para facilitar o dia a dia do comércio.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="0"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg></div><h3>Frente de caixa</h3><p>Rápida e fácil de usar, ideal para alto volume de vendas</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="50"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg></div><h3>Controle de estoque</h3><p>Automático e em tempo real, com alertas de mínimo</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="100"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg></div><h3>Gestão financeira</h3><p>Entradas, saídas e fluxo de caixa em um só lugar</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="150"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><h3>Relatórios completos</h3><p>Vendas, desempenho e margem sempre à mão</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="200"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg></div><h3>Acesso remoto</h3><p>Pelo celular ou computador, de qualquer lugar</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="250"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></div><h3>NFC-e / NF-e</h3><p>Emissão de nota fiscal com contingência offline</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="300"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg></div><h3>Periféricos integrados</h3><p>Impressoras, leitores de código de barras e balanças</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="350"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg></div><h3>Mesas e comandas</h3><p>Controle de atendimento no local com agilidade</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="0"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg></div><h3>Autoatendimento</h3><p>Totem ou sistema para o cliente pedir sozinho</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="50"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg></div><h3>Pedidos via WhatsApp</h3><p>Integração com WhatsApp e outros canais de venda</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="100"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></div><h3>Usuários e funcionários</h3><p>Controle de acesso por perfil de cada colaborador</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="150"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg></div><h3>Cadastro de produtos</h3><p>Produtos e categorias com leitura de código de barras</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="200"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg></div><h3>Alertas de estoque</h3><p>Notificação automática ao atingir o estoque mínimo</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="250"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg></div><h3>Formas de pagamento</h3><p>PIX, cartão, dinheiro — tudo registrado e conciliado</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="300"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><h3>Histórico completo</h3><p>Todas as vendas e movimentações sempre registradas</p></div>
+    <div class="feat-card" data-aos="fade-up" data-aos-delay="350"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72l1.189-1.19A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72M6.75 18h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .414.336.75.75.75z"/></svg></div><h3>Multi segmento</h3><p>Adaptado para cada tipo de negócio</p></div>
+  </div>
+</section>
+
+<!-- ===== TOTALMENTE INTEGRADO ===== -->
+<section id="integrado" style="padding:72px 24px; background:#f8fafc;">
+  <div style="max-width:1200px;margin:0 auto;" class="grid-responsive" data-aos="fade-up">
+    <div>
+      <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;padding:4px 14px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Integração total</span>
+      <h2 style="font-size:clamp(24px,3vw,36px);font-weight:800;color:#0f172a;margin-bottom:16px;line-height:1.2;">Maquininha, computador, celular ou tablet — você escolhe</h2>
+      <p style="font-size:16px;color:#64748b;line-height:1.8;margin-bottom:24px;">O Fantoni PDV funciona com as maiores maquininhas do Brasil e em qualquer dispositivo. Integre tudo em um único sistema, sem cobrar a mais por isso.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center;font-size:13px;font-weight:700;color:#1e293b;">💳 Cielo · Stone · Rede</div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center;font-size:13px;font-weight:700;color:#1e293b;">💳 Getnet · PagBank · Vero</div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center;font-size:13px;font-weight:700;color:#1e293b;">💻 Windows · Android · iOS</div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center;font-size:13px;font-weight:700;color:#1e293b;">🖨️ Impressora · Balança · Leitor</div>
+      </div>
+    </div>
+    <img src="assets/Totalemente integrado.png" alt="Fantoni PDV totalmente integrado" style="width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.1);">
+  </div>
+</section>
+
+<!-- ===== GRÁFICO DE CRESCIMENTO ===== -->
+<section style="padding:72px 24px; background:#fff;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;" data-aos="fade-up">
+      <span style="display:inline-block;background:#dcfce7;color:#16a34a;padding:4px 14px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Resultado real</span>
+      <h2 style="font-size:clamp(24px,3vw,36px);font-weight:800;color:#0f172a;margin-bottom:12px;">Do papel para o controle total — veja a diferença</h2>
+      <p style="font-size:16px;color:#64748b;max-width:560px;margin:0 auto;line-height:1.7;">Com o Fantoni PDV, você passa a ter controle real sobre notas, estoque, faturamento e margens — e ainda economiza horas por semana graças às automações.</p>
+    </div>
+
+    <!-- Gráfico comparativo -->
+    <div style="background: linear-gradient(135deg,#f8fafc,#eff6ff); border-radius:24px; padding:40px; border:1px solid rgba(99,102,241,0.12); box-shadow: 0 4px 24px rgba(29,78,216,0.07);">
+      <div class="grid-chart">
+
+        <!-- SEM PDV -->
+        <div style="text-align:center;">
+          <div style="font-size:14px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:20px;">❌ Sem sistema PDV</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de notas fiscais</span><span>Baixo</span></div>
+              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:20%;height:100%;background: linear-gradient(90deg, #ef4444, #f87171);border-radius:100px;box-shadow: 0 0 8px rgba(239,68,68,0.4);"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de estoque</span><span>Baixo</span></div>
+              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:15%;height:100%;background: linear-gradient(90deg, #ef4444, #f87171);border-radius:100px;box-shadow: 0 0 8px rgba(239,68,68,0.4);"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de faturamento</span><span>Parcial</span></div>
+              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:30%;height:100%;background: linear-gradient(90deg, #ef4444, #f87171);border-radius:100px;box-shadow: 0 0 8px rgba(239,68,68,0.4);"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de margem</span><span>Baixo</span></div>
+              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:10%;height:100%;background: linear-gradient(90deg, #ef4444, #f87171);border-radius:100px;box-shadow: 0 0 8px rgba(239,68,68,0.4);"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COM FANTONI PDV -->
+        <div style="text-align:center;">
+          <div style="font-size:14px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:20px;">✅ Com Fantoni PDV</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de notas fiscais</span><span>Total</span></div>
+              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:100%;height:100%;background: linear-gradient(90deg, #16a34a, #22c55e);border-radius:100px;box-shadow: 0 0 8px rgba(22,197,94,0.4);"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de estoque</span><span>Total</span></div>
+              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:100%;height:100%;background: linear-gradient(90deg, #16a34a, #22c55e);border-radius:100px;box-shadow: 0 0 8px rgba(22,197,94,0.4);"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de faturamento</span><span>Total</span></div>
+              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:100%;height:100%;background: linear-gradient(90deg, #16a34a, #22c55e);border-radius:100px;box-shadow: 0 0 8px rgba(22,197,94,0.4);"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de margem</span><span>Total</span></div>
+              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:100%;height:100%;background: linear-gradient(90deg, #16a34a, #22c55e);border-radius:100px;box-shadow: 0 0 8px rgba(22,197,94,0.4);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultado em destaque -->
+      <div style="background:linear-gradient(135deg,#0f172a,#1e3a8a);border-radius:14px;padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+        <div>
+          <div style="color:#94a3b8;font-size:13px;margin-bottom:4px;">Economia com automações</div>
+          <div style="color:#fff;font-size:22px;font-weight:800;">Menos horas em tarefas manuais — mais tempo para vender</div>
+          <div style="color:#bfdbfe;font-size:14px;margin-top:6px;">NFC-e automática · estoque atualizado em tempo real · relatórios prontos</div>
+        </div>
+        <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" target="_blank" style="background:#3b82f6;color:#fff;padding:14px 24px;border-radius:10px;font-weight:700;text-decoration:none;white-space:nowrap;font-size:15px;">Quero esse resultado</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VÍDEOS ===== -->
+<section id="videos" style="padding:72px 24px; background:#f8fafc;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;" data-aos="fade-up">
+      <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;padding:4px 14px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Demonstração</span>
+      <h2 style="font-size:clamp(24px,3vw,36px);font-weight:800;color:#0f172a;margin-bottom:12px;">Veja o sistema funcionando no seu segmento</h2>
+      <p style="font-size:16px;color:#64748b;">Assista a demonstração do Fantoni PDV para o seu tipo de negócio.</p>
+    </div>
+    <div class="grid-videos">
+      <div data-aos="fade-up" data-aos-delay="0">
+        <div style="background:#1e293b;color:#fff;padding:12px 20px;border-radius:12px 12px 0 0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.047 8.287 8.287 0 009 9.601a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg>
+          Para Bares e Restaurantes
+        </div>
+        <div style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.12);position:relative;padding-top:56.25%;">
+          <iframe src="https://www.youtube.com/embed/rQRBtZUJ36Y" title="Fantoni PDV — Bares e Restaurantes" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;"></iframe>
+        </div>
+      </div>
+      <div data-aos="fade-up" data-aos-delay="50">
+        <div style="background:#1d4ed8;color:#fff;padding:12px 20px;border-radius:12px 12px 0 0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+          Para Varejo e Comércio
+        </div>
+        <div style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.12);position:relative;padding-top:56.25%;">
+          <iframe src="https://www.youtube.com/embed/N4in_BcXV3s" title="Fantoni PDV — Varejo e Comércio" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DEPOIMENTOS ===== -->
+<section id="depoimentos" style="padding:72px 24px; background:#f8fafc;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;" data-aos="fade-up">
+      <span class="section-tag">Depoimentos</span>
+      <h2 class="section-title">O que nossos clientes dizem</h2>
+      <p class="section-sub" style="margin:0 auto;">Experiências reais de quem já usa o Fantoni PDV no dia a dia.</p>
+    </div>
+    <div class="depo-grid">
+      <div class="depo-card">
+        <div class="depo-stars">★★★★★</div>
+        <p class="depo-texto">"Ouça o depoimento em áudio:"</p>
+        <audio controls style="width:100%;margin-bottom:16px;">
+          <source src="assets/feedback-mesa.opus" type="audio/ogg; codecs=opus">
+        </audio>
+        <div class="depo-autor">
+          <div class="depo-avatar">👤</div>
+          <div>
+            <div class="depo-nome">Cliente — A Mesa</div>
+            <div class="depo-cargo">Bar / Restaurante</div>
+          </div>
+        </div>
+      </div>
+      <div class="depo-card">
+        <div class="depo-stars">★★★★★</div>
+        <p class="depo-texto">"Ouça o depoimento em áudio:"</p>
+        <audio controls style="width:100%;margin-bottom:16px;">
+          <source src="assets/feedback-anaro.opus" type="audio/ogg; codecs=opus">
+        </audio>
+        <div class="depo-autor">
+          <div class="depo-avatar">👤</div>
+          <div>
+            <div class="depo-nome">Anaro</div>
+            <div class="depo-cargo">Cliente Fantoni PDV</div>
+          </div>
+        </div>
+      </div>
+      <!-- Depoimento via WhatsApp (screenshot real) -->
+      <div class="depo-card">
+        <div class="depo-stars">★★★★★</div>
+        <p class="depo-texto">"Sistema tá impecável. Ponto de impressão resolveu um baita problema por aqui. Grato pelo atendimento."</p>
+        <img src="assets/feedback-screenshot.png" alt="Depoimento de cliente via WhatsApp" style="width:100%;border-radius:10px;margin-bottom:16px;border:1px solid #e2e8f0;">
+        <div class="depo-autor">
+          <div class="depo-avatar">💬</div>
+          <div>
+            <div class="depo-nome">Cliente via WhatsApp</div>
+            <div class="depo-cargo">Usuário Fantoni PDV</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SEGMENTOS ===== -->
+<section id="segmentos" style="background:#f8fafc; padding:64px 24px;">
+  <div style="text-align:center; margin-bottom:40px;" data-aos="fade-up">
+    <span style="display:inline-block; background:#eff6ff; color:#1d4ed8; font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; border-radius:100px; padding:4px 14px; margin-bottom:16px;">Segmentos atendidos</span>
+    <h2 style="font-size:clamp(22px,4vw,34px); font-weight:800; color:#0f172a; margin:0;">Ideal para diversos tipos de negócio</h2>
+  </div>
+  <div class="seg-grid">
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/></svg><span>Lojas de roupas e calçados</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="30"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg><span>Mercados e mercearias</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="60"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg><span>Açougues e hortifrutis</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="90"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M5 14.5l-1.402 1.402c-1.232 1.232-.65 3.318 1.067 3.611A48.309 48.309 0 0012 21c2.773 0 5.491-.235 8.135-.687 1.718-.293 2.3-2.379 1.067-3.61L19.8 15.3M5 14.5h14.8"/></svg><span>Distribuidoras de bebidas</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="120"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.047 8.287 8.287 0 009 9.601a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.468 5.99 5.99 0 00-1.925 3.547 5.975 5.975 0 01-2.133-1.001A3.75 3.75 0 0012 18z"/></svg><span>Lanchonetes, bares e restaurantes</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="150"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75l-1.5.75a3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0L3 16.5m15-3.379a48.474 48.474 0 00-6-.371c-2.032 0-4.034.126-6 .371m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 013 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 016 13.12M12.265 3.11a.375.375 0 11-.53 0L12 2.845l.265.265zm-3 0a.375.375 0 11-.53 0L9 2.845l.265.265zm6 0a.375.375 0 11-.53 0L15 2.845l.265.265z"/></svg><span>Cafeterias e padarias</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="180"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Farmácias e drogarias</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="210"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg><span>Cosméticos e perfumarias</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="240"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg><span>Eletrônicos e assistência técnica</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="270"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg><span>Pet shops</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="300"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.654-4.654m5.65-5.65l1.767-1.767a2.652 2.652 0 013.75 3.75l-1.768 1.767m-3.75-3.75l3.75 3.75"/></svg><span>Materiais de construção</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="330"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg><span>Lojas de móveis e utilidades</span></div>
+    <div class="seg-item" data-aos="zoom-in" data-aos-delay="360"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg><span>Comércio em geral</span></div>
+  </div>
+</section>
+
+<!-- ===== AUTORIDADE ===== -->
+<section style="padding:72px 24px; background:#fff;">
+  <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;gap:48px;flex-wrap:wrap;justify-content:center;" data-aos="fade-up">
+    <div style="flex-shrink:0;text-align:center;">
+      <img src="assets/foto-douglas.png" alt="Douglas Fantoni — Consultor especialista em PDV" style="width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:top;box-shadow:0 8px 32px rgba(29,78,216,.18);border:4px solid #eff6ff;">
+      <div style="margin-top:14px;">
+        <div style="font-size:17px;font-weight:800;color:#0f172a;">Douglas Fantoni</div>
+        <div style="font-size:13px;color:#1d4ed8;font-weight:600;margin-top:3px;">Fundador &amp; Consultor · Fantoni Software</div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:280px;">
+      <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:100px;padding:4px 14px;margin-bottom:16px;">Quem está por trás do sistema</span>
+      <h2 style="font-size:clamp(22px,3vw,30px);font-weight:800;color:#0f172a;margin:0 0 14px;line-height:1.3;">3 anos ajudando comércios em todo o Brasil a vender mais</h2>
+      <p style="font-size:15px;color:#475569;line-height:1.75;margin-bottom:20px;">Sou fundador da Fantoni Software e consultor especializado em sistemas PDV para o varejo. Com um time dedicado, garantimos que cada cliente tenha a implantação, o treinamento e o suporte necessários para crescer — em qualquer lugar do Brasil.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#1e293b;">Atendimento em todo o Brasil</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#1e293b;">Treinamento incluso</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#1e293b;">100% de aprovação</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#1e293b;">+100 clientes ativos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sede -->
+  <div style="max-width:900px;margin:32px auto 0;display:flex;align-items:center;gap:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;flex-wrap:wrap;">
+    <img src="assets/Cede.jpeg" alt="Sede da Fantoni Software em Santa Cruz do Sul" style="width:160px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+    <div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+        <span style="font-size:12px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.04em;">Nossa sede</span>
+      </div>
+      <p style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 3px;">Santa Cruz do Sul — RS</p>
+      <p style="font-size:13px;color:#64748b;margin:0;line-height:1.5;">Base de operações da Fantoni Software, com atendimento remoto para todo o Brasil.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA FINAL ===== -->
+<section style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 100%);color:#fff;text-align:center;padding:80px 24px;">
+  <div style="max-width:700px;margin:0 auto;" data-aos="fade-up">
+    <h2 style="font-size:clamp(26px,3.5vw,40px);font-weight:800;margin-bottom:14px;">Pronto para modernizar seu negócio?</h2>
+    <p style="font-size:17px;color:#cbd5e1;margin-bottom:36px;">Teste 7 dias grátis, sem cartão. Comece em minutos e veja a diferença no controle das suas vendas.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;">
+      <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" class="btn-primary" target="_blank">Testar 7 dias grátis</a>
+      <a href="https://wa.me/5551996034862?text=Olá!+Tenho+interesse+no+Fantoni+PDV" class="btn-outline" target="_blank">Falar com consultor</a>
+    </div>
+    <p style="margin-top:20px;font-size:14px;color:#94a3b8;">Sem fidelidade · Cancele quando quiser</p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <span style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px;display:block;margin-bottom:12px;">Fantoni <span style="color:#93c5fd;">Software</span></span>
+        <p class="footer-desc">Sistema PDV completo para bares, restaurantes e varejo. Atendemos em todo o Brasil.</p>
+        <p class="footer-desc" style="font-size:13px;color:#64748b;margin-top:-8px;">CNPJ: 60.388.739/0001-44<br><a href="mailto:fantonisoftware@gmail.com" style="color:#93c5fd;text-decoration:none;">fantonisoftware@gmail.com</a></p>
+        <div class="footer-social">
+          <a href="#" title="YouTube">▶</a>
+          <a href="#" title="Instagram">📷</a>
+          <a href="https://wa.me/5551996034862" title="WhatsApp" target="_blank">💬</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Sistema</h4>
+        <ul>
+          <li><a href="#integrado">Integração</a></li>
+          <li><a href="#videos">Demonstração</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#">Sobre nós</a></li>
+          <li><a href="#depoimentos">Depoimentos</a></li>
+          <li><a href="#">Política de privacidade</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li><a href="https://wa.me/5551996034862" target="_blank">WhatsApp</a></li>
+          <li><a href="mailto:contato@fantonisoftware.com.br">E-mail</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Fantoni Software. Todos os direitos reservados.</span>
+      <span style="font-size:12px;color:#475569;">Atendimento em todo o Brasil · CNPJ 60.388.739/0001-44</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== WHATSAPP FLUTUANTE ===== -->
+<a href="https://wa.me/5551996034862?text=Olá!+Quero+saber+mais+sobre+o+Fantoni+PDV" class="whatsapp-float" target="_blank" title="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+</a>
+
+<style>
+  /* Previne scroll horizontal em mobile */
+  html, body { overflow-x: hidden; }
+
+  @keyframes barraCresce { from { width: 0 !important; } }
+  .barra-anim { animation: barraCresce 1.2s ease-out forwards; }
+
+  /* ---- Grids inline responsivos ---- */
+  .grid-responsive {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .grid-videos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .grid-chart {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 900px) {
+    .grid-responsive,
+    .grid-videos,
+    .grid-chart { grid-template-columns: 1fr !important; }
+    .depo-grid { grid-template-columns: 1fr !important; }
+    .hero-img { display: none !important; }
+    .footer-top { grid-template-columns: 1fr 1fr !important; }
+  }
+  @media (max-width: 640px) {
+    .nav-links, .nav-cta { display: none; }
+    .nav-menu-btn { display: block; }
+    .footer-top { grid-template-columns: 1fr !important; }
+    .grid-chart { grid-template-columns: 1fr !important; }
+    .stats-inner { grid-template-columns: 1fr !important; gap: 16px !important; }
+  }
+</style>
+
+<script>
+  function toggleMenu() {
+    const m = document.getElementById('navMobile');
+    m.style.display = m.style.display === 'none' ? 'block' : 'none';
+  }
+
+  // Fecha menu ao clicar em link
+  document.querySelectorAll('#navMobile a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('navMobile').style.display = 'none';
+    });
+  });
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // Animar barras ao entrar na viewport
+  const barraObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.barra-anim').forEach(b => {
+          b.style.animation = 'none';
+          void b.offsetHeight;
+          b.style.animation = 'barraCresce 1.2s ease-out forwards';
+        });
+        barraObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  const graficoSection = document.querySelector('.grid-chart');
+  if (graficoSection) barraObs.observe(graficoSection.closest('section') || graficoSection);
+</script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic' });</script>
+
+<script>
+// ---- ContainerScroll ----
+(function(){
+  const card = document.getElementById('cs-card');
+  const wrap = document.getElementById('cs-perspective');
+  if (!card || !wrap) return;
+  function update(){
+    const rect = wrap.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.9)));
+    const isMobile = window.innerWidth <= 768;
+    const scaleFrom = isMobile ? 0.75 : 1.04;
+    const scaleTo   = isMobile ? 0.92 : 1.0;
+    const rotate = 20 * (1 - progress);
+    const scale  = scaleFrom + (scaleTo - scaleFrom) * progress;
+    card.style.transform = `rotateX(${rotate}deg) scale(${scale})`;
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+
+// ---- WebGL Hero ----
+(function(){
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const gl = canvas.getContext('webgl2');
+  if (!gl) return;
+
+  const vs = `#version 300 es
+precision highp float;
+in vec4 position;
+void main(){gl_Position=position;}`;
+
+  const fs = `#version 300 es
+precision highp float;
+out vec4 O;
+uniform vec2 resolution;
+uniform float time;
+#define FC gl_FragCoord.xy
+#define T time
+#define R resolution
+#define MN min(R.x,R.y)
+float rnd(vec2 p){p=fract(p*vec2(12.9898,78.233));p+=dot(p,p+34.56);return fract(p.x*p.y);}
+float noise(in vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f);float a=rnd(i),b=rnd(i+vec2(1,0)),c=rnd(i+vec2(0,1)),d=rnd(i+1.);return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);}
+float fbm(vec2 p){float t=.0,a=1.;mat2 m=mat2(1.,-.5,.2,1.2);for(int i=0;i<5;i++){t+=a*noise(p);p*=2.*m;a*=.5;}return t;}
+float clouds(vec2 p){float d=1.,t=.0;for(float i=.0;i<3.;i++){float a=d*fbm(i*10.+p.x*.2+.2*(1.+i)*p.y+d+i*i+p);t=mix(t,d,a);d=a;p*=2./(i+1.);}return t;}
+void main(void){
+  vec2 uv=(FC-.5*R)/MN,st=uv*vec2(2,1);
+  vec3 col=vec3(0);
+  float bg=clouds(vec2(st.x+T*.3,-st.y));
+  uv*=1.-.3*(sin(T*.15)*.5+.5);
+  for(float i=1.;i<12.;i++){
+    uv+=.1*cos(i*vec2(.1+.01*i,.8)+i*i+T*.4+.1*uv.x);
+    vec2 p=uv;
+    float d=length(p);
+    col+=.00125/d*(cos(sin(i)*vec3(0.2,0.8,2.5))+1.);
+    float b=noise(i+p+bg*1.731);
+    col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));
+    col=mix(col,vec3(bg*.02,bg*.07,bg*.45),d);
+  }
+  col=mix(vec3(0.04,0.07,0.22),col,0.9);
+  O=vec4(col,1);
+}`;
+
+  function compileShader(type, src){
+    const s=gl.createShader(type);
+    gl.shaderSource(s,src); gl.compileShader(s);
+    return s;
+  }
+  const prog=gl.createProgram();
+  gl.attachShader(prog,compileShader(gl.VERTEX_SHADER,vs));
+  gl.attachShader(prog,compileShader(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(prog);
+
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,1,-1,-1,1,1,1,-1]),gl.STATIC_DRAW);
+  const pos=gl.getAttribLocation(prog,'position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+
+  const uRes=gl.getUniformLocation(prog,'resolution');
+  const uTime=gl.getUniformLocation(prog,'time');
+
+  function resize(){
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=canvas.offsetWidth*dpr;
+    canvas.height=canvas.offsetHeight*dpr;
+    gl.viewport(0,0,canvas.width,canvas.height);
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  function loop(now){
+    gl.useProgram(prog);
+    gl.uniform2f(uRes,canvas.width,canvas.height);
+    gl.uniform1f(uTime,now*0.001);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
