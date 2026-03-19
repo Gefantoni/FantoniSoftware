@@ -113,13 +113,13 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
         .from('instancias_whatsapp')
         .select('*')
         .in('id', config.instancias_ids)
-        .eq('ativo', true);
+        .eq('status', 'ativo');
       instancias = data || [];
     } else {
       const { data } = await supabaseAdmin
         .from('instancias_whatsapp')
         .select('*')
-        .eq('ativo', true);
+        .eq('status', 'ativo');
       instancias = data || [];
     }
 
@@ -229,10 +229,10 @@ router.post('/:id/iniciar', autenticar, adminOuComercial, async (req, res) => {
     // Busca instâncias
     let instancias = [];
     if ((config.instancias_ids || []).length > 0) {
-      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').in('id', config.instancias_ids).eq('ativo', true);
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').in('id', config.instancias_ids).eq('status', 'ativo');
       instancias = data || [];
     } else {
-      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').eq('ativo', true);
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').eq('status', 'ativo');
       instancias = data || [];
     }
 
