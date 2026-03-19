@@ -209,9 +209,7 @@
       <!-- ══ ETAPA 2 — CONFIGURAR ══ -->
       <div class="painel-etapa" id="etapa-2">
         <div class="card" style="margin-bottom:20px;">
-          <h3 style="margin:0 0 20px;font-size:16px;font-weight:700;color:#0f172a;">
-            ⚙️ Configurações do disparo
-          </h3>
+          <h3 style="margin:0 0 20px;font-size:16px;font-weight:700;color:#0f172a;">⚙️ Configurações do disparo</h3>
 
           <div class="config-grid">
             <div class="form-campo">
@@ -224,11 +222,12 @@
             </div>
 
             <div class="form-campo">
-              <label>Intervalo entre mensagens</label>
-              <div class="slider-wrap">
-                <input type="range" id="cfg-intervalo" min="30" max="600" value="60" step="10" oninput="atualizarSlider()">
-                <span class="slider-val" id="slider-label">1 min</span>
-              </div>
+              <label>Produto / Campanha</label>
+              <select id="cfg-produto" onchange="carregarPromptProduto()">
+                <option value="pdv">Fantoni PDV — Sistema de gestão</option>
+                <option value="cardapio">Fantoni Cardápio IA — Delivery</option>
+                <option value="custom">Personalizado (editar prompt manualmente)</option>
+              </select>
             </div>
 
             <div class="form-campo">
@@ -242,10 +241,37 @@
             </div>
           </div>
 
+          <!-- Intervalo aleatório -->
+          <div style="margin-top:20px;background:#f8fafc;border-radius:10px;padding:14px 16px;">
+            <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
+              ⏱️ Intervalo aleatório entre mensagens
+              <span style="font-size:12px;font-weight:400;color:#94a3b8;margin-left:6px;">evita detecção de padrão</span>
+            </label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="form-campo">
+                <label>Mínimo</label>
+                <div class="slider-wrap">
+                  <input type="range" id="cfg-min" min="30" max="600" value="90" step="10" oninput="atualizarIntervalo()">
+                  <span class="slider-val" id="label-min">1,5 min</span>
+                </div>
+              </div>
+              <div class="form-campo">
+                <label>Máximo</label>
+                <div class="slider-wrap">
+                  <input type="range" id="cfg-max" min="30" max="600" value="300" step="10" oninput="atualizarIntervalo()">
+                  <span class="slider-val" id="label-max">5 min</span>
+                </div>
+              </div>
+            </div>
+            <p style="margin:8px 0 0;font-size:12px;color:#64748b;" id="intervalo-info">
+              Cada mensagem será enviada com intervalo aleatório entre <strong id="inf-min">1,5 min</strong> e <strong id="inf-max">5 min</strong>
+            </p>
+          </div>
+
           <!-- Instâncias WhatsApp -->
           <div style="margin-top:20px;" id="bloco-instancias">
             <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
-              📱 Números WhatsApp para disparo (round-robin)
+              📱 Números WhatsApp para disparo (round-robin automático)
             </label>
             <div class="instancias-lista" id="instancias-lista">
               <span style="color:#94a3b8;font-size:13px;" id="inst-vazio">Carregando instâncias...</span>
@@ -253,25 +279,45 @@
           </div>
         </div>
 
-        <!-- Preview de mensagem -->
+        <!-- Prompts editáveis -->
         <div class="card" style="margin-bottom:20px;">
-          <h3 style="margin:0 0 16px;font-size:15px;font-weight:700;color:#0f172a;">
-            ✨ Prévia de mensagem gerada pela IA
-            <span style="font-size:12px;font-weight:400;color:#94a3b8;margin-left:8px;">baseada no 1º contato da lista</span>
-          </h3>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div>
-              <div class="preview-label">💬 WhatsApp</div>
-              <div class="preview-box" id="preview-wa"><span class="preview-loading">Gerando mensagem...</span></div>
-            </div>
-            <div>
-              <div class="preview-label">📧 Email (corpo personalizado)</div>
-              <div class="preview-box" id="preview-email"><span class="preview-loading">Gerando mensagem...</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+            <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">
+              🤖 Prompts de geração de mensagem
+            </h3>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline btn-sm" onclick="gerarPreview()">↺ Gerar prévia</button>
             </div>
           </div>
-          <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="gerarPreview()">
-            ↺ Regenerar mensagens
-          </button>
+          <p style="margin:0 0 16px;font-size:13px;color:#64748b;">
+            Use <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{nome}}</code>,
+            <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{segmento}}</code> e
+            <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{cidade}}</code> como variáveis.
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <div class="preview-label">💬 Prompt WhatsApp</div>
+              <textarea id="prompt-wa" rows="7" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;" oninput="limparPreview()"></textarea>
+            </div>
+            <div>
+              <div class="preview-label">📧 Prompt Email (corpo)</div>
+              <textarea id="prompt-email" rows="7" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;" oninput="limparPreview()"></textarea>
+            </div>
+          </div>
+
+          <!-- Prévia da mensagem gerada -->
+          <div id="area-preview" style="display:none;margin-top:16px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div>
+                <div class="preview-label">💬 Mensagem WA gerada</div>
+                <div class="preview-box" id="preview-wa"></div>
+              </div>
+              <div>
+                <div class="preview-label">📧 Email gerado</div>
+                <div class="preview-box" id="preview-email"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
@@ -354,7 +400,7 @@ function irParaEtapa(n) {
     if (i + 1 === n) el.classList.add('ativo');
     if (i + 1 < n)  el.classList.add('concluido');
   });
-  if (n === 2) { carregarInstancias(); gerarPreview(); }
+  if (n === 2) { carregarInstancias(); carregarPromptProduto(); }
   if (n === 3) iniciarPolling();
 }
 
@@ -421,10 +467,65 @@ function renderizarTabela(contatos) {
 }
 
 // ── Configuração ───────────────────────────────────────────────
-function atualizarSlider() {
-  const val = Number(document.getElementById('cfg-intervalo').value);
-  const label = val < 60 ? `${val}s` : val === 60 ? '1 min' : `${Math.round(val / 60)} min`;
-  document.getElementById('slider-label').textContent = label;
+const PROMPTS = {
+  pdv: {
+    wa: `Você é um SDR da Fantoni Software.
+Escreva uma mensagem de WhatsApp curta (máximo 3 linhas), natural e descontraída, para o primeiro contato com um estabelecimento.
+NÃO use saudações genéricas. Chame pelo nome do estabelecimento. NÃO mencione preço. Máximo 1 emoji.
+O objetivo é despertar curiosidade sobre o sistema PDV para {{segmento}} em {{cidade}}.
+Assine como Douglas, da Fantoni Software.
+
+Dados: Nome: {{nome}} | Segmento: {{segmento}} | Cidade: {{cidade}}
+
+Retorne APENAS o texto da mensagem, sem aspas.`,
+    email: `Você é um SDR da Fantoni Software.
+Escreva 2-3 frases para o corpo de um email de prospecção para um estabelecimento do segmento {{segmento}} em {{cidade}}.
+Mencione o nome "{{nome}}". Seja profissional mas próximo. Foque no problema de controle de vendas e estoque.
+NÃO mencione preço. Retorne APENAS o texto corrido, sem saudação.`,
+  },
+  cardapio: {
+    wa: `Você é um SDR da Fantoni Software.
+Escreva uma mensagem de WhatsApp curta (máximo 3 linhas), natural e descontraída, para o primeiro contato com um estabelecimento de delivery/restaurante.
+Chame pelo nome "{{nome}}". NÃO mencione preço. Máximo 1 emoji.
+O objetivo é despertar curiosidade sobre o Fantoni Cardápio IA — cardápio digital com IA para delivery e atendimento pelo WhatsApp.
+Assine como Douglas, da Fantoni Software.
+
+Retorne APENAS o texto da mensagem, sem aspas.`,
+    email: `Você é um SDR da Fantoni Software.
+Escreva 2-3 frases para o corpo de um email de prospecção para um estabelecimento de delivery/alimentação ({{segmento}}) em {{cidade}}.
+Mencione o nome "{{nome}}". Foque no problema de gerenciar pedidos pelo WhatsApp manualmente e como o Fantoni Cardápio IA resolve isso.
+NÃO mencione preço. Retorne APENAS o texto corrido, sem saudação.`,
+  },
+  custom: { wa: '', email: '' },
+};
+
+function formatarSeg(s) {
+  const v = Number(s);
+  if (v < 60) return `${v}s`;
+  const m = v / 60;
+  return m === Math.floor(m) ? `${m} min` : `${m.toFixed(1)} min`;
+}
+
+function atualizarIntervalo() {
+  let min = Number(document.getElementById('cfg-min').value);
+  let max = Number(document.getElementById('cfg-max').value);
+  if (max < min) { max = min; document.getElementById('cfg-max').value = min; }
+  document.getElementById('label-min').textContent = formatarSeg(min);
+  document.getElementById('label-max').textContent = formatarSeg(max);
+  document.getElementById('inf-min').textContent   = formatarSeg(min);
+  document.getElementById('inf-max').textContent   = formatarSeg(max);
+}
+
+function carregarPromptProduto() {
+  const produto = document.getElementById('cfg-produto').value;
+  const p = PROMPTS[produto] || PROMPTS.pdv;
+  document.getElementById('prompt-wa').value    = p.wa;
+  document.getElementById('prompt-email').value = p.email;
+  limparPreview();
+}
+
+function limparPreview() {
+  document.getElementById('area-preview').style.display = 'none';
 }
 
 function atualizarVisibilidade() {
@@ -458,6 +559,7 @@ async function gerarPreview() {
   const primeiro = contatosImportados[0];
   const wa    = document.getElementById('preview-wa');
   const email = document.getElementById('preview-email');
+  document.getElementById('area-preview').style.display = 'block';
   wa.innerHTML = email.innerHTML = '<span class="preview-loading">Gerando com IA...</span>';
 
   try {
@@ -469,6 +571,8 @@ async function gerarPreview() {
         municipio:            primeiro.municipio,
         estado:               primeiro.estado,
         atividades_principal: primeiro.atividades_principal,
+        prompt_wa:            document.getElementById('prompt-wa').value    || null,
+        prompt_email:         document.getElementById('prompt-email').value || null,
       })
     });
     wa.textContent    = dados.whatsapp || '—';
@@ -491,12 +595,15 @@ async function iniciarDisparo() {
     const dados = await apiFetch('/disparos/iniciar', {
       method: 'POST',
       body: JSON.stringify({
-        canal:              document.getElementById('cfg-canal').value,
-        intervalo_segundos: document.getElementById('cfg-intervalo').value,
-        hora_inicio:        document.getElementById('cfg-hora-inicio').value,
-        hora_fim:           document.getElementById('cfg-hora-fim').value,
-        instancias_ids:     instanciasIds,
-        contatos:           contatosImportados,
+        canal:          document.getElementById('cfg-canal').value,
+        intervalo_min:  document.getElementById('cfg-min').value,
+        intervalo_max:  document.getElementById('cfg-max').value,
+        hora_inicio:    document.getElementById('cfg-hora-inicio').value,
+        hora_fim:       document.getElementById('cfg-hora-fim').value,
+        instancias_ids: instanciasIds,
+        contatos:       contatosImportados,
+        prompt_wa:      document.getElementById('prompt-wa').value    || null,
+        prompt_email:   document.getElementById('prompt-email').value || null,
       }),
     });
     if (dados.erro) throw new Error(dados.erro);

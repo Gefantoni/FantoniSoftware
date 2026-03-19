@@ -71,12 +71,12 @@ router.post('/importar', autenticar, adminOuComercial, async (req, res) => {
 // ── POST /api/disparos/gerar-mensagem ─────────────────────────
 // Gera prévia de mensagem WA e email para um lead
 router.post('/gerar-mensagem', autenticar, adminOuComercial, async (req, res) => {
-  const { nome_fantasia, razao_social, municipio, estado, atividades_principal } = req.body;
+  const { nome_fantasia, razao_social, municipio, estado, atividades_principal, prompt_wa, prompt_email } = req.body;
   try {
     const params = { nomeFantasia: nome_fantasia, razaoSocial: razao_social, municipio, estado, segmento: atividades_principal };
     const [msgWA, msgEmail] = await Promise.all([
-      gerarMensagemWA(params),
-      gerarMensagemEmail(params),
+      gerarMensagemWA(params, prompt_wa || null),
+      gerarMensagemEmail(params, prompt_email || null),
     ]);
     res.json({ whatsapp: msgWA, email: msgEmail });
   } catch (err) {
@@ -90,11 +90,14 @@ router.post('/gerar-mensagem', autenticar, adminOuComercial, async (req, res) =>
 router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
   try {
     const config = {
-      canal:             req.body.canal             || 'ambos',
-      instancias_ids:    req.body.instancias_ids    || [],
-      intervaloSegundos: Number(req.body.intervalo_segundos) || 60,
-      horaInicio:        req.body.hora_inicio || null,
-      horaFim:           req.body.hora_fim    || null,
+      canal:            req.body.canal          || 'ambos',
+      instancias_ids:   req.body.instancias_ids || [],
+      intervaloMinSeg:  Number(req.body.intervalo_min) || 60,
+      intervaloMaxSeg:  Number(req.body.intervalo_max) || 120,
+      horaInicio:       req.body.hora_inicio    || null,
+      horaFim:          req.body.hora_fim       || null,
+      promptWA:         req.body.prompt_wa      || null,
+      promptEmail:      req.body.prompt_email   || null,
     };
 
     const contatos = req.body.contatos || [];
