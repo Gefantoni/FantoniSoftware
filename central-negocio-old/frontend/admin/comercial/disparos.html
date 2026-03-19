@@ -382,7 +382,7 @@ async function processarArquivo(file) {
   });
 
   try {
-    const dados = await apiFetch('/api/disparos/importar', {
+    const dados = await apiFetch('/disparos/importar', {
       method: 'POST',
       body: JSON.stringify({ arquivo_base64: base64 }),
     });
@@ -434,7 +434,7 @@ function atualizarVisibilidade() {
 
 async function carregarInstancias() {
   try {
-    const dados = await apiFetch('/api/comercial/instancias');
+    const dados = await apiFetch('/comercial/instancias');
     instanciasDisponiveis = Array.isArray(dados) ? dados : [];
     const lista = document.getElementById('instancias-lista');
 
@@ -461,7 +461,7 @@ async function gerarPreview() {
   wa.innerHTML = email.innerHTML = '<span class="preview-loading">Gerando com IA...</span>';
 
   try {
-    const dados = await apiFetch('/api/disparos/gerar-mensagem', {
+    const dados = await apiFetch('/disparos/gerar-mensagem', {
       method: 'POST',
       body: JSON.stringify({
         nome_fantasia:        primeiro.nome_fantasia,
@@ -488,7 +488,7 @@ async function iniciarDisparo() {
     .map(el => el.value);
 
   try {
-    const dados = await apiFetch('/api/disparos/iniciar', {
+    const dados = await apiFetch('/disparos/iniciar', {
       method: 'POST',
       body: JSON.stringify({
         canal:              document.getElementById('cfg-canal').value,
@@ -522,7 +522,7 @@ function iniciarPolling() {
 async function atualizarStatus() {
   if (!campanhaAtualId) return;
   try {
-    const dados = await apiFetch(`/api/disparos/status/${campanhaAtualId}`);
+    const dados = await apiFetch(`/disparos/status/${campanhaAtualId}`);
     if (!dados || dados.erro) return;
 
     const camp     = dados.campanha || {};
@@ -582,17 +582,17 @@ function renderizarLog(leads) {
 
 // ── Controles ─────────────────────────────────────────────────
 async function pausarDisparo() {
-  await apiFetch(`/api/disparos/${campanhaAtualId}/pausar`, { method: 'POST' });
+  await apiFetch(`/disparos/${campanhaAtualId}/pausar`, { method: 'POST' });
   atualizarStatus();
 }
 async function retomarDisparo() {
-  await apiFetch(`/api/disparos/${campanhaAtualId}/retomar`, { method: 'POST' });
+  await apiFetch(`/disparos/${campanhaAtualId}/retomar`, { method: 'POST' });
   atualizarStatus();
   iniciarPolling();
 }
 async function encerrarDisparo() {
   if (!confirm('Encerrar o disparo? Isso para o envio permanentemente.')) return;
-  await apiFetch(`/api/disparos/${campanhaAtualId}/encerrar`, { method: 'POST' });
+  await apiFetch(`/disparos/${campanhaAtualId}/encerrar`, { method: 'POST' });
   if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
   atualizarStatus();
 }
