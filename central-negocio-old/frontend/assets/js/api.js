@@ -36,14 +36,15 @@ async function apiFetch(endpoint, opcoes = {}) {
 
 async function processarResposta(resposta) {
   const texto = await resposta.text();
+  let json;
   try {
-    const json = JSON.parse(texto);
-    if (!resposta.ok) throw { status: resposta.status, ...json };
-    return json;
+    json = JSON.parse(texto);
   } catch (e) {
     if (!resposta.ok) throw new Error(`Erro ${resposta.status}`);
     return texto;
   }
+  if (!resposta.ok) throw { status: resposta.status, ...json };
+  return json;
 }
 
 async function renovarToken() {
