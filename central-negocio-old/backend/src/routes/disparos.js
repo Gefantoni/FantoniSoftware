@@ -41,12 +41,14 @@ function filtrarContatos(rows, { apenasAtiva = true, comEmail = false, comTelefo
 }
 
 // ── POST /api/disparos/importar ───────────────────────────────
-// Recebe arquivo .xlsx e retorna contatos parsed + estatísticas
-router.post('/importar', autenticar, adminOuComercial, upload.single('arquivo'), async (req, res) => {
+// Recebe arquivo .xlsx como base64 (compatível com Vercel serverless)
+router.post('/importar', autenticar, adminOuComercial, async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ erro: 'Arquivo não enviado' });
+    const { arquivo_base64 } = req.body;
+    if (!arquivo_base64) return res.status(400).json({ erro: 'Arquivo não enviado' });
 
-    const rows = parseXLSX(req.file.buffer);
+    const buffer = Buffer.from(arquivo_base64, 'base64');
+    const rows = parseXLSX(buffer);
     const todos = filtrarContatos(rows);
     const comEmail    = todos.filter(c => c.email && c.email.includes('@'));
     const comTelefone = todos.filter(c => normalizarTelefone(c.telefones));
@@ -85,26 +87,17 @@ router.post('/gerar-mensagem', autenticar, adminOuComercial, async (req, res) =>
 
 // ── POST /api/disparos/iniciar ────────────────────────────────
 // Inicia campanha de disparos com lista de contatos e configurações
-router.post('/iniciar', autenticar, adminOuComercial, upload.single('arquivo'), async (req, res) => {
+router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
   try {
     const config = {
-      canal:             req.body.canal             || 'ambos',  // whatsapp | email | ambos
-      instancias_ids:    JSON.parse(req.body.instancias_ids || '[]'),
+      canal:             req.body.canal             || 'ambos',
+      instancias_ids:    req.body.instancias_ids    || [],
       intervaloSegundos: Number(req.body.intervalo_segundos) || 60,
       horaInicio:        req.body.hora_inicio || null,
       horaFim:           req.body.hora_fim    || null,
     };
 
-    // Monta contatos — pode vir como JSON no body ou como arquivo
-    let contatos = [];
-    if (req.file) {
-      const rows = parseXLSX(req.file.buffer);
-      const comEmail = config.canal === 'email' || config.canal === 'ambos';
-      const comTel   = config.canal === 'whatsapp' || config.canal === 'ambos';
-      contatos = filtrarContatos(rows, { apenasAtiva: true, comEmail, comTelefone: comTel });
-    } else if (req.body.contatos) {
-      contatos = JSON.parse(req.body.contatos);
-    }
+    const contatos = req.body.contatos || [];
 
     if (!contatos.length) return res.status(400).json({ erro: 'Nenhum contato válido para disparo' });
 

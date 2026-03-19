@@ -3,7 +3,10 @@ const API_BASE = '/api';
 
 async function apiFetch(endpoint, opcoes = {}) {
   const token = localStorage.getItem('cn_token');
-  const headers = { 'Content-Type': 'application/json', ...opcoes.headers };
+  // Não define Content-Type para FormData — o browser adiciona automaticamente com o boundary correto
+  const headers = opcoes.body instanceof FormData
+    ? { ...opcoes.headers }
+    : { 'Content-Type': 'application/json', ...opcoes.headers };
 
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
