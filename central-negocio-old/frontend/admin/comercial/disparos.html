@@ -133,6 +133,18 @@
 
     .acoes-disparo { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
     .btn-sm { padding:6px 12px !important; font-size:12px !important; }
+
+    /* ── Timer próximo envio ── */
+    .timer-wrap { margin-top:10px; padding:9px 14px; background:#eff6ff; border-radius:8px;
+      border:1px solid #bfdbfe; display:flex; align-items:center; gap:8px; }
+    .timer-wrap.pausado { background:#fefce8; border-color:#fde68a; }
+    .timer-num { font-weight:700; color:#1d4ed8; font-size:14px; font-variant-numeric:tabular-nums; }
+    .timer-wrap.pausado .timer-num { color:#b45309; }
+
+    /* ── Erro inline no log ── */
+    .erro-txt { font-size:11px; color:#b91c1c; max-width:220px; display:block;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:help; }
+    .erro-txt:empty, .sem-erro { color:#94a3b8; font-size:11px; }
   </style>
 </head>
 <body class="com-page">
@@ -385,14 +397,31 @@
               <span id="prog-enviados">0 enviados</span>
               <span id="prog-pct">0%</span>
             </div>
+            <div class="timer-wrap" id="timer-wrap" style="display:none;">
+              <span>⏱️</span>
+              <span style="font-size:13px;color:#475569;">Próximo envio em:</span>
+              <span class="timer-num" id="timer-countdown">—</span>
+              <span style="font-size:11px;color:#94a3b8;" id="timer-range"></span>
+            </div>
           </div>
           <div class="card">
-            <h3 style="margin:0 0 14px;font-size:15px;font-weight:700;color:#0f172a;">Log de envios</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+              <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Log de envios</h3>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <span id="log-resumo" style="font-size:12px;color:#64748b;"></span>
+                <select id="filtro-log" onchange="renderizarLog(logLeadsCache)" style="border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:12px;color:#334155;outline:none;">
+                  <option value="">Todos</option>
+                  <option value="erro">Erros</option>
+                  <option value="enviado">Enviados</option>
+                  <option value="aguardando">Aguardando</option>
+                </select>
+              </div>
+            </div>
             <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
               <table class="tabela-contatos">
-                <thead><tr><th>Estabelecimento</th><th>Canal</th><th>Status</th><th>Horário</th></tr></thead>
+                <thead><tr><th>Estabelecimento</th><th>Canal</th><th>Status</th><th>Horário</th><th>Detalhe do erro</th></tr></thead>
                 <tbody id="log-leads-body">
-                  <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px;">Aguardando início...</td></tr>
+                  <tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px;">Aguardando início...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -465,10 +494,10 @@
           <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
             <table class="tabela-contatos">
               <thead><tr>
-                <th>Estabelecimento</th><th>Email</th><th>WhatsApp</th><th>Status</th><th>Atualizado</th>
+                <th>Estabelecimento</th><th>Email</th><th>WhatsApp</th><th>Status</th><th>Atualizado</th><th>Erro</th>
               </tr></thead>
               <tbody id="tbody-leads-det">
-                <tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">Carregando...</td></tr>
+                <tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -541,6 +570,14 @@ let campanhaEditandoId    = null;
 let pollingTimer          = null;
 let instanciasDisponiveis = [];
 let leadsDetBruto         = [];
+let logLeadsCache         = [];
+
+// Timer countdown
+let timerInterval    = null;
+let timerSecsLeft    = 0;
+let ultimosEnviados  = -1;
+let cfgIntMin        = 90;
+let cfgIntMax        = 300;
 
 // ── Navegação entre vistas ─────────────────────────────────────
 function mostrarVista(id) {
@@ -553,6 +590,7 @@ function irParaLista() {
   document.getElementById('topbar-titulo').textContent = '🚀 Disparos em Massa';
   document.getElementById('topbar-acoes').innerHTML = '';
   if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
+  pararTimer(); ultimosEnviados = -1;
   carregarListaCampanhas();
 }
 
@@ -750,7 +788,7 @@ function renderizarLeadsDet(leads) {
   document.getElementById('det-leads-count').textContent = `${filtrados.length} lead(s)`;
   const tbody = document.getElementById('tbody-leads-det');
   if (!filtrados.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">Nenhum lead encontrado.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">Nenhum lead encontrado.</td></tr>';
     return;
   }
   tbody.innerHTML = filtrados.map(l => {
@@ -758,12 +796,17 @@ function renderizarLeadsDet(leads) {
     const hora = l.atualizado_em ? new Date(l.atualizado_em).toLocaleTimeString('pt-BR') : '—';
     const email = l.email ? `<span class="badge-ok">${esc(l.email.substring(0,28))}</span>` : '<span class="badge-sem">sem email</span>';
     const tel   = l.telefone ? `<span class="badge-ok">${esc(l.telefone)}</span>` : '<span class="badge-sem">sem tel</span>';
+    const temErro = l.erro && l.erro.trim();
+    const erroCell = temErro
+      ? `<span class="erro-txt" title="${esc(l.erro)}">${esc(l.erro.length > 80 ? l.erro.substring(0,80)+'…' : l.erro)}</span>`
+      : `<span class="sem-erro">—</span>`;
     return `<tr>
       <td><strong>${esc(l.nome || '—')}</strong></td>
       <td>${email}</td>
       <td>${tel}</td>
       <td><span class="status-badge ${statusCls}">${esc(l.status || 'aguardando')}</span></td>
       <td style="font-size:12px;color:#64748b;">${hora}</td>
+      <td>${erroCell}</td>
     </tr>`;
   }).join('');
 }
@@ -830,7 +873,7 @@ function irParaEtapa(n) {
     if (i + 1 < n)  el.classList.add('concluido');
   });
   if (n === 2) { carregarInstancias(); carregarPromptProduto(); gerarPreview(); atualizarSeletorTemplates(); }
-  if (n === 3) iniciarPolling();
+  if (n === 3) { ultimosEnviados = -1; iniciarPolling(); }
 }
 
 // ── Upload ─────────────────────────────────────────────────────
@@ -1124,16 +1167,22 @@ async function atualizarStatus() {
     const dados = await apiFetch(`/disparos/status/${campanhaAtualId}`);
     if (!dados || dados.erro) return;
     const camp     = dados.campanha || {};
+    const cfg      = camp.config    || {};
     const total    = camp.total    || 0;
     const enviados = camp.enviados || 0;
     const pct      = total ? Math.round((enviados / total) * 100) : 0;
     const status   = camp.status || 'ativo';
     const nomeLabel = camp.nome ? `${camp.nome} — ` : '';
+
+    cfgIntMin = Number(cfg.intervaloMinSeg) || 90;
+    cfgIntMax = Number(cfg.intervaloMaxSeg) || 300;
+
     document.getElementById('prog-titulo').textContent    = `${nomeLabel}${enviados} de ${total} contatos processados`;
     document.getElementById('prog-subtitulo').textContent = `Canal: ${camp.canal || '—'} · Iniciado: ${camp.criado_em ? new Date(camp.criado_em).toLocaleTimeString('pt-BR') : '—'}`;
     document.getElementById('barra-fill').style.width     = pct + '%';
     document.getElementById('prog-enviados').textContent  = `${enviados} enviados`;
     document.getElementById('prog-pct').textContent       = pct + '%';
+
     const badgeEl = document.getElementById('prog-status-badge');
     const badgeMap = {
       ativo:     { cls: 'badge-ativo',     txt: '▶ Em andamento' },
@@ -1144,29 +1193,74 @@ async function atualizarStatus() {
     const b = badgeMap[status] || { cls: 'badge-encerrado', txt: status };
     badgeEl.className   = 'badge ' + b.cls;
     badgeEl.textContent = b.txt;
+
     document.getElementById('btn-pausar').style.display   = status === 'ativo'   ? 'inline-flex' : 'none';
     document.getElementById('btn-retomar').style.display  = status === 'pausado' ? 'inline-flex' : 'none';
     document.getElementById('btn-encerrar').style.display = ['ativo','pausado'].includes(status) ? 'inline-flex' : 'none';
+
+    // Timer countdown
+    if (status === 'ativo' && enviados < total) {
+      const timerWrap = document.getElementById('timer-wrap');
+      if (timerWrap) timerWrap.style.display = 'flex';
+      if (timerWrap) timerWrap.classList.remove('pausado');
+      const rangeEl = document.getElementById('timer-range');
+      if (rangeEl) rangeEl.textContent = `(intervalo: ${formatarSeg(cfgIntMin)}–${formatarSeg(cfgIntMax)})`;
+      // Novo envio detectado → reinicia countdown
+      if (enviados !== ultimosEnviados && ultimosEnviados >= 0) {
+        iniciarContagem(cfgIntMin, cfgIntMax);
+      } else if (ultimosEnviados < 0) {
+        iniciarContagem(cfgIntMin, cfgIntMax);
+      }
+    } else if (status === 'pausado') {
+      const timerWrap = document.getElementById('timer-wrap');
+      if (timerWrap) { timerWrap.style.display = 'flex'; timerWrap.classList.add('pausado'); }
+      pararTimer();
+      const countdown = document.getElementById('timer-countdown');
+      if (countdown) countdown.textContent = 'pausado';
+    } else {
+      pararTimer();
+    }
+    ultimosEnviados = enviados;
+
     if (['concluido','encerrado'].includes(status) && pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
     renderizarLog(dados.leads || []);
   } catch (e) { /* silencioso */ }
 }
 function renderizarLog(leads) {
+  logLeadsCache = leads;
+  const filtro  = (document.getElementById('filtro-log')?.value || '').toLowerCase();
+  const filtrados = filtro
+    ? leads.filter(l => (l.status || '').toLowerCase().includes(filtro))
+    : leads;
+
+  const erros    = leads.filter(l => (l.status || '').startsWith('erro')).length;
+  const enviados = leads.filter(l => (l.status || '').startsWith('enviado') || l.status === 'parcial').length;
+  const resumo   = document.getElementById('log-resumo');
+  if (resumo) {
+    resumo.innerHTML = `<span style="color:#22c55e;font-weight:600;">${enviados} ok</span>` +
+      (erros ? ` · <span style="color:#ef4444;font-weight:600;">${erros} erro${erros > 1 ? 's' : ''}</span>` : '');
+  }
+
   const tbody = document.getElementById('log-leads-body');
-  if (!leads.length) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px;">Sem registros ainda.</td></tr>';
+  if (!filtrados.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px;">${leads.length ? 'Nenhum resultado para o filtro.' : 'Aguardando início...'}</td></tr>`;
     return;
   }
-  tbody.innerHTML = leads.map(l => {
-    const nome     = esc(l.nome || '—');
-    const canal    = l.telefone && l.email ? 'WA + Email' : l.telefone ? 'WhatsApp' : 'Email';
+  tbody.innerHTML = filtrados.map(l => {
+    const nome      = esc(l.nome || '—');
+    const canal     = l.telefone && l.email ? 'WA + Email' : l.telefone ? 'WhatsApp' : 'Email';
     const statusCls = 'status-' + (l.status || 'aguardando').replace(/[^a-z_]/g,'');
-    const hora     = l.atualizado_em ? new Date(l.atualizado_em).toLocaleTimeString('pt-BR') : '—';
+    const hora      = l.atualizado_em ? new Date(l.atualizado_em).toLocaleTimeString('pt-BR') : '—';
+    const temErro   = l.erro && l.erro.trim();
+    const erroCell  = temErro
+      ? `<span class="erro-txt" title="${esc(l.erro)}">${esc(l.erro.length > 90 ? l.erro.substring(0,90)+'…' : l.erro)}</span>`
+      : `<span class="sem-erro">—</span>`;
     return `<tr>
       <td><strong>${nome}</strong></td>
       <td>${canal}</td>
       <td><span class="status-badge ${statusCls}">${esc(l.status || 'aguardando')}</span></td>
-      <td>${hora}</td>
+      <td style="font-size:12px;">${hora}</td>
+      <td>${erroCell}</td>
     </tr>`;
   }).join('');
 }
@@ -1179,6 +1273,36 @@ async function encerrarDisparo() {
   await apiFetch(`/disparos/${campanhaAtualId}/encerrar`, { method:'POST' });
   if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
   atualizarStatus();
+}
+
+// ── Timer countdown ────────────────────────────────────────────
+function iniciarContagem(minSeg, maxSeg) {
+  pararTimer();
+  const secs = Math.floor(Math.random() * (maxSeg - minSeg + 1)) + minSeg;
+  timerSecsLeft = secs;
+  atualizarTimerDisplay();
+  timerInterval = setInterval(() => {
+    timerSecsLeft--;
+    if (timerSecsLeft <= 0) {
+      pararTimer();
+      const el = document.getElementById('timer-countdown');
+      if (el) el.textContent = 'enviando...';
+    } else {
+      atualizarTimerDisplay();
+    }
+  }, 1000);
+}
+
+function atualizarTimerDisplay() {
+  const el = document.getElementById('timer-countdown');
+  if (!el) return;
+  const m = Math.floor(timerSecsLeft / 60);
+  const s = timerSecsLeft % 60;
+  el.textContent = m > 0 ? `${m}min ${String(s).padStart(2,'0')}s` : `${timerSecsLeft}s`;
+}
+
+function pararTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 }
 
 // ── Init ───────────────────────────────────────────────────────
