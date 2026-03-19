@@ -400,7 +400,7 @@ function irParaEtapa(n) {
     if (i + 1 === n) el.classList.add('ativo');
     if (i + 1 < n)  el.classList.add('concluido');
   });
-  if (n === 2) { carregarInstancias(); carregarPromptProduto(); }
+  if (n === 2) { carregarInstancias(); carregarPromptProduto(); gerarPreview(); }
   if (n === 3) iniciarPolling();
 }
 
