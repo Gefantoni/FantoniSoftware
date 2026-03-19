@@ -27,12 +27,16 @@ router.post('/', autenticar, adminOuComercial, async (req, res) => {
   try {
     const { data, error } = await supabaseAdmin
       .from('campanhas')
-      .insert({ nome, descricao, instancia, agente_id, mensagem, tipo_fluxo, origem, tags })
+      .insert({ nome, descricao, instancia, agente_id: agente_id ? Number(agente_id) : null, mensagem, tipo_fluxo, origem, tags })
       .select().single();
-    if (error) throw error;
+    if (error) {
+      console.error('[Campanhas] Erro Supabase ao criar:', error.message, error.details, error.hint);
+      throw error;
+    }
     res.status(201).json({ campanha: data });
-  } catch {
-    res.status(500).json({ erro: 'Erro ao criar campanha' });
+  } catch (err) {
+    console.error('[Campanhas] Erro ao criar campanha:', err.message || err);
+    res.status(500).json({ erro: err.message || 'Erro ao criar campanha' });
   }
 });
 
