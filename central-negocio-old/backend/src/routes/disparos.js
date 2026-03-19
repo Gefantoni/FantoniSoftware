@@ -101,7 +101,8 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
     };
     const nomeCampanha = req.body.nome || null;
 
-    const contatos = req.body.contatos || [];
+    const contatos      = req.body.contatos     || [];
+    const iniciarAgora  = req.body.iniciar_agora !== false; // default: true
 
     if (!contatos.length) return res.status(400).json({ erro: 'Nenhum contato válido para disparo' });
 
@@ -115,7 +116,6 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
         .eq('ativo', true);
       instancias = data || [];
     } else {
-      // Usa todas as ativas se nenhuma selecionada
       const { data } = await supabaseAdmin
         .from('instancias_whatsapp')
         .select('*')
@@ -127,15 +127,15 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
     const { data: campanha, error } = await supabaseAdmin
       .from('disparos_campanhas')
       .insert({
-        nome:               nomeCampanha,
-        canal:              config.canal,
-        total:              contatos.length,
-        enviados:           0,
-        erros:              0,
-        status:             'ativo',
-        config:             config,
-        criado_em:          new Date().toISOString(),
-        atualizado_em:      new Date().toISOString(),
+        nome:          nomeCampanha,
+        canal:         config.canal,
+        total:         contatos.length,
+        enviados:      0,
+        erros:         0,
+        status:        iniciarAgora ? 'ativo' : 'rascunho',
+        config:        { ...config, contatos }, // armazena contatos para poder iniciar depois
+        criado_em:     new Date().toISOString(),
+        atualizado_em: new Date().toISOString(),
       })
       .select()
       .single();
@@ -154,10 +154,11 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
     }));
     await supabaseAdmin.from('disparos_leads').insert(leadsRows).then(() => {});
 
-    // Inicia a fila (não bloqueia a resposta)
-    iniciarFila(campanha.id, contatos, config, instancias).catch(console.error);
+    if (iniciarAgora) {
+      iniciarFila(campanha.id, contatos, config, instancias).catch(console.error);
+    }
 
-    res.json({ campanha_id: campanha.id, total: contatos.length, status: 'iniciado' });
+    res.json({ campanha_id: campanha.id, total: contatos.length, status: iniciarAgora ? 'iniciado' : 'rascunho' });
   } catch (err) {
     console.error('[Disparos] Erro ao iniciar:', err);
     res.status(500).json({ erro: 'Erro ao iniciar disparo' });
@@ -205,6 +206,45 @@ router.get('/', autenticar, adminOuComercial, async (req, res) => {
     res.json(data || []);
   } catch (err) {
     res.status(500).json({ erro: 'Erro interno' });
+  }
+});
+
+// ── POST /api/disparos/:id/iniciar — inicia rascunho existente ─
+router.post('/:id/iniciar', autenticar, adminOuComercial, async (req, res) => {
+  try {
+    const { data: camp, error } = await supabaseAdmin
+      .from('disparos_campanhas')
+      .select('*')
+      .eq('id', req.params.id)
+      .single();
+    if (error || !camp) return res.status(404).json({ erro: 'Campanha não encontrada' });
+    if (!['rascunho', 'pausado'].includes(camp.status)) {
+      return res.status(400).json({ erro: `Campanha já está ${camp.status}` });
+    }
+
+    const config   = camp.config   || {};
+    const contatos = config.contatos || [];
+    if (!contatos.length) return res.status(400).json({ erro: 'Sem contatos salvos nesta campanha' });
+
+    // Busca instâncias
+    let instancias = [];
+    if ((config.instancias_ids || []).length > 0) {
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').in('id', config.instancias_ids).eq('ativo', true);
+      instancias = data || [];
+    } else {
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').eq('ativo', true);
+      instancias = data || [];
+    }
+
+    await supabaseAdmin.from('disparos_campanhas')
+      .update({ status: 'ativo', atualizado_em: new Date().toISOString() })
+      .eq('id', req.params.id);
+
+    iniciarFila(req.params.id, contatos, config, instancias).catch(console.error);
+    res.json({ ok: true, status: 'iniciado', total: contatos.length });
+  } catch (err) {
+    console.error('[Disparos] Erro ao iniciar rascunho:', err.message);
+    res.status(500).json({ erro: err.message || 'Erro ao iniciar campanha' });
   }
 });
 
