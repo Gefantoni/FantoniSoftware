@@ -135,11 +135,26 @@
     .btn-sm { padding:6px 12px !important; font-size:12px !important; }
 
     /* ── Timer próximo envio ── */
-    .timer-wrap { margin-top:10px; padding:9px 14px; background:#eff6ff; border-radius:8px;
-      border:1px solid #bfdbfe; display:flex; align-items:center; gap:8px; }
+    .timer-wrap { margin-top:10px; padding:10px 14px; background:#eff6ff; border-radius:8px;
+      border:1px solid #bfdbfe; display:flex; align-items:center; gap:10px; }
     .timer-wrap.pausado { background:#fefce8; border-color:#fde68a; }
     .timer-num { font-weight:700; color:#1d4ed8; font-size:14px; font-variant-numeric:tabular-nums; }
     .timer-wrap.pausado .timer-num { color:#b45309; }
+    /* Barra interna do timer */
+    .timer-barra { height:5px; background:#dbeafe; border-radius:100px; margin-top:5px; overflow:hidden; }
+    .timer-wrap.pausado .timer-barra { background:#fef3c7; }
+    .timer-barra-fill { height:100%; border-radius:100px; background:linear-gradient(90deg,#3b82f6,#2563eb); transition:width 1s linear; }
+    .timer-wrap.pausado .timer-barra-fill { background:#f59e0b; }
+    /* Resultado do envio (✓ ou ✗) */
+    .timer-resultado { font-size:12px; font-weight:700; padding:2px 8px; border-radius:6px; display:none; }
+    .timer-resultado.ok  { background:#dcfce7; color:#15803d; }
+    .timer-resultado.err { background:#fee2e2; color:#b91c1c; }
+
+    /* ── Log row flash ao enviar ── */
+    @keyframes flash-ok  { from{background:#dcfce7} to{background:transparent} }
+    @keyframes flash-err { from{background:#fee2e2} to{background:transparent} }
+    .row-ok  td { animation: flash-ok  3.5s ease forwards; }
+    .row-err td { animation: flash-err 3.5s ease forwards; }
 
     /* ── Erro inline no log ── */
     .erro-txt { font-size:11px; color:#b91c1c; max-width:220px; display:block;
@@ -368,6 +383,28 @@
             </div>
           </div>
 
+          <!-- Info email -->
+          <div id="info-email-bloco" style="margin-bottom:20px;padding:14px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:13px;line-height:1.7;">
+            <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleInfoEmail()">
+              <strong style="color:#15803d;">📧 Como funciona o envio de email?</strong>
+              <span id="info-email-seta" style="font-size:12px;color:#64748b;">▼ ver detalhes</span>
+            </div>
+            <div id="info-email-corpo" style="display:none;margin-top:10px;color:#166534;">
+              <div style="display:grid;grid-template-columns:120px 1fr;gap:6px 12px;font-size:12px;">
+                <span style="color:#64748b;font-weight:600;">Plataforma</span>
+                <span><strong>Resend</strong> — necessário configurar <code style="background:#dcfce7;padding:1px 5px;border-radius:4px;">RESEND_API_KEY</code> nas variáveis de ambiente do servidor</span>
+                <span style="color:#64748b;font-weight:600;">Remetente</span>
+                <span>Douglas Fantoni &lt;contato@fantonisoftware.com.br&gt; <span style="color:#64748b;">(configurável via RESEND_FROM_EMAIL)</span></span>
+                <span style="color:#64748b;font-weight:600;">Assunto</span>
+                <span><code style="background:#dcfce7;padding:1px 5px;border-radius:4px;">{Nome} — Sistema PDV para o seu negócio | Fantoni Software</code></span>
+                <span style="color:#64748b;font-weight:600;">Corpo</span>
+                <span>Template HTML com o texto gerado pela IA + features do PDV (NFC-e, estoque, financeiro) + botão WhatsApp para resposta</span>
+                <span style="color:#64748b;font-weight:600;">Rodapé</span>
+                <span>Inclui aviso de descadastro: "Você recebeu este email pois seu estabelecimento está na base pública do CNPJ. Para não receber mais, responda com 'remover'."</span>
+              </div>
+            </div>
+          </div>
+
           <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
             <button class="btn btn-outline" onclick="irParaEtapa(1)">← Voltar</button>
             <button class="btn btn-outline" id="btn-salvar-rascunho" onclick="salvarRascunho()">💾 Salvar campanha</button>
@@ -398,10 +435,16 @@
               <span id="prog-pct">0%</span>
             </div>
             <div class="timer-wrap" id="timer-wrap" style="display:none;">
-              <span>⏱️</span>
-              <span style="font-size:13px;color:#475569;">Próximo envio em:</span>
-              <span class="timer-num" id="timer-countdown">—</span>
-              <span style="font-size:11px;color:#94a3b8;" id="timer-range"></span>
+              <span style="font-size:16px;">⏱️</span>
+              <div style="flex:1;">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <span style="font-size:13px;color:#475569;">Próximo envio em:</span>
+                  <span class="timer-num" id="timer-countdown">—</span>
+                  <span style="font-size:11px;color:#94a3b8;" id="timer-range"></span>
+                  <span class="timer-resultado" id="timer-resultado"></span>
+                </div>
+                <div class="timer-barra"><div class="timer-barra-fill" id="timer-bar" style="width:100%;"></div></div>
+              </div>
             </div>
           </div>
           <div class="card">
@@ -575,6 +618,7 @@ let logLeadsCache         = [];
 // Timer countdown
 let timerInterval    = null;
 let timerSecsLeft    = 0;
+let totalSecsTimer   = 0;
 let ultimosEnviados  = -1;
 let cfgIntMin        = 90;
 let cfgIntMax        = 300;
@@ -1205,8 +1249,13 @@ async function atualizarStatus() {
       if (timerWrap) timerWrap.classList.remove('pausado');
       const rangeEl = document.getElementById('timer-range');
       if (rangeEl) rangeEl.textContent = `(intervalo: ${formatarSeg(cfgIntMin)}–${formatarSeg(cfgIntMax)})`;
-      // Novo envio detectado → reinicia countdown
+      // Novo envio detectado → mostra resultado e reinicia countdown
       if (enviados !== ultimosEnviados && ultimosEnviados >= 0) {
+        // Encontra o lead mais recentemente atualizado
+        const leads = dados.leads || [];
+        const recente = leads.slice().sort((a,b) => new Date(b.atualizado_em||0) - new Date(a.atualizado_em||0))[0];
+        const temErro = recente && (recente.status || '').startsWith('erro');
+        mostrarResultadoEnvio(!temErro);
         iniciarContagem(cfgIntMin, cfgIntMax);
       } else if (ultimosEnviados < 0) {
         iniciarContagem(cfgIntMin, cfgIntMax);
@@ -1246,6 +1295,7 @@ function renderizarLog(leads) {
     tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px;">${leads.length ? 'Nenhum resultado para o filtro.' : 'Aguardando início...'}</td></tr>`;
     return;
   }
+  const agora = Date.now();
   tbody.innerHTML = filtrados.map(l => {
     const nome      = esc(l.nome || '—');
     const canal     = l.telefone && l.email ? 'WA + Email' : l.telefone ? 'WhatsApp' : 'Email';
@@ -1255,7 +1305,10 @@ function renderizarLog(leads) {
     const erroCell  = temErro
       ? `<span class="erro-txt" title="${esc(l.erro)}">${esc(l.erro.length > 90 ? l.erro.substring(0,90)+'…' : l.erro)}</span>`
       : `<span class="sem-erro">—</span>`;
-    return `<tr>
+    // Flash verde/vermelho em linhas recentemente atualizadas (últimos 8s)
+    const recente = l.atualizado_em && (agora - new Date(l.atualizado_em).getTime()) < 8000;
+    const rowCls  = recente ? ((l.status||'').startsWith('erro') ? 'row-err' : 'row-ok') : '';
+    return `<tr class="${rowCls}">
       <td><strong>${nome}</strong></td>
       <td>${canal}</td>
       <td><span class="status-badge ${statusCls}">${esc(l.status || 'aguardando')}</span></td>
@@ -1280,6 +1333,10 @@ function iniciarContagem(minSeg, maxSeg) {
   pararTimer();
   const secs = Math.floor(Math.random() * (maxSeg - minSeg + 1)) + minSeg;
   timerSecsLeft = secs;
+  totalSecsTimer = secs;
+  // Esconde resultado anterior
+  const res = document.getElementById('timer-resultado');
+  if (res) { res.style.display = 'none'; res.className = 'timer-resultado'; }
   atualizarTimerDisplay();
   timerInterval = setInterval(() => {
     timerSecsLeft--;
@@ -1287,6 +1344,8 @@ function iniciarContagem(minSeg, maxSeg) {
       pararTimer();
       const el = document.getElementById('timer-countdown');
       if (el) el.textContent = 'enviando...';
+      const bar = document.getElementById('timer-bar');
+      if (bar) bar.style.width = '0%';
     } else {
       atualizarTimerDisplay();
     }
@@ -1299,10 +1358,33 @@ function atualizarTimerDisplay() {
   const m = Math.floor(timerSecsLeft / 60);
   const s = timerSecsLeft % 60;
   el.textContent = m > 0 ? `${m}min ${String(s).padStart(2,'0')}s` : `${timerSecsLeft}s`;
+  // Barra: vai de 100% → 0% conforme o tempo passa
+  const bar = document.getElementById('timer-bar');
+  if (bar && totalSecsTimer > 0) {
+    bar.style.width = Math.round((timerSecsLeft / totalSecsTimer) * 100) + '%';
+  }
+}
+
+function mostrarResultadoEnvio(ok) {
+  const res = document.getElementById('timer-resultado');
+  if (!res) return;
+  res.textContent = ok ? '✓ Enviado' : '✗ Erro';
+  res.className   = 'timer-resultado ' + (ok ? 'ok' : 'err');
+  res.style.display = 'inline-block';
+  // Some após 3 segundos (quando o próximo countdown já foi iniciado)
+  setTimeout(() => { res.style.display = 'none'; }, 3000);
 }
 
 function pararTimer() {
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function toggleInfoEmail() {
+  const corpo = document.getElementById('info-email-corpo');
+  const seta  = document.getElementById('info-email-seta');
+  const aberto = corpo.style.display !== 'none';
+  corpo.style.display = aberto ? 'none' : 'block';
+  seta.textContent    = aberto ? '▼ ver detalhes' : '▲ fechar';
 }
 
 // ── Init ───────────────────────────────────────────────────────
