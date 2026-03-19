@@ -64,7 +64,7 @@ router.post('/importar', autenticar, adminOuComercial, async (req, res) => {
     });
   } catch (err) {
     console.error('[Disparos] Erro ao importar:', err);
-    res.status(500).json({ erro: 'Erro ao processar arquivo' });
+    res.status(500).json({ erro: err.message || 'Erro ao processar arquivo' });
   }
 });
 
@@ -81,7 +81,7 @@ router.post('/gerar-mensagem', autenticar, adminOuComercial, async (req, res) =>
     res.json({ whatsapp: msgWA, email: msgEmail });
   } catch (err) {
     console.error('[Disparos] Erro ao gerar mensagem:', err);
-    res.status(500).json({ erro: 'Erro ao gerar mensagem com IA' });
+    res.status(500).json({ erro: err.message || 'Erro ao gerar mensagem com IA' });
   }
 });
 
@@ -161,7 +161,7 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
     res.json({ campanha_id: campanha.id, total: contatos.length, status: iniciarAgora ? 'iniciado' : 'rascunho' });
   } catch (err) {
     console.error('[Disparos] Erro ao iniciar:', err);
-    res.status(500).json({ erro: 'Erro ao iniciar disparo' });
+    res.status(500).json({ erro: err.message || 'Erro ao iniciar disparo' });
   }
 });
 
@@ -191,7 +191,7 @@ router.get('/status/:id', autenticar, adminOuComercial, async (req, res) => {
       fila:       emMemoria,
     });
   } catch (err) {
-    res.status(500).json({ erro: 'Erro ao buscar status' });
+    res.status(500).json({ erro: err.message || 'Erro ao buscar status' });
   }
 });
 
@@ -205,7 +205,7 @@ router.get('/', autenticar, adminOuComercial, async (req, res) => {
       .limit(50);
     res.json(data || []);
   } catch (err) {
-    res.status(500).json({ erro: 'Erro interno' });
+    res.status(500).json({ erro: err.message || 'Erro interno' });
   }
 });
 
