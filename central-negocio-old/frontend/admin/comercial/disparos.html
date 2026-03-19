@@ -209,7 +209,21 @@
       <!-- ══ ETAPA 2 — CONFIGURAR ══ -->
       <div class="painel-etapa" id="etapa-2">
         <div class="card" style="margin-bottom:20px;">
-          <h3 style="margin:0 0 20px;font-size:16px;font-weight:700;color:#0f172a;">⚙️ Configurações do disparo</h3>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+            <h3 style="margin:0;font-size:16px;font-weight:700;color:#0f172a;">⚙️ Configurações do disparo</h3>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <input type="text" id="cfg-nome" placeholder="Nome da campanha (ex: Bares RS — PDV)"
+                style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#1e293b;outline:none;width:260px;"
+                onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e2e8f0'">
+              <select id="sel-template" onchange="carregarTemplate(this.value)"
+                style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#334155;outline:none;display:none;">
+                <option value="">↩ Carregar template...</option>
+              </select>
+              <button class="btn btn-outline btn-sm" onclick="salvarTemplate()" title="Salva as configurações para reutilizar depois">
+                💾 Salvar template
+              </button>
+            </div>
+          </div>
 
           <div class="config-grid">
             <div class="form-campo">
@@ -309,7 +323,10 @@
           <div id="area-preview" style="display:none;margin-top:16px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
               <div>
-                <div class="preview-label">💬 Mensagem WA gerada</div>
+                <div class="preview-label" style="display:flex;justify-content:space-between;">
+                  <span>💬 Mensagem WA gerada</span>
+                  <span id="preview-wa-chars" style="font-size:11px;color:#94a3b8;"></span>
+                </div>
                 <div class="preview-box" id="preview-wa"></div>
               </div>
               <div>
@@ -400,7 +417,7 @@ function irParaEtapa(n) {
     if (i + 1 === n) el.classList.add('ativo');
     if (i + 1 < n)  el.classList.add('concluido');
   });
-  if (n === 2) { carregarInstancias(); carregarPromptProduto(); gerarPreview(); }
+  if (n === 2) { carregarInstancias(); carregarPromptProduto(); gerarPreview(); atualizarSeletorTemplates(); }
   if (n === 3) iniciarPolling();
 }
 
@@ -577,9 +594,70 @@ async function gerarPreview() {
     });
     wa.textContent    = dados.whatsapp || '—';
     email.textContent = dados.email    || '—';
+    const chars = (dados.whatsapp || '').length;
+    const charsEl = document.getElementById('preview-wa-chars');
+    charsEl.textContent = `${chars} caracteres`;
+    charsEl.style.color = chars > 320 ? '#ef4444' : chars > 200 ? '#f59e0b' : '#22c55e';
   } catch (e) {
     wa.innerHTML = email.innerHTML = '<span style="color:#ef4444;">Erro ao gerar prévia.</span>';
   }
+}
+
+// ── Templates ─────────────────────────────────────────────────
+const TEMPLATES_KEY = 'disparos_templates_v1';
+
+function listarTemplates() {
+  try { return JSON.parse(localStorage.getItem(TEMPLATES_KEY) || '[]'); } catch { return []; }
+}
+
+function salvarTemplate() {
+  const nome = document.getElementById('cfg-nome').value.trim();
+  if (!nome) { mostrarAlerta('Dê um nome à campanha antes de salvar o template.', 'aviso'); return; }
+  const tpl = {
+    nome,
+    canal:       document.getElementById('cfg-canal').value,
+    produto:     document.getElementById('cfg-produto').value,
+    hora_inicio: document.getElementById('cfg-hora-inicio').value,
+    hora_fim:    document.getElementById('cfg-hora-fim').value,
+    min:         document.getElementById('cfg-min').value,
+    max:         document.getElementById('cfg-max').value,
+    prompt_wa:   document.getElementById('prompt-wa').value,
+    prompt_email: document.getElementById('prompt-email').value,
+    salvo_em:    new Date().toISOString(),
+  };
+  const lista = listarTemplates().filter(t => t.nome !== nome);
+  lista.unshift(tpl);
+  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(lista.slice(0, 20)));
+  atualizarSeletorTemplates();
+  mostrarAlerta(`Template "${nome}" salvo com sucesso!`, 'sucesso');
+}
+
+function carregarTemplate(nome) {
+  if (!nome) return;
+  const tpl = listarTemplates().find(t => t.nome === nome);
+  if (!tpl) return;
+  document.getElementById('cfg-nome').value         = tpl.nome;
+  document.getElementById('cfg-canal').value        = tpl.canal        || 'ambos';
+  document.getElementById('cfg-produto').value      = tpl.produto      || 'pdv';
+  document.getElementById('cfg-hora-inicio').value  = tpl.hora_inicio  || '08:00';
+  document.getElementById('cfg-hora-fim').value     = tpl.hora_fim     || '18:00';
+  document.getElementById('cfg-min').value          = tpl.min          || 90;
+  document.getElementById('cfg-max').value          = tpl.max          || 300;
+  document.getElementById('prompt-wa').value        = tpl.prompt_wa    || '';
+  document.getElementById('prompt-email').value     = tpl.prompt_email || '';
+  atualizarIntervalo();
+  atualizarVisibilidade();
+  limparPreview();
+  document.getElementById('sel-template').value = '';
+}
+
+function atualizarSeletorTemplates() {
+  const sel   = document.getElementById('sel-template');
+  const lista = listarTemplates();
+  if (!lista.length) { sel.style.display = 'none'; return; }
+  sel.style.display = '';
+  const opts = lista.map(t => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join('');
+  sel.innerHTML = `<option value="">↩ Carregar template...</option>${opts}`;
 }
 
 // ── Iniciar disparo ────────────────────────────────────────────
@@ -595,6 +673,7 @@ async function iniciarDisparo() {
     const dados = await apiFetch('/disparos/iniciar', {
       method: 'POST',
       body: JSON.stringify({
+        nome:           document.getElementById('cfg-nome').value.trim() || null,
         canal:          document.getElementById('cfg-canal').value,
         intervalo_min:  document.getElementById('cfg-min').value,
         intervalo_max:  document.getElementById('cfg-max').value,
@@ -638,7 +717,8 @@ async function atualizarStatus() {
     const pct      = total ? Math.round((enviados / total) * 100) : 0;
     const status   = camp.status || 'ativo';
 
-    document.getElementById('prog-titulo').textContent     = `${enviados} de ${total} contatos processados`;
+    const nomeLabel = camp.nome ? `${camp.nome} — ` : '';
+    document.getElementById('prog-titulo').textContent     = `${nomeLabel}${enviados} de ${total} contatos processados`;
     document.getElementById('prog-subtitulo').textContent  = `Canal: ${camp.canal || '—'} · Iniciado: ${camp.criado_em ? new Date(camp.criado_em).toLocaleTimeString('pt-BR') : '—'}`;
     document.getElementById('barra-fill').style.width      = pct + '%';
     document.getElementById('prog-enviados').textContent   = `${enviados} enviados`;

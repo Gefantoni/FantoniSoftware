@@ -99,6 +99,7 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
       promptWA:         req.body.prompt_wa      || null,
       promptEmail:      req.body.prompt_email   || null,
     };
+    const nomeCampanha = req.body.nome || null;
 
     const contatos = req.body.contatos || [];
 
@@ -126,6 +127,7 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
     const { data: campanha, error } = await supabaseAdmin
       .from('disparos_campanhas')
       .insert({
+        nome:               nomeCampanha,
         canal:              config.canal,
         total:              contatos.length,
         enviados:           0,
