@@ -6,7 +6,8 @@
 
   sidebar.innerHTML = `
     <div class="sidebar-logo">
-      <h2>Central do<br>Negócio</h2>
+      <img src="/assets/logo.png" alt="Fantoni Software" style="height:36px;width:auto;object-fit:contain;margin-bottom:6px;display:block;">
+      <h2>Central do Negócio</h2>
       <span>Painel Admin</span>
     </div>
     <nav class="sidebar-nav">
@@ -32,6 +33,7 @@
       <a href="/admin/comercial/calendario.html" class="nav-item">📅 Calendário</a>
       <a href="/admin/comercial/relatorios.html" class="nav-item">📈 Relatórios</a>
       <a href="/admin/comercial/ia.html" class="nav-item">🤖 IA Comercial</a>
+      <a href="/admin/comercial/disparos.html" class="nav-item">🚀 Disparos</a>
       <a href="/admin/comercial/configuracoes.html" class="nav-item">⚙️ Configurações</a>
     </nav>
     <div class="sidebar-footer">

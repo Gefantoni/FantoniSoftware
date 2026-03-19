@@ -57,6 +57,7 @@ app.use('/api/reunioes', require('./routes/reunioes'));
 app.use('/api/agentes', require('./routes/agentes'));
 app.use('/api/relatorios-comercial', require('./routes/relatorios-comercial'));
 app.use('/api/whatsapp', require('./routes/whatsapp'));
+app.use('/api/disparos', require('./routes/disparos'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/cardapio-ia', require('./routes/cardapio-ia'));
 

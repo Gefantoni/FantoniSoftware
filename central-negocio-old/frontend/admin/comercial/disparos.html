@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disparos em Massa — Comercial</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <style>
+    /* ── Wizard Steps ── */
+    .wizard-steps {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 32px; padding: 0 4px;
+    }
+    .wizard-step {
+      display: flex; align-items: center; gap: 10px;
+      flex: 1; position: relative;
+    }
+    .wizard-step:not(:last-child)::after {
+      content: ''; flex: 1; height: 2px; background: #e2e8f0; margin: 0 8px;
+    }
+    .wizard-step.ativo::after { background: #3b82f6; }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-size: 13px; font-weight: 700;
+      background: #e2e8f0; color: #64748b; flex-shrink: 0; transition: all .2s;
+    }
+    .wizard-step.ativo  .step-num { background: #3b82f6; color: #fff; }
+    .wizard-step.concluido .step-num { background: #22c55e; color: #fff; }
+    .step-label { font-size: 13px; font-weight: 600; color: #64748b; white-space: nowrap; }
+    .wizard-step.ativo .step-label { color: #1e293b; }
+
+    /* ── Panels ── */
+    .painel-etapa { display: none; }
+    .painel-etapa.ativo { display: block; }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 2px dashed #cbd5e1; border-radius: 14px; padding: 48px 24px;
+      text-align: center; cursor: pointer; transition: all .2s;
+      background: #f8fafc;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: #3b82f6; background: #eff6ff;
+    }
+    .drop-zone i { font-size: 40px; color: #94a3b8; margin-bottom: 12px; display: block; }
+    .drop-zone p { margin: 0; color: #64748b; font-size: 14px; }
+    .drop-zone strong { color: #3b82f6; }
+
+    /* ── Stats chips ── */
+    .stats-chips { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
+    .chip {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 10px 16px; font-size: 13px; font-weight: 600; color: #1e293b;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .chip .chip-num { font-size: 20px; font-weight: 800; color: #3b82f6; }
+    .chip.verde .chip-num { color: #22c55e; }
+    .chip.laranja .chip-num { color: #f59e0b; }
+
+    /* ── Tabela de contatos ── */
+    .tabela-contatos { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .tabela-contatos th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-weight: 700; color: #475569; border-bottom: 1px solid #e2e8f0; }
+    .tabela-contatos td { padding: 9px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+    .tabela-contatos tr:hover td { background: #f8fafc; }
+    .badge-ok   { background: #dcfce7; color: #15803d; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+    .badge-sem  { background: #fef3c7; color: #b45309; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+
+    /* ── Config form ── */
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media(max-width:640px){ .config-grid { grid-template-columns: 1fr; } }
+    .form-campo { display: flex; flex-direction: column; gap: 6px; }
+    .form-campo label { font-size: 13px; font-weight: 600; color: #475569; }
+    .form-campo select, .form-campo input[type=time], .form-campo input[type=number] {
+      border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 12px;
+      font-size: 14px; color: #1e293b; outline: none; background: #fff;
+    }
+    .form-campo select:focus, .form-campo input:focus { border-color: #3b82f6; }
+    .slider-wrap { display: flex; align-items: center; gap: 12px; }
+    .slider-wrap input[type=range] { flex: 1; accent-color: #3b82f6; }
+    .slider-val { font-weight: 700; color: #3b82f6; min-width: 60px; font-size: 14px; }
+
+    /* ── Preview de mensagem ── */
+    .preview-box {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 16px; font-size: 14px; color: #334155; line-height: 1.65;
+      min-height: 80px; white-space: pre-wrap; position: relative;
+    }
+    .preview-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #94a3b8; margin-bottom: 6px; }
+    .preview-loading { color: #94a3b8; font-style: italic; }
+
+    /* ── Instâncias checkboxes ── */
+    .instancias-lista { display: flex; flex-wrap: wrap; gap: 10px; }
+    .inst-item {
+      display: flex; align-items: center; gap: 8px;
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+      padding: 8px 14px; cursor: pointer; font-size: 13px; font-weight: 600; color: #334155;
+      transition: all .15s;
+    }
+    .inst-item input[type=checkbox] { accent-color: #3b82f6; width: 16px; height: 16px; }
+    .inst-item:has(input:checked) { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+
+    /* ── Progresso ── */
+    .barra-prog-wrap { background: #e2e8f0; border-radius: 100px; height: 12px; overflow: hidden; margin: 8px 0; }
+    .barra-prog-fill { height: 100%; background: linear-gradient(90deg,#3b82f6,#2563eb); border-radius: 100px; transition: width .4s ease; }
+    .prog-info { display: flex; justify-content: space-between; font-size: 13px; color: #64748b; margin-top: 4px; }
+
+    /* ── Status badges ── */
+    .status-badge {
+      border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; display: inline-block;
+    }
+    .status-aguardando { background: #f1f5f9; color: #64748b; }
+    .status-enviado_wa, .status-enviado_email { background: #dcfce7; color: #15803d; }
+    .status-parcial { background: #fef3c7; color: #b45309; }
+    .status-erro_wa, .status-erro_email { background: #fee2e2; color: #b91c1c; }
+
+    /* ── Ações do disparo ── */
+    .acoes-disparo { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="app-sidebar" id="sidebar"></aside>
+  <div class="app-main">
+    <header class="app-header">
+      <button id="sidebar-toggle" class="btn-icon"><i class="ph ph-list"></i></button>
+      <div class="header-left">
+        <h1 class="page-title">Disparos em Massa</h1>
+        <span class="page-subtitle">WhatsApp + Email — Prospecção automatizada</span>
+      </div>
+      <div class="header-right"></div>
+    </header>
+
+    <main class="app-content">
+
+      <!-- Wizard Steps -->
+      <div class="wizard-steps" id="wizard-steps">
+        <div class="wizard-step ativo" id="step-1">
+          <div class="step-num">1</div>
+          <span class="step-label">Importar lista</span>
+        </div>
+        <div class="wizard-step" id="step-2">
+          <div class="step-num">2</div>
+          <span class="step-label">Configurar</span>
+        </div>
+        <div class="wizard-step" id="step-3">
+          <div class="step-num">3</div>
+          <span class="step-label">Acompanhar</span>
+        </div>
+      </div>
+
+      <!-- ══ ETAPA 1 — IMPORTAR ══ -->
+      <div class="painel-etapa ativo" id="etapa-1">
+        <div class="card" style="margin-bottom:20px;">
+          <h3 style="margin:0 0 16px;font-size:16px;font-weight:700;color:#0f172a;">
+            <i class="ph ph-file-xls" style="color:#22c55e;margin-right:6px;"></i>
+            Importar arquivo de contatos (.xlsx)
+          </h3>
+
+          <div class="drop-zone" id="drop-zone" onclick="document.getElementById('input-arquivo').click()">
+            <i class="ph ph-upload-simple"></i>
+            <p><strong>Clique ou arraste</strong> o arquivo .xlsx aqui</p>
+            <p style="margin-top:6px;font-size:12px;color:#94a3b8;">Formato: exportação CNPJ.biz · máx 20MB</p>
+          </div>
+          <input type="file" id="input-arquivo" accept=".xlsx,.xls" style="display:none">
+
+          <div id="upload-status" style="display:none;margin-top:12px;">
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#eff6ff;border-radius:10px;">
+              <i class="ph ph-spinner" style="animation:spin 1s linear infinite;color:#3b82f6;font-size:20px;" id="upload-spinner"></i>
+              <span id="upload-texto" style="font-size:14px;color:#1d4ed8;font-weight:600;">Processando arquivo...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div id="stats-area" style="display:none;">
+          <div class="stats-chips">
+            <div class="chip"><span class="chip-num" id="stat-total">0</span>Total ATIVA</div>
+            <div class="chip verde"><span class="chip-num" id="stat-email">0</span>Com email</div>
+            <div class="chip"><span class="chip-num" id="stat-tel">0</span>Com WhatsApp</div>
+            <div class="chip laranja"><span class="chip-num" id="stat-ambos">0</span>Com ambos</div>
+          </div>
+
+          <!-- Tabela preview -->
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+              <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Prévia dos contatos <span id="preview-count" style="color:#64748b;font-weight:400;font-size:13px;"></span></h3>
+              <button class="btn-primary" id="btn-ir-config" onclick="irParaEtapa(2)">
+                Configurar disparo <i class="ph ph-arrow-right"></i>
+              </button>
+            </div>
+            <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
+              <table class="tabela-contatos">
+                <thead>
+                  <tr>
+                    <th>Estabelecimento</th>
+                    <th>Segmento</th>
+                    <th>Cidade</th>
+                    <th>Email</th>
+                    <th>WhatsApp</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-contatos-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ETAPA 2 — CONFIGURAR ══ -->
+      <div class="painel-etapa" id="etapa-2">
+        <div class="card" style="margin-bottom:20px;">
+          <h3 style="margin:0 0 20px;font-size:16px;font-weight:700;color:#0f172a;">
+            <i class="ph ph-sliders" style="color:#3b82f6;margin-right:6px;"></i>
+            Configurações do disparo
+          </h3>
+
+          <div class="config-grid">
+            <!-- Canal -->
+            <div class="form-campo">
+              <label>Canal de envio</label>
+              <select id="cfg-canal" onchange="atualizarPreview()">
+                <option value="ambos">WhatsApp + Email</option>
+                <option value="whatsapp">Somente WhatsApp</option>
+                <option value="email">Somente Email</option>
+              </select>
+            </div>
+
+            <!-- Intervalo -->
+            <div class="form-campo">
+              <label>Intervalo entre mensagens</label>
+              <div class="slider-wrap">
+                <input type="range" id="cfg-intervalo" min="30" max="600" value="60" step="10" oninput="atualizarSlider()">
+                <span class="slider-val" id="slider-label">1 min</span>
+              </div>
+            </div>
+
+            <!-- Horário início -->
+            <div class="form-campo">
+              <label>Horário de início</label>
+              <input type="time" id="cfg-hora-inicio" value="08:00">
+            </div>
+
+            <!-- Horário fim -->
+            <div class="form-campo">
+              <label>Horário de fim</label>
+              <input type="time" id="cfg-hora-fim" value="18:00">
+            </div>
+          </div>
+
+          <!-- Instâncias WhatsApp -->
+          <div style="margin-top:20px;" id="bloco-instancias">
+            <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
+              Números WhatsApp para disparo (round-robin)
+            </label>
+            <div class="instancias-lista" id="instancias-lista">
+              <span style="color:#94a3b8;font-size:13px;" id="inst-vazio">Carregando instâncias...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview de mensagem -->
+        <div class="card" style="margin-bottom:20px;">
+          <h3 style="margin:0 0 16px;font-size:15px;font-weight:700;color:#0f172a;">
+            <i class="ph ph-magic-wand" style="color:#8b5cf6;margin-right:6px;"></i>
+            Prévia de mensagem gerada pela IA
+            <span style="font-size:12px;font-weight:400;color:#94a3b8;margin-left:8px;">baseada no 1º contato da lista</span>
+          </h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <div class="preview-label"><i class="ph ph-whatsapp-logo" style="color:#25D366;"></i> WhatsApp</div>
+              <div class="preview-box" id="preview-wa"><span class="preview-loading">Gerando mensagem...</span></div>
+            </div>
+            <div>
+              <div class="preview-label"><i class="ph ph-envelope" style="color:#3b82f6;"></i> Email (corpo personalizado)</div>
+              <div class="preview-box" id="preview-email"><span class="preview-loading">Gerando mensagem...</span></div>
+            </div>
+          </div>
+          <button class="btn-outline" style="margin-top:12px;font-size:13px;" onclick="gerarPreview()">
+            <i class="ph ph-arrows-clockwise"></i> Regenerar mensagens
+          </button>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn-outline" onclick="irParaEtapa(1)">
+            <i class="ph ph-arrow-left"></i> Voltar
+          </button>
+          <button class="btn-primary" id="btn-iniciar" onclick="iniciarDisparo()">
+            <i class="ph ph-paper-plane-tilt"></i> Iniciar disparo
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ ETAPA 3 — ACOMPANHAR ══ -->
+      <div class="painel-etapa" id="etapa-3">
+        <!-- Ações -->
+        <div class="acoes-disparo">
+          <button class="btn-outline" id="btn-pausar" onclick="pausarDisparo()" style="display:none;">
+            <i class="ph ph-pause"></i> Pausar
+          </button>
+          <button class="btn-primary" id="btn-retomar" onclick="retomarDisparo()" style="display:none;">
+            <i class="ph ph-play"></i> Retomar
+          </button>
+          <button class="btn-danger" id="btn-encerrar" onclick="encerrarDisparo()" style="display:none;">
+            <i class="ph ph-stop"></i> Encerrar
+          </button>
+          <button class="btn-outline" onclick="irParaEtapa(1)">
+            <i class="ph ph-plus"></i> Novo disparo
+          </button>
+        </div>
+
+        <!-- Progresso -->
+        <div class="card" style="margin-bottom:20px;" id="card-progresso">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+            <div>
+              <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;" id="prog-titulo">Carregando...</h3>
+              <span style="font-size:13px;color:#64748b;" id="prog-subtitulo"></span>
+            </div>
+            <span class="status-badge" id="prog-status-badge">—</span>
+          </div>
+          <div class="barra-prog-wrap">
+            <div class="barra-prog-fill" id="barra-fill" style="width:0%"></div>
+          </div>
+          <div class="prog-info">
+            <span id="prog-enviados">0 enviados</span>
+            <span id="prog-pct">0%</span>
+          </div>
+        </div>
+
+        <!-- Tabela de leads -->
+        <div class="card">
+          <h3 style="margin:0 0 14px;font-size:15px;font-weight:700;color:#0f172a;">Log de envios</h3>
+          <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+            <table class="tabela-contatos">
+              <thead>
+                <tr>
+                  <th>Estabelecimento</th>
+                  <th>Canal</th>
+                  <th>Status</th>
+                  <th>Horário</th>
+                </tr>
+              </thead>
+              <tbody id="log-leads-body">
+                <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px;">Aguardando início do disparo...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+// ── Estado global ──────────────────────────────────────────────
+let contatosImportados = [];
+let campanhaAtualId    = null;
+let pollingTimer       = null;
+let instanciasDisponiveis = [];
+
+// ── Wizard ─────────────────────────────────────────────────────
+function irParaEtapa(n) {
+  document.querySelectorAll('.painel-etapa').forEach((el, i) => {
+    el.classList.toggle('ativo', i + 1 === n);
+  });
+  document.querySelectorAll('.wizard-step').forEach((el, i) => {
+    el.classList.remove('ativo', 'concluido');
+    if (i + 1 === n) el.classList.add('ativo');
+    if (i + 1 < n)  el.classList.add('concluido');
+  });
+  if (n === 2) { carregarInstancias(); gerarPreview(); }
+  if (n === 3) iniciarPolling();
+}
+
+// ── Upload de arquivo ──────────────────────────────────────────
+const dropZone  = document.getElementById('drop-zone');
+const inputArq  = document.getElementById('input-arquivo');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); processarArquivo(e.dataTransfer.files[0]); });
+inputArq.addEventListener('change', e => processarArquivo(e.target.files[0]));
+
+async function processarArquivo(file) {
+  if (!file) return;
+  const status = document.getElementById('upload-status');
+  status.style.display = 'block';
+  document.getElementById('stats-area').style.display = 'none';
+
+  const fd = new FormData();
+  fd.append('arquivo', file);
+
+  try {
+    const res = await apiFetch('/api/disparos/importar', { method: 'POST', body: fd, semJson: true });
+    const dados = await res.json();
+
+    if (dados.erro) throw new Error(dados.erro);
+
+    contatosImportados = dados.preview;
+    document.getElementById('stat-total').textContent = dados.total;
+    document.getElementById('stat-email').textContent = dados.com_email;
+    document.getElementById('stat-tel').textContent   = dados.com_telefone;
+    document.getElementById('stat-ambos').textContent = dados.com_ambos;
+    document.getElementById('preview-count').textContent = `(mostrando ${dados.preview.length} de ${dados.total})`;
+
+    renderizarTabela(dados.preview);
+    document.getElementById('stats-area').style.display = 'block';
+    status.style.display = 'none';
+  } catch (err) {
+    status.style.display = 'none';
+    mostrarAlerta('Erro ao importar: ' + err.message, 'erro');
+  }
+}
+
+function renderizarTabela(contatos) {
+  const tbody = document.getElementById('tabela-contatos-body');
+  tbody.innerHTML = contatos.map(c => {
+    const nome = esc(c.nome_fantasia || c.razao_social || '—');
+    const seg  = esc((c.atividades_principal || '').substring(0, 40));
+    const cid  = esc(c.municipio || '—');
+    const email = c.email && c.email.includes('@')
+      ? `<span class="badge-ok">${esc(c.email.substring(0, 28))}</span>`
+      : `<span class="badge-sem">sem email</span>`;
+    const tel = c.telefones
+      ? `<span class="badge-ok">${esc(String(c.telefones).split(',')[0].trim().substring(0, 20))}</span>`
+      : `<span class="badge-sem">sem telefone</span>`;
+    return `<tr><td><strong>${nome}</strong></td><td>${seg}</td><td>${cid}</td><td>${email}</td><td>${tel}</td></tr>`;
+  }).join('');
+}
+
+// ── Configuração ───────────────────────────────────────────────
+function atualizarSlider() {
+  const val = Number(document.getElementById('cfg-intervalo').value);
+  const label = val < 60 ? `${val}s` : val === 60 ? '1 min' : `${Math.round(val / 60)} min`;
+  document.getElementById('slider-label').textContent = label;
+}
+
+async function carregarInstancias() {
+  try {
+    const res = await apiFetch('/api/comercial/instancias');
+    const dados = await res.json();
+    instanciasDisponiveis = dados || [];
+    const lista = document.getElementById('instancias-lista');
+
+    if (!instanciasDisponiveis.length) {
+      lista.innerHTML = '<span style="color:#94a3b8;font-size:13px;">Nenhuma instância cadastrada. Configure em <a href="/admin/comercial/configuracoes.html">Configurações</a>.</span>';
+      return;
+    }
+    lista.innerHTML = instanciasDisponiveis.map(inst => `
+      <label class="inst-item">
+        <input type="checkbox" value="${esc(inst.id)}" checked>
+        <i class="ph ph-device-mobile-camera" style="color:#25D366;"></i>
+        ${esc(inst.nome || inst.nome_instancia)}
+      </label>
+    `).join('');
+  } catch (e) {
+    document.getElementById('inst-vazio').textContent = 'Erro ao carregar instâncias.';
+  }
+}
+
+async function gerarPreview() {
+  if (!contatosImportados.length) return;
+  const primeiro = contatosImportados[0];
+  const wa    = document.getElementById('preview-wa');
+  const email = document.getElementById('preview-email');
+  wa.innerHTML = email.innerHTML = '<span class="preview-loading">Gerando com IA...</span>';
+
+  try {
+    const res = await apiFetch('/api/disparos/gerar-mensagem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nome_fantasia:        primeiro.nome_fantasia,
+        razao_social:         primeiro.razao_social,
+        municipio:            primeiro.municipio,
+        estado:               primeiro.estado,
+        atividades_principal: primeiro.atividades_principal,
+      })
+    });
+    const dados = await res.json();
+    wa.textContent    = dados.whatsapp || '—';
+    email.textContent = dados.email    || '—';
+  } catch (e) {
+    wa.innerHTML = email.innerHTML = '<span style="color:#ef4444;">Erro ao gerar prévia.</span>';
+  }
+}
+
+function atualizarPreview() {
+  const canal = document.getElementById('cfg-canal').value;
+  document.getElementById('bloco-instancias').style.display = canal === 'email' ? 'none' : 'block';
+}
+
+// ── Iniciar disparo ────────────────────────────────────────────
+async function iniciarDisparo() {
+  const btn = document.getElementById('btn-iniciar');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ph ph-spinner" style="animation:spin 1s linear infinite"></i> Iniciando...';
+
+  const instanciasIds = [...document.querySelectorAll('#instancias-lista input[type=checkbox]:checked')]
+    .map(el => el.value);
+
+  const fd = new FormData();
+  fd.append('canal',             document.getElementById('cfg-canal').value);
+  fd.append('intervalo_segundos', document.getElementById('cfg-intervalo').value);
+  fd.append('hora_inicio',       document.getElementById('cfg-hora-inicio').value);
+  fd.append('hora_fim',          document.getElementById('cfg-hora-fim').value);
+  fd.append('instancias_ids',    JSON.stringify(instanciasIds));
+  fd.append('contatos',          JSON.stringify(contatosImportados));
+
+  try {
+    const res = await apiFetch('/api/disparos/iniciar', { method: 'POST', body: fd, semJson: true });
+    const dados = await res.json();
+    if (dados.erro) throw new Error(dados.erro);
+
+    campanhaAtualId = dados.campanha_id;
+    irParaEtapa(3);
+    document.getElementById('btn-pausar').style.display  = 'inline-flex';
+    document.getElementById('btn-encerrar').style.display = 'inline-flex';
+  } catch (err) {
+    mostrarAlerta('Erro ao iniciar: ' + err.message, 'erro');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ph ph-paper-plane-tilt"></i> Iniciar disparo';
+  }
+}
+
+// ── Polling de status ──────────────────────────────────────────
+function iniciarPolling() {
+  if (pollingTimer) clearInterval(pollingTimer);
+  atualizarStatus();
+  pollingTimer = setInterval(atualizarStatus, 5000);
+}
+
+async function atualizarStatus() {
+  if (!campanhaAtualId) return;
+  try {
+    const res   = await apiFetch(`/api/disparos/status/${campanhaAtualId}`);
+    const dados = await res.json();
+    if (dados.erro) return;
+
+    const camp = dados.campanha || {};
+    const total    = camp.total    || 0;
+    const enviados = camp.enviados || 0;
+    const pct      = total ? Math.round((enviados / total) * 100) : 0;
+    const status   = camp.status || 'ativo';
+
+    document.getElementById('prog-titulo').textContent    = `${enviados} de ${total} contatos processados`;
+    document.getElementById('prog-subtitulo').textContent = `Canal: ${camp.canal || '—'} · Iniciado: ${camp.criado_em ? new Date(camp.criado_em).toLocaleTimeString('pt-BR') : '—'}`;
+    document.getElementById('barra-fill').style.width    = pct + '%';
+    document.getElementById('prog-enviados').textContent = `${enviados} enviados`;
+    document.getElementById('prog-pct').textContent      = pct + '%';
+
+    const badgeEl = document.getElementById('prog-status-badge');
+    const badgeMap = {
+      ativo:     { cls: 'badge-ok', txt: '▶ Em andamento' },
+      pausado:   { cls: 'badge-sem', txt: '⏸ Pausado' },
+      concluido: { cls: 'badge-ok', txt: '✓ Concluído' },
+      encerrado: { cls: '', txt: 'Encerrado' },
+    };
+    const b = badgeMap[status] || { cls: '', txt: status };
+    badgeEl.className  = 'status-badge ' + b.cls;
+    badgeEl.textContent = b.txt;
+
+    // Botões dinâmicos
+    document.getElementById('btn-pausar').style.display  = status === 'ativo'   ? 'inline-flex' : 'none';
+    document.getElementById('btn-retomar').style.display = status === 'pausado' ? 'inline-flex' : 'none';
+    document.getElementById('btn-encerrar').style.display = ['ativo','pausado'].includes(status) ? 'inline-flex' : 'none';
+
+    if (['concluido','encerrado'].includes(status) && pollingTimer) {
+      clearInterval(pollingTimer); pollingTimer = null;
+    }
+
+    // Renderiza log de leads
+    renderizarLog(dados.leads || []);
+  } catch (e) { /* silencioso */ }
+}
+
+function renderizarLog(leads) {
+  const tbody = document.getElementById('log-leads-body');
+  if (!leads.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px;">Sem registros ainda.</td></tr>'; return; }
+  tbody.innerHTML = leads.map(l => {
+    const nome     = esc(l.nome || '—');
+    const canal    = l.telefone && l.email ? 'WA + Email' : l.telefone ? 'WhatsApp' : 'Email';
+    const statusCls = 'status-' + (l.status || 'aguardando');
+    const hora     = l.atualizado_em ? new Date(l.atualizado_em).toLocaleTimeString('pt-BR') : '—';
+    return `<tr>
+      <td><strong>${nome}</strong></td>
+      <td>${canal}</td>
+      <td><span class="status-badge ${statusCls}">${esc(l.status || 'aguardando')}</span></td>
+      <td>${hora}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Controles de disparo ───────────────────────────────────────
+async function pausarDisparo() {
+  await apiFetch(`/api/disparos/${campanhaAtualId}/pausar`, { method: 'POST' });
+  atualizarStatus();
+}
+async function retomarDisparo() {
+  await apiFetch(`/api/disparos/${campanhaAtualId}/retomar`, { method: 'POST' });
+  atualizarStatus();
+  iniciarPolling();
+}
+async function encerrarDisparo() {
+  if (!confirm('Encerrar o disparo? Isso para o envio permanentemente.')) return;
+  await apiFetch(`/api/disparos/${campanhaAtualId}/encerrar`, { method: 'POST' });
+  if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
+  atualizarStatus();
+}
+
+// ── CSS spin ──
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
+</script>
+</body>
+</html>
