@@ -95,7 +95,10 @@ async function atualizarStatusLead(campanhaId, leadId, status, erro = null) {
   try {
     await supabaseAdmin
       .from('disparos_leads')
-      .upsert({ campanha_id: campanhaId, lead_id: leadId, status, erro, atualizado_em: new Date().toISOString() });
+      .upsert(
+        { campanha_id: campanhaId, lead_id: leadId, status, erro, atualizado_em: new Date().toISOString() },
+        { onConflict: 'campanha_id,lead_id' }
+      );
   } catch (e) {
     console.error('[Disparos] Erro ao atualizar status lead:', e.message);
   }
