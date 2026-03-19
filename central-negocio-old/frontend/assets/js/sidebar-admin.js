@@ -27,13 +27,12 @@
       <div class="nav-section-title">Comercial</div>
       <a href="/admin/comercial/" class="nav-item">📊 Dashboard</a>
       <a href="/admin/comercial/leads.html" class="nav-item">👤 Leads</a>
-      <a href="/admin/comercial/campanhas.html" class="nav-item">📢 Campanhas</a>
+      <a href="/admin/comercial/disparos.html" class="nav-item">🚀 Disparos em Massa</a>
       <a href="/admin/comercial/conversas.html" class="nav-item">💬 Conversas</a>
       <a href="/admin/comercial/kanban.html" class="nav-item">📋 Kanban</a>
       <a href="/admin/comercial/calendario.html" class="nav-item">📅 Calendário</a>
       <a href="/admin/comercial/relatorios.html" class="nav-item">📈 Relatórios</a>
       <a href="/admin/comercial/ia.html" class="nav-item">🤖 IA Comercial</a>
-      <a href="/admin/comercial/disparos.html" class="nav-item">🚀 Disparos</a>
       <a href="/admin/comercial/configuracoes.html" class="nav-item">⚙️ Configurações</a>
     </nav>
     <div class="sidebar-footer">

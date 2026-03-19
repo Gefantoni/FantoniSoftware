@@ -36,7 +36,7 @@
     sidebarEl.innerHTML = `
       <div class="sidebar-logo">
         <div class="logo-wrap">
-          <i class="ph ph-lightning-bolt" style="color:var(--saas-blue);font-size:24px"></i>
+          <img src="/assets/logo.png" alt="Fantoni Software" style="height:36px;width:auto;object-fit:contain;flex-shrink:0;">
           <div><h2>Central do Negócio</h2><span>Portal do Cliente</span></div>
         </div>
       </div>
