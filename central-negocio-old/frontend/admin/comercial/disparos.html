@@ -356,9 +356,11 @@
             </div>
           </div>
 
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
             <button class="btn btn-outline" onclick="irParaEtapa(1)">← Voltar</button>
+            <button class="btn btn-outline" id="btn-salvar-rascunho" onclick="salvarRascunho()">💾 Salvar campanha</button>
             <button class="btn btn-primario" id="btn-iniciar" onclick="iniciarDisparo()">📨 Iniciar disparo</button>
+            <span style="font-size:12px;color:#94a3b8;">Salvar guarda os contatos sem enviar — inicie quando quiser.</span>
           </div>
         </div>
 
@@ -587,6 +589,7 @@ function renderizarLista(campanhas) {
   }
 
   const badgeMap = {
+    rascunho:  'badge-encerrado',
     ativo:     'badge-ativo',
     pausado:   'badge-pausado',
     concluido: 'badge-concluido',
@@ -604,13 +607,10 @@ function renderizarLista(campanhas) {
       const cls   = badgeMap[c.status] || 'badge-encerrado';
       const data  = c.criado_em ? new Date(c.criado_em).toLocaleDateString('pt-BR') : '—';
       const acoesLinha = [];
+      if (c.status === 'rascunho') acoesLinha.push(`<button class="btn btn-primario btn-sm" onclick="iniciarRascunho('${c.id}')">▶ Iniciar</button>`);
       if (c.status === 'ativo')    acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="pausarCampanha('${c.id}')">⏸ Pausar</button>`);
       if (c.status === 'pausado')  acoesLinha.push(`<button class="btn btn-primario btn-sm" onclick="retomarCampanha('${c.id}')">▶ Retomar</button>`);
-      if (c.status === 'concluido' || c.status === 'encerrado') {
-        acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="verDetalhe('${c.id}','${esc(nome)}')">🔍 Ver</button>`);
-      } else {
-        acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="verDetalhe('${c.id}','${esc(nome)}')">🔍 Ver</button>`);
-      }
+      acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="verDetalhe('${c.id}','${esc(nome)}')">🔍 Ver</button>`);
       acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="abrirModalEditar('${c.id}')">✏️ Editar</button>`);
       acoesLinha.push(`<button class="btn btn-perigo btn-sm" onclick="excluirCampanha('${c.id}','${esc(nome).replace(/'/g,"\\'")}')">🗑</button>`);
       return `<tr>
@@ -629,6 +629,16 @@ function renderizarLista(campanhas) {
     }).join('')}
     </tbody>
   </table></div>`;
+}
+
+async function iniciarRascunho(id) {
+  try {
+    await apiFetch(`/disparos/${id}/iniciar`, { method: 'POST' });
+    mostrarAlerta('Disparo iniciado!', 'sucesso');
+    carregarListaCampanhas();
+  } catch (e) {
+    mostrarAlerta('Erro ao iniciar: ' + e.message, 'erro');
+  }
 }
 
 async function pausarCampanha(id) {
@@ -1036,6 +1046,38 @@ function atualizarSeletorTemplates() {
   sel.style.display = '';
   sel.innerHTML = `<option value="">↩ Carregar template...</option>` +
     lista.map(t => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join('');
+}
+
+// ── Salvar rascunho ────────────────────────────────────────────
+async function salvarRascunho() {
+  const btn = document.getElementById('btn-salvar-rascunho');
+  btn.disabled = true; btn.textContent = '⟳ Salvando...';
+  const instanciasIds = [...document.querySelectorAll('#instancias-lista input[type=checkbox]:checked')].map(el => el.value);
+  try {
+    const dados = await apiFetch('/disparos/iniciar', {
+      method: 'POST',
+      body: JSON.stringify({
+        nome:           document.getElementById('cfg-nome').value.trim() || null,
+        canal:          document.getElementById('cfg-canal').value,
+        intervalo_min:  document.getElementById('cfg-min').value,
+        intervalo_max:  document.getElementById('cfg-max').value,
+        hora_inicio:    document.getElementById('cfg-hora-inicio').value,
+        hora_fim:       document.getElementById('cfg-hora-fim').value,
+        instancias_ids: instanciasIds,
+        contatos:       contatosImportados,
+        prompt_wa:      document.getElementById('prompt-wa').value    || null,
+        prompt_email:   document.getElementById('prompt-email').value || null,
+        iniciar_agora:  false,
+      }),
+    });
+    if (dados.erro) throw new Error(dados.erro);
+    mostrarAlerta('Campanha salva! Inicie quando quiser na lista de campanhas.', 'sucesso');
+    setTimeout(() => irParaLista(), 1200);
+  } catch (err) {
+    mostrarAlerta('Erro ao salvar: ' + (err.erro || err.message), 'erro');
+  } finally {
+    btn.disabled = false; btn.textContent = '💾 Salvar campanha';
+  }
 }
 
 // ── Iniciar disparo ────────────────────────────────────────────
