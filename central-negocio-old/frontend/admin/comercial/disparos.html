@@ -9,112 +9,130 @@
   <link rel="stylesheet" href="/assets/css/comercial.css">
   <style>
     /* ── Wizard Steps ── */
-    .wizard-steps {
-      display: flex; align-items: center; gap: 0;
-      margin-bottom: 28px; padding: 0 2px;
-    }
-    .wizard-step {
-      display: flex; align-items: center; gap: 10px;
-      flex: 1; position: relative;
-    }
-    .wizard-step:not(:last-child)::after {
-      content: ''; flex: 1; height: 2px; background: #e2e8f0; margin: 0 8px;
-    }
-    .wizard-step.ativo::after { background: #3b82f6; }
-    .step-num {
-      width: 32px; height: 32px; border-radius: 50%; display: flex;
-      align-items: center; justify-content: center; font-size: 13px; font-weight: 700;
-      background: #e2e8f0; color: #64748b; flex-shrink: 0; transition: all .2s;
-    }
-    .wizard-step.ativo   .step-num { background: #3b82f6; color: #fff; }
-    .wizard-step.concluido .step-num { background: #22c55e; color: #fff; }
-    .step-label { font-size: 13px; font-weight: 600; color: #64748b; white-space: nowrap; }
-    .wizard-step.ativo .step-label { color: #1e293b; }
+    .wizard-steps { display:flex; align-items:center; gap:0; margin-bottom:28px; padding:0 2px; }
+    .wizard-step  { display:flex; align-items:center; gap:10px; flex:1; position:relative; }
+    .wizard-step:not(:last-child)::after { content:''; flex:1; height:2px; background:#e2e8f0; margin:0 8px; }
+    .wizard-step.ativo::after    { background:#3b82f6; }
+    .step-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center;
+      justify-content:center; font-size:13px; font-weight:700;
+      background:#e2e8f0; color:#64748b; flex-shrink:0; transition:all .2s; }
+    .wizard-step.ativo    .step-num { background:#3b82f6; color:#fff; }
+    .wizard-step.concluido .step-num { background:#22c55e; color:#fff; }
+    .step-label { font-size:13px; font-weight:600; color:#64748b; white-space:nowrap; }
+    .wizard-step.ativo .step-label { color:#1e293b; }
 
-    /* ── Panels ── */
-    .painel-etapa { display: none; }
-    .painel-etapa.ativo { display: block; }
+    /* ── Views ── */
+    .vista { display:none; }
+    .vista.ativa { display:block; }
 
-    /* ── Drop zone ── */
-    .drop-zone {
-      border: 2px dashed #cbd5e1; border-radius: 14px; padding: 48px 24px;
-      text-align: center; cursor: pointer; transition: all .2s; background: #f8fafc;
-    }
-    .drop-zone:hover, .drop-zone.drag-over { border-color: #3b82f6; background: #eff6ff; }
-    .drop-zone-icon { font-size: 40px; margin-bottom: 12px; }
-    .drop-zone p { margin: 0; color: #64748b; font-size: 14px; }
-    .drop-zone strong { color: #3b82f6; }
+    /* ── Campanha Cards ── */
+    .camp-tabela { width:100%; border-collapse:collapse; font-size:13px; }
+    .camp-tabela th { background:#f1f5f9; padding:11px 14px; text-align:left; font-weight:700; color:#475569;
+      border-bottom:1px solid #e2e8f0; white-space:nowrap; }
+    .camp-tabela td { padding:11px 14px; border-bottom:1px solid #f1f5f9; color:#334155; vertical-align:middle; }
+    .camp-tabela tr:hover td { background:#f8fafc; }
+    .camp-tabela tr:last-child td { border-bottom:none; }
 
-    /* ── Stats chips ── */
-    .stats-chips { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
-    .chip {
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
-      padding: 10px 16px; font-size: 13px; font-weight: 600; color: #1e293b;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .chip .chip-num { font-size: 20px; font-weight: 800; color: #3b82f6; }
-    .chip.verde .chip-num { color: #22c55e; }
-    .chip.laranja .chip-num { color: #f59e0b; }
-
-    /* ── Tabela de contatos ── */
-    .tabela-contatos { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .tabela-contatos th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-weight: 700; color: #475569; border-bottom: 1px solid #e2e8f0; }
-    .tabela-contatos td { padding: 9px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
-    .tabela-contatos tr:hover td { background: #f8fafc; }
-    .badge-ok  { background: #dcfce7; color: #15803d; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
-    .badge-sem { background: #fef3c7; color: #b45309; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
-
-    /* ── Config form ── */
-    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    @media(max-width:640px){ .config-grid { grid-template-columns: 1fr; } }
-    .form-campo { display: flex; flex-direction: column; gap: 6px; }
-    .form-campo label { font-size: 13px; font-weight: 600; color: #475569; }
-    .form-campo select, .form-campo input[type=time], .form-campo input[type=number] {
-      border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 12px;
-      font-size: 14px; color: #1e293b; outline: none; background: #fff;
-    }
-    .form-campo select:focus, .form-campo input:focus { border-color: #3b82f6; }
-    .slider-wrap { display: flex; align-items: center; gap: 12px; }
-    .slider-wrap input[type=range] { flex: 1; accent-color: #3b82f6; }
-    .slider-val { font-weight: 700; color: #3b82f6; min-width: 60px; font-size: 14px; }
-
-    /* ── Preview de mensagem ── */
-    .preview-box {
-      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
-      padding: 16px; font-size: 14px; color: #334155; line-height: 1.65;
-      min-height: 80px; white-space: pre-wrap; position: relative;
-    }
-    .preview-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #94a3b8; margin-bottom: 6px; }
-    .preview-loading { color: #94a3b8; font-style: italic; }
-
-    /* ── Instâncias ── */
-    .instancias-lista { display: flex; flex-wrap: wrap; gap: 10px; }
-    .inst-item {
-      display: flex; align-items: center; gap: 8px;
-      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
-      padding: 8px 14px; cursor: pointer; font-size: 13px; font-weight: 600; color: #334155;
-      transition: all .15s;
-    }
-    .inst-item input[type=checkbox] { accent-color: #3b82f6; width: 16px; height: 16px; }
-    .inst-item:has(input:checked) { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
-
-    /* ── Progresso ── */
-    .barra-prog-wrap { background: #e2e8f0; border-radius: 100px; height: 12px; overflow: hidden; margin: 8px 0; }
-    .barra-prog-fill { height: 100%; background: linear-gradient(90deg,#3b82f6,#2563eb); border-radius: 100px; transition: width .4s ease; }
-    .prog-info { display: flex; justify-content: space-between; font-size: 13px; color: #64748b; margin-top: 4px; }
+    /* ── Progress bar inline ── */
+    .prog-mini { background:#e2e8f0; border-radius:100px; height:6px; width:100px; overflow:hidden; }
+    .prog-mini-fill { height:100%; background:linear-gradient(90deg,#3b82f6,#2563eb); border-radius:100px; }
 
     /* ── Status badges ── */
-    .status-badge { border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; display: inline-block; }
-    .status-aguardando { background: #f1f5f9; color: #64748b; }
-    .status-enviado_wa, .status-enviado_email, .status-enviado { background: #dcfce7; color: #15803d; }
-    .status-parcial { background: #fef3c7; color: #b45309; }
-    .status-erro_wa, .status-erro_email, .status-erro { background: #fee2e2; color: #b91c1c; }
+    .badge { border-radius:6px; padding:3px 9px; font-size:11px; font-weight:700; display:inline-block; white-space:nowrap; }
+    .badge-ativo     { background:#dcfce7; color:#15803d; }
+    .badge-pausado   { background:#fef3c7; color:#b45309; }
+    .badge-concluido { background:#dbeafe; color:#1d4ed8; }
+    .badge-encerrado { background:#f1f5f9; color:#64748b; }
 
-    /* ── Ações do disparo ── */
-    .acoes-disparo { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    /* ── Painel etapa ── */
+    .painel-etapa { display:none; }
+    .painel-etapa.ativo { display:block; }
 
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .spin { animation: spin 1s linear infinite; display: inline-block; }
+    /* ── Drop zone ── */
+    .drop-zone { border:2px dashed #cbd5e1; border-radius:14px; padding:48px 24px;
+      text-align:center; cursor:pointer; transition:all .2s; background:#f8fafc; }
+    .drop-zone:hover, .drop-zone.drag-over { border-color:#3b82f6; background:#eff6ff; }
+    .drop-zone-icon { font-size:40px; margin-bottom:12px; }
+    .drop-zone p { margin:0; color:#64748b; font-size:14px; }
+    .drop-zone strong { color:#3b82f6; }
+
+    /* ── Stats chips ── */
+    .stats-chips { display:flex; gap:12px; flex-wrap:wrap; margin:20px 0; }
+    .chip { background:#fff; border:1px solid #e2e8f0; border-radius:10px;
+      padding:10px 16px; font-size:13px; font-weight:600; color:#1e293b;
+      display:flex; align-items:center; gap:8px; }
+    .chip .chip-num { font-size:20px; font-weight:800; color:#3b82f6; }
+    .chip.verde .chip-num { color:#22c55e; }
+    .chip.laranja .chip-num { color:#f59e0b; }
+
+    /* ── Tabelas de contatos/leads ── */
+    .tabela-contatos { width:100%; border-collapse:collapse; font-size:13px; }
+    .tabela-contatos th { background:#f1f5f9; padding:10px 12px; text-align:left;
+      font-weight:700; color:#475569; border-bottom:1px solid #e2e8f0; }
+    .tabela-contatos td { padding:9px 12px; border-bottom:1px solid #f1f5f9; color:#334155; }
+    .tabela-contatos tr:hover td { background:#f8fafc; }
+    .badge-ok  { background:#dcfce7; color:#15803d; border-radius:6px; padding:2px 8px; font-size:11px; font-weight:700; }
+    .badge-sem { background:#fef3c7; color:#b45309; border-radius:6px; padding:2px 8px; font-size:11px; font-weight:700; }
+
+    /* ── Config form ── */
+    .config-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:640px){ .config-grid { grid-template-columns:1fr; } }
+    .form-campo { display:flex; flex-direction:column; gap:6px; }
+    .form-campo label { font-size:13px; font-weight:600; color:#475569; }
+    .form-campo select, .form-campo input[type=time], .form-campo input[type=number] {
+      border:1px solid #e2e8f0; border-radius:8px; padding:9px 12px;
+      font-size:14px; color:#1e293b; outline:none; background:#fff; }
+    .form-campo select:focus, .form-campo input:focus { border-color:#3b82f6; }
+    .slider-wrap { display:flex; align-items:center; gap:12px; }
+    .slider-wrap input[type=range] { flex:1; accent-color:#3b82f6; }
+    .slider-val { font-weight:700; color:#3b82f6; min-width:60px; font-size:14px; }
+
+    /* ── Preview ── */
+    .preview-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;
+      padding:16px; font-size:14px; color:#334155; line-height:1.65;
+      min-height:80px; white-space:pre-wrap; }
+    .preview-label { font-size:11px; font-weight:700; text-transform:uppercase;
+      letter-spacing:.05em; color:#94a3b8; margin-bottom:6px; display:flex; justify-content:space-between; }
+
+    /* ── Instâncias ── */
+    .instancias-lista { display:flex; flex-wrap:wrap; gap:10px; }
+    .inst-item { display:flex; align-items:center; gap:8px;
+      background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;
+      padding:8px 14px; cursor:pointer; font-size:13px; font-weight:600; color:#334155; transition:all .15s; }
+    .inst-item input[type=checkbox] { accent-color:#3b82f6; width:16px; height:16px; }
+    .inst-item:has(input:checked) { border-color:#3b82f6; background:#eff6ff; color:#1d4ed8; }
+
+    /* ── Barra progresso ── */
+    .barra-prog-wrap { background:#e2e8f0; border-radius:100px; height:12px; overflow:hidden; margin:8px 0; }
+    .barra-prog-fill { height:100%; background:linear-gradient(90deg,#3b82f6,#2563eb); border-radius:100px; transition:width .4s ease; }
+    .prog-info { display:flex; justify-content:space-between; font-size:13px; color:#64748b; margin-top:4px; }
+
+    /* ── Status lead ── */
+    .status-badge { border-radius:6px; padding:2px 8px; font-size:11px; font-weight:700; display:inline-block; }
+    .status-aguardando  { background:#f1f5f9; color:#64748b; }
+    .status-enviado_wa, .status-enviado_email, .status-enviado { background:#dcfce7; color:#15803d; }
+    .status-parcial     { background:#fef3c7; color:#b45309; }
+    .status-erro_wa, .status-erro_email, .status-erro { background:#fee2e2; color:#b91c1c; }
+
+    /* ── Modal ── */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000;
+      display:flex; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.oculto { display:none; }
+    .modal-box { background:#fff; border-radius:16px; width:100%; max-width:640px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25); max-height:90vh; overflow-y:auto; }
+    .modal-header { display:flex; align-items:center; justify-content:space-between;
+      padding:20px 24px 0; }
+    .modal-titulo { font-size:17px; font-weight:700; color:#0f172a; }
+    .modal-fechar { background:none; border:none; font-size:20px; color:#94a3b8;
+      cursor:pointer; line-height:1; padding:0 4px; }
+    .modal-fechar:hover { color:#334155; }
+    .modal-body { padding:20px 24px 24px; }
+
+    @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+    .spin { animation:spin 1s linear infinite; display:inline-block; }
+
+    .acoes-disparo { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .btn-sm { padding:6px 12px !important; font-size:12px !important; }
   </style>
 </head>
 <body class="com-page">
@@ -125,268 +143,330 @@
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:10px;">
         <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
-        <span class="topbar-titulo">🚀 Disparos em Massa</span>
-        <span style="font-size:13px;color:#64748b;">WhatsApp + Email — Prospecção automatizada</span>
+        <span class="topbar-titulo" id="topbar-titulo">🚀 Disparos em Massa</span>
       </div>
+      <div id="topbar-acoes"></div>
     </div>
 
     <div class="pagina">
 
-      <!-- Wizard Steps -->
-      <div class="wizard-steps">
-        <div class="wizard-step ativo" id="step-1">
-          <div class="step-num">1</div>
-          <span class="step-label">Importar lista</span>
+      <!-- ══════════════════════════════════════════════════ -->
+      <!-- VISTA 1 — LISTA DE CAMPANHAS                      -->
+      <!-- ══════════════════════════════════════════════════ -->
+      <div class="vista ativa" id="vista-lista">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div>
+            <h2 style="margin:0;font-size:18px;font-weight:700;color:#0f172a;">Campanhas de Disparo</h2>
+            <p style="margin:4px 0 0;font-size:13px;color:#64748b;">WhatsApp + Email — Prospecção automatizada com IA</p>
+          </div>
+          <button class="btn btn-primario" onclick="irParaWizard()">
+            + Nova Campanha
+          </button>
         </div>
-        <div class="wizard-step" id="step-2">
-          <div class="step-num">2</div>
-          <span class="step-label">Configurar</span>
-        </div>
-        <div class="wizard-step" id="step-3">
-          <div class="step-num">3</div>
-          <span class="step-label">Acompanhar</span>
+
+        <div class="card" style="padding:0;overflow:hidden;" id="area-lista">
+          <div style="padding:40px;text-align:center;color:#94a3b8;">
+            <div class="spin" style="font-size:24px;">⟳</div>
+          </div>
         </div>
       </div>
 
-      <!-- ══ ETAPA 1 — IMPORTAR ══ -->
-      <div class="painel-etapa ativo" id="etapa-1">
-        <div class="card" style="margin-bottom:20px;">
-          <h3 style="margin:0 0 16px;font-size:16px;font-weight:700;color:#0f172a;">
-            📊 Importar arquivo de contatos (.xlsx)
-          </h3>
+      <!-- ══════════════════════════════════════════════════ -->
+      <!-- VISTA 2 — WIZARD NOVA CAMPANHA                    -->
+      <!-- ══════════════════════════════════════════════════ -->
+      <div class="vista" id="vista-wizard">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <button class="btn btn-outline btn-sm" onclick="irParaLista()">← Voltar</button>
+          <h2 style="margin:0;font-size:17px;font-weight:700;color:#0f172a;">Nova Campanha de Disparo</h2>
+        </div>
 
-          <div class="drop-zone" id="drop-zone" onclick="document.getElementById('input-arquivo').click()">
-            <div class="drop-zone-icon">📤</div>
-            <p><strong>Clique ou arraste</strong> o arquivo .xlsx aqui</p>
-            <p style="margin-top:6px;font-size:12px;color:#94a3b8;">Formato: exportação CNPJ.biz · máx 20MB</p>
+        <div class="wizard-steps">
+          <div class="wizard-step ativo" id="step-1">
+            <div class="step-num">1</div>
+            <span class="step-label">Importar lista</span>
           </div>
-          <input type="file" id="input-arquivo" accept=".xlsx,.xls" style="display:none">
+          <div class="wizard-step" id="step-2">
+            <div class="step-num">2</div>
+            <span class="step-label">Configurar</span>
+          </div>
+          <div class="wizard-step" id="step-3">
+            <div class="step-num">3</div>
+            <span class="step-label">Acompanhar</span>
+          </div>
+        </div>
 
-          <div id="upload-status" style="display:none;margin-top:12px;">
-            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#eff6ff;border-radius:10px;">
-              <span class="spin" style="font-size:20px;">⟳</span>
-              <span id="upload-texto" style="font-size:14px;color:#1d4ed8;font-weight:600;">Processando arquivo...</span>
+        <!-- Etapa 1 — Importar -->
+        <div class="painel-etapa ativo" id="etapa-1">
+          <div class="card" style="margin-bottom:20px;">
+            <h3 style="margin:0 0 16px;font-size:16px;font-weight:700;color:#0f172a;">📊 Importar arquivo de contatos (.xlsx)</h3>
+            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('input-arquivo').click()">
+              <div class="drop-zone-icon">📤</div>
+              <p><strong>Clique ou arraste</strong> o arquivo .xlsx aqui</p>
+              <p style="margin-top:6px;font-size:12px;color:#94a3b8;">Formato: exportação CNPJ.biz · máx 20MB</p>
+            </div>
+            <input type="file" id="input-arquivo" accept=".xlsx,.xls" style="display:none">
+            <div id="upload-status" style="display:none;margin-top:12px;">
+              <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#eff6ff;border-radius:10px;">
+                <span class="spin" style="font-size:20px;">⟳</span>
+                <span style="font-size:14px;color:#1d4ed8;font-weight:600;">Processando arquivo...</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="stats-area" style="display:none;">
+            <div class="stats-chips">
+              <div class="chip"><span class="chip-num" id="stat-total">0</span>Total ATIVA</div>
+              <div class="chip verde"><span class="chip-num" id="stat-email">0</span>Com email</div>
+              <div class="chip"><span class="chip-num" id="stat-tel">0</span>Com WhatsApp</div>
+              <div class="chip laranja"><span class="chip-num" id="stat-ambos">0</span>Com ambos</div>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+                <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">
+                  Prévia dos contatos <span id="preview-count" style="color:#64748b;font-weight:400;font-size:13px;"></span>
+                </h3>
+                <button class="btn btn-primario btn-sm" onclick="irParaEtapa(2)">Configurar disparo →</button>
+              </div>
+              <div style="overflow-x:auto;max-height:380px;overflow-y:auto;">
+                <table class="tabela-contatos">
+                  <thead><tr>
+                    <th>Estabelecimento</th><th>Segmento</th><th>Cidade</th><th>Email</th><th>WhatsApp</th>
+                  </tr></thead>
+                  <tbody id="tabela-contatos-body"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Stats -->
-        <div id="stats-area" style="display:none;">
-          <div class="stats-chips">
-            <div class="chip"><span class="chip-num" id="stat-total">0</span>Total ATIVA</div>
-            <div class="chip verde"><span class="chip-num" id="stat-email">0</span>Com email</div>
-            <div class="chip"><span class="chip-num" id="stat-tel">0</span>Com WhatsApp</div>
-            <div class="chip laranja"><span class="chip-num" id="stat-ambos">0</span>Com ambos</div>
+        <!-- Etapa 2 — Configurar -->
+        <div class="painel-etapa" id="etapa-2">
+          <div class="card" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+              <h3 style="margin:0;font-size:16px;font-weight:700;color:#0f172a;">⚙️ Configurações do disparo</h3>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <input type="text" id="cfg-nome" placeholder="Nome da campanha (ex: Bares RS — PDV)"
+                  style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#1e293b;outline:none;width:260px;"
+                  onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e2e8f0'">
+                <select id="sel-template" onchange="carregarTemplate(this.value)"
+                  style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#334155;outline:none;display:none;">
+                  <option value="">↩ Carregar template...</option>
+                </select>
+                <button class="btn btn-outline btn-sm" onclick="salvarTemplate()">💾 Salvar template</button>
+              </div>
+            </div>
+
+            <div class="config-grid">
+              <div class="form-campo">
+                <label>Canal de envio</label>
+                <select id="cfg-canal" onchange="atualizarVisibilidade()">
+                  <option value="ambos">WhatsApp + Email</option>
+                  <option value="whatsapp">Somente WhatsApp</option>
+                  <option value="email">Somente Email</option>
+                </select>
+              </div>
+              <div class="form-campo">
+                <label>Produto / Campanha</label>
+                <select id="cfg-produto" onchange="carregarPromptProduto()">
+                  <option value="pdv">Fantoni PDV — Sistema de gestão</option>
+                  <option value="cardapio">Fantoni Cardápio IA — Delivery</option>
+                  <option value="custom">Personalizado (editar prompt manualmente)</option>
+                </select>
+              </div>
+              <div class="form-campo">
+                <label>Horário de início</label>
+                <input type="time" id="cfg-hora-inicio" value="08:00">
+              </div>
+              <div class="form-campo">
+                <label>Horário de fim</label>
+                <input type="time" id="cfg-hora-fim" value="18:00">
+              </div>
+            </div>
+
+            <div style="margin-top:20px;background:#f8fafc;border-radius:10px;padding:14px 16px;">
+              <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
+                ⏱️ Intervalo aleatório entre mensagens
+                <span style="font-size:12px;font-weight:400;color:#94a3b8;margin-left:6px;">evita detecção de padrão</span>
+              </label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-campo">
+                  <label>Mínimo</label>
+                  <div class="slider-wrap">
+                    <input type="range" id="cfg-min" min="30" max="600" value="90" step="10" oninput="atualizarIntervalo()">
+                    <span class="slider-val" id="label-min">1,5 min</span>
+                  </div>
+                </div>
+                <div class="form-campo">
+                  <label>Máximo</label>
+                  <div class="slider-wrap">
+                    <input type="range" id="cfg-max" min="30" max="600" value="300" step="10" oninput="atualizarIntervalo()">
+                    <span class="slider-val" id="label-max">5 min</span>
+                  </div>
+                </div>
+              </div>
+              <p style="margin:8px 0 0;font-size:12px;color:#64748b;">
+                Intervalo aleatório entre <strong id="inf-min">1,5 min</strong> e <strong id="inf-max">5 min</strong>
+              </p>
+            </div>
+
+            <div style="margin-top:20px;" id="bloco-instancias">
+              <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
+                📱 Números WhatsApp para disparo (round-robin automático)
+              </label>
+              <div class="instancias-lista" id="instancias-lista">
+                <span style="color:#94a3b8;font-size:13px;" id="inst-vazio">Carregando instâncias...</span>
+              </div>
+            </div>
           </div>
 
-          <div class="card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-              <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">
-                Prévia dos contatos <span id="preview-count" style="color:#64748b;font-weight:400;font-size:13px;"></span>
-              </h3>
-              <button class="btn btn-primario btn-sm" onclick="irParaEtapa(2)">
-                Configurar disparo →
-              </button>
+          <div class="card" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+              <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">🤖 Prompts de geração de mensagem</h3>
+              <button class="btn btn-outline btn-sm" onclick="gerarPreview()">↺ Gerar prévia</button>
             </div>
-            <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
+            <p style="margin:0 0 16px;font-size:13px;color:#64748b;">
+              Use <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{nome}}</code>,
+              <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{segmento}}</code> e
+              <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{cidade}}</code> como variáveis.
+            </p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div>
+                <div class="preview-label"><span>💬 Prompt WhatsApp</span></div>
+                <textarea id="prompt-wa" rows="7" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;" oninput="limparPreview()"></textarea>
+              </div>
+              <div>
+                <div class="preview-label"><span>📧 Prompt Email (corpo)</span></div>
+                <textarea id="prompt-email" rows="7" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;" oninput="limparPreview()"></textarea>
+              </div>
+            </div>
+            <div id="area-preview" style="display:none;margin-top:16px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div>
+                  <div class="preview-label">
+                    <span>💬 Mensagem WA gerada</span>
+                    <span id="preview-wa-chars"></span>
+                  </div>
+                  <div class="preview-box" id="preview-wa"></div>
+                </div>
+                <div>
+                  <div class="preview-label"><span>📧 Email gerado</span></div>
+                  <div class="preview-box" id="preview-email"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn btn-outline" onclick="irParaEtapa(1)">← Voltar</button>
+            <button class="btn btn-primario" id="btn-iniciar" onclick="iniciarDisparo()">📨 Iniciar disparo</button>
+          </div>
+        </div>
+
+        <!-- Etapa 3 — Acompanhar -->
+        <div class="painel-etapa" id="etapa-3">
+          <div class="acoes-disparo">
+            <button class="btn btn-outline" id="btn-pausar"   onclick="pausarDisparo()"   style="display:none;">⏸ Pausar</button>
+            <button class="btn btn-primario" id="btn-retomar" onclick="retomarDisparo()"  style="display:none;">▶ Retomar</button>
+            <button class="btn btn-perigo"  id="btn-encerrar" onclick="encerrarDisparo()" style="display:none;">■ Encerrar</button>
+            <button class="btn btn-outline" onclick="irParaLista()">← Ver campanhas</button>
+          </div>
+          <div class="card" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+              <div>
+                <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;" id="prog-titulo">Carregando...</h3>
+                <span style="font-size:13px;color:#64748b;" id="prog-subtitulo"></span>
+              </div>
+              <span class="badge" id="prog-status-badge">—</span>
+            </div>
+            <div class="barra-prog-wrap"><div class="barra-prog-fill" id="barra-fill" style="width:0%"></div></div>
+            <div class="prog-info">
+              <span id="prog-enviados">0 enviados</span>
+              <span id="prog-pct">0%</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="margin:0 0 14px;font-size:15px;font-weight:700;color:#0f172a;">Log de envios</h3>
+            <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
               <table class="tabela-contatos">
-                <thead>
-                  <tr>
-                    <th>Estabelecimento</th>
-                    <th>Segmento</th>
-                    <th>Cidade</th>
-                    <th>Email</th>
-                    <th>WhatsApp</th>
-                  </tr>
-                </thead>
-                <tbody id="tabela-contatos-body"></tbody>
+                <thead><tr><th>Estabelecimento</th><th>Canal</th><th>Status</th><th>Horário</th></tr></thead>
+                <tbody id="log-leads-body">
+                  <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px;">Aguardando início...</td></tr>
+                </tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══ ETAPA 2 — CONFIGURAR ══ -->
-      <div class="painel-etapa" id="etapa-2">
-        <div class="card" style="margin-bottom:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-            <h3 style="margin:0;font-size:16px;font-weight:700;color:#0f172a;">⚙️ Configurações do disparo</h3>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-              <input type="text" id="cfg-nome" placeholder="Nome da campanha (ex: Bares RS — PDV)"
-                style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#1e293b;outline:none;width:260px;"
-                onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e2e8f0'">
-              <select id="sel-template" onchange="carregarTemplate(this.value)"
-                style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#334155;outline:none;display:none;">
-                <option value="">↩ Carregar template...</option>
+      <!-- ══════════════════════════════════════════════════ -->
+      <!-- VISTA 3 — DETALHE DA CAMPANHA                     -->
+      <!-- ══════════════════════════════════════════════════ -->
+      <div class="vista" id="vista-detalhe">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="btn btn-outline btn-sm" onclick="irParaLista()">← Voltar</button>
+            <h2 style="margin:0;font-size:17px;font-weight:700;color:#0f172a;" id="det-nome">Campanha</h2>
+            <span class="badge" id="det-badge">—</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;" id="det-acoes"></div>
+        </div>
+
+        <!-- Info + Config -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+          <div class="card">
+            <h4 style="margin:0 0 14px;font-size:14px;font-weight:700;color:#0f172a;">Informações</h4>
+            <div id="det-info" style="display:flex;flex-direction:column;gap:8px;font-size:13px;"></div>
+          </div>
+          <div class="card">
+            <h4 style="margin:0 0 12px;font-size:14px;font-weight:700;color:#0f172a;">Progresso</h4>
+            <div class="barra-prog-wrap"><div class="barra-prog-fill" id="det-barra-fill" style="width:0%"></div></div>
+            <div class="prog-info" style="margin-bottom:12px;">
+              <span id="det-prog-txt">— enviados</span>
+              <span id="det-prog-pct">0%</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">
+              <div style="background:#f8fafc;border-radius:8px;padding:10px;">
+                <div style="font-size:20px;font-weight:800;color:#3b82f6;" id="det-total">0</div>
+                <div style="font-size:11px;color:#64748b;">Total</div>
+              </div>
+              <div style="background:#f8fafc;border-radius:8px;padding:10px;">
+                <div style="font-size:20px;font-weight:800;color:#22c55e;" id="det-enviados">0</div>
+                <div style="font-size:11px;color:#64748b;">Enviados</div>
+              </div>
+              <div style="background:#f8fafc;border-radius:8px;padding:10px;">
+                <div style="font-size:20px;font-weight:800;color:#ef4444;" id="det-erros">0</div>
+                <div style="font-size:11px;color:#64748b;">Erros</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leads da campanha -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;gap:10px;">
+            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Leads importados</h4>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <select id="filtro-status-det" onchange="filtrarLeadsDet()" style="border:1px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:13px;color:#334155;outline:none;">
+                <option value="">Todos os status</option>
+                <option value="aguardando">Aguardando</option>
+                <option value="enviado_wa">Enviado WA</option>
+                <option value="enviado_email">Enviado Email</option>
+                <option value="parcial">Parcial</option>
+                <option value="erro_wa">Erro WA</option>
+                <option value="erro_email">Erro Email</option>
               </select>
-              <button class="btn btn-outline btn-sm" onclick="salvarTemplate()" title="Salva as configurações para reutilizar depois">
-                💾 Salvar template
-              </button>
+              <input type="search" id="busca-lead-det" placeholder="Buscar..." oninput="filtrarLeadsDet()"
+                style="border:1px solid #e2e8f0;border-radius:8px;padding:7px 12px;font-size:13px;outline:none;width:180px;">
+              <span style="font-size:12px;color:#94a3b8;" id="det-leads-count"></span>
             </div>
           </div>
-
-          <div class="config-grid">
-            <div class="form-campo">
-              <label>Canal de envio</label>
-              <select id="cfg-canal" onchange="atualizarVisibilidade()">
-                <option value="ambos">WhatsApp + Email</option>
-                <option value="whatsapp">Somente WhatsApp</option>
-                <option value="email">Somente Email</option>
-              </select>
-            </div>
-
-            <div class="form-campo">
-              <label>Produto / Campanha</label>
-              <select id="cfg-produto" onchange="carregarPromptProduto()">
-                <option value="pdv">Fantoni PDV — Sistema de gestão</option>
-                <option value="cardapio">Fantoni Cardápio IA — Delivery</option>
-                <option value="custom">Personalizado (editar prompt manualmente)</option>
-              </select>
-            </div>
-
-            <div class="form-campo">
-              <label>Horário de início</label>
-              <input type="time" id="cfg-hora-inicio" value="08:00">
-            </div>
-
-            <div class="form-campo">
-              <label>Horário de fim</label>
-              <input type="time" id="cfg-hora-fim" value="18:00">
-            </div>
-          </div>
-
-          <!-- Intervalo aleatório -->
-          <div style="margin-top:20px;background:#f8fafc;border-radius:10px;padding:14px 16px;">
-            <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
-              ⏱️ Intervalo aleatório entre mensagens
-              <span style="font-size:12px;font-weight:400;color:#94a3b8;margin-left:6px;">evita detecção de padrão</span>
-            </label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-              <div class="form-campo">
-                <label>Mínimo</label>
-                <div class="slider-wrap">
-                  <input type="range" id="cfg-min" min="30" max="600" value="90" step="10" oninput="atualizarIntervalo()">
-                  <span class="slider-val" id="label-min">1,5 min</span>
-                </div>
-              </div>
-              <div class="form-campo">
-                <label>Máximo</label>
-                <div class="slider-wrap">
-                  <input type="range" id="cfg-max" min="30" max="600" value="300" step="10" oninput="atualizarIntervalo()">
-                  <span class="slider-val" id="label-max">5 min</span>
-                </div>
-              </div>
-            </div>
-            <p style="margin:8px 0 0;font-size:12px;color:#64748b;" id="intervalo-info">
-              Cada mensagem será enviada com intervalo aleatório entre <strong id="inf-min">1,5 min</strong> e <strong id="inf-max">5 min</strong>
-            </p>
-          </div>
-
-          <!-- Instâncias WhatsApp -->
-          <div style="margin-top:20px;" id="bloco-instancias">
-            <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
-              📱 Números WhatsApp para disparo (round-robin automático)
-            </label>
-            <div class="instancias-lista" id="instancias-lista">
-              <span style="color:#94a3b8;font-size:13px;" id="inst-vazio">Carregando instâncias...</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Prompts editáveis -->
-        <div class="card" style="margin-bottom:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-            <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">
-              🤖 Prompts de geração de mensagem
-            </h3>
-            <div style="display:flex;gap:8px;">
-              <button class="btn btn-outline btn-sm" onclick="gerarPreview()">↺ Gerar prévia</button>
-            </div>
-          </div>
-          <p style="margin:0 0 16px;font-size:13px;color:#64748b;">
-            Use <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{nome}}</code>,
-            <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{segmento}}</code> e
-            <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{cidade}}</code> como variáveis.
-          </p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div>
-              <div class="preview-label">💬 Prompt WhatsApp</div>
-              <textarea id="prompt-wa" rows="7" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;" oninput="limparPreview()"></textarea>
-            </div>
-            <div>
-              <div class="preview-label">📧 Prompt Email (corpo)</div>
-              <textarea id="prompt-email" rows="7" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;" oninput="limparPreview()"></textarea>
-            </div>
-          </div>
-
-          <!-- Prévia da mensagem gerada -->
-          <div id="area-preview" style="display:none;margin-top:16px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-              <div>
-                <div class="preview-label" style="display:flex;justify-content:space-between;">
-                  <span>💬 Mensagem WA gerada</span>
-                  <span id="preview-wa-chars" style="font-size:11px;color:#94a3b8;"></span>
-                </div>
-                <div class="preview-box" id="preview-wa"></div>
-              </div>
-              <div>
-                <div class="preview-label">📧 Email gerado</div>
-                <div class="preview-box" id="preview-email"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button class="btn btn-outline" onclick="irParaEtapa(1)">← Voltar</button>
-          <button class="btn btn-primario" id="btn-iniciar" onclick="iniciarDisparo()">
-            📨 Iniciar disparo
-          </button>
-        </div>
-      </div>
-
-      <!-- ══ ETAPA 3 — ACOMPANHAR ══ -->
-      <div class="painel-etapa" id="etapa-3">
-        <div class="acoes-disparo">
-          <button class="btn btn-outline" id="btn-pausar" onclick="pausarDisparo()" style="display:none;">⏸ Pausar</button>
-          <button class="btn btn-primario" id="btn-retomar" onclick="retomarDisparo()" style="display:none;">▶ Retomar</button>
-          <button class="btn btn-perigo" id="btn-encerrar" onclick="encerrarDisparo()" style="display:none;">■ Encerrar</button>
-          <button class="btn btn-outline" onclick="irParaEtapa(1)">+ Novo disparo</button>
-        </div>
-
-        <!-- Progresso -->
-        <div class="card" style="margin-bottom:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-            <div>
-              <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;" id="prog-titulo">Carregando...</h3>
-              <span style="font-size:13px;color:#64748b;" id="prog-subtitulo"></span>
-            </div>
-            <span class="status-badge" id="prog-status-badge">—</span>
-          </div>
-          <div class="barra-prog-wrap">
-            <div class="barra-prog-fill" id="barra-fill" style="width:0%"></div>
-          </div>
-          <div class="prog-info">
-            <span id="prog-enviados">0 enviados</span>
-            <span id="prog-pct">0%</span>
-          </div>
-        </div>
-
-        <!-- Log de envios -->
-        <div class="card">
-          <h3 style="margin:0 0 14px;font-size:15px;font-weight:700;color:#0f172a;">Log de envios</h3>
           <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
             <table class="tabela-contatos">
-              <thead>
-                <tr>
-                  <th>Estabelecimento</th>
-                  <th>Canal</th>
-                  <th>Status</th>
-                  <th>Horário</th>
-                </tr>
-              </thead>
-              <tbody id="log-leads-body">
-                <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px;">Aguardando início do disparo...</td></tr>
+              <thead><tr>
+                <th>Estabelecimento</th><th>Email</th><th>WhatsApp</th><th>Status</th><th>Atualizado</th>
+              </tr></thead>
+              <tbody id="tbody-leads-det">
+                <tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -397,6 +477,57 @@
   </div><!-- /conteudo -->
 </div><!-- /layout -->
 
+<!-- Modal: Editar Campanha -->
+<div class="modal-overlay oculto" id="modal-editar">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-titulo">✏️ Editar Campanha</span>
+      <button class="modal-fechar" onclick="fecharModalEditar()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="form-campo">
+          <label>Nome da campanha</label>
+          <input type="text" id="edit-nome" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;color:#1e293b;outline:none;"
+            onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e2e8f0'">
+        </div>
+        <div class="form-campo">
+          <label>Canal de envio</label>
+          <select id="edit-canal" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;color:#1e293b;outline:none;">
+            <option value="ambos">WhatsApp + Email</option>
+            <option value="whatsapp">Somente WhatsApp</option>
+            <option value="email">Somente Email</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-campo">
+            <label>Horário início</label>
+            <input type="time" id="edit-hora-inicio" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;">
+          </div>
+          <div class="form-campo">
+            <label>Horário fim</label>
+            <input type="time" id="edit-hora-fim" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;">
+          </div>
+        </div>
+        <div>
+          <div class="form-campo" style="margin-bottom:8px;">
+            <label>Prompt WhatsApp</label>
+            <textarea id="edit-prompt-wa" rows="4" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:10px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;"></textarea>
+          </div>
+          <div class="form-campo">
+            <label>Prompt Email</label>
+            <textarea id="edit-prompt-email" rows="4" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:10px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;"></textarea>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+        <button class="btn btn-outline" onclick="fecharModalEditar()">Cancelar</button>
+        <button class="btn btn-primario" id="btn-salvar-edicao" onclick="salvarEdicao()">💾 Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="/assets/js/api.js"></script>
 <script src="/assets/js/auth.js"></script>
 <script src="/assets/js/sidebar-admin.js"></script>
@@ -404,14 +535,285 @@
 // ── Estado global ──────────────────────────────────────────────
 let contatosImportados    = [];
 let campanhaAtualId       = null;
+let campanhaEditandoId    = null;
 let pollingTimer          = null;
 let instanciasDisponiveis = [];
+let leadsDetBruto         = [];
+
+// ── Navegação entre vistas ─────────────────────────────────────
+function mostrarVista(id) {
+  document.querySelectorAll('.vista').forEach(el => el.classList.remove('ativa'));
+  document.getElementById(id).classList.add('ativa');
+}
+
+function irParaLista() {
+  mostrarVista('vista-lista');
+  document.getElementById('topbar-titulo').textContent = '🚀 Disparos em Massa';
+  document.getElementById('topbar-acoes').innerHTML = '';
+  if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
+  carregarListaCampanhas();
+}
+
+function irParaWizard() {
+  mostrarVista('vista-wizard');
+  irParaEtapa(1);
+  contatosImportados = [];
+  document.getElementById('stats-area').style.display = 'none';
+}
+
+// ── Lista de campanhas ─────────────────────────────────────────
+async function carregarListaCampanhas() {
+  const area = document.getElementById('area-lista');
+  area.innerHTML = '<div style="padding:40px;text-align:center;color:#94a3b8;"><div class="spin" style="font-size:24px;">⟳</div></div>';
+  try {
+    const dados = await apiFetch('/disparos');
+    renderizarLista(Array.isArray(dados) ? dados : []);
+  } catch (e) {
+    area.innerHTML = `<div style="padding:40px;text-align:center;color:#ef4444;">Erro ao carregar campanhas: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderizarLista(campanhas) {
+  const area = document.getElementById('area-lista');
+  if (!campanhas.length) {
+    area.innerHTML = `
+      <div style="padding:60px 20px;text-align:center;">
+        <div style="font-size:48px;margin-bottom:16px;">🚀</div>
+        <h3 style="color:#64748b;margin:0 0 8px;">Nenhuma campanha criada ainda</h3>
+        <p style="color:#94a3b8;font-size:14px;margin:0 0 20px;">Crie sua primeira campanha para começar a prospectar via WhatsApp e Email</p>
+        <button class="btn btn-primario" onclick="irParaWizard()">+ Nova Campanha</button>
+      </div>`;
+    return;
+  }
+
+  const badgeMap = {
+    ativo:     'badge-ativo',
+    pausado:   'badge-pausado',
+    concluido: 'badge-concluido',
+    encerrado: 'badge-encerrado',
+  };
+
+  area.innerHTML = `<div style="overflow-x:auto;"><table class="camp-tabela">
+    <thead><tr>
+      <th>Nome</th><th>Canal</th><th>Status</th><th>Progresso</th><th>Criado em</th><th>Ações</th>
+    </tr></thead>
+    <tbody>
+    ${campanhas.map(c => {
+      const pct   = c.total > 0 ? Math.round((c.enviados / c.total) * 100) : 0;
+      const nome  = c.nome || `Campanha ${c.id.substring(0, 8)}`;
+      const cls   = badgeMap[c.status] || 'badge-encerrado';
+      const data  = c.criado_em ? new Date(c.criado_em).toLocaleDateString('pt-BR') : '—';
+      const acoesLinha = [];
+      if (c.status === 'ativo')    acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="pausarCampanha('${c.id}')">⏸ Pausar</button>`);
+      if (c.status === 'pausado')  acoesLinha.push(`<button class="btn btn-primario btn-sm" onclick="retomarCampanha('${c.id}')">▶ Retomar</button>`);
+      if (c.status === 'concluido' || c.status === 'encerrado') {
+        acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="verDetalhe('${c.id}','${esc(nome)}')">🔍 Ver</button>`);
+      } else {
+        acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="verDetalhe('${c.id}','${esc(nome)}')">🔍 Ver</button>`);
+      }
+      acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="abrirModalEditar('${c.id}')">✏️ Editar</button>`);
+      acoesLinha.push(`<button class="btn btn-perigo btn-sm" onclick="excluirCampanha('${c.id}','${esc(nome).replace(/'/g,"\\'")}')">🗑</button>`);
+      return `<tr>
+        <td><strong>${esc(nome)}</strong></td>
+        <td>${esc(c.canal || '—')}</td>
+        <td><span class="badge ${cls}">${c.status || '—'}</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="prog-mini"><div class="prog-mini-fill" style="width:${pct}%"></div></div>
+            <span style="font-size:12px;color:#64748b;">${c.enviados || 0}/${c.total || 0}</span>
+          </div>
+        </td>
+        <td style="font-size:12px;color:#64748b;">${data}</td>
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap;">${acoesLinha.join('')}</div></td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+async function pausarCampanha(id) {
+  await apiFetch(`/disparos/${id}/pausar`, { method: 'POST' });
+  carregarListaCampanhas();
+}
+async function retomarCampanha(id) {
+  await apiFetch(`/disparos/${id}/retomar`, { method: 'POST' });
+  carregarListaCampanhas();
+}
+async function excluirCampanha(id, nome) {
+  if (!confirm(`Excluir a campanha "${nome}"?\nIsso remove também todos os leads importados.`)) return;
+  try {
+    await apiFetch(`/disparos/${id}`, { method: 'DELETE' });
+    mostrarAlerta('Campanha excluída.', 'sucesso');
+    carregarListaCampanhas();
+  } catch (e) {
+    mostrarAlerta('Erro ao excluir: ' + e.message, 'erro');
+  }
+}
+
+// ── Detalhe da campanha ────────────────────────────────────────
+async function verDetalhe(id, nome) {
+  campanhaAtualId = id;
+  mostrarVista('vista-detalhe');
+  document.getElementById('det-nome').textContent = nome || 'Campanha';
+  document.getElementById('det-badge').textContent = '—';
+  document.getElementById('tbody-leads-det').innerHTML =
+    '<tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;"><div class="spin">⟳</div></td></tr>';
+
+  try {
+    const dados = await apiFetch(`/disparos/status/${id}`);
+    const camp  = dados.campanha || {};
+    const leads = dados.leads    || [];
+    leadsDetBruto = leads;
+
+    document.getElementById('det-nome').textContent = camp.nome || nome || 'Campanha';
+
+    const badgeMap = { ativo:'badge-ativo', pausado:'badge-pausado', concluido:'badge-concluido', encerrado:'badge-encerrado' };
+    const badgeEl  = document.getElementById('det-badge');
+    badgeEl.textContent = camp.status || '—';
+    badgeEl.className   = 'badge ' + (badgeMap[camp.status] || 'badge-encerrado');
+
+    // Progresso
+    const total    = camp.total    || 0;
+    const enviados = camp.enviados || 0;
+    const erros    = camp.erros    || 0;
+    const pct      = total ? Math.round((enviados / total) * 100) : 0;
+    document.getElementById('det-barra-fill').style.width = pct + '%';
+    document.getElementById('det-prog-txt').textContent   = `${enviados} enviados`;
+    document.getElementById('det-prog-pct').textContent   = pct + '%';
+    document.getElementById('det-total').textContent    = total;
+    document.getElementById('det-enviados').textContent = enviados;
+    document.getElementById('det-erros').textContent    = erros;
+
+    // Info
+    const cfg = camp.config || {};
+    document.getElementById('det-info').innerHTML = `
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+        <span style="color:#64748b;font-size:13px;">Canal</span>
+        <span style="font-size:13px;font-weight:600;">${esc(camp.canal || '—')}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+        <span style="color:#64748b;font-size:13px;">Horário</span>
+        <span style="font-size:13px;font-weight:600;">${esc(cfg.horaInicio || '08:00')} — ${esc(cfg.horaFim || '18:00')}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+        <span style="color:#64748b;font-size:13px;">Intervalo</span>
+        <span style="font-size:13px;font-weight:600;">${formatarSeg(cfg.intervaloMinSeg||60)} — ${formatarSeg(cfg.intervaloMaxSeg||120)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;">
+        <span style="color:#64748b;font-size:13px;">Criado em</span>
+        <span style="font-size:13px;font-weight:600;">${camp.criado_em ? new Date(camp.criado_em).toLocaleString('pt-BR') : '—'}</span>
+      </div>`;
+
+    // Botões de ação
+    const acoes = [];
+    if (camp.status === 'ativo')   acoes.push(`<button class="btn btn-outline btn-sm" onclick="pausarCampanha('${id}');irParaLista()">⏸ Pausar</button>`);
+    if (camp.status === 'pausado') acoes.push(`<button class="btn btn-primario btn-sm" onclick="retomarCampanha('${id}');irParaLista()">▶ Retomar</button>`);
+    if (['ativo','pausado'].includes(camp.status)) acoes.push(`<button class="btn btn-perigo btn-sm" onclick="encerrarDetalhe('${id}')">■ Encerrar</button>`);
+    acoes.push(`<button class="btn btn-outline btn-sm" onclick="abrirModalEditar('${id}')">✏️ Editar</button>`);
+    acoes.push(`<button class="btn btn-perigo btn-sm" onclick="excluirCampanha('${id}','${esc(camp.nome||'')}')">🗑 Excluir</button>`);
+    document.getElementById('det-acoes').innerHTML = acoes.join('');
+
+    // Leads
+    renderizarLeadsDet(leads);
+  } catch (e) {
+    mostrarAlerta('Erro ao carregar detalhe: ' + e.message, 'erro');
+  }
+}
+
+async function encerrarDetalhe(id) {
+  if (!confirm('Encerrar o disparo? Isso para o envio permanentemente.')) return;
+  await apiFetch(`/disparos/${id}/encerrar`, { method: 'POST' });
+  verDetalhe(id, document.getElementById('det-nome').textContent);
+}
+
+function renderizarLeadsDet(leads) {
+  const filtro = (document.getElementById('filtro-status-det').value || '').toLowerCase();
+  const busca  = (document.getElementById('busca-lead-det').value || '').toLowerCase();
+  const filtrados = leads.filter(l => {
+    const matchStatus = !filtro || (l.status || '').toLowerCase() === filtro;
+    const matchBusca  = !busca ||
+      (l.nome     || '').toLowerCase().includes(busca) ||
+      (l.email    || '').toLowerCase().includes(busca) ||
+      (l.telefone || '').toLowerCase().includes(busca);
+    return matchStatus && matchBusca;
+  });
+  document.getElementById('det-leads-count').textContent = `${filtrados.length} lead(s)`;
+  const tbody = document.getElementById('tbody-leads-det');
+  if (!filtrados.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">Nenhum lead encontrado.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtrados.map(l => {
+    const statusCls = 'status-' + (l.status || 'aguardando').replace(/[^a-z_]/g,'');
+    const hora = l.atualizado_em ? new Date(l.atualizado_em).toLocaleTimeString('pt-BR') : '—';
+    const email = l.email ? `<span class="badge-ok">${esc(l.email.substring(0,28))}</span>` : '<span class="badge-sem">sem email</span>';
+    const tel   = l.telefone ? `<span class="badge-ok">${esc(l.telefone)}</span>` : '<span class="badge-sem">sem tel</span>';
+    return `<tr>
+      <td><strong>${esc(l.nome || '—')}</strong></td>
+      <td>${email}</td>
+      <td>${tel}</td>
+      <td><span class="status-badge ${statusCls}">${esc(l.status || 'aguardando')}</span></td>
+      <td style="font-size:12px;color:#64748b;">${hora}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filtrarLeadsDet() { renderizarLeadsDet(leadsDetBruto); }
+
+// ── Modal Editar ───────────────────────────────────────────────
+async function abrirModalEditar(id) {
+  campanhaEditandoId = id;
+  document.getElementById('modal-editar').classList.remove('oculto');
+  try {
+    const dados = await apiFetch(`/disparos/status/${id}`);
+    const camp  = dados.campanha || {};
+    const cfg   = camp.config    || {};
+    document.getElementById('edit-nome').value         = camp.nome    || '';
+    document.getElementById('edit-canal').value        = camp.canal   || 'ambos';
+    document.getElementById('edit-hora-inicio').value  = cfg.horaInicio  || '08:00';
+    document.getElementById('edit-hora-fim').value     = cfg.horaFim     || '18:00';
+    document.getElementById('edit-prompt-wa').value    = cfg.promptWA    || '';
+    document.getElementById('edit-prompt-email').value = cfg.promptEmail  || '';
+  } catch (e) { mostrarAlerta('Erro ao carregar dados: ' + e.message, 'erro'); }
+}
+function fecharModalEditar() {
+  document.getElementById('modal-editar').classList.add('oculto');
+  campanhaEditandoId = null;
+}
+async function salvarEdicao() {
+  if (!campanhaEditandoId) return;
+  const btn = document.getElementById('btn-salvar-edicao');
+  btn.disabled = true; btn.textContent = '⟳ Salvando...';
+  try {
+    await apiFetch(`/disparos/${campanhaEditandoId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        nome:         document.getElementById('edit-nome').value.trim(),
+        canal:        document.getElementById('edit-canal').value,
+        hora_inicio:  document.getElementById('edit-hora-inicio').value,
+        hora_fim:     document.getElementById('edit-hora-fim').value,
+        prompt_wa:    document.getElementById('edit-prompt-wa').value    || null,
+        prompt_email: document.getElementById('edit-prompt-email').value || null,
+      }),
+    });
+    mostrarAlerta('Campanha atualizada!', 'sucesso');
+    fecharModalEditar();
+    // Recarrega a vista atual
+    if (document.getElementById('vista-detalhe').classList.contains('ativa')) {
+      verDetalhe(campanhaEditandoId, document.getElementById('det-nome').textContent);
+    } else {
+      carregarListaCampanhas();
+    }
+  } catch (e) {
+    mostrarAlerta('Erro: ' + e.message, 'erro');
+  } finally {
+    btn.disabled = false; btn.textContent = '💾 Salvar alterações';
+  }
+}
 
 // ── Wizard ─────────────────────────────────────────────────────
 function irParaEtapa(n) {
-  document.querySelectorAll('.painel-etapa').forEach((el, i) => {
-    el.classList.toggle('ativo', i + 1 === n);
-  });
+  document.querySelectorAll('.painel-etapa').forEach((el, i) => el.classList.toggle('ativo', i + 1 === n));
   document.querySelectorAll('.wizard-step').forEach((el, i) => {
     el.classList.remove('ativo', 'concluido');
     if (i + 1 === n) el.classList.add('ativo');
@@ -421,10 +823,9 @@ function irParaEtapa(n) {
   if (n === 3) iniciarPolling();
 }
 
-// ── Upload de arquivo ──────────────────────────────────────────
+// ── Upload ─────────────────────────────────────────────────────
 const dropZone = document.getElementById('drop-zone');
 const inputArq = document.getElementById('input-arquivo');
-
 dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop',      e => { e.preventDefault(); dropZone.classList.remove('drag-over'); processarArquivo(e.dataTransfer.files[0]); });
@@ -435,29 +836,21 @@ async function processarArquivo(file) {
   const statusEl = document.getElementById('upload-status');
   statusEl.style.display = 'block';
   document.getElementById('stats-area').style.display = 'none';
-
-  // Lê o arquivo como base64 para compatibilidade com Vercel serverless
   const base64 = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload  = e => resolve(e.target.result.split(',')[1]);
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
-
   try {
-    const dados = await apiFetch('/disparos/importar', {
-      method: 'POST',
-      body: JSON.stringify({ arquivo_base64: base64 }),
-    });
+    const dados = await apiFetch('/disparos/importar', { method: 'POST', body: JSON.stringify({ arquivo_base64: base64 }) });
     if (dados.erro) throw new Error(dados.erro);
-
     contatosImportados = dados.preview;
     document.getElementById('stat-total').textContent  = dados.total;
     document.getElementById('stat-email').textContent  = dados.com_email;
     document.getElementById('stat-tel').textContent    = dados.com_telefone;
     document.getElementById('stat-ambos').textContent  = dados.com_ambos;
     document.getElementById('preview-count').textContent = `(mostrando ${dados.preview.length} de ${dados.total})`;
-
     renderizarTabela(dados.preview);
     document.getElementById('stats-area').style.display = 'block';
     statusEl.style.display = 'none';
@@ -522,7 +915,6 @@ function formatarSeg(s) {
   const m = v / 60;
   return m === Math.floor(m) ? `${m} min` : `${m.toFixed(1)} min`;
 }
-
 function atualizarIntervalo() {
   let min = Number(document.getElementById('cfg-min').value);
   let max = Number(document.getElementById('cfg-max').value);
@@ -532,7 +924,6 @@ function atualizarIntervalo() {
   document.getElementById('inf-min').textContent   = formatarSeg(min);
   document.getElementById('inf-max').textContent   = formatarSeg(max);
 }
-
 function carregarPromptProduto() {
   const produto = document.getElementById('cfg-produto').value;
   const p = PROMPTS[produto] || PROMPTS.pdv;
@@ -540,11 +931,7 @@ function carregarPromptProduto() {
   document.getElementById('prompt-email').value = p.email;
   limparPreview();
 }
-
-function limparPreview() {
-  document.getElementById('area-preview').style.display = 'none';
-}
-
+function limparPreview()       { document.getElementById('area-preview').style.display = 'none'; }
 function atualizarVisibilidade() {
   const canal = document.getElementById('cfg-canal').value;
   document.getElementById('bloco-instancias').style.display = canal === 'email' ? 'none' : 'block';
@@ -553,9 +940,8 @@ function atualizarVisibilidade() {
 async function carregarInstancias() {
   try {
     const dados = await apiFetch('/comercial/instancias');
-    instanciasDisponiveis = Array.isArray(dados) ? dados : [];
+    instanciasDisponiveis = Array.isArray(dados) ? dados : (dados.instancias || []);
     const lista = document.getElementById('instancias-lista');
-
     if (!instanciasDisponiveis.length) {
       lista.innerHTML = '<span style="color:#94a3b8;font-size:13px;">Nenhuma instância cadastrada. Configure em <a href="/admin/comercial/configuracoes.html">Configurações</a>.</span>';
       return;
@@ -564,8 +950,7 @@ async function carregarInstancias() {
       <label class="inst-item">
         <input type="checkbox" value="${esc(String(inst.id))}" checked>
         📱 ${esc(inst.nome || inst.nome_instancia || '—')}
-      </label>
-    `).join('');
+      </label>`).join('');
   } catch (e) {
     document.getElementById('inst-vazio').textContent = 'Erro ao carregar instâncias.';
   }
@@ -577,8 +962,7 @@ async function gerarPreview() {
   const wa    = document.getElementById('preview-wa');
   const email = document.getElementById('preview-email');
   document.getElementById('area-preview').style.display = 'block';
-  wa.innerHTML = email.innerHTML = '<span class="preview-loading">Gerando com IA...</span>';
-
+  wa.innerHTML = email.innerHTML = '<span style="color:#94a3b8;font-style:italic;">Gerando com IA...</span>';
   try {
     const dados = await apiFetch('/disparos/gerar-mensagem', {
       method: 'POST',
@@ -594,7 +978,7 @@ async function gerarPreview() {
     });
     wa.textContent    = dados.whatsapp || '—';
     email.textContent = dados.email    || '—';
-    const chars = (dados.whatsapp || '').length;
+    const chars   = (dados.whatsapp || '').length;
     const charsEl = document.getElementById('preview-wa-chars');
     charsEl.textContent = `${chars} caracteres`;
     charsEl.style.color = chars > 320 ? '#ef4444' : chars > 200 ? '#f59e0b' : '#22c55e';
@@ -605,33 +989,30 @@ async function gerarPreview() {
 
 // ── Templates ─────────────────────────────────────────────────
 const TEMPLATES_KEY = 'disparos_templates_v1';
-
 function listarTemplates() {
   try { return JSON.parse(localStorage.getItem(TEMPLATES_KEY) || '[]'); } catch { return []; }
 }
-
 function salvarTemplate() {
   const nome = document.getElementById('cfg-nome').value.trim();
   if (!nome) { mostrarAlerta('Dê um nome à campanha antes de salvar o template.', 'aviso'); return; }
   const tpl = {
     nome,
-    canal:       document.getElementById('cfg-canal').value,
-    produto:     document.getElementById('cfg-produto').value,
-    hora_inicio: document.getElementById('cfg-hora-inicio').value,
-    hora_fim:    document.getElementById('cfg-hora-fim').value,
-    min:         document.getElementById('cfg-min').value,
-    max:         document.getElementById('cfg-max').value,
-    prompt_wa:   document.getElementById('prompt-wa').value,
+    canal:        document.getElementById('cfg-canal').value,
+    produto:      document.getElementById('cfg-produto').value,
+    hora_inicio:  document.getElementById('cfg-hora-inicio').value,
+    hora_fim:     document.getElementById('cfg-hora-fim').value,
+    min:          document.getElementById('cfg-min').value,
+    max:          document.getElementById('cfg-max').value,
+    prompt_wa:    document.getElementById('prompt-wa').value,
     prompt_email: document.getElementById('prompt-email').value,
-    salvo_em:    new Date().toISOString(),
+    salvo_em:     new Date().toISOString(),
   };
   const lista = listarTemplates().filter(t => t.nome !== nome);
   lista.unshift(tpl);
   localStorage.setItem(TEMPLATES_KEY, JSON.stringify(lista.slice(0, 20)));
   atualizarSeletorTemplates();
-  mostrarAlerta(`Template "${nome}" salvo com sucesso!`, 'sucesso');
+  mostrarAlerta(`Template "${nome}" salvo!`, 'sucesso');
 }
-
 function carregarTemplate(nome) {
   if (!nome) return;
   const tpl = listarTemplates().find(t => t.nome === nome);
@@ -645,30 +1026,23 @@ function carregarTemplate(nome) {
   document.getElementById('cfg-max').value          = tpl.max          || 300;
   document.getElementById('prompt-wa').value        = tpl.prompt_wa    || '';
   document.getElementById('prompt-email').value     = tpl.prompt_email || '';
-  atualizarIntervalo();
-  atualizarVisibilidade();
-  limparPreview();
+  atualizarIntervalo(); atualizarVisibilidade(); limparPreview();
   document.getElementById('sel-template').value = '';
 }
-
 function atualizarSeletorTemplates() {
   const sel   = document.getElementById('sel-template');
   const lista = listarTemplates();
   if (!lista.length) { sel.style.display = 'none'; return; }
   sel.style.display = '';
-  const opts = lista.map(t => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join('');
-  sel.innerHTML = `<option value="">↩ Carregar template...</option>${opts}`;
+  sel.innerHTML = `<option value="">↩ Carregar template...</option>` +
+    lista.map(t => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join('');
 }
 
 // ── Iniciar disparo ────────────────────────────────────────────
 async function iniciarDisparo() {
   const btn = document.getElementById('btn-iniciar');
-  btn.disabled = true;
-  btn.textContent = '⟳ Iniciando...';
-
-  const instanciasIds = [...document.querySelectorAll('#instancias-lista input[type=checkbox]:checked')]
-    .map(el => el.value);
-
+  btn.disabled = true; btn.textContent = '⟳ Iniciando...';
+  const instanciasIds = [...document.querySelectorAll('#instancias-lista input[type=checkbox]:checked')].map(el => el.value);
   try {
     const dados = await apiFetch('/disparos/iniciar', {
       method: 'POST',
@@ -686,67 +1060,55 @@ async function iniciarDisparo() {
       }),
     });
     if (dados.erro) throw new Error(dados.erro);
-
     campanhaAtualId = dados.campanha_id;
     irParaEtapa(3);
     document.getElementById('btn-pausar').style.display   = 'inline-flex';
     document.getElementById('btn-encerrar').style.display = 'inline-flex';
   } catch (err) {
     mostrarAlerta('Erro ao iniciar: ' + (err.erro || err.message), 'erro');
-    btn.disabled = false;
-    btn.textContent = '📨 Iniciar disparo';
+    btn.disabled = false; btn.textContent = '📨 Iniciar disparo';
   }
 }
 
-// ── Polling de status ──────────────────────────────────────────
+// ── Polling ────────────────────────────────────────────────────
 function iniciarPolling() {
   if (pollingTimer) clearInterval(pollingTimer);
   atualizarStatus();
   pollingTimer = setInterval(atualizarStatus, 5000);
 }
-
 async function atualizarStatus() {
   if (!campanhaAtualId) return;
   try {
     const dados = await apiFetch(`/disparos/status/${campanhaAtualId}`);
     if (!dados || dados.erro) return;
-
     const camp     = dados.campanha || {};
     const total    = camp.total    || 0;
     const enviados = camp.enviados || 0;
     const pct      = total ? Math.round((enviados / total) * 100) : 0;
     const status   = camp.status || 'ativo';
-
     const nomeLabel = camp.nome ? `${camp.nome} — ` : '';
-    document.getElementById('prog-titulo').textContent     = `${nomeLabel}${enviados} de ${total} contatos processados`;
-    document.getElementById('prog-subtitulo').textContent  = `Canal: ${camp.canal || '—'} · Iniciado: ${camp.criado_em ? new Date(camp.criado_em).toLocaleTimeString('pt-BR') : '—'}`;
-    document.getElementById('barra-fill').style.width      = pct + '%';
-    document.getElementById('prog-enviados').textContent   = `${enviados} enviados`;
-    document.getElementById('prog-pct').textContent        = pct + '%';
-
+    document.getElementById('prog-titulo').textContent    = `${nomeLabel}${enviados} de ${total} contatos processados`;
+    document.getElementById('prog-subtitulo').textContent = `Canal: ${camp.canal || '—'} · Iniciado: ${camp.criado_em ? new Date(camp.criado_em).toLocaleTimeString('pt-BR') : '—'}`;
+    document.getElementById('barra-fill').style.width     = pct + '%';
+    document.getElementById('prog-enviados').textContent  = `${enviados} enviados`;
+    document.getElementById('prog-pct').textContent       = pct + '%';
     const badgeEl = document.getElementById('prog-status-badge');
     const badgeMap = {
-      ativo:     { cls: 'badge-ok', txt: '▶ Em andamento' },
-      pausado:   { cls: 'badge-sem', txt: '⏸ Pausado' },
-      concluido: { cls: 'badge-ok', txt: '✓ Concluído' },
-      encerrado: { cls: '', txt: 'Encerrado' },
+      ativo:     { cls: 'badge-ativo',     txt: '▶ Em andamento' },
+      pausado:   { cls: 'badge-pausado',   txt: '⏸ Pausado' },
+      concluido: { cls: 'badge-concluido', txt: '✓ Concluído' },
+      encerrado: { cls: 'badge-encerrado', txt: 'Encerrado' },
     };
-    const b = badgeMap[status] || { cls: '', txt: status };
-    badgeEl.className   = 'status-badge ' + b.cls;
+    const b = badgeMap[status] || { cls: 'badge-encerrado', txt: status };
+    badgeEl.className   = 'badge ' + b.cls;
     badgeEl.textContent = b.txt;
-
     document.getElementById('btn-pausar').style.display   = status === 'ativo'   ? 'inline-flex' : 'none';
     document.getElementById('btn-retomar').style.display  = status === 'pausado' ? 'inline-flex' : 'none';
     document.getElementById('btn-encerrar').style.display = ['ativo','pausado'].includes(status) ? 'inline-flex' : 'none';
-
-    if (['concluido','encerrado'].includes(status) && pollingTimer) {
-      clearInterval(pollingTimer); pollingTimer = null;
-    }
-
+    if (['concluido','encerrado'].includes(status) && pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
     renderizarLog(dados.leads || []);
   } catch (e) { /* silencioso */ }
 }
-
 function renderizarLog(leads) {
   const tbody = document.getElementById('log-leads-body');
   if (!leads.length) {
@@ -767,22 +1129,18 @@ function renderizarLog(leads) {
   }).join('');
 }
 
-// ── Controles ─────────────────────────────────────────────────
-async function pausarDisparo() {
-  await apiFetch(`/disparos/${campanhaAtualId}/pausar`, { method: 'POST' });
-  atualizarStatus();
-}
-async function retomarDisparo() {
-  await apiFetch(`/disparos/${campanhaAtualId}/retomar`, { method: 'POST' });
-  atualizarStatus();
-  iniciarPolling();
-}
+// ── Controles do wizard ────────────────────────────────────────
+async function pausarDisparo()  { await apiFetch(`/disparos/${campanhaAtualId}/pausar`,  { method:'POST' }); atualizarStatus(); }
+async function retomarDisparo() { await apiFetch(`/disparos/${campanhaAtualId}/retomar`, { method:'POST' }); atualizarStatus(); iniciarPolling(); }
 async function encerrarDisparo() {
   if (!confirm('Encerrar o disparo? Isso para o envio permanentemente.')) return;
-  await apiFetch(`/disparos/${campanhaAtualId}/encerrar`, { method: 'POST' });
+  await apiFetch(`/disparos/${campanhaAtualId}/encerrar`, { method:'POST' });
   if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
   atualizarStatus();
 }
+
+// ── Init ───────────────────────────────────────────────────────
+carregarListaCampanhas();
 </script>
 </body>
 </html>

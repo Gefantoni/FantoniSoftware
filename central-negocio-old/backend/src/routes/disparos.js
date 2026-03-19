@@ -229,4 +229,46 @@ router.post('/:id/encerrar', autenticar, adminOuComercial, async (req, res) => {
   res.json({ ok: true });
 });
 
+// ── PATCH /api/disparos/:id — edita nome/config ───────────────
+router.patch('/:id', autenticar, adminOuComercial, async (req, res) => {
+  try {
+    const { nome, canal, hora_inicio, hora_fim, intervalo_min, intervalo_max, prompt_wa, prompt_email } = req.body;
+    const campos = { atualizado_em: new Date().toISOString() };
+    if (nome !== undefined) campos.nome = nome;
+    if (canal !== undefined) campos.canal = canal;
+    // Atualiza config JSON se vieram parâmetros de configuração
+    const configUpdate = {};
+    if (hora_inicio  !== undefined) configUpdate.horaInicio      = hora_inicio;
+    if (hora_fim     !== undefined) configUpdate.horaFim         = hora_fim;
+    if (intervalo_min !== undefined) configUpdate.intervaloMinSeg = Number(intervalo_min);
+    if (intervalo_max !== undefined) configUpdate.intervaloMaxSeg = Number(intervalo_max);
+    if (prompt_wa    !== undefined) configUpdate.promptWA        = prompt_wa;
+    if (prompt_email !== undefined) configUpdate.promptEmail     = prompt_email;
+    if (Object.keys(configUpdate).length) {
+      // Merge config existente
+      const { data: atual } = await supabaseAdmin.from('disparos_campanhas').select('config').eq('id', req.params.id).single();
+      campos.config = { ...(atual?.config || {}), ...configUpdate };
+    }
+    const { data, error } = await supabaseAdmin.from('disparos_campanhas').update(campos).eq('id', req.params.id).select().single();
+    if (error) throw error;
+    res.json({ campanha: data });
+  } catch (err) {
+    console.error('[Disparos] Erro ao editar campanha:', err.message);
+    res.status(500).json({ erro: err.message || 'Erro ao editar campanha' });
+  }
+});
+
+// ── DELETE /api/disparos/:id ──────────────────────────────────
+router.delete('/:id', autenticar, adminOuComercial, async (req, res) => {
+  try {
+    pararFila(req.params.id);
+    const { error } = await supabaseAdmin.from('disparos_campanhas').delete().eq('id', req.params.id);
+    if (error) throw error;
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[Disparos] Erro ao excluir campanha:', err.message);
+    res.status(500).json({ erro: err.message || 'Erro ao excluir campanha' });
+  }
+});
+
 module.exports = router;
