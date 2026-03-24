@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   const BASE_URL = 'https://www.asaas.com/api/v3';
 
   try {
-    // 1. Create or Find Customer
+    // 1. Create Customer
     const customerResp = await fetch(`${BASE_URL}/customers`, {
       method: 'POST',
       headers: {
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     const customer = await customerResp.json();
 
     if (customer.errors) {
-       return res.status(400).json({ success: false, error: customer.errors[0].description });
+      return res.status(400).json({ success: false, error: customer.errors[0].description });
     }
 
     // 2. Create Subscription
@@ -41,9 +41,9 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         customer: customer.id,
-        billingType: 'UNDEFINED', // Allows customer to choose PIX, Boleto or Card
+        billingType: 'UNDEFINED',
         value: value,
-        nextDueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow
+        nextDueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
         cycle: cycle,
         description: `Assinatura Plano ${plan === 'yearly' ? 'Anual' : 'Mensal'} - Navi Vendas`
       })
@@ -52,11 +52,23 @@ export default async function handler(req, res) {
     const subscription = await subResp.json();
 
     if (subscription.errors) {
-       return res.status(400).json({ success: false, error: subscription.errors[0].description });
+      return res.status(400).json({ success: false, error: subscription.errors[0].description });
     }
 
-    // Return the invoice URL (Asaas payment link for the first charge)
-    return res.status(200).json({ success: true, invoiceUrl: subscription.invoiceUrl });
+    // 3. Fetch the first charge to get the payment URL
+    const chargesResp = await fetch(`${BASE_URL}/payments?subscription=${subscription.id}&limit=1`, {
+      headers: { 'access_token': API_KEY }
+    });
+    const chargesData = await chargesResp.json();
+    const firstCharge = chargesData.data && chargesData.data[0];
+
+    const invoiceUrl = firstCharge?.invoiceUrl || subscription.invoiceUrl || null;
+
+    if (!invoiceUrl) {
+      return res.status(500).json({ success: false, error: 'Não foi possível obter o link de pagamento.' });
+    }
+
+    return res.status(200).json({ success: true, invoiceUrl });
 
   } catch (error) {
     console.error('Asaas Error:', error);
