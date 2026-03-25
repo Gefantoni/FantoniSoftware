@@ -1,5 +1,5 @@
 // api/lead.js
-// Jornada de Teste Grátis — captura de lead e retorno dos links de download
+// Jornada de Teste Grátis — captura de lead, salva no Supabase e retorna links de download
 
 const DOWNLOAD_LINKS = {
   windows: process.env.DOWNLOAD_WINDOWS || 'https://fantoni.app/download/windows',
@@ -22,10 +22,46 @@ function isValidCpfCnpj(value) {
   return digits.length === 11 || digits.length === 14;
 }
 
+// Salva lead no Supabase via REST API
+async function saveToSupabase(lead) {
+  const url  = process.env.SUPABASE_URL;
+  const key  = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) {
+    console.warn('Supabase não configurado — lead não salvo.');
+    return;
+  }
+
+  try {
+    const resp = await fetch(`${url}/rest/v1/leads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        name:       lead.name,
+        email:      lead.email,
+        whatsapp:   lead.whatsapp,
+        cpf_cnpj:   lead.cpfCnpj,
+        created_at: lead.createdAt,
+      }),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      console.error('Supabase insert error:', err);
+    }
+  } catch (err) {
+    console.warn('Supabase falhou (não crítico):', err.message);
+  }
+}
+
 // Opcional: envia o lead para um webhook externo (N8N, Typebot, etc.)
 async function notifyWebhook(lead) {
   const url = process.env.LEAD_WEBHOOK_URL;
-  if (!url) return; // sem webhook configurado, ignora silenciosamente
+  if (!url) return;
 
   try {
     await fetch(url, {
@@ -48,18 +84,10 @@ export default async function handler(req, res) {
   // --- Validação dos campos ---
   const errors = [];
 
-  if (!name || name.trim().length < 2) {
-    errors.push('Nome inválido ou ausente.');
-  }
-  if (!email || !isValidEmail(email)) {
-    errors.push('E-mail inválido ou ausente.');
-  }
-  if (!whatsapp || !isValidPhone(whatsapp)) {
-    errors.push('WhatsApp inválido. Informe DDD + número (10 ou 11 dígitos).');
-  }
-  if (!cpfCnpj || !isValidCpfCnpj(cpfCnpj)) {
-    errors.push('CPF/CNPJ inválido. Informe 11 dígitos (CPF) ou 14 dígitos (CNPJ).');
-  }
+  if (!name || name.trim().length < 2)          errors.push('Nome inválido ou ausente.');
+  if (!email || !isValidEmail(email))            errors.push('E-mail inválido ou ausente.');
+  if (!whatsapp || !isValidPhone(whatsapp))      errors.push('WhatsApp inválido. Informe DDD + número (10 ou 11 dígitos).');
+  if (!cpfCnpj || !isValidCpfCnpj(cpfCnpj))     errors.push('CPF/CNPJ inválido. Informe 11 dígitos (CPF) ou 14 dígitos (CNPJ).');
 
   if (errors.length > 0) {
     return res.status(400).json({ success: false, errors });
@@ -67,15 +95,18 @@ export default async function handler(req, res) {
 
   // --- Dados normalizados ---
   const lead = {
-    name: name.trim(),
-    email: email.trim().toLowerCase(),
-    whatsapp: whatsapp.replace(/\D/g, ''),
-    cpfCnpj: cpfCnpj.replace(/\D/g, ''),
+    name:      name.trim(),
+    email:     email.trim().toLowerCase(),
+    whatsapp:  whatsapp.replace(/\D/g, ''),
+    cpfCnpj:   cpfCnpj.replace(/\D/g, ''),
     createdAt: new Date().toISOString(),
   };
 
-  // --- Notifica webhook (N8N / Typebot / CRM) ---
-  await notifyWebhook(lead);
+  // --- Salva no Supabase e notifica webhook em paralelo ---
+  await Promise.allSettled([
+    saveToSupabase(lead),
+    notifyWebhook(lead),
+  ]);
 
   // --- Retorna links de download ---
   return res.status(200).json({

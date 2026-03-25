@@ -29,4 +29,5 @@ Thumbs.db
 # Build
 dist/
 build/
-landing/assets/*.mp4
+# mp4 grandes demais para o GitHub (>100MB) ficam fora
+landing/assets/Bares e restaurantes.mp4
