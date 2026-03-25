@@ -1,5 +1,5 @@
 // api/checkout.js
-// Jornada de Assinatura — cria cliente + assinatura no Asaas e retorna link de pagamento
+// Jornada de Assinatura — cria cliente + assinatura no Asaas, salva no Supabase e retorna link de pagamento
 
 // Planos disponíveis (valores mensais em R$)
 const PLANS = {
@@ -10,14 +10,12 @@ const PLANS = {
 
 const ORDER_BUMP_VALUE = 199.00; // Implantação Guiada (taxa única)
 
-// Retorna a data de hoje + N dias no formato YYYY-MM-DD
 function futureDate(days = 1) {
   const d = new Date();
   d.setDate(d.getDate() + days);
   return d.toISOString().split('T')[0];
 }
 
-// Retorna a data de hoje + 1 mês (início da 2ª cobrança recorrente)
 function nextMonthDate() {
   const d = new Date();
   d.setMonth(d.getMonth() + 1);
@@ -31,6 +29,29 @@ function isValidEmail(email) {
 function isValidCpfCnpj(value) {
   const digits = value.replace(/\D/g, '');
   return digits.length === 11 || digits.length === 14;
+}
+
+// Salva o checkout no Supabase (não bloqueia a resposta)
+async function saveCheckoutToSupabase(data) {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return;
+
+  try {
+    const resp = await fetch(`${url}/rest/v1/checkouts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!resp.ok) console.error('Supabase checkout error:', await resp.text());
+  } catch (err) {
+    console.warn('Supabase falhou (não crítico):', err.message);
+  }
 }
 
 export default async function handler(req, res) {
@@ -50,11 +71,10 @@ export default async function handler(req, res) {
 
   // --- Validação ---
   const errors = [];
-
-  if (!name || name.trim().length < 2) errors.push('Nome inválido ou ausente.');
-  if (!email || !isValidEmail(email))   errors.push('E-mail inválido ou ausente.');
+  if (!name || name.trim().length < 2)       errors.push('Nome inválido ou ausente.');
+  if (!email || !isValidEmail(email))         errors.push('E-mail inválido ou ausente.');
   if (!cpfCnpj || !isValidCpfCnpj(cpfCnpj)) errors.push('CPF/CNPJ inválido.');
-  if (!plan || !PLANS[plan])            errors.push(`Plano inválido. Use: ${Object.keys(PLANS).join(', ')}.`);
+  if (!plan || !PLANS[plan])                  errors.push(`Plano inválido. Use: ${Object.keys(PLANS).join(', ')}.`);
 
   if (errors.length > 0) {
     return res.status(400).json({ success: false, errors });
@@ -69,14 +89,14 @@ export default async function handler(req, res) {
   };
 
   try {
-    // ── 1. Criar ou reutilizar cliente ──────────────────────────────────────
+    // ── 1. Criar cliente ────────────────────────────────────────────────────
     const customerResp = await fetch(`${BASE_URL}/customers`, {
       method: 'POST',
       headers: asaasHeaders,
       body: JSON.stringify({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        cpfCnpj: cpfCnpj.replace(/\D/g, ''),
+        name:     name.trim(),
+        email:    email.trim().toLowerCase(),
+        cpfCnpj:  cpfCnpj.replace(/\D/g, ''),
       }),
     });
 
@@ -89,22 +109,21 @@ export default async function handler(req, res) {
       });
     }
 
-    let invoiceUrl = null;
+    let invoiceUrl  = null;
+    let asaasId     = null;
+    let totalCharge = selectedPlan.value;
 
     if (hasOrderBump) {
-      // ── 2a. Order Bump ativado ──────────────────────────────────────────
-      // Cobrança avulsa: valor do plano + R$199 (implantação)
-      // A assinatura recorrente começa apenas no mês seguinte.
-
+      // ── 2a. Order Bump: cobrança única (plano + implantação) ───────────
       const firstChargeResp = await fetch(`${BASE_URL}/payments`, {
         method: 'POST',
         headers: asaasHeaders,
         body: JSON.stringify({
-          customer: customer.id,
-          billingType: 'UNDEFINED',
-          value: selectedPlan.value + ORDER_BUMP_VALUE,
-          dueDate: futureDate(1),
-          description: `${selectedPlan.label} — 1º mês + Implantação Guiada`,
+          customer:          customer.id,
+          billingType:       'UNDEFINED',
+          value:             selectedPlan.value + ORDER_BUMP_VALUE,
+          dueDate:           futureDate(1),
+          description:       `${selectedPlan.label} — 1º mês + Implantação Guiada`,
           externalReference: `checkout_${plan}_bump`,
         }),
       });
@@ -118,35 +137,37 @@ export default async function handler(req, res) {
         });
       }
 
-      invoiceUrl = firstCharge.invoiceUrl;
+      invoiceUrl  = firstCharge.invoiceUrl;
+      asaasId     = firstCharge.id;
+      totalCharge = selectedPlan.value + ORDER_BUMP_VALUE;
 
-      // Cria assinatura recorrente a partir do 2º mês (em background, sem bloquear)
+      // Assinatura recorrente a partir do 2º mês (background)
       fetch(`${BASE_URL}/subscriptions`, {
         method: 'POST',
         headers: asaasHeaders,
         body: JSON.stringify({
-          customer: customer.id,
-          billingType: 'UNDEFINED',
-          value: selectedPlan.value,
-          nextDueDate: nextMonthDate(),
-          cycle: 'MONTHLY',
-          description: `Assinatura ${selectedPlan.label} — Fantoni Software`,
+          customer:          customer.id,
+          billingType:       'UNDEFINED',
+          value:             selectedPlan.value,
+          nextDueDate:       nextMonthDate(),
+          cycle:             'MONTHLY',
+          description:       `Assinatura ${selectedPlan.label} — Fantoni Software`,
           externalReference: `subscription_${plan}`,
         }),
       }).catch(err => console.warn('Erro ao criar assinatura recorrente:', err.message));
 
     } else {
-      // ── 2b. Assinatura padrão (sem order bump) ──────────────────────────
+      // ── 2b. Assinatura padrão ───────────────────────────────────────────
       const subResp = await fetch(`${BASE_URL}/subscriptions`, {
         method: 'POST',
         headers: asaasHeaders,
         body: JSON.stringify({
-          customer: customer.id,
-          billingType: 'UNDEFINED',
-          value: selectedPlan.value,
-          nextDueDate: futureDate(1),
-          cycle: 'MONTHLY',
-          description: `Assinatura ${selectedPlan.label} — Fantoni Software`,
+          customer:          customer.id,
+          billingType:       'UNDEFINED',
+          value:             selectedPlan.value,
+          nextDueDate:       futureDate(1),
+          cycle:             'MONTHLY',
+          description:       `Assinatura ${selectedPlan.label} — Fantoni Software`,
           externalReference: `subscription_${plan}`,
         }),
       });
@@ -160,14 +181,15 @@ export default async function handler(req, res) {
         });
       }
 
-      // Busca a primeira cobrança gerada para obter o invoiceUrl
+      asaasId = subscription.id;
+
+      // Busca primeira cobrança para obter invoiceUrl
       const chargesResp = await fetch(
         `${BASE_URL}/payments?subscription=${subscription.id}&limit=1`,
         { headers: asaasHeaders }
       );
       const chargesData = await chargesResp.json();
       const firstCharge = chargesData.data?.[0];
-
       invoiceUrl = firstCharge?.invoiceUrl ?? subscription.invoiceUrl ?? null;
     }
 
@@ -177,6 +199,23 @@ export default async function handler(req, res) {
         error: 'Não foi possível obter o link de pagamento. Tente novamente.',
       });
     }
+
+    // ── 3. Salva no Supabase (background, não bloqueia) ─────────────────
+    saveCheckoutToSupabase({
+      name:        name.trim(),
+      email:       email.trim().toLowerCase(),
+      cpf_cnpj:    cpfCnpj.replace(/\D/g, ''),
+      plan,
+      plan_label:  selectedPlan.label,
+      plan_value:  selectedPlan.value,
+      order_bump:  hasOrderBump,
+      total_value: totalCharge,
+      invoice_url: invoiceUrl,
+      asaas_id:    asaasId,
+      customer_id: customer.id,
+      status:      'pending',
+      created_at:  new Date().toISOString(),
+    });
 
     return res.status(200).json({ success: true, invoiceUrl });
 
