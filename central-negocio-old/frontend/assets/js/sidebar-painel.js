@@ -2,8 +2,7 @@
 // Injeção Dinâmica de Layout (Sidebar + Header) - Versão Modern Dark
 (function injetarLayoutPainel() {
   const sidebarEl = document.getElementById('sidebar');
-  const topbarEl = document.getElementById('topbar-saas'); // Usando novo ID para evitar conflitos
-  const headerEl = document.querySelector('.app-header'); // Alternativa
+  const headerEl = document.querySelector('.app-header');
 
   if (!sidebarEl && !headerEl) return;
 
@@ -44,8 +43,9 @@
       }
     }
 
-    const iniciais = JSON.parse(localStorage.getItem('fantoni_usuario'))?.nome?.charAt(0) || '?';
-    const nome = JSON.parse(localStorage.getItem('fantoni_usuario'))?.nome?.split(' ')[0] || 'Usuário';
+    const u = JSON.parse(localStorage.getItem('cn_usuario') || 'null');
+    const iniciais = u?.nome?.charAt(0)?.toUpperCase() || '?';
+    const nome = u?.nome?.split(' ')[0] || 'Usuário';
 
     sidebarEl.innerHTML = `
       <div class="sidebar-logo p-8 mb-4">
@@ -97,7 +97,10 @@
     `;
 
     document.getElementById('mobile-toggle-btn')?.addEventListener('click', () => {
-      document.getElementById('sidebar')?.classList.toggle('active');
+      const sb = document.getElementById('sidebar');
+      const ov = document.getElementById('sidebar-overlay');
+      sb?.classList.toggle('active');
+      ov?.classList.toggle('visivel');
     });
   }
 })();
