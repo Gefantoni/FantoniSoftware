@@ -8,179 +8,331 @@
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <style>
-    .hero-glass {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0) 100%);
-      border: 1px solid var(--borda); border-radius: 24px; padding: 40px; margin-bottom: 32px;
-      position: relative; overflow: hidden;
+    /* ===== HERO ===== */
+    .hero-dash {
+      background: linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(59,130,246,0.02) 60%, transparent 100%);
+      border: 1px solid var(--borda);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
     }
-    .hero-glass::before {
-      content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px;
-      background: var(--primaria); filter: blur(100px); opacity: 0.1; z-index: 0;
+    .hero-dash::before {
+      content: '';
+      position: absolute; top: -60px; right: -40px;
+      width: 220px; height: 220px;
+      background: var(--primaria);
+      filter: blur(120px); opacity: 0.12; z-index: 0;
+    }
+    .hero-dash::after {
+      content: '';
+      position: absolute; bottom: -30px; left: 30%;
+      width: 180px; height: 180px;
+      background: #8b5cf6;
+      filter: blur(100px); opacity: 0.06; z-index: 0;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-saudacao { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+    .hero-sub { font-size: 14px; color: var(--texto-suave); line-height: 1.5; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25);
+      color: var(--sucesso); border-radius: 20px; padding: 4px 12px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 12px;
     }
 
-    .download-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-    .download-card {
-      background: var(--fundo-card); border: 1px solid var(--borda); border-radius: 16px;
-      padding: 24px; text-align: center; text-decoration: none; transition: var(--transicao);
+    /* ===== KPI CARDS ===== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
     }
-    .download-card:hover { border-color: var(--primaria); background: rgba(59, 130, 246, 0.05); transform: translateY(-4px); }
-    .download-card i { font-size: 40px; margin-bottom: 12px; display: block; }
-    .download-card span { display: block; }
-    .download-title { color: #fff; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-    .download-desc { color: var(--texto-suave); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .kpi-card {
+      background: var(--fundo-card);
+      border: 1px solid var(--borda);
+      border-radius: 16px;
+      padding: 18px 16px;
+      transition: var(--transicao);
+      cursor: default;
+    }
+    .kpi-card:hover { border-color: rgba(59,130,246,0.3); transform: translateY(-2px); }
+    .kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .kpi-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .kpi-icon-blue  { background: rgba(59,130,246,0.12); color: var(--primaria); }
+    .kpi-icon-green { background: rgba(16,185,129,0.12); color: var(--sucesso); }
+    .kpi-icon-purple{ background: rgba(139,92,246,0.12); color: #a78bfa; }
+    .kpi-icon-amber { background: rgba(245,158,11,0.12); color: var(--aviso); }
+    .kpi-value { font-size: 24px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 4px; }
+    .kpi-label { font-size: 11px; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
 
-    .quick-access-card {
-      display: flex; flex-direction: column; justify-content: space-between;
-      min-height: 200px;
+    /* ===== QUICK ACCESS ===== */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .quick-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--fundo-card);
+      border: 1px solid var(--borda);
+      border-radius: 16px;
+      padding: 20px;
+      text-decoration: none;
+      transition: var(--transicao);
+      min-height: 80px;
+    }
+    .quick-card:hover { border-color: var(--primaria); background: rgba(59,130,246,0.04); transform: translateX(4px); }
+    .quick-card:hover .quick-arrow { opacity: 1; transform: translateX(0); }
+    .quick-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .quick-info { flex: 1; min-width: 0; }
+    .quick-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+    .quick-desc  { font-size: 12px; color: var(--texto-suave); line-height: 1.4; }
+    .quick-arrow {
+      color: var(--texto-muted); font-size: 20px;
+      opacity: 0.4; transform: translateX(-4px);
+      transition: var(--transicao); flex-shrink: 0;
     }
 
-    .news-list { display: flex; flex-direction: column; gap: 16px; }
-    .news-item { background: rgba(255,255,255,0.02); border: 1px solid var(--borda); padding: 16px; border-radius: 12px; transition: var(--transicao); }
-    .news-item:hover { background: rgba(255,255,255,0.05); border-color: var(--primaria); }
+    /* ===== DOWNLOADS ===== */
+    .downloads-wrap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .dl-card {
+      background: var(--fundo-card);
+      border: 1px solid var(--borda);
+      border-radius: 14px;
+      padding: 18px 12px;
+      text-align: center;
+      text-decoration: none;
+      transition: var(--transicao);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .dl-card:hover { border-color: var(--primaria); background: rgba(59,130,246,0.05); transform: translateY(-3px); }
+    .dl-card i { font-size: 30px; }
+    .dl-card-title { font-size: 13px; font-weight: 700; color: #fff; }
+    .dl-card-desc  { font-size: 10px; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.4; }
+
+    /* ===== PAYMENT HIGHLIGHT ===== */
+    .payment-highlight {
+      background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.02) 100%);
+      border-color: rgba(59,130,246,0.25) !important;
+    }
+    .payment-highlight .section-header i { color: #60a5fa; }
+
+    /* ===== BOTTOM GRID ===== */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    /* ===== NEWS ===== */
+    .news-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--borda);
+      padding: 14px 16px;
+      border-radius: 12px;
+      transition: var(--transicao);
+      margin-bottom: 10px;
+    }
+    .news-item:last-child { margin-bottom: 0; }
+    .news-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(59,130,246,0.2); }
+    .news-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .news-date { font-size: 10px; color: var(--texto-muted); }
+
+    /* ===== PAYMENT FORM ===== */
+    .payment-card { }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--borda);
+    }
+    .section-header i { color: var(--primaria); font-size: 18px; }
+    .section-header h3 { font-size: 15px; font-weight: 700; color: var(--texto); margin: 0; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 640px) {
+      .quick-grid { grid-template-columns: 1fr 1fr; }
+      .bottom-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-saudacao { font-size: 32px; }
+      .kpi-grid { gap: 16px; }
+      .quick-grid { grid-template-columns: repeat(3, 1fr); }
+      .quick-card { flex-direction: column; align-items: flex-start; min-height: 180px; }
+      .quick-card:hover { transform: translateY(-4px); }
+      .quick-card .quick-arrow { display: none; }
+      .kpi-card { padding: 22px 20px; }
+      .kpi-value { font-size: 28px; }
+      .hero-dash { padding: 40px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-dash { padding: 20px; border-radius: 16px; }
+      .hero-saudacao { font-size: 22px; }
+      .kpi-value { font-size: 20px; }
+      .kpi-card { padding: 14px 12px; }
+      .kpi-icon { width: 34px; height: 34px; font-size: 16px; }
+      .downloads-wrap { grid-template-columns: 1fr; }
+      .dl-card { flex-direction: row; padding: 14px 16px; text-align: left; justify-content: flex-start; gap: 14px; }
+      .dl-card i { font-size: 26px; flex-shrink: 0; }
+      .dl-card-desc { display: none; }
+    }
   </style>
 </head>
 <body>
   <div class="app-layout">
     <aside class="app-sidebar" id="sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <main class="app-content">
       <header class="app-header"></header>
 
       <div class="app-body">
-        
-        <div class="hero-glass">
-          <div style="position:relative; z-index:1">
-            <h1 id="hero-saudacao" class="text-white text-4xl mb-2">Seja bem-vindo</h1>
-            <p class="text-suave text-lg">Centralize sua operação, suporte e inteligência comercial em um só lugar.</p>
+
+        <!-- HERO -->
+        <div class="hero-dash">
+          <div class="hero-content">
+            <div class="hero-badge"><i class="ph ph-shield-check"></i> <span id="badge-plano">Carregando...</span></div>
+            <h1 class="hero-saudacao" id="hero-saudacao">Seja bem-vindo!</h1>
+            <p class="hero-sub">Gerencie seu negócio, treinamentos e suporte em um só lugar.</p>
           </div>
         </div>
 
-        <!-- KPIs Principais -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-header">
-              <span class="stat-label">Treinamento EAD</span>
-              <div class="stat-icon"><i class="ph ph-graduation-cap"></i></div>
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">EAD</span>
+              <div class="kpi-icon kpi-icon-blue"><i class="ph ph-graduation-cap"></i></div>
             </div>
-            <div class="stat-value" id="metric-aulas">—</div>
-            <div class="text-xs text-suave">Aulas Concluídas</div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="stat-header">
-              <span class="stat-label">Suporte Ativo</span>
-              <div class="stat-icon"><i class="ph ph-ticket"></i></div>
-            </div>
-            <div class="stat-value" id="metric-tickets">—</div>
-            <div class="text-xs text-suave">Chamados Pendentes</div>
+            <div class="kpi-value" id="metric-aulas">—</div>
+            <div style="font-size:11px; color:var(--texto-muted); margin-top:2px;">Aulas concluídas</div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-header">
-              <span class="stat-label">Plano Atual</span>
-              <div class="stat-icon" style="background:rgba(16,185,129,0.1); color:var(--sucesso)">
-                <i class="ph ph-shield-check"></i>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Suporte</span>
+              <div class="kpi-icon kpi-icon-amber"><i class="ph ph-headset"></i></div>
+            </div>
+            <div class="kpi-value" id="metric-tickets">—</div>
+            <div style="font-size:11px; color:var(--texto-muted); margin-top:2px;">Chamados ativos</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Plano</span>
+              <div class="kpi-icon kpi-icon-green"><i class="ph ph-shield-check"></i></div>
+            </div>
+            <div class="kpi-value text-sucesso" style="font-size:16px; padding-top:4px" id="metric-plano">—</div>
+            <div style="font-size:11px; color:var(--texto-muted); margin-top:2px;" id="metric-status">Ativo</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Fatura</span>
+              <div class="kpi-icon kpi-icon-purple"><i class="ph ph-calendar-check"></i></div>
+            </div>
+            <div class="kpi-value" style="font-size:16px; padding-top:4px" id="metric-cobranca">—</div>
+            <div style="font-size:11px; color:var(--texto-muted); margin-top:2px;">Próximo venc.</div>
+          </div>
+        </div>
+
+        <!-- ACESSO RÁPIDO -->
+        <div class="card mb-6">
+          <div class="section-header">
+            <i class="ph ph-lightning"></i>
+            <h3>Acesso Rápido</h3>
+          </div>
+          <div class="quick-grid">
+            <a href="/painel/videoaulas.html" class="quick-card">
+              <div class="quick-icon kpi-icon-blue"><i class="ph ph-desktop-tower"></i></div>
+              <div class="quick-info">
+                <div class="quick-title">Treinamento PDV</div>
+                <div class="quick-desc">Domine o sistema com aulas práticas</div>
               </div>
-            </div>
-            <div class="stat-value text-sucesso" id="metric-plano">CARREGANDO</div>
-            <div class="text-xs text-suave" id="metric-status">Status: Ativo</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-header">
-              <span class="stat-label">Próxima Fatura</span>
-              <div class="stat-icon"><i class="ph ph-calendar-blank"></i></div>
-            </div>
-            <div class="stat-value" id="metric-cobranca">—</div>
-            <div class="text-xs text-suave">Vencimento Recorrente</div>
-          </div>
-        </div>
-
-        <div class="grid-3 gap-6 mb-8">
-          <div class="card quick-access-card">
-            <div>
-              <div class="stat-icon mb-4"><i class="ph ph-desktop-tower"></i></div>
-              <h3 class="text-white mb-2">Sistema Fantoni PDV</h3>
-              <p class="text-suave text-sm mb-6">Domine todas as ferramentas do seu PDV através do nosso treinamento completo.</p>
-            </div>
-            <a href="/painel/videoaulas.html" class="btn btn-primario w-full">Acessar EAD</a>
-          </div>
-
-          <div class="card quick-access-card">
-            <div>
-              <div class="stat-icon mb-4" style="background:rgba(139,92,246,0.1); color:#a78bfa"><i class="ph ph-robot"></i></div>
-              <h3 class="text-white mb-2">Agente de IA</h3>
-              <p class="text-suave text-sm mb-6">Inteligência artificial disponível 24/7 para tirar dúvidas sobre o seu negócio.</p>
-            </div>
-            <a href="/painel/agente-ia.html" class="btn btn-outline w-full text-[#a78bfa] border-[#a78bfa]/30 hover:bg-[#a78bfa]/10">Falar com Consultor IA</a>
-          </div>
-
-          <div class="card quick-access-card">
-            <div>
-              <div class="stat-icon mb-4" style="background:rgba(16,185,129,0.1); color:var(--sucesso)"><i class="ph ph-headset"></i></div>
-              <h3 class="text-white mb-2">Suporte Técnico</h3>
-              <p class="text-suave text-sm mb-6">Nossa equipe de especialistas pronta para ajudar com configurações avançadas.</p>
-            </div>
-            <a href="/painel/tickets.html" class="btn btn-outline w-full text-sucesso border-sucesso/30 hover:bg-sucesso/10">Abrir Chamado</a>
-          </div>
-        </div>
-
-        <!-- Downloads Modernos -->
-        <div class="card mb-8">
-          <div class="flex items-center gap-2 mb-6 border-b border-white/5 pb-4">
-            <i class="ph ph-download-simple text-primaria"></i>
-            <h3 class="text-white m-0">Downloads Disponíveis</h3>
-          </div>
-          <div class="download-grid">
-            <a href="https://navivendas.com.br/download/windows/pdvmais" target="_blank" class="download-card">
-              <i class="ph ph-microsoft-windows text-[#0ea5e9]"></i>
-              <span class="download-title">Windows PC</span>
-              <span class="download-desc">Sistema PDV / Gestão</span>
+              <i class="ph ph-caret-right quick-arrow"></i>
             </a>
-            <a href="https://play.google.com/store/apps/details?id=br.com.desenvolvedorpdv.pdvmais" target="_blank" class="download-card">
-              <i class="ph ph-android-logo text-sucesso"></i>
-              <span class="download-title">Google Play</span>
-              <span class="download-desc">Smartphone / Tablet</span>
+
+            <a href="/painel/agente-ia.html" class="quick-card">
+              <div class="quick-icon kpi-icon-purple"><i class="ph ph-robot"></i></div>
+              <div class="quick-info">
+                <div class="quick-title">Agente de IA</div>
+                <div class="quick-desc">Consultor inteligente 24/7</div>
+              </div>
+              <i class="ph ph-caret-right quick-arrow"></i>
             </a>
-            <a href="https://apps.apple.com/br/app/pdv/id6443721199" target="_blank" class="download-card">
-              <i class="ph ph-apple-logo text-suave"></i>
-              <span class="download-title">Apple Store</span>
-              <span class="download-desc">Painel Consulta iOS</span>
+
+            <a href="/painel/tickets.html" class="quick-card">
+              <div class="quick-icon kpi-icon-green"><i class="ph ph-headset"></i></div>
+              <div class="quick-info">
+                <div class="quick-title">Suporte Técnico</div>
+                <div class="quick-desc">Abra ou acompanhe chamados</div>
+              </div>
+              <i class="ph ph-caret-right quick-arrow"></i>
             </a>
           </div>
         </div>
 
-        <div class="grid-2 gap-6">
-          <div class="card">
-            <h3 class="card-titulo mb-6"><i class="ph ph-newspaper"></i> Novidades</h3>
-            <div class="news-list">
-              <div class="news-item">
-                <div class="flex justify-between items-start mb-2">
-                  <span class="badge badge-azul">SISTEMA</span>
-                  <span class="text-[10px] text-suave">MAR 2024</span>
-                </div>
-                <h4 class="text-white text-sm mb-1">Atualização Fantoni PDV (v3.2)</h4>
-                <p class="text-xs text-suave">Novas funções de IA integradas ao fechamento de caixa e projeção de estoque.</p>
-              </div>
-              <div class="news-item">
-                <div class="flex justify-between items-start mb-2">
-                  <span class="badge badge-verde">TREINAMENTO</span>
-                  <span class="text-[10px] text-suave">FEV 2024</span>
-                </div>
-                <h4 class="text-white text-sm mb-1">Novas Aulas: Gestão de Leads com IA</h4>
-                <p class="text-xs text-suave">Aprenda a configurar seus agentes no módulo comercial avançado.</p>
-              </div>
-            </div>
+        <!-- DOWNLOADS -->
+        <div class="card mb-6">
+          <div class="section-header">
+            <i class="ph ph-download-simple"></i>
+            <h3>Downloads</h3>
           </div>
+          <div class="downloads-wrap">
+            <a href="https://navivendas.com.br/download/windows/pdvmais" target="_blank" class="dl-card">
+              <i class="ph ph-microsoft-windows" style="color:#0ea5e9"></i>
+              <span class="dl-card-title">Windows PC</span>
+              <span class="dl-card-desc">Sistema PDV / Gestão</span>
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=br.com.desenvolvedorpdv.pdvmais" target="_blank" class="dl-card">
+              <i class="ph ph-android-logo" style="color:var(--sucesso)"></i>
+              <span class="dl-card-title">Google Play</span>
+              <span class="dl-card-desc">Android / Tablet</span>
+            </a>
+            <a href="https://apps.apple.com/br/app/pdv/id6443721199" target="_blank" class="dl-card">
+              <i class="ph ph-apple-logo" style="color:var(--texto-suave)"></i>
+              <span class="dl-card-title">Apple Store</span>
+              <span class="dl-card-desc">iPhone / iPad iOS</span>
+            </a>
+          </div>
+        </div>
 
-          <div class="card">
-            <h3 class="card-titulo mb-6"><i class="ph ph-wrench"></i> Homologação Payment</h3>
-            <p class="text-suave text-sm mb-6">Integre sua maquininha de cartão diretamente com o sistema Fantoni.</p>
-            
-            <div class="form-grupo mb-4">
+        <!-- HOMOLOGAÇÃO + NOVIDADES -->
+        <div class="bottom-grid">
+
+          <!-- Homologação de Maquinas Smart -->
+          <div class="card payment-highlight">
+            <div class="section-header">
+              <i class="ph ph-device-mobile"></i>
+              <h3>Homologação de Maquinas Smart</h3>
+            </div>
+            <p class="text-suave text-sm mb-4">Integre sua maquininha de cartão diretamente com o sistema Fantoni PDV e receba pagamentos de forma automatizada.</p>
+
+            <div class="form-grupo mb-3">
               <label class="text-xs text-suave uppercase block mb-2">Marca do Dispositivo</label>
               <select id="sel-maquininha" class="form-control" onchange="atualizarCampoMaquininha()">
-                <option value="">Selecione...</option>
+                <option value="">Selecione a marca...</option>
                 <option value="Cielo">Cielo</option>
                 <option value="Getnet">Getnet</option>
                 <option value="PagSeguro">PagSeguro</option>
@@ -190,26 +342,55 @@
               </select>
             </div>
 
-            <div id="campo-maquininha" class="form-grupo d-none mb-4">
+            <div id="campo-maquininha" class="form-grupo mb-3" style="display:none">
               <label id="label-maquininha" class="text-xs text-suave uppercase block mb-2">Identificação</label>
               <input type="text" id="input-maquininha" class="form-control" placeholder="Digite o código da máquina">
             </div>
 
-            <div id="msg-outros" class="badge badge-azul p-4 w-full d-none mb-4" style="text-align:left; line-height:1.5">
-               <i class="ph ph-info mr-2"></i> <strong>Instalação Manual:</strong> Procure por "PDV+" na loja de aplicativos da sua máquina.
+            <div id="msg-outros" style="display:none; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.2); border-radius:10px; padding:12px; font-size:13px; color:var(--texto-suave); margin-bottom:12px; line-height:1.5">
+              <i class="ph ph-info" style="color:var(--primaria); margin-right:6px"></i>
+              <strong style="color:var(--texto)">Instalação Manual:</strong> Procure por <strong style="color:var(--primaria)">"PDV+"</strong> na loja de aplicativos da sua máquina.
             </div>
 
-            <div id="btn-homologacao-wrap" class="d-none">
-              <button onclick="enviarHomologacao()" class="btn btn-primario w-full">Solicitar Integração <i class="ph ph-arrow-right ml-2"></i></button>
+            <div id="btn-homologacao-wrap" style="display:none">
+              <button onclick="enviarHomologacao()" class="btn btn-primario w-full">
+                <i class="ph ph-link mr-2"></i> Solicitar Integração
+              </button>
             </div>
 
-            <div id="msg-homologacao-ok" class="badge badge-verde p-4 w-full d-none">
-              <i class="ph ph-check-circle mr-2"></i> Solicitação enviada! Nossa equipe entrará em contato em breve.
+            <div id="msg-homologacao-ok" style="display:none; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:10px; padding:14px; font-size:13px; color:var(--sucesso); text-align:center">
+              <i class="ph ph-check-circle" style="font-size:18px; margin-right:6px"></i>
+              <strong>Solicitação enviada!</strong> Nossa equipe entrará em contato em breve.
             </div>
           </div>
+
+          <!-- Novidades -->
+          <div class="card">
+            <div class="section-header">
+              <i class="ph ph-newspaper"></i>
+              <h3>Novidades</h3>
+            </div>
+            <div class="news-item">
+              <div class="news-meta">
+                <span class="badge badge-azul">SISTEMA</span>
+                <span class="news-date">MAR 2024</span>
+              </div>
+              <h4 class="text-white text-sm mb-1">Atualização Fantoni PDV v3.2</h4>
+              <p class="text-xs text-suave">IA integrada ao fechamento de caixa e projeção de estoque.</p>
+            </div>
+            <div class="news-item">
+              <div class="news-meta">
+                <span class="badge badge-verde">TREINAMENTO</span>
+                <span class="news-date">FEV 2024</span>
+              </div>
+              <h4 class="text-white text-sm mb-1">Novas Aulas: Gestão de Leads</h4>
+              <p class="text-xs text-suave">Configure agentes no módulo comercial avançado.</p>
+            </div>
+          </div>
+
         </div>
 
-      </div>
+      </div><!-- /.app-body -->
     </main>
   </div>
 
@@ -218,37 +399,44 @@
   <script src="/assets/js/sidebar-painel.js"></script>
   <script>
     const usuario = protegerPagina(['cliente']);
-    
-    if (usuario) {
-       inicializarDashboard();
-    }
+    if (usuario) inicializarDashboard();
 
     function inicializarDashboard() {
       const hora = new Date().getHours();
       const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
       const primeiroNome = usuario?.nome?.split(' ')[0] || 'Empreendedor';
-      document.getElementById('hero-saudacao').innerHTML = `${saudacao}, <span class="text-primaria">${primeiroNome}</span>!`;
+      document.getElementById('hero-saudacao').innerHTML = `${saudacao}, <span style="color:var(--primaria)">${primeiroNome}</span>!`;
 
       const plano = usuario?.plano || 'PDV Pro';
       document.getElementById('metric-plano').textContent = plano;
+      document.getElementById('badge-plano').textContent = plano + ' · Ativo';
 
       const hoje = new Date();
       const proximo = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 10);
-      document.getElementById('metric-cobranca').textContent = proximo.toLocaleDateString('pt-BR');
+      document.getElementById('metric-cobranca').textContent = proximo.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
 
       const salvo = localStorage.getItem('pdv_progresso_v2');
       const concluidas = salvo ? JSON.parse(salvo).length : 0;
       document.getElementById('metric-aulas').textContent = `${concluidas}/14`;
 
       carregarTicketsCount();
+
+      // Overlay mobile para fechar sidebar ao clicar fora
+      const overlay = document.getElementById('sidebar-overlay');
+      if (overlay) {
+        overlay.addEventListener('click', () => {
+          document.getElementById('sidebar')?.classList.remove('active');
+          overlay.classList.remove('visivel');
+        });
+      }
     }
 
     async function carregarTicketsCount() {
       try {
         const res = await api.get('/tickets');
         const tickets = Array.isArray(res.tickets) ? res.tickets : [];
-        const abertos = tickets.filter(t => t.status === 'aberto' || t.status === 'aceito').length;
-        document.getElementById('metric-tickets').textContent = abertos;
+        const ativos = tickets.filter(t => t.status === 'aberto' || t.status === 'aceito').length;
+        document.getElementById('metric-tickets').textContent = ativos;
       } catch {
         document.getElementById('metric-tickets').textContent = '0';
       }
@@ -256,25 +444,25 @@
 
     function atualizarCampoMaquininha() {
       const marca = document.getElementById('sel-maquininha').value;
-      const campo = document.getElementById('campo-maquininha');
-      const label = document.getElementById('label-maquininha');
-      const input = document.getElementById('input-maquininha');
-      const msgOutros = document.getElementById('msg-outros');
-      const btnWrap = document.getElementById('btn-homologacao-wrap');
-      
-      campo.classList.add('d-none');
-      msgOutros.classList.add('d-none');
-      btnWrap.classList.add('d-none');
-      document.getElementById('msg-homologacao-ok').classList.add('d-none');
+      const campo    = document.getElementById('campo-maquininha');
+      const label    = document.getElementById('label-maquininha');
+      const msgOutros= document.getElementById('msg-outros');
+      const btnWrap  = document.getElementById('btn-homologacao-wrap');
+      const msgOk    = document.getElementById('msg-homologacao-ok');
+
+      campo.style.display     = 'none';
+      msgOutros.style.display = 'none';
+      btnWrap.style.display   = 'none';
+      msgOk.style.display     = 'none';
 
       if (!marca) return;
 
       if (['Cielo', 'PagSeguro', 'Getnet'].includes(marca)) {
         label.textContent = marca === 'Cielo' ? 'EC (Estabelecimento)' : 'Número de Série';
-        campo.classList.remove('d-none');
-        btnWrap.classList.remove('d-none');
+        campo.style.display   = '';
+        btnWrap.style.display = '';
       } else {
-        msgOutros.classList.remove('d-none');
+        msgOutros.style.display = '';
       }
     }
 
@@ -288,9 +476,9 @@
           descricao: `Homologação ${marca}. ID: ${valor}`,
           categoria: 'suporte'
         });
-        document.getElementById('btn-homologacao-wrap').classList.add('d-none');
-        document.getElementById('campo-maquininha').classList.add('d-none');
-        document.getElementById('msg-homologacao-ok').classList.remove('d-none');
+        document.getElementById('btn-homologacao-wrap').style.display = 'none';
+        document.getElementById('campo-maquininha').style.display = 'none';
+        document.getElementById('msg-homologacao-ok').style.display = '';
       } catch {}
     }
   </script>
