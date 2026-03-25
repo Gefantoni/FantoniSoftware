@@ -16,7 +16,6 @@ create table if not exists leads (
   created_at  timestamptz not null default now()
 );
 
--- Garante colunas que podem faltar em tabelas já existentes
 alter table leads add column if not exists name       text;
 alter table leads add column if not exists email      text;
 alter table leads add column if not exists whatsapp   text;
@@ -30,7 +29,9 @@ alter table leads enable row level security;
 drop policy if exists "service only" on leads;
 create policy "service only" on leads
   for all
-  using (auth.role() = 'service_role');
+  to service_role
+  using (true)
+  with check (true);
 
 
 -- ── TABELA: checkouts ────────────────────────────────────────
@@ -74,4 +75,6 @@ alter table checkouts enable row level security;
 drop policy if exists "service only" on checkouts;
 create policy "service only" on checkouts
   for all
-  using (auth.role() = 'service_role');
+  to service_role
+  using (true)
+  with check (true);
