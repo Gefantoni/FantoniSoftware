@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="372.997" height="110.517" viewBox="0 0 372.997 110.517">
+  <g id="Grupo_605" data-name="Grupo 605" transform="translate(-700.626 -215.546)">
+    <path id="Caminho_49" data-name="Caminho 49" d="M13.813,0H359.177A13.813,13.813,0,0,1,372.99,13.813V96.7a13.813,13.813,0,0,1-13.813,13.813H13.813A13.813,13.813,0,0,1,0,96.7V13.813A13.813,13.813,0,0,1,13.813,0Z" transform="translate(700.626 215.547)" fill="#040505"/>
+    <path id="Caminho_1" data-name="Caminho 1" d="M583.225,357.591H237.868A13.854,13.854,0,0,0,224.055,371.4v82.884A13.854,13.854,0,0,0,237.868,468.1H583.225a13.854,13.854,0,0,0,13.813-13.813V371.4a13.854,13.854,0,0,0-13.813-13.813Zm0,2.207A11.619,11.619,0,0,1,594.831,371.4v82.884a11.62,11.62,0,0,1-11.606,11.606H237.868a11.62,11.62,0,0,1-11.606-11.606V371.4A11.62,11.62,0,0,1,237.868,359.8Z" transform="translate(476.585 -142.045)" fill="#959596" fill-rule="evenodd"/>
+    <text id="Baixe_para" data-name="Baixe para" transform="translate(808.5 258)" fill="#fff" font-size="28" font-family="SegoeUI, Segoe UI" letter-spacing="0.01em"><tspan x="0" y="0">Baixe para</tspan></text>
+    <text id="Windows" transform="translate(811 302)" fill="#fff" font-size="44" font-family="SegoeUI, Segoe UI"><tspan x="0" y="0">Windows</tspan></text>
+    <path id="Subtração_1" data-name="Subtração 1" d="M5667.905-1498.113h0l-33.455-6.852v-24.164l34.041.369-.009,30.055A.587.587,0,0,1,5667.905-1498.113Zm-36.341-7.442h0l-20.488-4.2a.584.584,0,0,1-.576-.593v-19.044l21.064.229v23.6Zm-21.064-26.311h0v-19.149a.584.584,0,0,1,.576-.593l20.488-4.105v23.654Zm23.95-.219h0v-24.206l33.472-6.708a.586.586,0,0,1,.576.593l-.006,30.009Z" transform="translate(-4876.502 1801)" fill="#2b80da"/>
+    <text id="_" data-name="*" transform="translate(993 295)" fill="#fff" font-size="30" font-family="SegoeUI-Semilight, Segoe UI" font-weight="300" letter-spacing="-0.02em"><tspan x="0" y="0">*</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,280 @@
+(async () => {
+    const hostName = window.location.hostname;
+    let _capturlyCollector = 'https://collector.capturly.com';
+    if (hostName.includes('capturly')) {
+        _capturlyCollector = `//collector.${hostName}`;
+    }
+    const capturlyCollector = typeof _capturlyCollector !== 'undefined' ? _capturlyCollector : 'https://collector.capturly.com';
+    let showedPopups = [];
+
+    const getSessionId = () => {
+        if (typeof __tr_sess !== 'undefined') {
+            return __tr_sess;
+        }
+        const cookie = document.cookie.match(/_tr_sess=[^|]+/);
+        if (cookie) {
+            return cookie[0].split('=')[1];
+        }
+        return null;
+    };
+
+    const renderPopup = async (popup, force = false) => {
+        if (showedPopups.includes(popup.id) && !force) {
+            return;
+        }
+        showedPopups.push(popup.id);
+        const url = `${capturlyCollector}/popup/show/${_capturly_id}?popupId=${popup.id}`;
+        let content = '';
+        await fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                content = data;
+            });
+
+        const style = document.createElement('style');
+        style.innerHTML = popup.css;
+        document.head.appendChild(style);
+
+        const popupElement = document.createElement('div');
+        popupElement.classList.add('capturly-popup');
+        popupElement.classList.add('cp-pos-' + popup.position);
+        popupElement.dataset.id = popup.id;
+        popupElement.innerHTML = content;
+        document.body.appendChild(popupElement);
+
+        popup.content = popupElement;
+
+        handlePopup(popup);
+        showPopup(popup);
+        return popup;
+    };
+
+    const showPopup = (popup) => {
+        if (popup.position === 1) {
+            document.body.style.setProperty('overflow', 'hidden', 'important');
+        }
+
+        if (popup.frequency > 0) {
+            document.cookie = `_cp-${popup.id}=1; path=/; max-age=${popup.frequency}`;
+        }
+
+        const sessionId = getSessionId();
+        if (sessionId) {
+            fetch(`${capturlyCollector}/popup/collect/${_capturly_id}?popupId=${popup.id}&action=show&sess=${sessionId}&url=${encodeURIComponent(window.location.href)}`);
+        }
+        trq('set', 'popup', 'show', `popup: ${popup.name}`);
+    };
+
+    const hidePopup = (popup) => {
+        popup.content.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        if (popup.teaser && popup.teaser !== '') {
+            renderTeaser(popup);
+        }
+    };
+
+    const renderTeaser = (popup) => {
+        const teaserContent = popup.teaser;
+        // create teaser element from html
+        const teaserElement = document.createElement('div');
+        teaserElement.innerHTML = teaserContent;
+
+        teaserElement.addEventListener('click', (e) => {
+            console.log(e.target)
+            if (e.target.matches('.cp-teaser-close')) {
+                teaserElement.remove();
+                return;
+            }
+            teaserElement.remove();
+            renderPopup(popup, true);
+        });
+
+        document.body.appendChild(teaserElement);
+    };
+
+    const setScrollTrigger = (popup, scrollPosition) => {
+        document.addEventListener('scroll', () => {
+            if (window.scrollY > document.body.scrollHeight * scrollPosition / 100) {
+                renderPopup(popup);
+            }
+        });
+    };
+
+    const setTimeTrigger = (popup, time) => {
+        setTimeout(() => {
+            renderPopup(popup);
+        }, time * 1000);
+    };
+
+    const setMouseOutTrigger = (popup) => {
+        document.addEventListener('mouseout', (e) => {
+            if (e.clientY < 0) {
+                renderPopup(popup);
+            }
+        });
+    }
+
+    const setClickTrigger = (popup, value) => {
+        document.addEventListener('click', (e) => {
+            if (e.target.matches(value)) {
+                renderPopup(popup);
+            }
+        });
+    };
+
+    const setBackTrigger = (popup) => {
+        window.history.pushState(null, null, window.location.href);
+        window.addEventListener('popstate', function(event) {
+            if (showedPopups.includes(popup.id)) {
+                history.back();
+                return;
+            }
+            renderPopup(popup);
+            window.history.pushState(null, null, window.location.href);
+        });
+    };
+
+    const setDisableRule = (popup, value) => {
+        let disable = false;
+        try {
+            disable = eval(`(${value}) === true`);
+        } catch (e) {
+            disable = false;
+        }
+        if (disable === true) {
+            showedPopups.push(popup.id);
+        }
+    }
+
+    const getPopupInfo = async () => {
+        let popups = [];
+        await fetch(`${capturlyCollector}/popup/info/${_capturly_id}?pageUrl=${encodeURIComponent(window.location.href)}`)
+            .then(response => response.json())
+            .then(data => {
+                    popups = data;
+                }
+            );
+        return popups;
+    };
+
+    const handlePopup = (popup) => {
+        const sendStat = (action, value) => {
+            const sessionId = getSessionId();
+            if (sessionId) {
+                fetch(`${capturlyCollector}/popup/collect/${ _capturly_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        popupId: popup.id,
+                        action,
+                        value,
+                        sess: getSessionId(),
+                        url: encodeURIComponent(window.location.href),}
+                    ),
+                });
+            }
+        };
+
+        const toNextPage = (element) => {
+            const currentPage = element.closest('.capturly-popup-page');
+            const popupEl = element.closest('.capturly-popup');
+            const currentPageIndex = parseInt(currentPage.dataset.pageOrder);
+            const nextPage = popupEl.querySelector(`.capturly-popup-page[data-page-order="${currentPageIndex + 1}"]`);
+            currentPage.classList.add('cp-d-none');
+            if (nextPage) {
+                nextPage.classList.remove('cp-d-none');
+            } else {
+                hidePopup(popup);
+            }
+        };
+
+        popup.content.addEventListener('click', (e) => {
+            if (e.target.matches('.cp-btn-close, .capturly-popup.cp-pos-1')) {
+                hidePopup(popup);
+            }
+
+            if (e.target.classList.contains('cp-to-next-page')) {
+                toNextPage(e.target);
+            }
+
+            if (e.target.classList.contains('cp-send-survey')) {
+                const value = e.target.innerText;
+                sendStat('survey', value);
+                hidePopup(popup);
+            } else if (e.target.classList.contains('cp-submit-link') || e.target.parentElement.classList.contains('cp-submit-link')) {
+                const data = e.target.dataset.send ?? e.target.parentElement.dataset.send ?? '';
+                sendStat('submit', data);
+                hidePopup(popup);
+
+                const target = e.target.dataset.target ?? e.target.parentElement.dataset.target ?? '';
+                if (target !== '') {
+                    window.top.location.href = target;
+                }
+            } else if (e.target.classList.contains('cp-send-form')) {
+                const form = e.target.closest('.cp-form-container');
+                const inputs = form.querySelectorAll('input, textarea');
+                const values = {};
+                let hasError = false;
+                inputs.forEach((input) => {
+                    if (input.value === '') {
+                        const error = form.querySelector('.cp-error-message');
+                        error.innerText = 'Please fill out all fields.';
+                        hasError = true;
+                    }
+                    values[input.name] = input.value;
+                });
+                if (!hasError) {
+                    sendStat('form', JSON.stringify(values));
+                    toNextPage(form);
+                }
+            } else if (e.target.classList.contains('cp-btn-download')) {
+                const href = e.target.attributes.href.value;
+                if (href) {
+                    window.open(href, "_blank");
+                }
+            }
+        });
+    }
+
+    async function init() {
+        if (!_capturly_id) {
+            setTimeout(init, 100);
+            return;
+        }
+        const popups = await getPopupInfo();
+
+        if (popups.length > 0) {
+            const stylesheet = document.createElement('link');
+            stylesheet.rel = 'stylesheet';
+            stylesheet.href = `//${capturlyBaseUrl}/css/popup/popup-common.css`;
+            document.head.appendChild(stylesheet);
+
+            for (let popup of popups) {
+                // check if popup has already shown
+                if (popup.frequency > 0 && document.cookie.includes(`_cp-${popup.id}=1`)) {
+                    continue;
+                }
+
+                for (let rule of popup.rules) {
+                    if (rule.type === 1) {
+                        setScrollTrigger(popup, rule.value);
+                    } else if (rule.type === 2) {
+                        setTimeTrigger(popup, rule.value);
+                    } else if (rule.type === 3) {
+                        setMouseOutTrigger(popup);
+                    } else if (rule.type === 4) {
+                        setClickTrigger(popup, rule.value);
+                    } else if (rule.type === 5) {
+                        setBackTrigger(popup);
+                    } else if (rule.type === 6) {
+                        setDisableRule(popup, rule.value);
+                    }
+                }
+            }
+        }
+    }
+    init();
+}).call(this)

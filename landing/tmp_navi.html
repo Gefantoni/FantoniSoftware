@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Navi Vendas</title>
+
+    <meta name="author" content="Cervantes - Tecnologia LTDA">
+    <meta name="description"
+          content="Sistema multiplataforma para controle de vendas e emissão de NFC-e. Otimizado para micro e pequenas empresas, MEI e Simples.">
+    <meta name="keywords"
+          content="Cervantes Tecnologia, Navi Vendas, aplicativo, NFC-e, emissão de nota fiscal, vendas, controle de estoque, controle de vendas, programa controle de estoque, sistema para loja, aplicativo de vendas, smart pos, emissor, controle de estoque, smart pdv, programa controle de estoque e vendas, sistema navi, app vendas ios, sistema de vendas, controle de estoque, controle de estoque, emissor de notas, app de vendas, programa de controle de estoque, programa para controle de estoque, sistema de controle de estoque, controle de estoque e vendas, controle de estoque e vendas, controle de vendas e estoque, gestão de estoque, app vendas android, emissor de nfc-e, aplicativo nfc-e, app nfc-e">
+    <meta name="csrf-token" content="i5O1Gz9BWrMd8I6jbCNtFa9uveCoHaXSgvbGiSgO" />
+
+    <!-- Icons -->
+    <link rel="icon" href="https://navivendas.com.br/images/icon.svg">
+    <link rel="shortcut icon" href="https://navivendas.com.br/images/icon.svg">
+
+    <!-- Cor navegador (Mobile) -->
+    <meta name="theme-color" content="#FDB014">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://navivendas.com.br/fontawesome-free-5.14.0-web/css/all.min.css">
+    <link rel="stylesheet" href="https://navivendas.com.br/css/select2.min.css">
+    <link rel="stylesheet" href="https://navivendas.com.br/css/select2-bootstrap-5-theme.min.css">
+    <link rel="stylesheet" href="https://navivendas.com.br/glightbox/css/glightbox.min.css">
+    <link rel="stylesheet" href="https://navivendas.com.br/css/app.css?v=1">
+    <link rel="stylesheet" href="https://navivendas.com.br/css/support-panel.css?v=1">
+
+    <!-- Global site tag (gtag.js) - Google Ads: 786651908 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-786651908"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'AW-786651908');
+        gtag('event', 'conversion', {'send_to': 'AW-786651908/Vde7CIvXzqgDEIS2jfcC'});
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y9GBZQPTW1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-Y9GBZQPTW1');
+    </script>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '633493130646828');
+        fbq('track', 'PageView');
+
+    </script>
+    <noscript>
+        <img height="1" width="1" src="https://www.facebook.com/tr?id=633493130646828&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+
+    <meta name="facebook-domain-verification" content="dn1zse4leiqj7k587kij8mgbammiwr"/>
+    <script>
+        function gtag_report_conversion(url) {
+            var callback = function () {
+                if (typeof (url) != 'undefined') {
+                    window.location = url;
+                }
+            };
+            gtag('event', 'conversion', {
+                'send_to': 'AW-786651908/HzIkCIX2l6gDEIS2jfcC',
+                'event_callback': callback
+            });
+            return false;
+        }
+    </script>
+
+    <script>
+        function waitForElement(querySelector, timeout) {
+            return new Promise((resolve, reject) => {
+                var timer = false;
+                if (document.querySelectorAll(querySelector).length) return resolve();
+                const observer = new MutationObserver(() => {
+                    if (document.querySelectorAll(querySelector).length) {
+                        observer.disconnect();
+                        if (timer !== false) clearTimeout(timer);
+                        return resolve();
+                    }
+                });
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+                if (timeout) timer = setTimeout(() => {
+                    observer.disconnect();
+                    reject();
+                }, timeout);
+            });
+        }
+    </script>
+
+    </head>
+
+<body>
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-white shadow">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="https://navivendas.com.br">
+            <img src="https://navivendas.com.br/images/icon.svg" alt="Navi Vendas" height="40">
+            <span class="fs-5 fw-bold ps-2 text-secondary">Navi Vendas</span>
+        </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-default" aria-controls="navbar-default" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbar-default">
+        <ul class="navbar-nav ms-auto my-2 my-lg-0" style="--bs-scroll-height: 100px;">
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="#banner">Inicial</a>
+            </li>
+            <li class="nav-item ms-md-3">
+                <a class="nav-link text-dark" href="#recursos">Recursos</a>
+            </li>
+            <li class="nav-item ms-md-3">
+                <a class="nav-link text-dark" href="#catalogo">Catálogo Online</a>
+            </li>
+            <li class="nav-item ms-md-3">
+                <a class="nav-link text-dark" href="#planos">Preço</a>
+            </li>
+            <li class="nav-item ms-md-3">
+                <a class="nav-link text-dark" href="#sobre-nos">Sobre nós</a>
+            </li>
+            <li class="nav-item ms-md-3">
+                <a class="btn btn-primary download-item cursor-pointer" onclick="gtag_report_conversion('https://navivendas.com.br/download/windows')" data-platform="windows">baixar agora</a>
+            </li>
+        </ul>
+    </div>
+    </div>
+</nav>
+
+<div class="pt-5">
+    
+    <section id="banner" class="overflow-hidden" style="padding-top: 60px">
+    <div class="container py-md-5">
+        <div class="row align-items-center py-md-5">
+            <div class="col-12 col-md-5 order-last order-md-first text-start pt-5">
+                <h1 class="pt-4 mt-md-0">
+                    Controle suas vendas e emita NFC-e de forma <span class="text-primary">rápida e fácil.</span>
+                </h1>
+
+                <h3 class="my-4 text-dark fw-normal">
+                    Otimizado para micro e pequenas empresas, MEI e Simples dos segmentos do varejo a bares e restaurantes.
+                </h3>
+
+                <div style="margin-top: 60px;">
+                    <div class="row g-2 ">
+    <div class="col-auto">
+        <a onclick="gtag_report_conversion('https://navivendas.com.br/download/android')" target="_blank" class="download-item cursor-pointer text-decoration-none"
+           data-platform="android">
+            <img src="https://navivendas.com.br/images/img-down-android.svg" alt="Disponível no Google Play" srcset="" width="150">
+        </a>
+    </div>
+
+    <div class="col-auto">
+        <a onclick="gtag_report_conversion('https://navivendas.com.br/download/ios')" target="_blank" class="download-item cursor-pointer text-decoration-none"
+           data-platform="ios">
+            <img src="https://navivendas.com.br/images/img-down-ios.svg" alt="Baixar na App Store" srcset="" width="150">
+        </a>
+    </div>
+
+    <div class="col-auto d-none d-md-block text-start">
+        <a onclick="gtag_report_conversion('https://navivendas.com.br/download/windows')" target="_blank" class="download-item cursor-pointer text-decoration-none"
+           data-platform="windows">
+            <img src="https://navivendas.com.br/images/img-down-windows.svg" alt="Baixe para Windows" srcset="" width="150">
+        </a>
+        <span class="d-block" style="font-size: .725rem; line-height: 1rem;">Windows 8.1 64 bits ou superior</span>
+    </div>
+</div>
+                </div>
+            </div>
+            <div class="col-12 col-md order-first order-md-last col-background-circle">
+                <img src="https://navivendas.com.br/images/img-banner.webp" alt="Navi Vendas" class="img-fluid mw-100 mw-md-150 mw-lg-130 mb-6 mb-md-0">
+            </div>
+        </div>
+    </div>
+</section>
+
+    <section id="video-comercial" class="py-5">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col pb-4 text-center">
+                <h3 class="fw-bold mt-2">Descubra o Navi</h3>
+            </div>
+        </div>
+        <div class="row align-items-center">
+            <div class="col">
+                <a href="https://www.youtube.com/embed/3JYCjg8qndM" data-glightbox data-gallery="office-tour">
+                    <img src="https://navivendas.com.br/images/img-video.webp" alt="Apresentação Navi Vendas" class="img-fluid" data-bs-toggle="modal" data-bs-target="#youtube-video-comercial">
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- <section id="destaques" class="py-5">
+    <div class="container py-5 my-5">
+        <div class="col-12 col-md-12 pb-12 text-center">
+            <div class="row">
+                <div class="col pb-4 text-center">
+                    <h3 class="fw-bold mt-2 mb-2">Compatível com maquininhas Smart POS</h3>
+                </div>
+            </div>
+            <div class="row align-items-start justify-content-center">
+                <div class="col-12 col-md text-center">
+                    <div class="mt-5">
+                        <img src="https://navivendas.com.br/images/Navi-POS-Stone.png" width="80%" alt="" class="img-fluid">
+                    </div>
+                    <div class="mt-1">
+                        <h2 class="mb-2">Stone</h2>
+                        <p>Ingenico A8, Sunmi P2, Positivo L300 e L400</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md text-center">
+                    <div class="mt-5">
+                        <img src="https://navivendas.com.br/images/Navi-POS-Cielo.png" width="80%" alt="" class="img-fluid">
+                    </div>
+                    <div class="mt-1">
+                        <h2 class="mb-2">Cielo</h2>
+                        <p>Lio V1, V2 e V3 (Lio On)</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md text-center">
+                    <div class="mt-5">
+                        <img src="https://navivendas.com.br/images/Navi-POS-PagSeguro.png" width="80%" alt="" class="img-fluid">
+                    </div>
+                    <div class="mt-1">
+                        <h2 class="mb-2">PagSeguro</h2>
+                        <p>Moderninhas X, Smart e Smart 2</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md text-center">
+                    <div class="mt-5">
+                        <img src="https://navivendas.com.br/images/Navi-POS-Vero.png" width="80%" alt="" class="img-fluid">
+                    </div>
+                    <div class="mt-1">
+                        <h2 class="mb-2">Vero</h2>
+                        <p>Modelos Vero Smart</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md text-center">
+                    <div class="mt-5">
+                        <img src="https://navivendas.com.br/images/Navi-POS-Getnet.png" width="80%" alt="" class="img-fluid">
+                    </div>
+                    <div class="mt-1">
+                        <h2 class="mb-2">Getnet</h2>
+                        <p>Modelos Get Smart</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+ -->
+
+    <section id="destaques" class="py-4">
+    <div class="container py-2 my-1">
+        <div class="col-12 col-md-12 pb-12 text-center">
+            <div class="row">
+                <div class="col pb-12 text-center">
+                    <h3 class="fw-bold mt-2 mb-2 mb-md-0">Disponível também nas principais maquininhas</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="ofertas" class="gray">
+    <div class="container">
+        <div id="carousel-maquininhas" class="carousel slide" data-bs-ride="carousel">
+            <div class="adquirentes-logo d-flex flex-wrap justify-content-start" style="margin-bottom: 3rem">
+                <div class="carousel-indicators">
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="0" class="active">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-azulzinha.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="1" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-bin.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="2" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-cielo.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="3" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-getnet.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="4" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-pagbank.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="5" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-rede.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="6" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-safrapay.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="7" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-sicredi.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="8" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-stone.svg" alt="" class="cursor-pointer">
+                        </li>
+                                                                <li data-bs-target="#carousel-maquininhas" data-bs-slide-to="9" class="">
+                            <img height="25px" width="" src="https://navivendas.com.br/images/logo-vero.svg" alt="" class="cursor-pointer">
+                        </li>
+                                    </div>
+            </div>
+
+            <div class="carousel-inner">
+                                                    <div class="carousel-item active ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Azulzinha.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-azulzinha.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Azulzinha Smart:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Ingenico (Dx8000)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Sunmi (P2)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Bin.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-bin.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Bin Smart:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Ingenico (Dx8000)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Sunmi (P2)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Cielo.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-cielo.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Maquininhas:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Lio V1</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Lio V2</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Lio V3 (Lio On)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Ingenico (Dx8000)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Getnet.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-getnet.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Get Smart:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Ingenico (A8 e Dx8000)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Newland (N910)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Sunmi (P2 e P3)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-PagSeguro.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-pagbank.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Maquininhas:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Moderninha X</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Moderninha Smart</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Moderninha Smart2</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Rede.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-rede.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Laranjinha Smart:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Positivo (L400)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Safrapay.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-safrapay.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">SafraPay Smart:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Ingenico (A8)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Sunmi (P2, P3 e P3HK)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> PAX (A910)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Sicredi.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-sicredi.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Maquininha smart:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Ingenico (Dx8000)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Sunmi (P2)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Stone.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-stone.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Maquininhas:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Ingenico (A8)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Sunmi (P2 e P2 A11)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Positivo (L300 e L400)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Tectoy (T8)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                    <div class="carousel-item  ">
+                        <div class="row align-items-center">   
+                            <div class="col-sm-6 col-md-6 order-first text-center text-md-end mt-md-0 mb-0">
+                                <img src="https://navivendas.com.br/images/Navi-POS-Vero.webp" style="max-width: 40%;">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 order-last">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none d-md-block">    
+                                        <img src="https://navivendas.com.br/images/logo-vero.svg" style="max-height: 30px;">
+                                    </div>
+                                    <div class="col-sm-12 text-center text-md-start">
+                                        <p class="mt-4 d-md-block">Vero Smart:</p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Gertec (GPOS700)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Newland (N950 e N950K)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Positivo (L300)</span>
+                                            </p> 
+                                                                                
+                                            <p class="ml-4 ml-md-3 pb-0 pt-0 text-start d-flex">
+                                                <span class="material-icons">done</span>
+                                                <span style="margin-left: 10px;"> Sunmi (P2)</span>
+                                            </p> 
+                                                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                            </div>
+
+            <button class="carousel-control-prev" data-bs-target="#carousel-maquininhas" type="button" data-bs-slide="prev">
+                <span id="PrevAdq" class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" data-bs-target="#carousel-maquininhas" type="button" data-bs-slide="next">
+                <span id="NextAdq" class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+    <section id="recursos" class="py-5">
+    <div class="container" style="max-width: 1240px">
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-first text-start">
+        <h2 class="mb-4">Emissão de NFC-e</h2>
+
+        <p>Criando a conta com seu CNPJ, você pode adicionar seu certificado digital e <b>emitir NFC-e facilmente direto do sistema</b>, sem necessidade de contratar um sistema adicional. Além disso, você pode emitir <b>NF-e com NFC-e de venda referenciada</b> direto pelo sistema.</p>
+                <p>Outro benefício é que você não perde vendas se a conexão cair. Com o <b>gerenciamento de notas pendentes</b> é possível <b>emitir NFC-e em contingência</b> e transmiti-las quando restabelecer a conexão.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-last ">
+        <img src="https://navivendas.com.br/images/img-emissaoNFCe.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-last text-start">
+        <h2 class="mb-4">Venda fácil</h2>
+
+        <p>Com o PDV do Navi você otimiza seu atendimento e <b>vende mais em menos tempo</b>.</p>
+                <p>Use o <b>leitor de código de barras</b>, <b>busca inteligente</b> ou a divisão por categorias para adicionar produtos ao caixa e finalizar vendas usando diversas <b>formas de pagamento</b>.</p>
+                <p>Além de <b>leitores</b> e <b>impressoras não fiscais</b>, é possível conectar outros equipamentos como <b>balanças de checkout</b> e <b>gavetas de dinheiro</b> montando assim um PDV <b>compacto e prático</b>.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-first d-flex justify-content-end">
+        <img src="https://navivendas.com.br/images/img-PDV-compacto.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-first text-start">
+        <h2 class="mb-4">Controle de caixa e estoque</h2>
+
+        <p>O Navi foi desenvolvido para trazer <b>praticidade</b> à sua rotina e te dar mais <b>controle</b> sobre seu comércio.</p>
+                <p>Você pode fazer fechamentos diretamente no caixa, <b>acompanhar vendas</b> e ver <b>relatórios</b> por dispositivo e período para tomar decisões mais acertivas.</p>
+                <p>Saiba <b>quais produtos vendem mais</b> e nunca fique sem <b>estoque</b> com o <b>alerta</b> de estoque mínimo.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-last ">
+        <img src="https://navivendas.com.br/images/img-reports.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-last text-start">
+        <h2 class="mb-4">Controle de Delivery</h2>
+
+        <p>Com o Navi você pode <b>controlar seus pedidos de delivery</b>, configurar informações de pagamento e entrega, e acompanhar a situação dos pedidos.</p>
+                <p>Aproveite a integração com <b>iFood</b> e <b>Catálogo Online</b> e centralize o cadastro de produtos e a gestão de pedidos em um único local, mantendo as informações de todas as plataformas <b>atualizadas</b> de forma fácil.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-first d-flex justify-content-end">
+        <img src="https://navivendas.com.br/images/img-gif-delivery.gif" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-first text-start">
+        <h2 class="mb-4">Cadastro de usuários</h2>
+
+        <p>Crie <b>usuários ilimitados</b>. Sejam eles do tipo <b>Administrador</b>, <b>Caixa</b> ou <b>Atendente</b>, as configurações e informações no sistema ficarão disponíveis de acordo com a necessidade de cada <b>perfil</b>.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-last ">
+        <img src="https://navivendas.com.br/images/img-usuarios.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-last text-start">
+        <h2 class="mb-4">Mesas e comandas</h2>
+
+        <p>Configure conforme seu estabelecimento trabalha, seja com atendimento em <b>mesas</b> ou por <b>comandas</b>.</p>
+                <p>Com diversos recursos como o <b>atendimento avulso</b>, a <b>transferência de produtos</b> além do <b>cadastro de taxas de entrega</b>.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-first d-flex justify-content-end">
+        <img src="https://navivendas.com.br/images/img-mesas-comandas.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+
+    </div>
+</section>
+
+    <section id="solucao-inteligente" class="bg-white py-5">
+    <div class="container">
+        <h3 class="text-center my-5 fw-bold">Solução inteligente para seu negócio.</h3>
+        <div class="row">
+            <div class="col-12 col-md-4 mb-5 mb-md-0 px-md-5 py-md-3 text-start">
+    <div class="solucao-inteligente-item-icon bg-primary text-white d-flex align-items-center justify-content-center shadow rounded-circle">
+        <span class="material-icons fs-1">wifi_off</span>
+    </div>
+
+    <h3 class="fw-bold text py-4 mb-0">Venda offline</h3>
+
+    <p>
+                        <b>Não perca vendas</b> se sua internet cair. Com o <b>gerenciamento de notas pendentes</b> é possível emitir <b>NFC-e em contingência</b> e transmití-las quando restabelecer a conexão.
+                    </p>
+</div>
+
+            <div class="col-12 col-md-4 mb-5 mb-md-0 px-md-5 py-md-3 text-start">
+    <div class="solucao-inteligente-item-icon bg-primary text-white d-flex align-items-center justify-content-center shadow rounded-circle">
+        <span class="material-icons fs-1">devices</span>
+    </div>
+
+    <h3 class="fw-bold text py-4 mb-0">Multiplataforma</h3>
+
+    <p>
+                        Use o Navi Vendas em <b>Computadores</b> com <b>Windows</b>, <b>tablets</b>, <b>maquininhas smart</b>, <b>mini PDV</b>, <b>smartphones Android</b> e <b>iOS</b>.
+                    </p>
+</div>
+
+            <div class="col-12 col-md-4 mb-5 mb-md-0 px-md-5 py-md-3 text-start">
+    <div class="solucao-inteligente-item-icon bg-primary text-white d-flex align-items-center justify-content-center shadow rounded-circle">
+        <span class="material-icons fs-1">tablet</span>
+    </div>
+
+    <h3 class="fw-bold text py-4 mb-0">PDV compacto</h3>
+
+    <p>
+                        Conecte equipamentos com <b>conexão USB</b> ou <b>bluetooth</b> como <b>leitores de código de barra</b>, <b>impressoras</b>, <b>teclados</b> e <b>gavetas de dinheiro</b>.
+                    </p>
+</div>
+
+            <div class="col-12 col-md-4 mb-5 mb-md-0 px-md-5 py-md-3 text-start">
+    <div class="solucao-inteligente-item-icon bg-primary text-white d-flex align-items-center justify-content-center shadow rounded-circle">
+        <span class="material-icons fs-1">manage_search</span>
+    </div>
+
+    <h3 class="fw-bold text py-4 mb-0">Banco online de produtos</h3>
+
+    <p>
+                        Usando o código de barras no <b>cadastro automático de produtos</b> você tem acesso ao nosso <b>banco online</b> de milhares de produtos com dados como: <b>descrição</b>, <b>tributação</b> e <b>foto</b>.
+                    </p>
+</div>
+
+            <div class="col-12 col-md-4 mb-5 mb-md-0 px-md-5 py-md-3 text-start">
+    <div class="solucao-inteligente-item-icon bg-primary text-white d-flex align-items-center justify-content-center shadow rounded-circle">
+        <span class="material-icons fs-1">cloud_queue</span>
+    </div>
+
+    <h3 class="fw-bold text py-4 mb-0">Armazenamento em nuvem</h3>
+
+    <p>
+                        Você pode <b>sincronizar</b> o Navi em todos os seus dispositivos usando um <b>único banco de dados na nuvem</b>.
+                    </p>
+</div>
+
+            <div class="col-12 col-md-4 mb-5 mb-md-0 px-md-5 py-md-3 text-start">
+    <div class="solucao-inteligente-item-icon bg-primary text-white d-flex align-items-center justify-content-center shadow rounded-circle">
+        <span class="material-icons fs-1">scale</span>
+    </div>
+
+    <h3 class="fw-bold text py-4 mb-0">Balança</h3>
+
+    <p>
+                        Integre <b>balanças de checkout</b> ao sistema e tenha as pesagens adicionadas diretamente ao PDV.
+                    </p>
+</div>
+        </div>
+    </div>
+</section>
+
+    <section id="catalogo" class="py-5">
+    <div class="container" style="max-width: 1240px">
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-first text-start">
+        <h2 class="mb-4">Catálogo Online</h2>
+
+        <p>Transforme sua loja física em uma <b>loja digital personalizada</b>.</p>
+                <p>O <b>Catálogo Online</b> é uma página e também um aplicativo para divulgação e venda de produtos.</p>
+                <p>Permita pagamentos por cartão de crédito e Pix diretamente do Catálogo Online. Escolha também as formas de pagamento disponíveis para o cliente na entrega e retirada.</p>
+                <p>Cadastrando os produtos no Navi Vendas é possível <b>escolher quais ficarão disponíveis</b> para seus clientes no Catálogo.</p>
+                <p>Os pedidos feitos são recebidos <b>automaticamente no módulo Delivery do Navi</b>, e você ainda tem a opção de deixar seu WhatsApp para recebê-los por mensagem e contatar o cliente.</p>
+                <p>Veja uma <a href="https://cervanteslojamodelo.comercio.net.br/" target="_blank" class="text-primary d-contents">loja modelo</a>.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-last ">
+        <img src="https://navivendas.com.br/images/img-catalogo.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-last text-start">
+        <h2 class="mb-4">Menu Digital</h2>
+
+        <p>Tenha seus produtos sempre atualizados para o cliente com o <b>Menu Digital</b>. Através dele, seus clientes podem visualizar seu cardápio, assim como realizar pedidos dentro do seu estabelecimento através de um QR Code na mesa ou na comanda.</p>
+                <p>A página é <b>personalizada</b> junto ao Catálogo Online e <b>você escolhe quais produtos ficam disponíveis</b>.</p>
+                <p>Veja um <a href="https://cervanteslojamodelo.menudigital.net.br/" target="_blank" class="text-primary d-contents">menu exemplo</a>.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-first d-flex justify-content-end">
+        <img src="https://navivendas.com.br/images/img-menu-digital.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-first text-start">
+        <h2 class="mb-4">Monitor de Cozinha</h2>
+
+        <p>Gerencie o preparo dos pedidos na cozinha, tudo de forma digital.</p>
+                <p>Com o aplicativo <b>Monitor de Cozinha</b>, você recebe e faz a gestão do preparo dos pedidos realizados nos <b>módulos Delivery</b> e <b>Atendimento</b>, tendo uma visualização dos status do andamento que ajuda a orientar a equipe da cozinha. Na tela são mostradas as informações de cada item dos pedidos, contendo descrição, imagem, ingredientes, modo de preparo e observações.</p>
+                <p>Este é um aplicativo auxiliar que funciona em conjunto com o Navi Vendas e pode ser instalado em computadores Windows, tablets Android e iPad.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-last ">
+        <img src="https://navivendas.com.br/images/img-monitor-cozinha.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-last text-start">
+        <h2 class="mb-4">Pesagem Automática</h2>
+
+        <p>Automatize a pesagem dos pratos em seu restaurante de buffet.</p>
+                <p>Com o aplicativo <b>Pesagem Automática</b> seus clientes fazem a pesagem e pegam a comanda sozinhos, apenas seguindo as instruções apresentadas na tela, evitando a necessidade de um funcionário dedicado à balança. Em virtude da integração, o consumo pode ser enviado automaticamente para o Navi Vendas.</p>
+                <p>Conecte equipamentos como balança, leitor e impressora conforme o modo de trabalho do estabelecimento. Imprima comandas ou utilize um leitor de código de barras para as comandas reutilizáveis.</p>
+                <p>Este é um aplicativo auxiliar que funciona em conjunto com o Navi Vendas e pode ser instalado em computadores Windows e tablets Android.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-first d-flex justify-content-end">
+        <img src="https://navivendas.com.br/images/img-pesagem-automatica.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+        <div class="row py-5 my-0 my-md-5 d-flex align-items-center justify-content-center g-md-4 recurso-item">
+    <div class="col-12 col-md order-last order-md-first text-start">
+        <h2 class="mb-4">Consulta Preço</h2>
+
+        <p>O <b>Consulta Preço</b> é um aplicativo onde o cliente visualiza informações atualizadas dos produtos através de terminais espalhados pelo estabelecimento.</p>
+                <p>Ao identificar o código de barras na embalagem, o app mostra preço, foto e descrição do produto conforme cadastrados no sistema ERP.</p>
+                <p>Disponível para Windows, Android (tablets e terminais de consulta) e iPadOS.</p>
+                <p>Deve ser combinado com um leitor de código de barras.</p>
+                <p>Este é um aplicativo auxiliar que funciona em conjunto com o Navi Vendas.</p>
+    </div>
+    <div class="col-12 mb-3 mb-md-0 col-md order-first text-center order-md-last ">
+        <img src="https://navivendas.com.br/images/img-consulta-preco.webp" alt="" srcset="" class="img-fluid">
+    </div>
+</div>
+
+    </div>
+</section>
+
+    <section id="planos" class="py-5">
+    <div class="container">
+        <div class="row mt-5 pt-3">
+            <div class="col pb-3 text-center">
+                <h3 class="fw-bold mt-2">Preço</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col mb-5">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col ms-auto text-end">
+                        <label for="plan-period" class="fw-bold">mensal</label>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check form-switch form-switch-lg always-active">
+                            <input class="form-check-input" type="checkbox" role="switch" id="plan-period" plan-toggle>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="plan-period" class="fw-bold">anual</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-start justify-content-center">
+            <div class="order-2 order-md-1 col-12 col-md-6 col-xl-4 mb-4">
+                <div class="p-5 pb-4 rounded-bottom bg-transparent plano-item position-relative">
+    <h3 class="fw-bold">Experimente!</h3>
+    <p>Teste o aplicativo com dados fictícios. Não precisa criar conta, nem inserir cartão.</p>
+
+    <div class="text-center">
+        <div class="mt-5 pb-5">
+            <h2 class="fw-bold d-block" style="font-size: 48px;">Grátis</h2>
+        </div>
+
+        
+        <div class="row">
+            <div class="col mx-auto pt-3">
+                <a href="https://navivendas.com.br/download" class="btn btn-link fw-normal text-primary d-block mx-auto my-3">Testar com dados fictícios</a>
+            </div>
+        </div>
+    </div>
+</div>
+            </div>
+                            
+                <div plan-period="monthly" class="order-1 order-md-2 col-12 col-md-6 col-xl-4 mb-4 ">
+                    <div class="p-5 pb-4 rounded-bottom bg-white shadow plano-item position-relative">
+    <h3 class="fw-bold">Navi Vendas</h3>
+    <p>Ative a sua conta e comece a usar para a sua empresa.</p>
+
+    <div class="text-center">
+        <div class=" w-100">
+    
+    <div class="d-block" style="line-height: 40px; margin-top: 45px;margin-bottom: 37px;">
+        <span class="text-muted">R$</span>
+        <span class="fw-bold" style="font-size: 72px; letter-spacing: -6px;">120</span>
+        <span class="fw-bold" style="font-size: 40px; letter-spacing: -5px;">,00</span>
+        <span class="text-muted">
+            /mês
+        </span>
+    </div>
+
+
+    </div>
+
+                    <div class="row pt-3">
+                                <div class="col">
+                                    <p class="text-start mb-1">Cupom de desconto</p>
+<div class="row cupom-desconto 7de21ec3-f7ef-49b9-bbb0-12ecbec48e3b gx-3">
+    <div class="col text-start">
+        <div class="mb-4 pb-1">
+    
+    <div class="input-group">
+        <input type="text" name="cupom"
+               class="form-control  text-uppercase" id="cupom"
+               aria-describedby="cupom-invalid-feedback" value=""
+                mask=""
+               placeholder="CUPOM"
+                
+                                      >
+
+            </div>
+
+    </div>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary">aplicar</button>
+    </div>
+</div>
+
+
+                                </div>
+                            </div>
+        
+        <div class="row">
+            <div class="col mx-auto">
+                <a
+                    href="https://navivendas.com.br/assinatura/empresa/buscar"
+                    class="d-block btn btn-lg mx-auto my-3 btn-primary">
+                    assinar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+                </div>
+                            
+                <div plan-period="yearly" class="order-1 order-md-2 col-12 col-md-6 col-xl-4 mb-4 d-none">
+                    <div class="p-5 pb-4 rounded-bottom bg-white shadow plano-item position-relative">
+    <h3 class="fw-bold">Navi Vendas</h3>
+    <p>Ative a sua conta e comece a usar para a sua empresa.</p>
+
+    <div class="text-center">
+        <div class=" w-100">
+    
+    <div class="d-block" style="line-height: 40px; margin-top: 45px;">
+        <span class="text-muted">R$</span>
+        <span class="fw-bold" style="font-size: 72px; letter-spacing: -6px;">100</span>
+        <span class="fw-bold" style="font-size: 40px; letter-spacing: -5px;">,00</span>
+        <span class="text-muted">
+            /mês*
+        </span>
+    </div>
+
+
+            <p class="small" style="margin-top: 0; margin-bottom: 16px;">
+            *Cobrança anual única de R$ 1.200,00
+        </p>
+    </div>
+
+                    <div class="row pt-3">
+                                <div class="col">
+                                    <p class="text-start mb-1">Cupom de desconto</p>
+<div class="row cupom-desconto 6918e575-66e1-4f32-87b6-6bcb72924d9f gx-3">
+    <div class="col text-start">
+        <div class="mb-4 pb-1">
+    
+    <div class="input-group">
+        <input type="text" name="cupom"
+               class="form-control  text-uppercase" id="cupom"
+               aria-describedby="cupom-invalid-feedback" value=""
+                mask=""
+               placeholder="CUPOM"
+                
+                                      >
+
+            </div>
+
+    </div>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary">aplicar</button>
+    </div>
+</div>
+
+
+                                </div>
+                            </div>
+        
+        <div class="row">
+            <div class="col mx-auto">
+                <a
+                    href="https://navivendas.com.br/assinatura/empresa/buscar"
+                    class="d-block btn btn-lg mx-auto my-3 btn-primary">
+                    assinar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+                </div>
+                    </div>
+    </div>
+</section>
+
+
+    <section id="download" class="py-5">
+    <div class="container text-center my-5">
+        <div class="row">
+            <div class="col col-md-6 m-auto">
+                <img src="https://navivendas.com.br/images/img-baixe-gratuitamente.webp" alt="Baixe agora gratuitamente" class="img-fluid py-5">
+                <h3 class="fw-bold text-center">Baixe agora gratuitamente</h3>
+                <p>Você pode criar sua conta pelo app e testar o sistema usando dados fictícios até que escolha ativar sua conta. </p>
+
+                <div class="d-inline-block m-auto mt-3">
+                    <div class="row g-2 ">
+    <div class="col-auto">
+        <a onclick="gtag_report_conversion('https://navivendas.com.br/download/android')" target="_blank" class="download-item cursor-pointer text-decoration-none"
+           data-platform="android">
+            <img src="https://navivendas.com.br/images/img-down-android.svg" alt="Disponível no Google Play" srcset="" width="150">
+        </a>
+    </div>
+
+    <div class="col-auto">
+        <a onclick="gtag_report_conversion('https://navivendas.com.br/download/ios')" target="_blank" class="download-item cursor-pointer text-decoration-none"
+           data-platform="ios">
+            <img src="https://navivendas.com.br/images/img-down-ios.svg" alt="Baixar na App Store" srcset="" width="150">
+        </a>
+    </div>
+
+    <div class="col-auto d-none d-md-block text-start">
+        <a onclick="gtag_report_conversion('https://navivendas.com.br/download/windows')" target="_blank" class="download-item cursor-pointer text-decoration-none"
+           data-platform="windows">
+            <img src="https://navivendas.com.br/images/img-down-windows.svg" alt="Baixe para Windows" srcset="" width="150">
+        </a>
+        <span class="d-block" style="font-size: .725rem; line-height: 1rem;">Windows 8.1 64 bits ou superior</span>
+    </div>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <section id="sobre-nos" class="py-5 bg-white">
+    <div class="container my-5">
+        <div class="row">
+            <div class="col col-md-8 m-auto mb-2">
+                <h4 class="text-center">
+                    O Navi Vendas é um sistema com a garantia Cervantes Tecnologia, empresa de desenvolvimento de sistemas para automação comercial com
+                </h4>
+
+                <div class="row pt-5 text-start text-md-center">
+                    <div class="col-12 col-md mb-4 mb-md-0">
+                        <div class="row align-items-center align-content-md-start">
+                            <div class="col-auto col-md-12">
+                                <img src="https://navivendas.com.br/images/anos.svg" alt="18" class="sobre-nos-icone">
+                            </div>
+                            <div class="col col-md-12 pt-md-3">
+                                <p class="mt-0 mt-md-2 mb-0">
+                                    anos de experiência no desenvolvimento de sistemas
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md mb-4 mb-md-0">
+                        <div class="row align-items-center align-content-md-start">
+                            <div class="col-auto col-md-12">
+                                <img src="https://navivendas.com.br/images/nacional.svg" alt="Brasil" class="sobre-nos-icone">
+                            </div>
+                            <div class="col col-md-12 pt-md-3">
+                                <p class="mt-0 mt-md-2 mb-0">
+                                    + 35.000 PDVs ativados
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md mb-4 mb-md-0">
+                        <div class="row align-items-center align-content-md-start">
+                            <div class="col-auto col-md-12">
+                                <img src="https://navivendas.com.br/images/contabil.svg" alt="Contábil" class="sobre-nos-icone">
+                            </div>
+                            <div class="col col-md-12 pt-md-3">
+                                <p class="mt-0 mt-md-2 mb-0">
+                                    sistemas desenvolvidos com consultoria contábil
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <footer class="bg-secondary text-white py-md-5">
+    <div class="container py-md-5">
+        <div class="row py-5 justify-content-evenly align-items-center">
+            <div class="col-12 col-md-auto text-center text-md-start">
+                <img src="https://navivendas.com.br/images/logo_navi_vendas.png" alt="Navi Vendas" width="121px" height="77px">
+            </div>
+            <div class="col-12 col-md-auto text-center text-md-start my-3 mt-md-0">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#banner">Inicial</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#planos">Preço</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#catalogo">Catálogo Online</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-auto text-center text-md-start my-3 mt-md-0">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="https://navivendas.com.br/assinatura/empresa/buscar">Minha conta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="https://ajuda.navivendas.com.br/" target="_blank">Central de Ajuda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" target="_blank" href="https://navivendas.com.br/release-notes">Histórico de versões</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" target="_blank" href="https://navivendas.com.br/legal">Política de privacidade</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#sobre-nos">Quem somos</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-auto text-center text-md-start my-3 mt-md-0">
+                <div class="row">
+                    <div class="col">
+                        <p class="mb-0">Contato:</p>
+                        <a href="mailto:comercial@cervantestecnologia.com.br" class="text-decoration-none text-white">comercial@cervantestecnologia.com.br</a>
+                    </div>
+                </div>
+
+                <div class="row my-4 justify-content-center justify-content-md-start">
+                    <div class="col-auto pe-0">
+                        <a href="https://youtube.com/playlist?list=PLCCEpXopnJdxDGpRkL9FZFPOT2Q_CkuCZ" target="_blank">
+                            <img src="https://navivendas.com.br/images/youtube.svg" alt="youtube">
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="https://www.instagram.com/navi.vendas/" target="_blank">
+                            <img src="https://navivendas.com.br/images/instagram.svg" alt="instagram">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-auto m-auto text-center text-md-start py-4 py-md-0">
+                <p class="mb-0 d-inline-block text-center">
+                    Desenvolvido por Cervantes Tecnologia — 2026 — CNPJ: 08.833.101/0001-55 <br>
+                    Rua Coronel Pacheco, 101, salas 3 e 4 CEP: 94720-119 | Torres - RS - Brasil
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</div>
+
+<script src="https://navivendas.com.br/js/jquery-3.5.1.min.js"></script>
+<script src="https://navivendas.com.br/js/jquery.mask.js"></script>
+<script src="https://navivendas.com.br/js/bootstrap.min.js"></script>
+<script src="https://navivendas.com.br/js/sweetalert2.9.js"></script>
+<script src="https://navivendas.com.br/glightbox/js/glightbox.min.js"></script>
+<script src="https://navivendas.com.br/js/select2.min.js"></script>
+<script src="https://navivendas.com.br/js/script.js?v=3"></script>
+
+<script>
+    const lb = GLightbox({
+        selector: '*[data-glightbox]',
+        openEffect: 'fade',
+        closeEffect: 'fade',
+        plyr: {
+            config: {
+                ratio: '16:9',
+                hideControls: true
+            }
+        }
+    });
+
+    const ToastDefault = Swal.mixin({
+        toast: true,
+        position: 'Center',
+        showConfirmButton: false,
+        background: '#212529',
+        timer: 7000,
+    });
+
+    $('a[data-target ^= "#"]').on("click", function (e) {
+        let destination = $(e.currentTarget).data('target');
+        let navbar = $('nav.navbar');
+
+        $('html, body').animate({
+            scrollTop: $(destination).offset().top - navbar.height()
+        }, "slow");
+    });
+
+    $("a.download-item").on("click", function (e) {
+        const target = $(e.currentTarget);
+        const platform = target.data("platform");
+
+        fbq("track", `ViewContent`);
+        fbq("track", `download`);
+
+        if (platform.trim().length > 0)
+            fbq("track", `download-${platform}`);
+    });
+
+</script>
+
+
+
+
+    <script>
+        function trq() {
+            (trq.q = trq.q || []).push(arguments);
+        }
+
+        trq('account', 't-61ef00c80ea6365e06042bba');
+        var _paq = _paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+
+        (function () {
+            var u = "//capturly.com/";
+            _paq.push(['setTrackerUrl', u + 'capturly-track.php']);
+            _paq.push(['setSiteId', 5380]);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.type = 'text/javascript';
+            g.async = true;
+            g.defer = true;
+            g.src = u + 'capturly-track-js.js';
+            s.parentNode.insertBefore(g, s);
+        })();
+    </script>
+
+    <script>
+        $('.cupom-desconto.7de21ec3-f7ef-49b9-bbb0-12ecbec48e3b input[name=cupom]').on('keypress', (e) => {
+            if (e.originalEvent?.keyCode === 13) {
+                e.preventDefault()
+                $('.cupom-desconto.7de21ec3-f7ef-49b9-bbb0-12ecbec48e3b button[type=button]').click()
+            }
+        });
+
+        $('.cupom-desconto.7de21ec3-f7ef-49b9-bbb0-12ecbec48e3b button[type=button]').on("click", (e) => {
+            const current = $(e.currentTarget)
+            const form = current.closest('.cupom-desconto.7de21ec3-f7ef-49b9-bbb0-12ecbec48e3b')
+
+            const util = {}
+            util.post = (url, fields) => {
+                const $form = $('<form>', {
+                    action: url,
+                    method: 'POST'
+                });
+
+                $.each(fields, (key, val) => {
+                    $('<input>').attr({
+                        type: "hidden",
+                        name: key,
+                        value: val
+                    }).appendTo($form)
+                })
+
+                $form.appendTo('body').submit()
+            }
+
+            const data = {}
+
+            if (form.closest('form').get(0)) {
+                form.closest('form').serializeArray().map((it) => data[it.name] = it.value)
+            } else {
+                data["_token"] = "i5O1Gz9BWrMd8I6jbCNtFa9uveCoHaXSgvbGiSgO"
+                data["cupom"] = form.find('input[name=cupom]').val()
+            }
+
+            util.post('https://navivendas.com.br/assinatura/empresa/aplicar-cupom-desconto', data)
+        })
+    </script>
+    <script>
+        $('.cupom-desconto.6918e575-66e1-4f32-87b6-6bcb72924d9f input[name=cupom]').on('keypress', (e) => {
+            if (e.originalEvent?.keyCode === 13) {
+                e.preventDefault()
+                $('.cupom-desconto.6918e575-66e1-4f32-87b6-6bcb72924d9f button[type=button]').click()
+            }
+        });
+
+        $('.cupom-desconto.6918e575-66e1-4f32-87b6-6bcb72924d9f button[type=button]').on("click", (e) => {
+            const current = $(e.currentTarget)
+            const form = current.closest('.cupom-desconto.6918e575-66e1-4f32-87b6-6bcb72924d9f')
+
+            const util = {}
+            util.post = (url, fields) => {
+                const $form = $('<form>', {
+                    action: url,
+                    method: 'POST'
+                });
+
+                $.each(fields, (key, val) => {
+                    $('<input>').attr({
+                        type: "hidden",
+                        name: key,
+                        value: val
+                    }).appendTo($form)
+                })
+
+                $form.appendTo('body').submit()
+            }
+
+            const data = {}
+
+            if (form.closest('form').get(0)) {
+                form.closest('form').serializeArray().map((it) => data[it.name] = it.value)
+            } else {
+                data["_token"] = "i5O1Gz9BWrMd8I6jbCNtFa9uveCoHaXSgvbGiSgO"
+                data["cupom"] = form.find('input[name=cupom]').val()
+            }
+
+            util.post('https://navivendas.com.br/assinatura/empresa/aplicar-cupom-desconto', data)
+        })
+    </script>
+    <script>
+        $('[plan-toggle]').change((it) => {
+            const target = $(it.currentTarget)
+
+            const value = target.is(':checked') ? "yearly" : "monthly"
+            $(`[plan-period]`).addClass('d-none')
+            $(`[plan-period=${value}]`).removeClass('d-none')
+        })
+    </script>
+
+</body>
+
+</html>
