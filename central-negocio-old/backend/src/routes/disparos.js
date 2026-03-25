@@ -8,6 +8,7 @@ const { supabaseAdmin }   = require('../supabase');
 const {
   iniciarFila, pausarFila, retomarFila, pararFila, statusFila,
   gerarMensagemWA, gerarMensagemEmail, normalizarTelefone,
+  processarContato, dentroDoHorario,
 } = require('../services/disparos');
 
 const router  = express.Router();
@@ -154,10 +155,6 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
     }));
     await supabaseAdmin.from('disparos_leads').insert(leadsRows).then(() => {});
 
-    if (iniciarAgora) {
-      iniciarFila(campanha.id, contatos, config, instancias).catch(console.error);
-    }
-
     res.json({ campanha_id: campanha.id, total: contatos.length, status: iniciarAgora ? 'iniciado' : 'rascunho' });
   } catch (err) {
     console.error('[Disparos] Erro ao iniciar:', err);
@@ -240,7 +237,6 @@ router.post('/:id/iniciar', autenticar, adminOuComercial, async (req, res) => {
       .update({ status: 'ativo', atualizado_em: new Date().toISOString() })
       .eq('id', req.params.id);
 
-    iniciarFila(req.params.id, contatos, config, instancias).catch(console.error);
     res.json({ ok: true, status: 'iniciado', total: contatos.length });
   } catch (err) {
     console.error('[Disparos] Erro ao iniciar rascunho:', err.message);
@@ -248,18 +244,94 @@ router.post('/:id/iniciar', autenticar, adminOuComercial, async (req, res) => {
   }
 });
 
+// ── POST /api/disparos/:id/step — processa um contato (frontend-driven) ─
+router.post('/:id/step', autenticar, adminOuComercial, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data: camp, error: campErr } = await supabaseAdmin
+      .from('disparos_campanhas').select('*').eq('id', id).single();
+
+    if (campErr || !camp) return res.status(404).json({ erro: 'Campanha não encontrada' });
+    if (camp.status !== 'ativo') return res.json({ ok: false, motivo: `campanha_${camp.status}` });
+
+    const config = camp.config || {};
+
+    if (!dentroDoHorario(config.horaInicio, config.horaFim)) {
+      return res.json({ ok: true, fora_horario: true, has_more: true });
+    }
+
+    // Busca próximo lead aguardando
+    const { data: proxLeads } = await supabaseAdmin
+      .from('disparos_leads').select('*')
+      .eq('campanha_id', id).eq('status', 'aguardando')
+      .order('criado_em', { ascending: true }).limit(1);
+
+    const proxLead = proxLeads?.[0];
+    if (!proxLead) {
+      await supabaseAdmin.from('disparos_campanhas')
+        .update({ status: 'concluido', atualizado_em: new Date().toISOString() }).eq('id', id);
+      return res.json({ ok: true, has_more: false, concluido: true });
+    }
+
+    // Monta objeto contato (tenta achar no config, senão usa dados do lead)
+    const contatos = config.contatos || [];
+    const contato = contatos.find(c => String(c._id) === String(proxLead.lead_id)) || {
+      _id:           proxLead.lead_id,
+      nome_fantasia: proxLead.nome,
+      razao_social:  proxLead.nome,
+      email:         proxLead.email,
+      telefones:     proxLead.telefone,
+    };
+
+    // Busca instâncias
+    let instancias = [];
+    if ((config.instancias_ids || []).length > 0) {
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*')
+        .in('id', config.instancias_ids).eq('status', 'ativo');
+      instancias = data || [];
+    } else {
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').eq('status', 'ativo');
+      instancias = data || [];
+    }
+
+    await processarContato(id, contato, config, instancias);
+    await supabaseAdmin.rpc('disparos_incrementar_enviados', { p_id: id }).catch(() => {});
+
+    // Verifica status final do lead para retornar ao frontend
+    const { data: leadFinal } = await supabaseAdmin
+      .from('disparos_leads').select('status')
+      .eq('campanha_id', id).eq('lead_id', proxLead.lead_id).single();
+    const enviouOk = leadFinal && !leadFinal.status.startsWith('erro');
+
+    // Verifica se há mais aguardando
+    const { count } = await supabaseAdmin
+      .from('disparos_leads').select('*', { count: 'exact', head: true })
+      .eq('campanha_id', id).eq('status', 'aguardando');
+    const hasMore = (count || 0) > 0;
+
+    if (!hasMore) {
+      await supabaseAdmin.from('disparos_campanhas')
+        .update({ status: 'concluido', atualizado_em: new Date().toISOString() }).eq('id', id);
+    }
+
+    res.json({ ok: true, has_more: hasMore, nome: proxLead.nome, enviou_ok: enviouOk });
+  } catch (err) {
+    console.error('[Disparos] Erro no step:', err.message);
+    res.status(500).json({ erro: err.message || 'Erro ao processar contato' });
+  }
+});
+
 // ── POST /api/disparos/:id/pausar ─────────────────────────────
 router.post('/:id/pausar', autenticar, adminOuComercial, async (req, res) => {
-  const ok = pausarFila(req.params.id);
-  if (ok) await supabaseAdmin.from('disparos_campanhas').update({ status: 'pausado', atualizado_em: new Date().toISOString() }).eq('id', req.params.id);
-  res.json({ ok });
+  pausarFila(req.params.id); // tenta parar fila em memória (no-op no serverless)
+  await supabaseAdmin.from('disparos_campanhas').update({ status: 'pausado', atualizado_em: new Date().toISOString() }).eq('id', req.params.id);
+  res.json({ ok: true });
 });
 
 // ── POST /api/disparos/:id/retomar ────────────────────────────
 router.post('/:id/retomar', autenticar, adminOuComercial, async (req, res) => {
-  const ok = retomarFila(req.params.id);
-  if (ok) await supabaseAdmin.from('disparos_campanhas').update({ status: 'ativo', atualizado_em: new Date().toISOString() }).eq('id', req.params.id);
-  res.json({ ok });
+  await supabaseAdmin.from('disparos_campanhas').update({ status: 'ativo', atualizado_em: new Date().toISOString() }).eq('id', req.params.id);
+  res.json({ ok: true });
 });
 
 // ── POST /api/disparos/:id/encerrar ──────────────────────────

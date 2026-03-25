@@ -270,4 +270,6 @@ module.exports = {
   gerarMensagemWA,
   gerarMensagemEmail,
   normalizarTelefone,
+  processarContato,
+  dentroDoHorario,
 };

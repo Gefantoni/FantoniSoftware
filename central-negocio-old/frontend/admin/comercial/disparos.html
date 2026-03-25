@@ -716,8 +716,11 @@ function renderizarLista(campanhas) {
 async function iniciarRascunho(id) {
   try {
     await apiFetch(`/disparos/${id}/iniciar`, { method: 'POST' });
-    mostrarAlerta('Disparo iniciado!', 'sucesso');
-    carregarListaCampanhas();
+    campanhaAtualId = id;
+    irParaEtapa(3);
+    document.getElementById('btn-pausar').style.display   = 'inline-flex';
+    document.getElementById('btn-encerrar').style.display = 'inline-flex';
+    executarStep();
   } catch (e) {
     mostrarAlerta('Erro ao iniciar: ' + e.message, 'erro');
   }
@@ -729,7 +732,11 @@ async function pausarCampanha(id) {
 }
 async function retomarCampanha(id) {
   await apiFetch(`/disparos/${id}/retomar`, { method: 'POST' });
-  carregarListaCampanhas();
+  campanhaAtualId = id;
+  irParaEtapa(3);
+  document.getElementById('btn-pausar').style.display   = 'inline-flex';
+  document.getElementById('btn-encerrar').style.display = 'inline-flex';
+  executarStep();
 }
 async function excluirCampanha(id, nome) {
   if (!confirm(`Excluir a campanha "${nome}"?\nIsso remove também todos os leads importados.`)) return;
@@ -1193,6 +1200,7 @@ async function iniciarDisparo() {
     irParaEtapa(3);
     document.getElementById('btn-pausar').style.display   = 'inline-flex';
     document.getElementById('btn-encerrar').style.display = 'inline-flex';
+    executarStep(); // inicia o primeiro envio imediatamente
   } catch (err) {
     mostrarAlerta('Erro ao iniciar: ' + (err.erro || err.message), 'erro');
     btn.disabled = false; btn.textContent = '📨 Iniciar disparo';
@@ -1242,34 +1250,19 @@ async function atualizarStatus() {
     document.getElementById('btn-retomar').style.display  = status === 'pausado' ? 'inline-flex' : 'none';
     document.getElementById('btn-encerrar').style.display = ['ativo','pausado'].includes(status) ? 'inline-flex' : 'none';
 
-    // Timer countdown
+    // Timer wrap — apenas visibilidade; o dispatch é controlado por executarStep()
+    const timerWrap = document.getElementById('timer-wrap');
     if (status === 'ativo' && enviados < total) {
-      const timerWrap = document.getElementById('timer-wrap');
-      if (timerWrap) timerWrap.style.display = 'flex';
-      if (timerWrap) timerWrap.classList.remove('pausado');
+      if (timerWrap) { timerWrap.style.display = 'flex'; timerWrap.classList.remove('pausado'); }
       const rangeEl = document.getElementById('timer-range');
       if (rangeEl) rangeEl.textContent = `(intervalo: ${formatarSeg(cfgIntMin)}–${formatarSeg(cfgIntMax)})`;
-      // Novo envio detectado → mostra resultado e reinicia countdown
-      if (enviados !== ultimosEnviados && ultimosEnviados >= 0) {
-        // Encontra o lead mais recentemente atualizado
-        const leads = dados.leads || [];
-        const recente = leads.slice().sort((a,b) => new Date(b.atualizado_em||0) - new Date(a.atualizado_em||0))[0];
-        const temErro = recente && (recente.status || '').startsWith('erro');
-        mostrarResultadoEnvio(!temErro);
-        iniciarContagem(cfgIntMin, cfgIntMax);
-      } else if (ultimosEnviados < 0) {
-        iniciarContagem(cfgIntMin, cfgIntMax);
-      }
     } else if (status === 'pausado') {
-      const timerWrap = document.getElementById('timer-wrap');
       if (timerWrap) { timerWrap.style.display = 'flex'; timerWrap.classList.add('pausado'); }
-      pararTimer();
       const countdown = document.getElementById('timer-countdown');
       if (countdown) countdown.textContent = 'pausado';
     } else {
-      pararTimer();
+      if (timerWrap) timerWrap.style.display = 'none';
     }
-    ultimosEnviados = enviados;
 
     if (['concluido','encerrado'].includes(status) && pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
     renderizarLog(dados.leads || []);
@@ -1319,8 +1312,8 @@ function renderizarLog(leads) {
 }
 
 // ── Controles do wizard ────────────────────────────────────────
-async function pausarDisparo()  { await apiFetch(`/disparos/${campanhaAtualId}/pausar`,  { method:'POST' }); atualizarStatus(); }
-async function retomarDisparo() { await apiFetch(`/disparos/${campanhaAtualId}/retomar`, { method:'POST' }); atualizarStatus(); iniciarPolling(); }
+async function pausarDisparo()  { await apiFetch(`/disparos/${campanhaAtualId}/pausar`,  { method:'POST' }); pararTimer(); atualizarStatus(); }
+async function retomarDisparo() { await apiFetch(`/disparos/${campanhaAtualId}/retomar`, { method:'POST' }); executarStep(); }
 async function encerrarDisparo() {
   if (!confirm('Encerrar o disparo? Isso para o envio permanentemente.')) return;
   await apiFetch(`/disparos/${campanhaAtualId}/encerrar`, { method:'POST' });
@@ -1342,10 +1335,7 @@ function iniciarContagem(minSeg, maxSeg) {
     timerSecsLeft--;
     if (timerSecsLeft <= 0) {
       pararTimer();
-      const el = document.getElementById('timer-countdown');
-      if (el) el.textContent = 'enviando...';
-      const bar = document.getElementById('timer-bar');
-      if (bar) bar.style.width = '0%';
+      executarStep();
     } else {
       atualizarTimerDisplay();
     }
@@ -1377,6 +1367,47 @@ function mostrarResultadoEnvio(ok) {
 
 function pararTimer() {
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+async function executarStep() {
+  if (!campanhaAtualId) return;
+  const el  = document.getElementById('timer-countdown');
+  const bar = document.getElementById('timer-bar');
+  if (el)  el.textContent = 'enviando...';
+  if (bar) bar.style.width = '0%';
+  try {
+    const res = await apiFetch(`/disparos/${campanhaAtualId}/step`, { method: 'POST' });
+    if (!res || res.erro) {
+      mostrarResultadoEnvio(false);
+      iniciarContagem(30, 30); // tenta novamente em 30s em caso de erro
+      return;
+    }
+    if (res.ok === false) {
+      // Campanha pausada, encerrada, etc — para o timer
+      pararTimer();
+      atualizarStatus();
+      return;
+    }
+    if (!res.has_more) {
+      // Concluído
+      pararTimer();
+      mostrarResultadoEnvio(res.enviou_ok !== false);
+      atualizarStatus();
+      return;
+    }
+    if (res.fora_horario) {
+      if (el) el.textContent = 'fora do horário';
+      iniciarContagem(60, 60);
+      return;
+    }
+    // Enviado com sucesso — mostra resultado e agenda próximo
+    mostrarResultadoEnvio(res.enviou_ok !== false);
+    iniciarContagem(cfgIntMin, cfgIntMax);
+    atualizarStatus();
+  } catch (e) {
+    mostrarResultadoEnvio(false);
+    iniciarContagem(30, 30); // tenta novamente em 30s
+  }
 }
 
 function toggleInfoEmail() {

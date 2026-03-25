@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leads do Site — Admin</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <style>
+    body { display: flex; min-height: 100vh; background: #f8fafc; font-family: 'Inter', sans-serif; }
+    #sidebar { width: 260px; flex-shrink: 0; }
+    .main-content { flex: 1; padding: 32px; overflow-y: auto; }
+
+    /* ── cabeçalho ── */
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 22px; font-weight: 700; color: #0f172a; }
+    .page-header p  { font-size: 14px; color: #64748b; margin-top: 4px; }
+
+    /* ── abas ── */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: #f1f5f9; padding: 4px; border-radius: 10px; width: fit-content; }
+    .tab { padding: 9px 20px; border-radius: 7px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: #64748b; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 7px; }
+    .tab.active { background: #fff; color: #0f172a; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
+    .tab-count { background: #e2e8f0; color: #475569; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 20px; }
+    .tab.active .tab-count { background: #dbeafe; color: #1d4ed8; }
+
+    /* ── cards resumo ── */
+    .cards-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 20px; }
+    .card-label { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card-value { font-size: 28px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1; }
+    .card-sub   { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+    /* ── barra de ferramentas ── */
+    .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .toolbar input { flex: 1; min-width: 200px; padding: 9px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; }
+    .toolbar input:focus { border-color: #3b82f6; }
+    .toolbar select { padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #374151; background: #fff; cursor: pointer; outline: none; }
+    .btn-refresh { padding: 9px 16px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 600; color: #374151; cursor: pointer; white-space: nowrap; }
+    .btn-refresh:hover { background: #e2e8f0; }
+
+    /* ── tabela ── */
+    .table-wrap { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: #f8fafc; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; padding: 12px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody td { padding: 13px 16px; font-size: 13px; color: #374151; }
+    .td-nome { font-weight: 600; color: #0f172a; }
+    .td-muted { color: #94a3b8; font-size: 12px; }
+
+    /* ── badges status ── */
+    .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .badge-pending  { background: #fef3c7; color: #92400e; }
+    .badge-paid     { background: #dcfce7; color: #166534; }
+    .badge-canceled { background: #fee2e2; color: #991b1b; }
+    .badge-other    { background: #f1f5f9; color: #475569; }
+
+    /* ── plano ── */
+    .plan-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #dbeafe; color: #1d4ed8; }
+
+    /* ── link fatura ── */
+    .link-fatura { color: #2563eb; text-decoration: none; font-size: 12px; font-weight: 600; }
+    .link-fatura:hover { text-decoration: underline; }
+
+    /* ── estado vazio / carregando ── */
+    .state-msg { text-align: center; padding: 64px 20px; color: #94a3b8; font-size: 15px; }
+    .state-msg span { font-size: 36px; display: block; margin-bottom: 12px; }
+
+    /* ── seção oculta ── */
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    /* ── paginação ── */
+    .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #f1f5f9; background: #fff; font-size: 13px; color: #64748b; }
+    .pag-btns { display: flex; gap: 6px; }
+    .pag-btns button { padding: 5px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; font-size: 13px; cursor: pointer; }
+    .pag-btns button:hover:not(:disabled) { background: #f1f5f9; }
+    .pag-btns button:disabled { opacity: 0.4; cursor: default; }
+  </style>
+</head>
+<body>
+<div id="sidebar"></div>
+
+<div class="main-content">
+  <div class="page-header">
+    <h1>🌐 Leads do Site</h1>
+    <p>Contatos que se cadastraram em fantonisoftware.com.br — períodos teste e pagamentos.</p>
+  </div>
+
+  <!-- Abas -->
+  <div class="tabs">
+    <button class="tab active" onclick="mudarAba('leads')" id="tab-leads">
+      📋 Período Teste <span class="tab-count" id="count-leads">—</span>
+    </button>
+    <button class="tab" onclick="mudarAba('pagamentos')" id="tab-pagamentos">
+      💳 Pagamentos <span class="tab-count" id="count-pagamentos">—</span>
+    </button>
+  </div>
+
+  <!-- ── ABA: LEADS ── -->
+  <div class="tab-section active" id="section-leads">
+    <div class="cards-row" id="cards-leads">
+      <div class="card">
+        <div class="card-label">Total de Leads</div>
+        <div class="card-value" id="total-leads">—</div>
+        <div class="card-sub">todos os períodos</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Últimas 24h</div>
+        <div class="card-value" id="leads-24h">—</div>
+        <div class="card-sub">novos cadastros</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Esta Semana</div>
+        <div class="card-value" id="leads-semana">—</div>
+        <div class="card-sub">últimos 7 dias</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="busca-leads" placeholder="Buscar por nome, e-mail ou WhatsApp…" oninput="debounce(carregarLeads)">
+      <button class="btn-refresh" onclick="carregarLeads()">↻ Atualizar</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>WhatsApp</th>
+            <th>CPF / CNPJ</th>
+            <th>Origem</th>
+            <th>Cadastrado em</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-leads">
+          <tr><td colspan="5" class="state-msg"><span>⏳</span>Carregando…</td></tr>
+        </tbody>
+      </table>
+      <div class="pagination" id="pag-leads">
+        <span id="pag-leads-info">—</span>
+        <div class="pag-btns">
+          <button id="pag-leads-ant" onclick="pagLeads(-1)" disabled>← Anterior</button>
+          <button id="pag-leads-prox" onclick="pagLeads(1)" disabled>Próximo →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ABA: PAGAMENTOS ── -->
+  <div class="tab-section" id="section-pagamentos">
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-label">Total Checkouts</div>
+        <div class="card-value" id="total-checkouts">—</div>
+        <div class="card-sub">iniciados</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Receita Total</div>
+        <div class="card-value" id="receita-total">—</div>
+        <div class="card-sub">soma dos valores</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Aguardando</div>
+        <div class="card-value" id="checkout-pending">—</div>
+        <div class="card-sub">pagamento pendente</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Pagos</div>
+        <div class="card-value" id="checkout-paid">—</div>
+        <div class="card-sub">confirmados</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="busca-checkouts" placeholder="Buscar por nome ou e-mail…" oninput="debounce(carregarCheckouts)">
+      <select id="filtro-status" onchange="carregarCheckouts()">
+        <option value="">Todos os status</option>
+        <option value="pending">Pendente</option>
+        <option value="paid">Pago</option>
+        <option value="canceled">Cancelado</option>
+      </select>
+      <button class="btn-refresh" onclick="carregarCheckouts()">↻ Atualizar</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Plano</th>
+            <th>Valor/mês</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Fatura</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-checkouts">
+          <tr><td colspan="7" class="state-msg"><span>⏳</span>Carregando…</td></tr>
+        </tbody>
+      </table>
+      <div class="pagination" id="pag-checkouts">
+        <span id="pag-checkouts-info">—</span>
+        <div class="pag-btns">
+          <button id="pag-checkouts-ant" onclick="pagCheckouts(-1)" disabled>← Anterior</button>
+          <button id="pag-checkouts-prox" onclick="pagCheckouts(1)" disabled>Próximo →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+  const usuario = protegerPagina(['admin', 'comercial']);
+
+  // ── Estado ──
+  const PAGE = 50;
+  let offsetLeads = 0, totalLeads = 0;
+  let offsetCheckouts = 0, totalCheckouts = 0;
+  let debTimer = null;
+
+  // ── Utilitários ──
+  function debounce(fn, ms = 400) {
+    clearTimeout(debTimer);
+    debTimer = setTimeout(fn, ms);
+  }
+
+  function fmt(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }
+
+  function fmtVal(v) {
+    if (v == null) return '—';
+    return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  }
+
+  function fmtDoc(doc) {
+    if (!doc) return '—';
+    const d = doc.replace(/\D/g, '');
+    if (d.length === 11) return d.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    if (d.length === 14) return d.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+    return doc;
+  }
+
+  function fmtWA(w) {
+    if (!w) return '—';
+    const d = w.replace(/\D/g, '');
+    return d.length >= 11 ? `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}` : w;
+  }
+
+  function badgeStatus(s) {
+    const map = { pending: ['badge-pending','Pendente'], paid: ['badge-paid','Pago'], canceled: ['badge-canceled','Cancelado'] };
+    const [cls, txt] = map[s] || ['badge-other', s || '—'];
+    return `<span class="badge ${cls}">${txt}</span>`;
+  }
+
+  // ── Abas ──
+  function mudarAba(aba) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('tab-' + aba).classList.add('active');
+    document.getElementById('section-' + aba).classList.add('active');
+    if (aba === 'leads') carregarLeads();
+    else carregarCheckouts();
+  }
+
+  // ── LEADS ──
+  async function carregarLeads() {
+    offsetLeads = 0;
+    await fetchLeads();
+  }
+
+  async function fetchLeads() {
+    const busca = document.getElementById('busca-leads').value.trim();
+    const params = new URLSearchParams({ limit: PAGE, offset: offsetLeads });
+    if (busca) params.set('busca', busca);
+
+    const tbody = document.getElementById('tbody-leads');
+    tbody.innerHTML = '<tr><td colspan="5" class="state-msg"><span>⏳</span>Carregando…</td></tr>';
+
+    try {
+      const { leads, total } = await api.get('/landing/leads?' + params);
+      totalLeads = total || leads.length;
+      document.getElementById('total-leads').textContent = totalLeads;
+      document.getElementById('count-leads').textContent = totalLeads;
+
+      // Calcular 24h e semana
+      const agora = Date.now();
+      const dia = leads.filter(l => agora - new Date(l.created_at) < 86400000).length;
+      const sem = leads.filter(l => agora - new Date(l.created_at) < 7 * 86400000).length;
+      document.getElementById('leads-24h').textContent = dia;
+      document.getElementById('leads-semana').textContent = sem;
+
+      if (!leads.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="state-msg"><span>📭</span>Nenhum lead encontrado.</td></tr>';
+      } else {
+        tbody.innerHTML = leads.map(l => `
+          <tr>
+            <td class="td-nome">${esc(l.name || '—')}</td>
+            <td>${esc(l.email || '—')}</td>
+            <td>${fmtWA(l.whatsapp)}</td>
+            <td>${fmtDoc(l.cpf_cnpj)}</td>
+            <td><span class="badge badge-other">${esc(l.origem || 'Teste Site')}</span></td>
+            <td>${fmt(l.created_at)}</td>
+          </tr>`).join('');
+      }
+      atualizarPagLeads();
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="5" class="state-msg"><span>⚠️</span>Erro ao carregar leads: ${esc(e.message)}</td></tr>`;
+    }
+  }
+
+  function pagLeads(dir) {
+    offsetLeads = Math.max(0, offsetLeads + dir * PAGE);
+    fetchLeads();
+  }
+
+  function atualizarPagLeads() {
+    const fim = Math.min(offsetLeads + PAGE, totalLeads);
+    document.getElementById('pag-leads-info').textContent = `${offsetLeads + 1}–${fim} de ${totalLeads}`;
+    document.getElementById('pag-leads-ant').disabled = offsetLeads === 0;
+    document.getElementById('pag-leads-prox').disabled = fim >= totalLeads;
+  }
+
+  // ── CHECKOUTS ──
+  async function carregarCheckouts() {
+    offsetCheckouts = 0;
+    await fetchCheckouts();
+  }
+
+  async function fetchCheckouts() {
+    const busca  = document.getElementById('busca-checkouts').value.trim();
+    const status = document.getElementById('filtro-status').value;
+    const params = new URLSearchParams({ limit: PAGE, offset: offsetCheckouts });
+    if (busca)  params.set('busca', busca);
+    if (status) params.set('status', status);
+
+    const tbody = document.getElementById('tbody-checkouts');
+    tbody.innerHTML = '<tr><td colspan="7" class="state-msg"><span>⏳</span>Carregando…</td></tr>';
+
+    try {
+      const { checkouts, total } = await api.get('/landing/checkouts?' + params);
+      totalCheckouts = total || checkouts.length;
+      document.getElementById('total-checkouts').textContent = totalCheckouts;
+      document.getElementById('count-pagamentos').textContent = totalCheckouts;
+
+      const pending = checkouts.filter(c => c.status === 'pending').length;
+      const paid    = checkouts.filter(c => c.status === 'paid').length;
+      const receita = checkouts.reduce((s, c) => s + (Number(c.total_value) || 0), 0);
+      document.getElementById('checkout-pending').textContent = pending;
+      document.getElementById('checkout-paid').textContent = paid;
+      document.getElementById('receita-total').textContent = fmtVal(receita);
+
+      if (!checkouts.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="state-msg"><span>📭</span>Nenhum checkout encontrado.</td></tr>';
+      } else {
+        tbody.innerHTML = checkouts.map(c => `
+          <tr>
+            <td>
+              <div class="td-nome">${esc(c.name || '—')}</div>
+              <div class="td-muted">${esc(c.email || '—')}</div>
+            </td>
+            <td><span class="plan-pill">${esc(c.plan_label || c.plan || '—')}</span></td>
+            <td>${fmtVal(c.plan_value)}</td>
+            <td>${fmtVal(c.total_value)}</td>
+            <td>${badgeStatus(c.status)}</td>
+            <td>${c.invoice_url ? `<a href="${esc(c.invoice_url)}" target="_blank" class="link-fatura">Ver fatura ↗</a>` : '—'}</td>
+            <td>${fmt(c.created_at)}</td>
+          </tr>`).join('');
+      }
+      atualizarPagCheckouts();
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="7" class="state-msg"><span>⚠️</span>Erro ao carregar checkouts: ${esc(e.message)}</td></tr>`;
+    }
+  }
+
+  function pagCheckouts(dir) {
+    offsetCheckouts = Math.max(0, offsetCheckouts + dir * PAGE);
+    fetchCheckouts();
+  }
+
+  function atualizarPagCheckouts() {
+    const fim = Math.min(offsetCheckouts + PAGE, totalCheckouts);
+    document.getElementById('pag-checkouts-info').textContent = `${offsetCheckouts + 1}–${fim} de ${totalCheckouts}`;
+    document.getElementById('pag-checkouts-ant').disabled = offsetCheckouts === 0;
+    document.getElementById('pag-checkouts-prox').disabled = fim >= totalCheckouts;
+  }
+
+  // ── Init ──
+  carregarLeads();
+</script>
+</body>
+</html>

@@ -3,12 +3,15 @@
 
 // Planos disponíveis
 const PLANS = {
-  'mei':               { label: 'MEI',                value: 99.00,  semestral: false },
-  'essencial':         { label: 'Essencial',          value: 119.00, semestral: false },
-  'premium':           { label: 'Premium',            value: 139.00, semestral: false },
-  'mei-semestral':     { label: 'MEI Semestral',      value: 79.00,  semestral: true  },
-  'essencial-semestral':{ label: 'Essencial Semestral', value: 99.00, semestral: true  },
-  'premium-semestral': { label: 'Premium Semestral',  value: 115.00, semestral: true  },
+  'mei':                { label: 'MEI',                 value: 99.00,  meses: null },
+  'essencial':          { label: 'Essencial',           value: 119.00, meses: null },
+  'premium':            { label: 'Premium',             value: 139.00, meses: null },
+  'mei-semestral':      { label: 'MEI Semestral',       value: 89.00,  meses: 6    },
+  'essencial-semestral':{ label: 'Essencial Semestral', value: 109.00, meses: 6    },
+  'premium-semestral':  { label: 'Premium Semestral',   value: 119.00, meses: 6    },
+  'mei-anual':          { label: 'MEI Anual',           value: 79.00,  meses: 12   },
+  'essencial-anual':    { label: 'Essencial Anual',     value: 99.00,  meses: 12   },
+  'premium-anual':      { label: 'Premium Anual',       value: 109.00, meses: 12   },
 };
 
 const ORDER_BUMP_VALUE = 199.00; // Implantação Guiada (taxa única)
@@ -26,12 +29,13 @@ function nextDay10() {
   return next.toISOString().split('T')[0];
 }
 
-// Para semestral: data final após 5 cobranças mensais (6ª = último pagamento recorrente)
-function semestralEndDate() {
+// Data final da assinatura limitada: (meses - 1) recorrências após o próximo dia 10
+// (1ª cobrança é feita hoje, então o contrato tem meses-1 cobranças mensais restantes)
+function subscriptionEndDate(meses) {
   const d = new Date();
   const next = new Date(d.getFullYear(), d.getMonth(), 10);
   if (d.getDate() >= 10) next.setMonth(next.getMonth() + 1);
-  next.setMonth(next.getMonth() + 4); // 5 recorrências: dia 10 × 5 meses
+  next.setMonth(next.getMonth() + (meses - 2)); // -1 pq começa no próximo dia10, -1 do índice
   return next.toISOString().split('T')[0];
 }
 
@@ -172,9 +176,9 @@ export default async function handler(req, res) {
       externalReference: `subscription_${plan}`,
     };
 
-    // Plano semestral: limita a 5 cobranças recorrentes (1ª já foi cobrada hoje = total 6)
-    if (selectedPlan.semestral) {
-      subBody.endDate = semestralEndDate();
+    // Plano com duração limitada (semestral/anual): define data final da assinatura
+    if (selectedPlan.meses) {
+      subBody.endDate = subscriptionEndDate(selectedPlan.meses);
     }
 
     fetch(`${BASE_URL}/subscriptions`, {
@@ -204,6 +208,7 @@ export default async function handler(req, res) {
       asaas_id:    asaasId,
       customer_id: customer.id,
       status:      'pending',
+      origem:      'Checkout Site',
       created_at:  new Date().toISOString(),
     });
 

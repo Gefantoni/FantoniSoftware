@@ -5,14 +5,15 @@
 -- ============================================================
 
 
--- ── TABELA: leads ────────────────────────────────────────────
+-- ── TABELA: leads (período teste) ────────────────────────────
 
 create table if not exists leads (
   id          bigint generated always as identity primary key,
-  name        text        not null,
-  email       text        not null,
-  whatsapp    text        not null,
+  name        text,
+  email       text,
+  whatsapp    text,
   cpf_cnpj    text,
+  origem      text,
   created_at  timestamptz not null default now()
 );
 
@@ -20,6 +21,7 @@ alter table leads add column if not exists name       text;
 alter table leads add column if not exists email      text;
 alter table leads add column if not exists whatsapp   text;
 alter table leads add column if not exists cpf_cnpj   text;
+alter table leads add column if not exists origem      text;
 alter table leads add column if not exists created_at timestamptz default now();
 
 create index if not exists leads_email_idx on leads (email);
@@ -34,14 +36,14 @@ create policy "service only" on leads
   with check (true);
 
 
--- ── TABELA: checkouts ────────────────────────────────────────
+-- ── TABELA: checkouts (pagamentos) ───────────────────────────
 
 create table if not exists checkouts (
   id          bigint generated always as identity primary key,
-  name        text        not null,
-  email       text        not null,
+  name        text,
+  email       text,
   cpf_cnpj    text,
-  plan        text        not null,
+  plan        text,
   plan_label  text,
   plan_value  numeric(10,2),
   order_bump  boolean     default false,
@@ -50,6 +52,7 @@ create table if not exists checkouts (
   customer_id text,
   invoice_url text,
   status      text        default 'pending',
+  origem      text,
   created_at  timestamptz not null default now()
 );
 
@@ -65,6 +68,7 @@ alter table checkouts add column if not exists asaas_id    text;
 alter table checkouts add column if not exists customer_id text;
 alter table checkouts add column if not exists invoice_url text;
 alter table checkouts add column if not exists status      text default 'pending';
+alter table checkouts add column if not exists origem      text;
 alter table checkouts add column if not exists created_at  timestamptz default now();
 
 create index if not exists checkouts_email_idx  on checkouts (email);
