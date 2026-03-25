@@ -26,7 +26,8 @@
 
       <div class="nav-section-title">Comercial</div>
       <a href="/admin/comercial/" class="nav-item">📊 Dashboard</a>
-      <a href="/admin/comercial/leads.html" class="nav-item">👤 Leads</a>
+      <a href="/admin/comercial/leads.html" class="nav-item">👤 Leads CRM</a>
+      <a href="/admin/comercial/landing-leads.html" class="nav-item">🌐 Leads do Site</a>
       <a href="/admin/comercial/disparos.html" class="nav-item">🚀 Disparos em Massa</a>
       <a href="/admin/comercial/conversas.html" class="nav-item">💬 Conversas</a>
       <a href="/admin/comercial/kanban.html" class="nav-item">📋 Kanban</a>

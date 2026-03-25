@@ -60,6 +60,7 @@ app.use('/api/whatsapp', require('./routes/whatsapp'));
 app.use('/api/disparos', require('./routes/disparos'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/cardapio-ia', require('./routes/cardapio-ia'));
+app.use('/api/landing', require('./routes/landing'));
 
 // ---- Rota de saúde ----
 app.get('/api/health', (req, res) => {

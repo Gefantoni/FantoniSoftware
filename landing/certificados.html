@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certificado Digital e-CPF e e-CNPJ | Emissão Online | Fantoni Software</title>
+  <meta name="description" content="Emita seu Certificado Digital A1 via Videoconferência. e-CPF por R$ 139 e e-CNPJ por R$ 159. Rápido, seguro e 100% online." />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
+
+  <style>
+    :root {
+      --blue-400: #60a5fa;
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-400: #94a3b8;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --emerald: #10b981;
+      --font-main: 'Inter', sans-serif;
+      --font-title: 'Outfit', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-main); background: #020617; color: #f8fafc; line-height: 1.6; overflow-x: hidden; }
+    h1, h2, h3, h4 { font-family: var(--font-title); font-weight: 800; }
+
+    /* NAVBAR */
+    nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 20px; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 900; font-size: 1.2rem; }
+
+    /* HERO */
+    .hero { padding: 160px 24px 80px; text-align: center; background: radial-gradient(circle at top, rgba(37, 99, 235, 0.15) 0%, transparent 70%); }
+    .hero h1 { font-size: clamp(32px, 5vw, 64px); line-height: 1.1; margin-bottom: 24px; }
+    .hero span { color: var(--blue-400); }
+    .hero p { font-size: 1.2rem; color: var(--slate-400); max-width: 700px; margin: 0 auto 40px; }
+
+    /* STATS BAR */
+    .stats-bar { max-width: 1000px; margin: -40px auto 80px; display: grid; grid-template-columns: repeat(4, 1fr); background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; gap: 20px; }
+    .stat-item { text-align: center; }
+    .stat-num { display: block; font-size: 1.8rem; font-weight: 800; color: #fff; }
+    .stat-text { font-size: 0.8rem; color: var(--slate-400); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* TABS SYSTEM */
+    .tabs-container { max-width: 1100px; margin: 0 auto 80px; padding: 0 24px; }
+    .tabs-nav { display: flex; justify-content: center; gap: 12px; margin-bottom: 48px; }
+    .tab-btn { padding: 12px 28px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #fff; cursor: pointer; font-weight: 700; transition: all 0.3s; }
+    .tab-btn.active { background: var(--blue-600); border-color: var(--blue-600); box-shadow: 0 0 20px rgba(37,99,235,0.4); }
+
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; display: none; }
+    .pricing-grid.active { display: grid; }
+
+    /* CARDS */
+    .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 32px; padding: 48px 40px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+    .card:hover { transform: translateY(-12px); border-color: var(--blue-500); background: rgba(255,255,255,0.05); }
+    .card-popular { border-color: var(--blue-600); box-shadow: 0 20px 50px rgba(37,99,235,0.1); }
+    .badge-pop { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--blue-600); padding: 6px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+    
+    .card h3 { font-size: 2rem; margin-bottom: 8px; }
+    .card .subtitle { display: block; color: var(--slate-400); font-size: 0.9rem; margin-bottom: 32px; }
+    .price { font-size: 3.5rem; font-weight: 900; margin-bottom: 32px; display: flex; align-items: baseline; gap: 6px; }
+    .price small { font-size: 1.2rem; color: var(--slate-400); }
+
+    .feat-list { list-style: none; margin-bottom: 40px; }
+    .feat-list li { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: var(--slate-200); margin-bottom: 14px; }
+    .feat-list li svg { width: 20px; color: var(--emerald); }
+    /* BUTTONS */
+    .btn-buy { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 16px; background: #fff; color: #000; text-decoration: none; border: none; cursor: pointer; font-weight: 800; transition: 0.3s; }
+    .btn-buy:hover { background: var(--blue-500); color: #fff; transform: translateY(-2px); }
+    
+    .btn-contact { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 16px; background: rgba(255,255,255,0.05); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); font-weight: 800; transition: 0.3s; }
+    .btn-contact:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+
+    /* CHECKOUT MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+    .checkout-modal { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 440px; padding: 40px; border-radius: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; box-sizing: border-box; margin: 0 12px; }
+    .modal-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--slate-400); font-size: 1.5rem; transition: 0.2s; }
+    .modal-close:hover { color: #fff; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--slate-400); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .form-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; color: #fff; font-size: 1rem; outline: none; transition: 0.2s; }
+    .form-input:focus { border-color: var(--blue-500); background: rgba(255,255,255,0.08); }
+    .modal-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 24px; text-align: center; color: #fff; }
+
+    /* HOW IT WORKS */
+    .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 64px; }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 24px 100px; }
+    .step-item { text-align: center; }
+    .step-num { width: 64px; height: 64px; background: var(--blue-600); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; margin: 0 auto 24px; box-shadow: 0 0 30px rgba(37,99,235,0.3); }
+    .step-item h4 { margin-bottom: 12px; }
+    .step-item p { color: var(--slate-400); font-size: 0.9rem; }
+
+    /* FAQ */
+    .faq { max-width: 800px; margin: 0 auto 100px; padding: 0 24px; }
+    .faq-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; margin-bottom: 12px; cursor: pointer; }
+    .faq-q { font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+    .faq-a { display: none; color: var(--slate-400); margin-top: 16px; font-size: 0.9rem; }
+
+    footer { padding: 40px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); opacity: 0.6; }
+
+    @media (max-width: 768px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 20px; }
+      .hero h1 { font-size: 2.5rem; }
+      .price-buttons { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo.png" style="height:32px;"> Fantoni <span style="font-weight:400; opacity:0.6;">Software</span>
+      </a>
+      <a href="index.html" class="tab-btn" style="text-decoration:none; font-size:0.8rem;">Voltar ao PDV</a>
+    </div>
+  </nav>
+
+  <section class="hero" data-aos="fade-in">
+    <div class="container">
+      <span style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--blue-400); letter-spacing:3px;">Certificação Digital de Alta Performance</span>
+      <h1>Seu Certificado <span>A1</span> em <span>24h</span><br>Sem sair de casa</h1>
+      <p>Emita seu e-CPF ou e-CNPJ 100% online por videoconferência. Focado exclusivamente em certificados A1 em arquivo para máxima agilidade.</p>
+      
+      <div style="margin-top: 40px; display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap;">
+        <div style="background: rgba(255,255,255,0.05); padding: 20px 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+          <img src="assets/Certificados/download-1.png" alt="Syngular" style="height: 45px; display: block;">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-bar" data-aos="fade-up">
+    <div class="stat-item"><span class="stat-num">+300</span><span class="stat-text">Emitidos</span></div>
+    <div class="stat-item"><span class="stat-num">100%</span><span class="stat-text">Online</span></div>
+    <div class="stat-item"><span class="stat-num">Até 24h</span><span class="stat-text">Para Ativar</span></div>
+    <div class="stat-item"><span class="stat-num">4.9/5</span><span class="stat-text">Avaliação</span></div>
+  </div>
+
+  <div class="tabs-container">
+    <div class="tabs-nav" data-aos="fade-up">
+      <button class="tab-btn active" onclick="showTab('ecpf')">Pessoa Física (e-CPF)</button>
+      <button class="tab-btn" onclick="showTab('ecnpj')">Pessoa Jurídica (e-CNPJ)</button>
+    </div>
+
+    <!-- e-CPF Tab -->
+    <div id="tab-ecpf" class="pricing-grid active" data-aos="fade-up" style="justify-content: center;">
+      <div class="card card-popular" style="max-width: 450px; margin: 0 auto;">
+        <div class="badge-pop">Mais Vendido</div>
+        <span class="subtitle">Tipo A1 em Arquivo - Validade 1 ano</span>
+        <h3>e-CPF A1</h3>
+        <div class="price">R$ 139<small>,00</small></div>
+        <ul class="feat-list">
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3"></path></svg> Instalação direto no PC (.pfx)</li>
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3"></path></svg> Acesso ao e-CAC, Gov.br e INSS</li>
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3"></path></svg> Assinatura Digital de Documentos</li>
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3"></path></svg> Videoconferência via Celular</li>
+        </ul>
+        <div class="price-buttons" style="display: flex; gap: 12px;">
+          <button onclick="openCheckoutModal('ecpf-a1')" class="btn-buy">Comprar</button>
+          <a href="https://wa.me/5551996034862?text=Olá! Gostaria de tirar dúvidas sobre o e-CPF A1" target="_blank" class="btn-contact">Consultor</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- e-CNPJ Tab -->
+    <div id="tab-ecnpj" class="pricing-grid" data-aos="fade-up" style="justify-content: center;">
+      <div class="card card-popular" style="max-width: 450px; margin: 0 auto;">
+        <div class="badge-pop">Foco em NF-e</div>
+        <span class="subtitle">Tipo A1 em Arquivo - Validade 1 ano</span>
+        <h3>e-CNPJ A1</h3>
+        <div class="price">R$ 159<small>,00</small></div>
+        <ul class="feat-list">
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3"></path></svg> Emissão de NF-e, NFC-e e NFS-e</li>
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3"></path></svg> Acesso Receita Federal e e-Social</li>
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3"></path></svg> FGTS Digitais e Conectividade</li>
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3"></path></svg> Videoconferência Imediata</li>
+        </ul>
+        <div class="price-buttons" style="display: flex; gap: 12px;">
+          <button onclick="openCheckoutModal('ecnpj-a1')" class="btn-buy">Comprar</button>
+          <a href="https://wa.me/5551996034862?text=Olá! Gostaria de tirar dúvidas sobre o e-CNPJ A1" target="_blank" class="btn-contact">Consultor</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2 class="section-title">Como funciona a emissão?</h2>
+    <div class="steps-grid">
+      <div class="step-item" data-aos="fade-up" data-aos-delay="0"><div class="step-num">1</div><h4>Compre online</h4><p>Escolha o tipo de certificado ideal para você ou sua empresa.</p></div>
+      <div class="step-item" data-aos="fade-up" data-aos-delay="100"><div class="step-num">2</div><h4>Documentação</h4><p>Envie as fotos dos seus documentos via WhatsApp de forma simples.</p></div>
+      <div class="step-item" data-aos="fade-up" data-aos-delay="200"><div class="step-num">3</div><h4>Videoconferência</h4><p>Agendamos uma chamada rápida de 5 min para validar sua identidade.</p></div>
+      <div class="step-item" data-aos="fade-up" data-aos-delay="300"><div class="step-num">4</div><h4>Pronto!</h4><p>Seu certificado é emitido e enviado para download imediato.</p></div>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2 style="margin-bottom:32px; text-align:center;">Perguntas Frequentes</h2>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">O que é a videoconferência? <span>+</span></div>
+      <div class="faq-a">É uma chamada de vídeo curta para confirmar sua identidade sem precisar ir até um posto físico. Pode ser feita pelo celular.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Por que trabalhamos apenas com A1? <span>+</span></div>
+      <div class="faq-a">O certificado A1 é o modelo mais prático e moderno, sendo um arquivo digital (.pfx) que você instala diretamente no computador ou servidor. Ele permite a automatização de processos (como emissão de notas fiscais em massa) e não depende de tokens físicos ou cartões que podem ser perdidos ou danificados.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Quais documentos preciso? <span>+</span></div>
+      <div class="faq-a">Geralmente RG/CNH original e, para empresas, o Contrato Social ou Certificado de MEI atualizado.</div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Fantoni Software & Parceiros Homologados. Tecnologia e agilidade em certificação.</p>
+  </footer>
+
+  <div id="checkout-modal" class="modal-overlay">
+    <div class="checkout-modal">
+      <div class="modal-close" onclick="closeCheckoutModal()">✕</div>
+      <h2 class="modal-title">Dados para Emissão</h2>
+      <form id="checkout-form" onsubmit="handleCheckout(event)">
+        <input type="hidden" id="checkout-plan" value="">
+        <div class="form-group">
+          <label class="form-label">Nome Completo</label>
+          <input type="text" id="client-name" class="form-input" required placeholder="Seu nome">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input type="email" id="client-email" class="form-input" required placeholder="exemplo@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">WhatsApp</label>
+          <input type="text" id="client-whatsapp" class="form-input" required placeholder="(00) 00000-0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">CPF ou CNPJ</label>
+          <input type="text" id="client-document" class="form-input" required placeholder="000.000.000-00">
+        </div>
+        <button type="submit" class="btn-buy" id="btn-checkout-submit">Prosseguir para Pagamento</button>
+      </form>
+      <p style="font-size: 0.75rem; color: var(--slate-400); margin-top: 20px; text-align: center;">Pagamento 100% seguro via Asaas.</p>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true });
+
+    function showTab(id) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.pricing-grid').forEach(g => g.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
+    }
+
+    function toggleFaq(el) {
+      const a = el.querySelector('.faq-a');
+      const isVisible = a.style.display === 'block';
+      a.style.display = isVisible ? 'none' : 'block';
+      el.querySelector('span').innerText = isVisible ? '+' : '-';
+    }
+
+    /* CHECKOUT LOGIC */
+    const modal = document.getElementById('checkout-modal');
+    
+    function openCheckoutModal(plan) {
+      document.getElementById('checkout-plan').value = plan;
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCheckoutModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    async function handleCheckout(event) {
+      event.preventDefault();
+      const btn = document.getElementById('btn-checkout-submit');
+      const originalText = btn.innerText;
+      btn.innerText = 'Processando...';
+      btn.disabled = true;
+
+      const formData = {
+        name: document.getElementById('client-name').value,
+        email: document.getElementById('client-email').value,
+        whatsapp: document.getElementById('client-whatsapp').value,
+        cpfCnpj: document.getElementById('client-document').value,
+        plan: document.getElementById('checkout-plan').value
+      };
+
+      try {
+        const resp = await fetch('/api/checkout-certificado', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const data = await resp.json();
+        
+        if (data.success && data.invoiceUrl) {
+          window.location.href = data.invoiceUrl;
+        } else {
+          alert('Erro ao processar checkout: ' + (data.error || 'Tente novamente.'));
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Erro de conexão. Tente novamente em instantes.');
+      } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

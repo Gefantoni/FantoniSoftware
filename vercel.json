@@ -1,15 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "central-negocio-old/backend/src/server.js",
-      "use": "@vercel/node"
-    }
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/landing/api/$1" }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "central-negocio-old/backend/src/server.js"
-    }
+    { "src": "/api/(.*)", "dest": "/landing/api/$1" },
+    { "src": "/(.*)", "dest": "/landing/$1" }
   ]
 }

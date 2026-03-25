@@ -44,6 +44,7 @@ async function saveToSupabase(lead) {
       email:      lead.email,
       whatsapp:   lead.whatsapp,
       cpf_cnpj:   lead.cpfCnpj,
+      origem:     'Teste Site',
       created_at: lead.createdAt,
     }),
   });
