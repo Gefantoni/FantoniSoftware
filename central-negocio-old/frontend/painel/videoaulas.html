@@ -1,355 +1,331 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema PDV — Central do Negócio</title>
+  <title>Treinamento PDV — Central do Negócio</title>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <style>
-    .pdv-hero {
-      background: linear-gradient(135deg, var(--primaria) 0%, #1a3a5c 100%);
-      border-radius: var(--radius-lg);
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f2440 60%, #0a1628 100%);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 20px;
       padding: 32px;
-      color: #fff;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       position: relative;
       overflow: hidden;
     }
-
-    .pdv-hero::before {
-      content: '🎓';
+    .hero::before {
+      content: '';
       position: absolute;
-      right: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 80px;
-      opacity: 0.12;
+      inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(59,130,246,0.15) 0%, transparent 60%);
+      pointer-events: none;
     }
-
-    .pdv-hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 26px;
+    .hero-icon {
+      width: 52px; height: 52px;
+      background: rgba(59,130,246,0.15);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: 22px;
       color: #fff;
       margin-bottom: 6px;
+      font-family: 'Outfit', sans-serif;
     }
-
-    .pdv-hero p {
-      color: rgba(255, 255, 255, 0.75);
+    .hero p {
       font-size: 14px;
-      margin-bottom: 18px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 20px;
     }
-
-    .pdv-progresso-label {
+    .hero-progress-label {
+      display: flex;
+      justify-content: space-between;
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 6px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
     }
-
-    .pdv-progresso-bar {
-      height: 8px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
+    .hero-progress-label strong { color: #93c5fd; }
+    .progress-track {
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 99px;
       overflow: hidden;
     }
-
-    .pdv-progresso-fill {
+    .progress-fill {
       height: 100%;
-      background: var(--acento);
-      border-radius: 4px;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      border-radius: 99px;
       transition: width 0.5s ease;
     }
 
-    /* BANNER AJUDA */
+    /* ===== BANNER AJUDA ===== */
     .banner-ajuda {
       display: flex;
       align-items: center;
       gap: 14px;
-      background: linear-gradient(135deg, #fff8ec, #fff3d6);
-      border: 2px solid var(--acento);
-      border-radius: var(--radius-lg);
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 14px;
       padding: 16px 20px;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       text-decoration: none;
-      transition: var(--transicao);
-      box-shadow: 0 2px 8px rgba(200, 169, 110, 0.2);
+      transition: all 0.2s;
     }
-
     .banner-ajuda:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(200, 169, 110, 0.3);
+      background: rgba(245,158,11,0.1);
+      border-color: rgba(245,158,11,0.35);
+      transform: translateY(-1px);
     }
-
     .banner-ajuda-icon {
-      font-size: 32px;
+      width: 40px; height: 40px;
+      background: rgba(245,158,11,0.1);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .banner-ajuda-texto strong {
+      display: block;
+      font-size: 14px;
+      color: #fcd34d;
+      margin-bottom: 2px;
+    }
+    .banner-ajuda-texto span {
+      font-size: 12px;
+      color: var(--texto-suave);
+    }
+    .banner-ajuda-arrow {
+      margin-left: auto;
+      color: #fcd34d;
+      font-size: 18px;
       flex-shrink: 0;
     }
 
-    .banner-ajuda-titulo {
-      font-weight: 700;
-      color: var(--primaria);
-      font-size: 15px;
-    }
-
-    .banner-ajuda-sub {
-      font-size: 13px;
-      color: var(--texto-suave);
-    }
-
-    .banner-ajuda-arrow {
-      color: var(--acento);
-      font-size: 20px;
-      font-weight: 700;
-      margin-left: auto;
-    }
-
-    /* MÓDULO LABEL */
-    .modulo-label {
+    /* ===== TRILHA ===== */
+    .modulo-titulo {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: 22px 0 10px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.1em;
       color: var(--texto-suave);
+      margin: 28px 0 12px;
     }
-
-    .modulo-label::after {
+    .modulo-titulo::after {
       content: '';
       flex: 1;
       height: 1px;
       background: var(--borda);
     }
 
-    /* TRILHA */
-    .trilha {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .trilha { display: flex; flex-direction: column; gap: 8px; }
 
+    /* ===== CARD AULA ===== */
     .aula-card {
       background: var(--fundo-card);
-      border: 1.5px solid var(--borda);
-      border-radius: var(--radius-lg);
+      border: 1px solid var(--borda);
+      border-radius: 14px;
       overflow: hidden;
-      transition: var(--transicao);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-
-    .aula-card:hover {
-      box-shadow: var(--sombra-hover);
-    }
-
-    .aula-card.concluida {
-      border-color: #c3e6cb;
-    }
-
-    .aula-card.em-andamento {
-      border-color: var(--acento);
-    }
+    .aula-card:hover { border-color: rgba(255,255,255,0.15); }
+    .aula-card.concluida { border-color: rgba(16,185,129,0.25); }
+    .aula-card.em-andamento { border-color: rgba(59,130,246,0.4); box-shadow: 0 0 0 1px rgba(59,130,246,0.15); }
 
     .aula-header {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 14px 18px;
+      padding: 16px 20px;
       cursor: pointer;
       user-select: none;
     }
 
     .aula-num {
-      width: 36px;
-      height: 36px;
+      width: 34px; height: 34px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px;
       flex-shrink: 0;
-      background: var(--fundo);
+      background: rgba(255,255,255,0.04);
       color: var(--texto-suave);
-      border: 2px solid var(--borda);
+      border: 1.5px solid var(--borda);
+      transition: all 0.2s;
     }
-
     .aula-card.concluida .aula-num {
-      background: #d4f1e4;
-      color: #1a8a4a;
-      border-color: #c3e6cb;
+      background: rgba(16,185,129,0.12);
+      color: #6ee7b7;
+      border-color: rgba(16,185,129,0.3);
     }
-
     .aula-card.em-andamento .aula-num {
-      background: var(--acento);
-      color: var(--primaria);
-      border-color: var(--acento);
+      background: rgba(59,130,246,0.15);
+      color: #93c5fd;
+      border-color: rgba(59,130,246,0.4);
     }
 
-    .aula-info {
-      flex: 1;
-    }
-
+    .aula-info { flex: 1; min-width: 0; }
     .aula-info h3 {
-      font-size: 15px;
-      color: var(--primaria);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--texto);
       margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-
     .aula-info p {
       font-size: 12px;
       color: var(--texto-suave);
       margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .aula-status {
+    .aula-badge {
       font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 20px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 99px;
       white-space: nowrap;
       flex-shrink: 0;
     }
+    .badge-nao   { background: rgba(255,255,255,0.05); color: var(--texto-muted); }
+    .badge-ok    { background: rgba(16,185,129,0.1);   color: #6ee7b7; }
+    .badge-ativo { background: rgba(59,130,246,0.12);  color: #93c5fd; }
 
-    .status-nao {
-      background: #eaecef;
-      color: #5a6472;
+    .aula-chevron {
+      color: var(--texto-muted);
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: transform 0.25s;
     }
+    .aula-card.em-andamento .aula-chevron { transform: rotate(180deg); color: #93c5fd; }
 
-    .status-ok {
-      background: #d4f1e4;
-      color: #1a8a4a;
-    }
-
-    .status-ativo {
-      background: #fef3cd;
-      color: #856404;
-    }
-
-    /* CORPO DA AULA */
+    /* ===== CORPO EXPANDIDO ===== */
     .aula-body {
       display: none;
       border-top: 1px solid var(--borda);
-      padding: 22px;
-      background: #fafaf8;
+      padding: 24px;
+      background: rgba(255,255,255,0.01);
     }
+    .aula-body.aberta { display: block; }
 
-    .aula-body.aberta {
-      display: block;
-    }
-
-    .video-wrapper {
+    /* Vídeo */
+    .video-wrap {
       position: relative;
       padding-bottom: 56.25%;
       height: 0;
-      border-radius: var(--radius);
+      border-radius: 12px;
       overflow: hidden;
-      background: #111;
-      margin-bottom: 18px;
+      background: #000;
+      margin-bottom: 20px;
     }
-
-    .video-wrapper iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+    .video-wrap iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
       border: none;
     }
 
-    .aula-texto {
-      font-size: 14px;
-      line-height: 1.8;
+    /* Conteúdo textual */
+    .aula-conteudo { font-size: 14px; line-height: 1.8; color: var(--texto-suave); }
+    .aula-conteudo h4 {
+      font-size: 13px;
+      font-weight: 700;
       color: var(--texto);
-    }
-
-    .aula-texto h4 {
-      color: var(--primaria);
-      margin: 16px 0 8px;
-      font-size: 15px;
-    }
-
-    .aula-texto ul {
-      padding-left: 18px;
-    }
-
-    .aula-texto ul li {
-      margin-bottom: 5px;
-    }
-
-    .aula-texto .dica {
-      background: #fff8ec;
-      border-left: 3px solid var(--acento);
-      padding: 10px 14px;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      font-size: 13px;
-      margin: 14px 0;
-    }
-
-    .aula-texto .atencao {
-      background: #fde8e6;
-      border-left: 3px solid var(--erro);
-      padding: 10px 14px;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      font-size: 13px;
-      margin: 14px 0;
-    }
-
-    .aula-texto .sucesso {
-      background: #d4f1e4;
-      border-left: 3px solid var(--sucesso);
-      padding: 10px 14px;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      font-size: 13px;
-      margin: 14px 0;
-    }
-
-    .aula-acoes {
-      margin-top: 18px;
+      margin: 18px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .aula-conteudo ul { padding-left: 0; list-style: none; }
+    .aula-conteudo ul li {
+      padding: 5px 0 5px 20px;
+      position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .aula-conteudo ul li:last-child { border-bottom: none; }
+    .aula-conteudo ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--primaria);
+      font-size: 12px;
+    }
+    .aula-conteudo strong { color: var(--texto); font-weight: 600; }
+
+    /* Caixas informativas */
+    .box { border-radius: 10px; padding: 12px 16px; font-size: 13px; margin: 14px 0; display: flex; gap: 10px; align-items: flex-start; }
+    .box i { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .box-dica    { background: rgba(59,130,246,0.07);  border: 1px solid rgba(59,130,246,0.2);  color: #93c5fd; }
+    .box-aviso   { background: rgba(245,158,11,0.07);  border: 1px solid rgba(245,158,11,0.2);  color: #fcd34d; }
+    .box-atencao { background: rgba(239,68,68,0.07);   border: 1px solid rgba(239,68,68,0.2);   color: #fca5a5; }
+    .box-sucesso { background: rgba(16,185,129,0.07);  border: 1px solid rgba(16,185,129,0.2);  color: #6ee7b7; }
+
+    /* Ações */
+    .aula-acoes { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 768px) {
+      .hero { padding: 24px 20px; }
+      .hero h1 { font-size: 18px; }
+      .aula-header { padding: 14px 16px; gap: 10px; }
+      .aula-body { padding: 18px 16px; }
+      .aula-info h3 { white-space: normal; }
+      .aula-info p { white-space: normal; }
+      .aula-badge { display: none; }
     }
   </style>
 </head>
-
 <body>
   <div class="app-layout">
     <aside class="app-sidebar" id="sidebar"></aside>
-
     <main class="app-content">
       <header class="app-header" id="topbar"></header>
-
-      <div class="pagina">
+      <div class="app-body">
 
         <!-- HERO -->
-        <div class="pdv-hero">
+        <div class="hero">
+          <div class="hero-icon"><i class="ph ph-graduation-cap" style="color:#93c5fd"></i></div>
           <h1>Treinamento do Sistema PDV</h1>
           <p>Siga as aulas em ordem. Em cerca de 30 minutos você estará operando com total segurança.</p>
-          <div class="pdv-progresso-label">Progresso: <strong id="progresso-texto">0 de 14 aulas</strong></div>
-          <div class="pdv-progresso-bar">
-            <div class="pdv-progresso-fill" id="progresso-fill" style="width:0%"></div>
+          <div class="hero-progress-label">
+            <span>Seu progresso</span>
+            <strong id="progresso-texto">0 de 15 aulas</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progresso-fill" style="width:0%"></div>
           </div>
         </div>
 
-        <!-- BANNER CENTRAL DE AJUDA -->
+        <!-- BANNER AJUDA -->
         <a href="https://ajuda.navivendas.com.br/tutoriais" target="_blank" class="banner-ajuda">
-          <span class="banner-ajuda-icon">📚</span>
-          <div>
-            <div class="banner-ajuda-titulo">Central de Ajuda — Tutoriais Navivendas</div>
-            <div class="banner-ajuda-sub">Acesse todos os tutoriais detalhados com passo a passo e vídeos do sistema
-            </div>
+          <div class="banner-ajuda-icon">📚</div>
+          <div class="banner-ajuda-texto">
+            <strong>Central de Ajuda — Tutoriais Navivendas</strong>
+            <span>Acesse tutoriais detalhados com passo a passo e vídeos do sistema</span>
           </div>
-          <span class="banner-ajuda-arrow">→</span>
+          <i class="ph ph-arrow-right banner-ajuda-arrow"></i>
         </a>
 
-        <!-- ===== TRILHA ===== -->
+        <!-- TRILHA -->
         <div class="trilha">
 
-          <!-- MÓDULO 1: INTRODUÇÃO -->
-          <div class="modulo-label">Módulo 1 — Introdução ao Sistema</div>
+          <!-- MÓDULO 1 -->
+          <div class="modulo-titulo"><i class="ph ph-play-circle"></i> Módulo 1 — Introdução ao Sistema</div>
 
-          <!-- AULA 1 -->
           <div class="aula-card" id="aula-1">
             <div class="aula-header" onclick="toggleAula(1)">
               <div class="aula-num">1</div>
@@ -357,111 +333,145 @@
                 <h3>Visão Geral — Demonstração Completa</h3>
                 <p>Assista antes de começar: veja o sistema funcionando do início ao fim</p>
               </div>
-              <span class="aula-status status-nao" id="status-1">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-1">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
             <div class="aula-body" id="body-1">
-              <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/flNkuKC8J2g?start=622" allowfullscreen
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+              <div class="video-wrap">
+                <iframe src="https://www.youtube.com/embed/flNkuKC8J2g?start=622" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
               </div>
-              <div class="aula-texto">
-                <div class="dica">💡 Assista o vídeo completo antes de avançar. Ele mostra tudo que você vai aprender
-                  nas próximas aulas.</div>
+              <div class="aula-conteudo">
+                <div class="box box-dica"><i class="ph ph-lightbulb"></i><span>Assista o vídeo completo antes de avançar. Ele mostra tudo que você vai aprender nas próximas aulas.</span></div>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(1)">✓ Assistido — próxima
-                  aula →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(1)"><i class="ph ph-check"></i> Assistido — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- AULA 2 -->
           <div class="aula-card" id="aula-2">
             <div class="aula-header" onclick="toggleAula(2)">
               <div class="aula-num">2</div>
               <div class="aula-info">
-                <h3>Primeiros Passos — Ativando sua Conta</h3>
-                <p>Como criar e ativar sua conta no sistema pela primeira vez</p>
+                <h3>Todos os primeiros passos</h3>
+                <p>Como criar sua conta, ativar no sistema e banco em nuvem</p>
               </div>
-              <span class="aula-status status-nao" id="status-2">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-2">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
             <div class="aula-body" id="body-2">
-              <div class="aula-texto">
-                <h4>🚀 Ativando a conta</h4>
+              <div class="aula-conteudo">
+                <h4><i class="ph ph-rocket"></i> Ativando a conta</h4>
                 <ul>
                   <li>Abra o Navi Vendas. Na tela inicial, clique em <strong>Ativar conta</strong></li>
                   <li>Informe seu CPF ou CNPJ da empresa e clique em <strong>Ativar</strong></li>
-                  <li>Você receberá um <strong>código de verificação</strong> no seu e-mail — informe-o na tela e
-                    pronto, já entra no sistema</li>
+                  <li>Você receberá um <strong>código de verificação</strong> no seu e-mail — informe-o na tela e pronto</li>
                 </ul>
-                <div class="dica">💡 Seu acesso já foi liberado pela nossa equipe. Basta usar o código que chegou no
-                  e-mail para entrar diretamente no sistema.</div>
-                <h4>⚙️ Configurações iniciais (ao entrar pela primeira vez)</h4>
+                <div class="box box-dica"><i class="ph ph-lightbulb"></i><span>Seu acesso já foi liberado pela nossa equipe. Basta usar o código que chegou no e-mail para entrar diretamente no sistema.</span></div>
+                <h4><i class="ph ph-gear"></i> Configurações iniciais</h4>
                 <ul>
-                  <li><strong>NFC-e:</strong> Se sua empresa tem obrigatoriedade de emitir nota fiscal eletrônica,
-                    configure aqui. Caso contrário, clique em <em>Pular</em></li>
-                  <li><strong>Dados da empresa:</strong> Informe se é Varejo ou Bares/Restaurantes, e os dados
-                    cadastrais</li>
+                  <li><strong>NFC-e:</strong> Se sua empresa tem obrigatoriedade de emitir nota fiscal, configure aqui. Caso contrário, clique em <em>Pular</em></li>
+                  <li><strong>Dados da empresa:</strong> Informe se é Varejo ou Bares/Restaurantes, e os dados cadastrais</li>
                   <li><strong>Usuário:</strong> Defina seu usuário administrador</li>
                 </ul>
-                <div class="dica">💡 As configurações iniciais podem ser feitas depois, em
-                  <strong>Configurações</strong> no menu principal.
-                </div>
+                <div class="box box-aviso"><i class="ph ph-info"></i><span>As configurações iniciais podem ser feitas depois, em <strong>Configurações</strong> no menu principal.</span></div>
+                
+                <h4><i class="ph ph-cloud"></i> Sincronização em Nuvem</h4>
+                <ul>
+                  <li>Caso seja usuário de banco de dados em nuvem, vá em <strong>Configurações</strong></li>
+                  <li>Clique em <strong>Sincronização</strong> e ative o banco de dados em nuvem</li>
+                  <li>Assim, todos os seus dispositivos estarão conectados no mesmo banco de dados</li>
+                </ul>
+                <div class="box box-sucesso"><i class="ph ph-check-circle"></i><span>Lembre-se: esta etapa é fundamental para que as vendas feitas no PDV apareçam no Painel Online em tempo real.</span></div>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(2)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(2)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- MÓDULO 2: OPERAÇÃO DO CAIXA -->
-          <div class="modulo-label">Módulo 2 — Operação do Caixa</div>
-
-          <!-- AULA 3 -->
           <div class="aula-card" id="aula-3">
             <div class="aula-header" onclick="toggleAula(3)">
               <div class="aula-num">3</div>
               <div class="aula-info">
-                <h3>Abrindo e Fechando o Caixa</h3>
-                <p>Como iniciar e encerrar o dia de vendas corretamente</p>
+                <h3>Cadastrando seu Primeiro Produto</h3>
+                <p>Nomes, grupos, preços, dados fiscais e imagens</p>
               </div>
-              <span class="aula-status status-nao" id="status-3">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-3">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
             <div class="aula-body" id="body-3">
-              <div class="aula-texto">
-                <h4>📂 Abertura do Caixa</h4>
+              <div class="aula-conteudo">
+                <h4><i class="ph ph-package"></i> Novo Produto</h4>
                 <ul>
-                  <li>Na tela inicial, clique em <strong>Caixa</strong></li>
-                  <li>O sistema mostra a janela de <strong>Abertura do Caixa</strong></li>
-                  <li>Se quiser, informe um valor de suprimento (dinheiro inicial para troco)</li>
-                  <li>Clique em <strong>Abrir Caixa</strong> → <strong>OK</strong></li>
+                  <li>No menu principal, clique em <strong>Produtos</strong> (localizado no canto inferior direito)</li>
+                  <li>Clique no botão <strong>+</strong> para iniciar um novo cadastro</li>
+                  <li><strong>Código de Barras</strong>: Se o produto tiver código de barras, você pode preencher o campo lendo o código com o leitor</li>
+                  <li><strong>Identificação:</strong> Informe o nome, grupo e subgrupo do produto</li>
+                  <li><strong>Unidade:</strong> Defina o tipo (por unidade, quilos, litros ou metros)</li>
+                  <li><strong>Preços:</strong> Informe o preço de custo e o preço de venda</li>
+                  <li><strong>Fiscal:</strong> Preencha os dados fiscais necessários (NCM, CEST, etc.)</li>
+                  <li><strong>Imagens:</strong> Você pode carregar fotos do produto para facilitar a identificação no Caixa</li>
                 </ul>
-                <div class="dica">💡 <strong>Suprimento</strong> é o dinheiro que você coloca para dar troco. Se não
-                  precisar, deixe R$ 0,00.</div>
-                <h4>📁 Fechamento do Caixa</h4>
-                <ul>
-                  <li>No módulo Caixa, clique no ícone de <strong>Menu</strong></li>
-                  <li>Escolha <strong>Totais em caixa</strong></li>
-                  <li>Clique em <strong>Fechar Caixa</strong> → <strong>Confirmar</strong> → <strong>OK</strong></li>
-                </ul>
-                <div class="atencao">⚠️ Após fechar o caixa, os totais do dia são zerados. Faça apenas ao final do
-                  expediente.</div>
+                <div class="box box-dica"><i class="ph ph-copy"></i><span><strong>Dica rápida:</strong> Você pode duplicar um produto existente! Por exemplo, duplique um "Pastel de Carne" para criar o "Pastel de Frango". O sistema mantém todos os dados fiscais, preços e imagens, economizando seu tempo.</span></div>
+                <div class="box box-lightbulb"><i class="ph ph-lightbulb"></i><span>Cadastrar imagens ajuda muito na agilidade do atendimento, pois permite identificar o produto visualmente no PDV.</span></div>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(3)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(3)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- AULA 4 -->
+          <!-- MÓDULO 2 -->
+          <div class="modulo-titulo"><i class="ph ph-cash-register"></i> Módulo 2 — Operação do Caixa</div>
+
           <div class="aula-card" id="aula-4">
             <div class="aula-header" onclick="toggleAula(4)">
               <div class="aula-num">4</div>
               <div class="aula-info">
+                <h3>Abrindo e Fechando o Caixa</h3>
+                <p>Como iniciar e encerrar o dia de vendas corretamente</p>
+              </div>
+              <span class="aula-badge badge-nao" id="status-4">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
+            </div>
+            <div class="aula-body" id="body-4">
+              <div class="aula-conteudo">
+                <h4><i class="ph ph-folder-open"></i> Abertura do Caixa</h4>
+                <ul>
+                  <li>Na tela inicial, clique em <strong>Caixa</strong></li>
+                  <li>O sistema mostra a janela de <strong>Abertura do Caixa</strong></li>
+                  <li>Se quiser, informe um valor de suprimento (dinheiro inicial para troco)</li>
+                  <li>Clique em <strong>Abrir Caixa → OK</strong></li>
+                </ul>
+                <div class="box box-dica"><i class="ph ph-lightbulb"></i><span><strong>Suprimento</strong> é o dinheiro que você coloca para dar troco. Se não precisar, deixe R$ 0,00.</span></div>
+                <h4><i class="ph ph-folder"></i> Fechamento do Caixa</h4>
+                <ul>
+                  <li>No módulo Caixa, clique no ícone de <strong>Menu</strong></li>
+                  <li>Escolha <strong>Totais em caixa</strong></li>
+                  <li>Clique em <strong>Fechar Caixa → Confirmar → OK</strong></li>
+                </ul>
+                <div class="box box-atencao"><i class="ph ph-warning"></i><span>Após fechar o caixa, os totais do dia são zerados. Faça apenas ao final do expediente.</span></div>
+              </div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(4)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="aula-card" id="aula-5">
+            <div class="aula-header" onclick="toggleAula(5)">
+              <div class="aula-num">5</div>
+              <div class="aula-info">
                 <h3>Realizando uma Venda</h3>
                 <p>Do produto ao pagamento — dinheiro, cartão e Pix</p>
               </div>
-              <span class="aula-status status-nao" id="status-4">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-5">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
-            <div class="aula-body" id="body-4">
-              <div class="aula-texto">
-                <h4>🛒 Venda rápida — passo a passo</h4>
+            <div class="aula-body" id="body-5">
+              <div class="aula-conteudo">
+                <h4><i class="ph ph-shopping-cart"></i> Venda rápida — passo a passo</h4>
                 <ul>
                   <li>Abra o módulo <strong>Caixa</strong></li>
                   <li>Busque o produto por nome ou passe o código de barras no leitor</li>
@@ -470,544 +480,506 @@
                   <li>Escolha a forma de pagamento: <strong>Dinheiro, Cartão ou Pix</strong></li>
                   <li>Clique em <strong>Finalizar negociação</strong> (ou <strong>Enter</strong>)</li>
                 </ul>
-                <div class="dica">⚡ Com leitor de código de barras, basta passar o produto que ele já entra
-                  automaticamente — muito mais rápido!</div>
-                <h4>💳 Pagamento via Pix</h4>
+                <div class="box box-dica"><i class="ph ph-lightning"></i><span>Com leitor de código de barras, basta passar o produto que ele já entra automaticamente — muito mais rápido!</span></div>
+                <h4><i class="ph ph-qr-code"></i> Pagamento via Pix</h4>
                 <ul>
                   <li>Selecione <strong>Pix</strong> como forma de pagamento</li>
                   <li>O sistema gera o QR Code automaticamente</li>
                   <li>O cliente escaneia e paga. Confirme e finalize</li>
                 </ul>
-                <h4>❌ Como excluir uma venda</h4>
+                <h4><i class="ph ph-x-circle"></i> Como excluir uma venda</h4>
                 <ul>
                   <li>No Caixa, clique no Menu → <strong>Buscar negociações</strong></li>
-                  <li>O sistema mostra as negociações do dia. Selecione a que deseja cancelar</li>
-                  <li>Clique no menu lateral → <strong>Excluir</strong> → Confirmar</li>
+                  <li>Selecione a negociação e clique em <strong>Excluir → Confirmar</strong></li>
                 </ul>
-                <div class="atencao">⚠️ Se a venda tinha NFC-e, ela só pode ser cancelada na Sefaz até 30 minutos após a
-                  emissão.</div>
+                <div class="box box-atencao"><i class="ph ph-warning"></i><span>Se a venda tinha NFC-e, ela só pode ser cancelada na Sefaz até 30 minutos após a emissão.</span></div>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(4)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(4)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- MÓDULO 3: MESAS E COMANDAS -->
-          <div class="modulo-label">Módulo 3 — Mesas e Comandas</div>
+          <!-- MÓDULO 3 -->
+          <div class="modulo-titulo"><i class="ph ph-table"></i> Módulo 3 — Mesas e Comandas</div>
 
-          <!-- AULA 5 -->
-          <div class="aula-card" id="aula-5">
-            <div class="aula-header" onclick="toggleAula(5)">
-              <div class="aula-num">5</div>
-              <div class="aula-info">
-                <h3>Configurando Mesas e Comandas</h3>
-                <p>Habilite e configure o módulo de atendimento por mesas ou comandas</p>
-              </div>
-              <span class="aula-status status-nao" id="status-5">Não iniciado</span>
-            </div>
-            <div class="aula-body" id="body-5">
-              <div class="aula-texto">
-                <div class="dica">💡 Este módulo é para estabelecimentos do segmento <strong>Bares e
-                    Restaurantes</strong>. Se você é do varejo tradicional, pode pular para a próxima aula.</div>
-                <h4>⚙️ Como habilitar</h4>
-                <ul>
-                  <li>Na tela inicial, clique em <strong>Configurações</strong> (ícone de engrenagem)</li>
-                  <li>Acesse <strong>Mesas e comandas</strong> → clique em <strong>Habilitar mesas e comandas</strong>
-                  </li>
-                  <li>Escolha o tipo: <strong>Mesas</strong> ou <strong>Comandas</strong> (apenas um por vez)</li>
-                  <li>Clique em <strong>Configurar mesas</strong> (ou comandas)</li>
-                  <li>Clique em <strong>+</strong> e defina o número Inicial e Final (ex: 1 a 15 para 15 mesas)</li>
-                  <li>Clique em <strong>Adicionar</strong> e depois <strong>Salvar (✓)</strong></li>
-                </ul>
-                <h4>💰 Configurar taxa de serviço (opcional)</h4>
-                <ul>
-                  <li>Em Mesas e comandas, clique em <strong>Configurar taxas de serviço</strong> → <strong>+</strong>
-                  </li>
-                  <li>Dê um nome (ex: "Taxa de serviço 10%"), defina se é percentual ou valor fixo</li>
-                  <li>Marque se é <strong>obrigatória</strong> ou opcional → <strong>Salvar</strong></li>
-                </ul>
-              </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(5)">✓ Entendi — próxima aula
-                  →</button></div>
-            </div>
-          </div>
-
-          <!-- AULA 6 -->
           <div class="aula-card" id="aula-6">
             <div class="aula-header" onclick="toggleAula(6)">
               <div class="aula-num">6</div>
               <div class="aula-info">
+                <h3>Configurando Mesas e Comandas</h3>
+                <p>Habilite e configure o módulo de atendimento por mesas ou comandas</p>
+              </div>
+              <span class="aula-badge badge-nao" id="status-6">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
+            </div>
+            <div class="aula-body" id="body-6">
+              <div class="aula-conteudo">
+                <div class="box box-aviso"><i class="ph ph-info"></i><span>Este módulo é para <strong>Bares e Restaurantes</strong>. Se você é do varejo tradicional, pode pular para a próxima aula.</span></div>
+                <h4><i class="ph ph-gear"></i> Como habilitar</h4>
+                <ul>
+                  <li>Na tela inicial, clique em <strong>Configurações</strong> (ícone de engrenagem)</li>
+                  <li>Acesse <strong>Mesas e comandas → Habilitar mesas e comandas</strong></li>
+                  <li>Escolha o tipo: <strong>Mesas</strong> ou <strong>Comandas</strong></li>
+                  <li>Clique em <strong>Configurar mesas</strong> → <strong>+</strong> → defina o número inicial e final</li>
+                  <li>Clique em <strong>Adicionar</strong> e depois <strong>Salvar ✓</strong></li>
+                </ul>
+                <h4><i class="ph ph-percent"></i> Taxa de serviço (opcional)</h4>
+                <ul>
+                  <li>Em Mesas e comandas → <strong>Configurar taxas de serviço → +</strong></li>
+                  <li>Dê um nome, defina se é percentual ou valor fixo</li>
+                  <li>Marque se é obrigatória ou opcional → <strong>Salvar</strong></li>
+                </ul>
+              </div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(6)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="aula-card" id="aula-7">
+            <div class="aula-header" onclick="toggleAula(7)">
+              <div class="aula-num">7</div>
+              <div class="aula-info">
                 <h3>Atendendo por Mesas e Comandas</h3>
                 <p>Como adicionar pedidos, salvar e fechar a conta da mesa</p>
               </div>
-              <span class="aula-status status-nao" id="status-6">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-7">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
-            <div class="aula-body" id="body-6">
-              <div class="aula-texto">
-                <h4>🪑 Abrindo uma mesa</h4>
+            <div class="aula-body" id="body-7">
+              <div class="aula-conteudo">
+                <h4><i class="ph ph-armchair"></i> Abrindo uma mesa</h4>
                 <ul>
                   <li>Na tela inicial, clique em <strong>Mesas</strong> (ou <strong>Comandas</strong>)</li>
-                  <li>Clique na mesa desejada ou busque pelo número no campo <em>Identificador</em></li>
-                  <li>Adicione os produtos do pedido normalmente (igual ao Caixa)</li>
-                  <li>Clique em <strong>Salvar</strong> para sair e manter a mesa aberta — o pedido fica registrado</li>
+                  <li>Clique na mesa desejada or busque pelo número no campo <em>Identificador</em></li>
+                  <li>Adicione os produtos do pedido normalmente</li>
+                  <li>Clique em <strong>Salvar</strong> para sair e manter a mesa aberta</li>
                 </ul>
-                <h4>💳 Fechando a conta</h4>
+                <h4><i class="ph ph-credit-card"></i> Fechando a conta</h4>
                 <ul>
                   <li>Acesse a mesa e clique em <strong>Pagamento</strong></li>
-                  <li>Escolha a forma de pagamento: Dinheiro, Crediário, Cartão ou Pix</li>
-                  <li>Você pode dividir em várias formas de pagamento — basta adicionar cada uma e definir os valores
-                  </li>
+                  <li>Escolha a forma: Dinheiro, Crediário, Cartão ou Pix</li>
+                  <li>Você pode dividir em várias formas — basta adicionar cada uma e definir os valores</li>
                   <li>Clique em <strong>Finalizar</strong> para encerrar e liberar a mesa</li>
                 </ul>
-                <div class="dica">💡 Use <strong>Fechar conta</strong> para bloquear novos pedidos mas manter a mesa
-                  ocupada enquanto o cliente paga.</div>
-                <h4>🎫 Comandas</h4>
+                <div class="box box-dica"><i class="ph ph-lightbulb"></i><span>Use <strong>Fechar conta</strong> para bloquear novos pedidos mas manter a mesa ocupada enquanto o cliente paga.</span></div>
+                <h4><i class="ph ph-ticket"></i> Comandas</h4>
                 <ul>
                   <li>Diferente das mesas, as comandas não ficam listadas em tela</li>
                   <li>Busque pelo número da comanda no campo <em>Identificador</em> para acessar</li>
                 </ul>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(6)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(7)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- MÓDULO 4: PRODUTOS -->
-          <div class="modulo-label">Módulo 4 — Gestão de Produtos</div>
+          <!-- MÓDULO 4 -->
+          <div class="modulo-titulo"><i class="ph ph-package"></i> Módulo 4 — Gestão de Produtos</div>
 
-          <!-- AULA 7 -->
-          <div class="aula-card" id="aula-7">
-            <div class="aula-header" onclick="toggleAula(7)">
-              <div class="aula-num">7</div>
+          <div class="aula-card" id="aula-8">
+            <div class="aula-header" onclick="toggleAula(8)">
+              <div class="aula-num">8</div>
               <div class="aula-info">
                 <h3>Produtos com Complementos</h3>
                 <p>Adicione opções extras aos produtos (adicionais, bebidas, observações)</p>
               </div>
-              <span class="aula-status status-nao" id="status-7">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-8">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
-            <div class="aula-body" id="body-7">
-              <div class="aula-texto">
-                <h4>➕ Criando complementos</h4>
+            <div class="aula-body" id="body-8">
+              <div class="aula-conteudo">
+                <h4><i class="ph ph-plus-circle"></i> Criando complementos</h4>
                 <ul>
-                  <li>Acesse o módulo <strong>Produtos</strong> → clique em <strong>+</strong></li>
-                  <li>Preencha os dados do produto e expanda <strong>Complementos do Subgrupo</strong></li>
-                  <li>Clique em <strong>Adicionar complemento</strong>, dê uma descrição e defina o tipo</li>
+                  <li>Acesse <strong>Produtos → +</strong></li>
+                  <li>Preencha os dados e expanda <strong>Complementos do Subgrupo</strong></li>
+                  <li>Clique em <strong>Adicionar complemento</strong> e dê uma descrição</li>
                   <li>Clique em <strong>Adicionar item</strong> para cada opção (ex: "Bacon", "Queijo extra")</li>
-                  <li>Informe a descrição e o preço de cada item</li>
-                  <li>Defina limites <strong>mínimo</strong> e <strong>máximo</strong> se necessário</li>
-                  <li>Salve o produto (ícone ✓ no canto superior direito)</li>
+                  <li>Informe a descrição, o preço e os limites mínimo/máximo</li>
+                  <li>Salve le produto (ícone ✓ no canto superior direito)</li>
                 </ul>
-                <h4>🛒 Usando no caixa</h4>
+                <h4><i class="ph ph-shopping-cart"></i> Usando no caixa</h4>
                 <ul>
                   <li>Adicione o produto no Caixa normalmente</li>
                   <li>No Resumo, clique sobre o item → <strong>Alterar complementos</strong></li>
                   <li>Escolha os complementos desejados → Confirmar</li>
                 </ul>
-                <div class="dica">💡 Se o complemento tiver <strong>mínimo obrigatório</strong>, o sistema solicita
-                  automaticamente ao adicionar o produto.</div>
+                <div class="box box-dica"><i class="ph ph-lightbulb"></i><span>Se o complemento tiver <strong>mínimo obrigatório</strong>, o sistema solicita automaticamente ao adicionar o produto.</span></div>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(7)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(8)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- AULA 8 -->
-          <div class="aula-card" id="aula-8">
-            <div class="aula-header" onclick="toggleAula(8)">
-              <div class="aula-num">8</div>
-              <div class="aula-info">
-                <h3>Produto Multissabor</h3>
-                <p>Cadastre produtos com múltiplos sabores, como pizzas e açaí</p>
-              </div>
-              <span class="aula-status status-nao" id="status-8">Não iniciado</span>
-            </div>
-            <div class="aula-body" id="body-8">
-              <div class="aula-texto">
-                <div class="dica">💡 O Multissabor é um produto formado por outros produtos já cadastrados (os sabores).
-                  Ex: Pizza Grande com 2 sabores diferentes.</div>
-                <h4>🍕 Como cadastrar</h4>
-                <ul>
-                  <li>Acesse <strong>Produtos</strong> → clique em <strong>+</strong></li>
-                  <li>Dê um nome (ex: "Pizza Grande") e preencha os dados</li>
-                  <li>Clique na aba <strong>Multissabor</strong> → <strong>Habilitar</strong></li>
-                  <li>Defina o <strong>limite de sabores</strong> (ex: 2) se quiser</li>
-                  <li>Escolha o <strong>cálculo de preço</strong>: Proporcional (rateio) ou Maior Preço</li>
-                  <li>Clique em <strong>Adicionar sabor</strong> e marque os produtos disponíveis</li>
-                  <li>Salve (✓)</li>
-                </ul>
-                <div class="dica">💡 No Caixa, os produtos multissabor aparecem em uma seção separada, acima dos outros
-                  produtos.</div>
-              </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(8)">✓ Entendi — próxima aula
-                  →</button></div>
-            </div>
-          </div>
-
-          <!-- MÓDULO 5: ESTOQUE -->
-          <div class="modulo-label">Módulo 5 — Controle de Estoque</div>
-
-          <!-- AULA 9 -->
           <div class="aula-card" id="aula-9">
             <div class="aula-header" onclick="toggleAula(9)">
               <div class="aula-num">9</div>
               <div class="aula-info">
-                <h3>Balanço e Entrada de Estoque</h3>
-                <p>Visualize, ajuste e dê entrada em produtos no estoque</p>
+                <h3>Produto Multissabor</h3>
+                <p>Cadastre produtos com múltiplos sabores, como pizzas e açaí</p>
               </div>
-              <span class="aula-status status-nao" id="status-9">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-9">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
             <div class="aula-body" id="body-9">
-              <div class="aula-texto">
-                <h4>📦 Balanço de estoque</h4>
+              <div class="aula-conteudo">
+                <div class="box box-aviso"><i class="ph ph-info"></i><span>O Multissabor é formado por outros produtos já cadastrados (os sabores). Ex: Pizza Grande com 2 sabores diferentes.</span></div>
+                <h4><i class="ph ph-pizza"></i> Como cadastrar</h4>
                 <ul>
-                  <li>Acesse <strong>Produtos → Balanço de estoque</strong></li>
-                  <li>Veja a quantidade atual de cada produto</li>
-                  <li>Ajuste os valores conforme sua contagem física</li>
-                  <li>Salve as alterações</li>
+                  <li>Acesse <strong>Produtos → +</strong> → dê um nome (ex: "Pizza Grande")</li>
+                  <li>Clique na aba <strong>Multissabor → Habilitar</strong></li>
+                  <li>Defina o <strong>limite de sabores</strong> (ex: 2) se quiser</li>
+                  <li>Escolha o <strong>cálculo de preço</strong>: Proporcional ou Maior Preço</li>
+                  <li>Clique em <strong>Adicionar sabor</strong> e marque os produtos disponíveis</li>
+                  <li>Salve (✓)</li>
                 </ul>
-                <h4>➕ Entrada manual no estoque</h4>
-                <ul>
-                  <li>Acesse <strong>Produtos → Entrada manual</strong></li>
-                  <li>Selecione o produto e informe a quantidade recebida</li>
-                  <li>Confirme — o estoque é atualizado automaticamente</li>
-                </ul>
-                <div class="dica">📊 O estoque diminui automaticamente a cada venda finalizada no Caixa. Não precisa
-                  atualizar manualmente a cada venda.</div>
-                <h4>👁️ Exibir estoque no Caixa</h4>
-                <ul>
-                  <li>No menu do Caixa, acesse <strong>Customizar PDV</strong></li>
-                  <li>Habilite <em>"Exibir quantidade de estoque"</em> e <em>"Exibir apenas produtos com estoque"</em>
-                  </li>
-                  <li>Assim você e sua equipe saberão em tempo real o que está disponível</li>
-                </ul>
+                <div class="box box-dica"><i class="ph ph-lightbulb"></i><span>No Caixa, os produtos multissabor aparecem em uma seção separada, acima dos outros produtos.</span></div>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(9)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(9)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- MÓDULO 6: CONFIGURAÇÕES -->
-          <div class="modulo-label">Módulo 6 — Configurações e Usuários</div>
+          <!-- MÓDULO 5 -->
+          <div class="modulo-titulo"><i class="ph ph-warehouse"></i> Módulo 5 — Controle de Estoque</div>
 
-          <!-- AULA 10 -->
           <div class="aula-card" id="aula-10">
             <div class="aula-header" onclick="toggleAula(10)">
               <div class="aula-num">10</div>
               <div class="aula-info">
+                <h3>Balanço e Entrada de Estoque</h3>
+                <p>Visualize, ajuste e dê entrada em produtos no estoque</p>
+              </div>
+              <span class="aula-badge badge-nao" id="status-10">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
+            </div>
+            <div class="aula-body" id="body-10">
+              <div class="aula-conteudo">
+                <h4><i class="ph ph-cube"></i> Balanço de estoque</h4>
+                <ul>
+                  <li>Acesse <strong>Produtos → Balanço de estoque</strong></li>
+                  <li>Veja a quantidade atual de cada produto</li>
+                  <li>Ajuste os valores conforme sua contagem física e salve</li>
+                </ul>
+                <h4><i class="ph ph-plus-circle"></i> Entrada manual</h4>
+                <ul>
+                  <li>Acesse <strong>Produtos → Entrada manual</strong></li>
+                  <li>Selecione o produto, informe a quantidade recebida e confirme</li>
+                </ul>
+                <div class="box box-dica"><i class="ph ph-chart-bar"></i><span>O estoque diminui automaticamente a cada venda finalizada. Não precisa atualizar manualmente a cada venda.</span></div>
+                <h4><i class="ph ph-eye"></i> Exibir estoque no Caixa</h4>
+                <ul>
+                  <li>No menu do Caixa, acesse <strong>Customizar PDV</strong></li>
+                  <li>Habilite <em>"Exibir quantidade de estoque"</em> e <em>"Exibir apenas produtos com estoque"</em></li>
+                </ul>
+              </div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(10)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- MÓDULO 6 -->
+          <div class="modulo-titulo"><i class="ph ph-sliders"></i> Módulo 6 — Configurações e Usuários</div>
+
+          <div class="aula-card" id="aula-11">
+            <div class="aula-header" onclick="toggleAula(11)">
+              <div class="aula-num">11</div>
+              <div class="aula-info">
                 <h3>Cadastrando Usuários</h3>
                 <p>Crie acessos para funcionários com o nível certo de permissão</p>
               </div>
-              <span class="aula-status status-nao" id="status-10">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-11">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
-            <div class="aula-body" id="body-10">
-              <div class="aula-texto">
-                <h4>👤 Perfis disponíveis</h4>
+            <div class="aula-body" id="body-11">
+              <div class="aula-conteudo">
+                <h4><i class="ph ph-users"></i> Perfis disponíveis</h4>
                 <ul>
                   <li><strong>Administrador</strong> — acesso total ao sistema</li>
                   <li><strong>Caixa</strong> — acessa Caixa, Clientes, Delivery e Mesas/Comandas</li>
                   <li><strong>Atendente</strong> — acessa apenas Clientes e Mesas/Comandas</li>
                 </ul>
-                <h4>➕ Como cadastrar</h4>
+                <h4><i class="ph ph-user-plus"></i> Como cadastrar</h4>
                 <ul>
-                  <li>Vá em <strong>Configurações</strong> → <strong>Usuários</strong> → clique em <strong>+</strong>
-                  </li>
+                  <li>Vá em <strong>Configurações → Usuários → +</strong></li>
                   <li>Informe nome, login e senha</li>
-                  <li>Escolha o perfil (Administrador, Caixa ou Atendente)</li>
-                  <li>Se quiser, informe um percentual de comissão</li>
+                  <li>Escolha o perfil e, se quiser, um percentual de comissão</li>
                   <li>Clique em <strong>Salvar</strong></li>
                 </ul>
-                <div class="dica">🔒 Crie um usuário <strong>Caixa</strong> para funcionários do balcão — assim eles não
-                  acessam configurações críticas do sistema.</div>
+                <div class="box box-dica"><i class="ph ph-lock"></i><span>Crie um usuário <strong>Caixa</strong> para funcionários do balcão — assim eles não acessam configurações críticas do sistema.</span></div>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(10)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(11)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- AULA 11 -->
-          <div class="aula-card" id="aula-11">
-            <div class="aula-header" onclick="toggleAula(11)">
-              <div class="aula-num">11</div>
-              <div class="aula-info">
-                <h3>Configurando a Impressora</h3>
-                <p>Imprima comprovantes de venda para os clientes</p>
-              </div>
-              <span class="aula-status status-nao" id="status-11">Não iniciado</span>
-            </div>
-            <div class="aula-body" id="body-11">
-              <div class="aula-texto">
-                <ul>
-                  <li>Vá em <strong>Configurações → Impressora</strong></li>
-                  <li>Selecione o modelo da sua impressora térmica</li>
-                  <li>Faça um <strong>teste de impressão</strong> para confirmar que está funcionando</li>
-                </ul>
-                <div class="dica">🖨️ Impressoras térmicas (tipo cupom fiscal) são as mais indicadas — funcionam sem
-                  tinta e são rápidas.</div>
-                <h4>🖨️ Impressão automática de comprovantes</h4>
-                <ul>
-                  <li>Em <strong>Configurações → Impressão automática</strong></li>
-                  <li>Habilite a impressão automática após finalizar cada venda</li>
-                  <li>Assim não precisa confirmar a impressão a cada venda</li>
-                </ul>
-              </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(11)">✓ Entendi — próxima aula
-                  →</button></div>
-            </div>
-          </div>
-
-          <!-- AULA 12 -->
           <div class="aula-card" id="aula-12">
             <div class="aula-header" onclick="toggleAula(12)">
               <div class="aula-num">12</div>
               <div class="aula-info">
-                <h3>Configurando Chave Pix</h3>
-                <p>Receba pagamentos via Pix com QR Code gerado automaticamente</p>
+                <h3>Configurando a Impressora</h3>
+                <p>Imprima comprovantes de venda para os clientes</p>
               </div>
-              <span class="aula-status status-nao" id="status-12">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-12">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
             <div class="aula-body" id="body-12">
-              <div class="aula-texto">
+              <div class="aula-conteudo">
                 <ul>
-                  <li>Vá em <strong>Configurações → Chave Pix</strong></li>
-                  <li>Informe sua chave Pix (CPF, CNPJ, e-mail ou telefone)</li>
-                  <li>Salve as configurações</li>
-                  <li>Pronto! Na próxima venda em Pix, o QR Code será gerado automaticamente</li>
+                  <li>Vá em <strong>Configurações → Impressora</strong></li>
+                  <li>Selecione le modelo da sua impressora térmica</li>
+                  <li>Faça um <strong>teste de impressão</strong> para confirmar que está funcionando</li>
                 </ul>
-                <div class="dica">💡 Use a chave Pix da conta do <strong>CNPJ da empresa</strong> para o dinheiro cair
-                  direto na conta empresarial, facilitando o controle financeiro.</div>
+                <div class="box box-dica"><i class="ph ph-printer"></i><span>Impressoras térmicas (tipo cupom fiscal) são as mais indicadas — funcionam sem tinta e são rápidas.</span></div>
+                <h4><i class="ph ph-printer"></i> Impressão automática</h4>
+                <ul>
+                  <li>Em <strong>Configurações → Impressão automática</strong></li>
+                  <li>Habilite a impressão automática após finalizar cada venda</li>
+                </ul>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(12)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(12)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- AULA 13 -->
           <div class="aula-card" id="aula-13">
             <div class="aula-header" onclick="toggleAula(13)">
               <div class="aula-num">13</div>
               <div class="aula-info">
-                <h3>Solicitar CPF na Nota Fiscal</h3>
-                <p>Configure para pedir CPF do cliente ao emitir a NFC-e</p>
+                <h3>Configurando Chave Pix</h3>
+                <p>Receba pagamentos via Pix com QR Code gerado automaticamente</p>
               </div>
-              <span class="aula-status status-nao" id="status-13">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-13">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
             <div class="aula-body" id="body-13">
-              <div class="aula-texto">
+              <div class="aula-conteudo">
                 <ul>
-                  <li>Vá em <strong>Configurações → NFC-e</strong></li>
-                  <li>Habilite a opção <strong>Solicitar CPF na nota fiscal</strong></li>
-                  <li>A partir de agora, ao finalizar uma venda com NFC-e, o sistema perguntará o CPF do cliente</li>
-                  <li>O cliente pode optar por não informar — a venda segue normalmente</li>
+                  <li>Vá em <strong>Configurações → Chave Pix</strong></li>
+                  <li>Informe sua chave Pix (CPF, CNPJ, e-mail ou telefone)</li>
+                  <li>Salve as configurações</li>
+                  <li>Na próxima venda em Pix, le QR Code será gerado automaticamente</li>
                 </ul>
-                <div class="dica">💡 Isso ajuda seus clientes a participarem de programas de nota fiscal premiada (como
-                  Nota Fiscal Gaúcha, Nota Paulista etc.).</div>
+                <div class="box box-dica"><i class="ph ph-lightbulb"></i><span>Use a chave Pix da conta do <strong>CNPJ da empresa</strong> para o dinheiro cair direto na conta empresarial.</span></div>
               </div>
-              <div class="aula-acoes"><button class="btn btn-acento" onclick="concluirAula(13)">✓ Entendi — próxima aula
-                  →</button></div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(13)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
             </div>
           </div>
 
-          <!-- AULA 14 — CONCLUSÃO -->
           <div class="aula-card" id="aula-14">
             <div class="aula-header" onclick="toggleAula(14)">
-              <div class="aula-num">🏆</div>
+              <div class="aula-num">14</div>
+              <div class="aula-info">
+                <h3>Solicitar CPF na Nota Fiscal</h3>
+                <p>Configure para pedir CPF do cliente ao emitir a NFC-e</p>
+              </div>
+              <span class="aula-badge badge-nao" id="status-14">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
+            </div>
+            <div class="aula-body" id="body-14">
+              <div class="aula-conteudo">
+                <ul>
+                  <li>Vá em <strong>Configurações → NFC-e</strong></li>
+                  <li>Habilite a opção <strong>Solicitar CPF na nota fiscal</strong></li>
+                  <li>Ao finalizar uma venda com NFC-e, o sistema perguntará o CPF do cliente</li>
+                  <li>O cliente pode optar por não informar — a venda segue normalmente</li>
+                </ul>
+                <div class="box box-dica"><i class="ph ph-lightbulb"></i><span>Isso ajuda seus clientes a participarem de programas de nota fiscal premiada (Nota Fiscal Gaúcha, Nota Paulista etc.).</span></div>
+              </div>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(14)"><i class="ph ph-check"></i> Entendi — próxima aula</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- AULA FINAL -->
+          <div class="modulo-titulo"><i class="ph ph-trophy"></i> Conclusão</div>
+
+          <div class="aula-card" id="aula-15">
+            <div class="aula-header" onclick="toggleAula(15)">
+              <div class="aula-num" style="font-size:16px">🏆</div>
               <div class="aula-info">
                 <h3>Parabéns — Você está pronto para operar!</h3>
                 <p>Próximos passos e recursos disponíveis</p>
               </div>
-              <span class="aula-status status-nao" id="status-14">Não iniciado</span>
+              <span class="aula-badge badge-nao" id="status-15">Não iniciado</span>
+              <i class="ph ph-caret-down aula-chevron"></i>
             </div>
-            <div class="aula-body" id="body-14">
-              <div class="aula-texto">
-                <div class="sucesso">
-                  🎉 <strong>Parabéns!</strong> Você concluiu o treinamento completo do Sistema PDV. Agora você sabe
-                  abrir o caixa, fazer e cancelar vendas, configurar mesas/comandas, gerir estoque, cadastrar produtos e
-                  muito mais!
-                </div>
-                <h4>🚀 Próximos passos</h4>
+            <div class="aula-body" id="body-15">
+              <div class="aula-conteudo">
+                <div class="box box-sucesso"><i class="ph ph-party"></i><span><strong>Parabéns!</strong> Você concluiu o treinamento completo do Sistema PDV. Agora você sabe abrir o caixa, fazer e cancelar vendas, configurar mesas/comandas, gerir estoque e muito mais!</span></div>
+                <h4><i class="ph ph-rocket"></i> Próximos passos</h4>
                 <ul>
-                  <li>Use o <strong>🤖 Agente IA</strong> para tirar dúvidas sobre o sistema a qualquer hora</li>
-                  <li>Abra um <strong>🎫 Chamado</strong> se precisar de suporte técnico</li>
-                  <li>Acesse a <strong>📚 Central de Ajuda</strong> para tutoriais mais detalhados</li>
+                  <li>Use o <strong>Agente IA</strong> para tirar dúvidas sobre o sistema a qualquer hora</li>
+                  <li>Abra um <strong>Atendimento</strong> se precisar de suporte técnico</li>
+                  <li>Acesse a <strong>Central de Ajuda</strong> para tutoriais mais detalhados</li>
                 </ul>
               </div>
-          <div class="aula-acoes">
-            <button class="btn btn-acento" onclick="concluirAula(14)">✓ Concluir treinamento 🏆</button>
-            <a href="https://ajuda.navivendas.com.br/tutoriais" target="_blank" class="btn btn-outline">📚 Ver mais
-              tutoriais</a>
+              <div class="aula-acoes">
+                <button class="btn btn-primario" onclick="concluirAula(15)"><i class="ph ph-trophy"></i> Concluir treinamento</button>
+                <a href="https://ajuda.navivendas.com.br/tutoriais" target="_blank" class="btn btn-outline"><i class="ph ph-books"></i> Ver mais tutoriais</a>
+              </div>
+            </div>
           </div>
+
+        </div><!-- /trilha -->
+
+        <!-- Módulos dinâmicos do Admin -->
+        <div id="modulos-dinamicos"></div>
+
+      </div><!-- /app-body -->
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/sidebar-painel.js"></script>
+  <script>
+    const TOTAL_AULAS_ESTATICAS = 15;
+    const usuario = protegerPagina(['cliente']);
+    let concluidas = new Set();
+    let modulosExtras = [];
+
+    async function carregarTudo() {
+      if (!usuario) return;
+      inicializarLayout();
+
+      const salvo = localStorage.getItem('pdv_progresso_v2');
+      if (salvo) concluidas = new Set(JSON.parse(salvo));
+
+      try {
+        const { modulos } = await api.get('/videoaulas/modulos');
+        modulosExtras = modulos.filter(m =>
+          m.titulo !== 'Módulo 1 — Introdução ao Sistema' &&
+          m.titulo !== 'Treinamento do Sistema PDV'
+        );
+        renderizarExtras();
+      } catch (err) { console.error('Erro ao carregar módulos dinâmicos:', err); }
+
+      try {
+        const { progresso } = await api.get('/videoaulas/progresso');
+        progresso.forEach(p => { if (p.concluido) concluidas.add(p.videoaula_id); });
+      } catch (err) {}
+
+      renderizarGeral();
+
+      for (let i = 1; i <= TOTAL_AULAS_ESTATICAS; i++) {
+        if (!concluidas.has(i)) { toggleAula(i); break; }
+      }
+    }
+
+    function renderizarExtras() {
+      const container = document.getElementById('modulos-dinamicos');
+      if (!modulosExtras.length) return;
+      container.innerHTML = modulosExtras.map(m => `
+        <div class="modulo-titulo"><i class="ph ph-play-circle"></i> ${m.titulo}</div>
+        <div class="trilha">
+          ${m.videoaulas.sort((a,b) => a.ordem - b.ordem).map(a => `
+            <div class="aula-card" id="aula-${a.id}">
+              <div class="aula-header" onclick="toggleAula(${a.id})">
+                <div class="aula-num">${a.ordem || '•'}</div>
+                <div class="aula-info">
+                  <h3>${a.titulo}</h3>
+                  <p>${a.descricao || 'Nova aula disponível'}</p>
+                </div>
+                <span class="aula-badge badge-nao" id="status-${a.id}">Não iniciado</span>
+                <i class="ph ph-caret-down aula-chevron"></i>
+              </div>
+              <div class="aula-body" id="body-${a.id}">
+                <div class="video-wrap">
+                  ${/^https:\/\//.test(a.url_video)
+                    ? `<iframe src="${a.url_video}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`
+                    : '<p style="color:var(--erro);padding:12px">URL de vídeo inválida.</p>'}
+                </div>
+                ${a.descricao ? `<div class="aula-conteudo"><p>${a.descricao}</p></div>` : ''}
+                <div class="aula-acoes">
+                  <button class="btn btn-primario" onclick="concluirAula(${a.id})"><i class="ph ph-check"></i> Concluir aula</button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
         </div>
-      </div>
+      `).join('');
+    }
 
-    </div><!-- /trilha -->
+    function renderizarGeral() {
+      const totalTotal = TOTAL_AULAS_ESTATICAS + modulosExtras.reduce((acc, m) => acc + (m.videoaulas?.length || 0), 0);
+      const pct = Math.round((concluidas.size / totalTotal) * 100) || 0;
+      document.getElementById('progresso-fill').style.width = pct + '%';
+      document.getElementById('progresso-texto').textContent = `${concluidas.size} de ${totalTotal} aulas`;
 
-    <!-- Container para módulos criados via Admin -->
-    <div id="modulos-dinamicos"></div>
+      for (let i = 1; i <= TOTAL_AULAS_ESTATICAS; i++) atualizarUIStatus(i);
+      modulosExtras.forEach(m => m.videoaulas.forEach(a => atualizarUIStatus(a.id)));
+    }
 
-  </div><!-- /pagina -->
-</div><!-- /conteudo -->
-</div><!-- /layout -->
+    function atualizarUIStatus(id) {
+      const card   = document.getElementById('aula-' + id);
+      const status = document.getElementById('status-' + id);
+      const body   = document.getElementById('body-' + id);
+      if (!card || !status) return;
 
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/auth.js"></script>
-<script src="/assets/js/sidebar-painel.js"></script>
-<script>
-const TOTAL_AULAS_ESTATICAS = 14;
-const usuario = protegerPagina(['cliente']);
-let concluidas = new Set();
-let modulosExtras = [];
+      const aberta = body && body.classList.contains('aberta');
+      card.classList.remove('concluida', 'em-andamento');
+      status.className = 'aula-badge';
 
-async function carregarTudo() {
-  if (!usuario) return;
-  inicializarLayout();
-  
-  // 1. Carrega progresso do localStorage (legado/estático)
-  const salvo = localStorage.getItem('pdv_progresso_v2');
-  if (salvo) concluidas = new Set(JSON.parse(salvo));
+      if (concluidas.has(id)) {
+        card.classList.add('concluida');
+        status.classList.add('badge-ok');
+        status.textContent = '✓ Concluída';
+        const num = card.querySelector('.aula-num');
+        if (num && id <= TOTAL_AULAS_ESTATICAS) num.textContent = '✓';
+      } else if (aberta) {
+        card.classList.add('em-andamento');
+        status.classList.add('badge-ativo');
+        status.textContent = 'Em andamento';
+      } else {
+        status.classList.add('badge-nao');
+        status.textContent = 'Não iniciado';
+      }
+    }
 
-  // 2. Busca módulos e aulas do Backend
-  try {
-    const { modulos } = await api.get('/videoaulas/modulos');
-    // Filtramos para não repetir o treinamento fixo se ele for recriado no DB
-    modulosExtras = modulos.filter(m => m.titulo !== 'Módulo 1 — Introdução ao Sistema' && m.titulo !== 'Treinamento do Sistema PDV');
-    renderizarExtras();
-  } catch (err) {
-    console.error('Erro ao carregar módulos dinâmicos:', err);
-  }
+    function toggleAula(id) {
+      const body = document.getElementById('body-' + id);
+      if (!body) return;
+      const jaAberta = body.classList.contains('aberta');
+      document.querySelectorAll('.aula-body').forEach(b => b.classList.remove('aberta'));
+      if (!jaAberta) {
+        body.classList.add('aberta');
+        setTimeout(() => document.getElementById('aula-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+      }
+      renderizarGeral();
+    }
 
-  // 3. Busca progresso do Backend para mesclar
-  try {
-    const { progresso } = await api.get('/videoaulas/progresso');
-    progresso.forEach(p => {
-      if (p.concluido) concluidas.add(p.videoaula_id);
-    });
-  } catch (err) {}
+    async function concluirAula(id) {
+      concluidas.add(id);
+      if (id <= TOTAL_AULAS_ESTATICAS) {
+        localStorage.setItem('pdv_progresso_v2', JSON.stringify([...concluidas].filter(i => typeof i === 'number' && i <= TOTAL_AULAS_ESTATICAS)));
+      }
+      const body = document.getElementById('body-' + id);
+      if (body) body.classList.remove('aberta');
+      renderizarGeral();
 
-  renderizarGeral();
-  
-  // Auto-abre a primeira não concluída (apenas das estáticas por padrão)
-  for (let i = 1; i <= TOTAL_AULAS_ESTATICAS; i++) {
-    if (!concluidas.has(i)) { toggleAula(i); break; }
-  }
-}
+      // Abre próxima aula automaticamente
+      const proxima = id + 1;
+      if (proxima <= TOTAL_AULAS_ESTATICAS && !concluidas.has(proxima)) {
+        setTimeout(() => toggleAula(proxima), 300);
+      }
 
-function renderizarExtras() {
-  const container = document.getElementById('modulos-dinamicos');
-  if (!modulosExtras.length) return;
+      try {
+        await api.post('/videoaulas/progresso', { videoaula_id: id, segundos_vistos: 9999, concluido: true });
+      } catch (e) { console.warn('Falha ao salvar progresso no servidor'); }
+    }
 
-  container.innerHTML = modulosExtras.map(m => `
-    <div class="modulo-label">${m.titulo}</div>
-    <div class="trilha">
-      ${m.videoaulas.sort((a,b) => a.ordem - b.ordem).map(a => `
-        <div class="aula-card" id="aula-${a.id}">
-          <div class="aula-header" onclick="toggleAula(${a.id})">
-            <div class="aula-num">${a.ordem || '•'}</div>
-            <div class="aula-info">
-              <h3>${a.titulo}</h3>
-              <p>${a.descricao || 'Nova aula disponível'}</p>
-            </div>
-            <span class="aula-status status-nao" id="status-${a.id}">Não iniciado</span>
-          </div>
-          <div class="aula-body" id="body-${a.id}">
-            <div class="video-wrapper">
-              ${/^https:\/\//.test(a.url_video) ? `<iframe src="${a.url_video}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>` : '<p style="color:var(--erro);padding:12px">URL de vídeo inválida.</p>'}
-            </div>
-            <div class="aula-texto">
-              ${a.descricao ? `<p>${a.descricao}</p>` : ''}
-            </div>
-            <div class="aula-acoes">
-              <button class="btn btn-acento" onclick="concluirAula(${a.id})">✓ Concluir Aula</button>
-            </div>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
-}
-
-function renderizarGeral() {
-  // Renderiza progresso no topo
-  const totalTotal = TOTAL_AULAS_ESTATICAS + modulosExtras.reduce((acc, m) => acc + (m.videoaulas?.length || 0), 0);
-  const pct = Math.round((concluidas.size / totalTotal) * 100) || 0;
-  document.getElementById('progresso-fill').style.width = pct + '%';
-  document.getElementById('progresso-texto').textContent = `${concluidas.size} de ${totalTotal} aulas`;
-
-  // Atualiza estáticos
-  for (let i = 1; i <= TOTAL_AULAS_ESTATICAS; i++) {
-    atualizarUIStatus(i);
-  }
-
-  // Atualiza dinâmicos
-  modulosExtras.forEach(m => {
-    m.videoaulas.forEach(a => atualizarUIStatus(a.id));
-  });
-}
-
-function atualizarUIStatus(id) {
-  const card = document.getElementById('aula-' + id);
-  const status = document.getElementById('status-' + id);
-  const body = document.getElementById('body-' + id);
-  if (!card || !status) return;
-
-  const aberta = body && body.classList.contains('aberta');
-  card.classList.remove('concluida', 'em-andamento');
-  status.className = 'aula-status';
-
-  if (concluidas.has(id)) {
-    card.classList.add('concluida');
-    status.classList.add('status-ok');
-    status.textContent = '✓ Concluída';
-    const num = card.querySelector('.aula-num');
-    if (num && id <= TOTAL_AULAS_ESTATICAS) num.textContent = '✓';
-  } else if (aberta) {
-    card.classList.add('em-andamento');
-    status.classList.add('status-ativo');
-    status.textContent = 'Em andamento';
-  } else {
-    status.classList.add('status-nao');
-    status.textContent = 'Não iniciado';
-  }
-}
-
-function toggleAula(id) {
-  const body = document.getElementById('body-' + id);
-  if (!body) return;
-
-  const jaAberta = body.classList.contains('aberta');
-  document.querySelectorAll('.aula-body').forEach(b => b.classList.remove('aberta'));
-  if (!jaAberta) {
-    body.classList.add('aberta');
-    setTimeout(() => document.getElementById('aula-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-  }
-  renderizarGeral();
-}
-
-async function concluirAula(id) {
-  concluidas.add(id);
-  
-  // Salva no localStorage (apenas para as estáticas)
-  if (id <= TOTAL_AULAS_ESTATICAS) {
-    localStorage.setItem('pdv_progresso_v2', JSON.stringify([...concluidas].filter(i => typeof i === 'number' && i <= TOTAL_AULAS_ESTATICAS)));
-  }
-
-  const body = document.getElementById('body-' + id);
-  if (body) body.classList.remove('aberta');
-  
-  renderizarGeral();
-
-  // Salva no backend
-  try { 
-    await api.post('/videoaulas/progresso', { videoaula_id: id, segundos_vistos: 9999, concluido: true });
-  } catch (e) {
-    console.warn('Falha ao salvar progresso no servidor');
-  }
-}
-
-// Inicialização
-carregarTudo();
-</script>
-      </div><!-- /pagina -->
-    </main><!-- /app-content -->
-  </div><!-- /app-layout -->
-
+    carregarTudo();
+  </script>
+</body>
 </html>

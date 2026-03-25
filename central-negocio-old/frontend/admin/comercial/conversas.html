@@ -1,362 +1,181 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conversas — Comercial — Central do Negócio</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <link rel="stylesheet" href="/assets/css/comercial.css">
+  <style>
+    .chat-layout {
+      display: grid; grid-template-columns: 320px 1fr 300px; height: calc(100vh - 120px);
+      background: var(--fundo-card); border: 1px solid var(--borda); border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .chat-sidebar { border-right: 1px solid var(--borda); display: flex; flex-direction: column; background: rgba(255,255,255,0.01); }
+    .chat-main { display: flex; flex-direction: column; background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.03), transparent); }
+    .chat-context { border-left: 1px solid var(--borda); padding: 24px; overflow-y: auto; background: rgba(255,255,255,0.01); }
+    
+    .chat-item { padding: 16px; border-bottom: 1px solid var(--borda); cursor: pointer; transition: var(--transicao); }
+    .chat-item:hover { background: rgba(59, 130, 246, 0.05); }
+    .chat-item.active { background: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--primaria); }
+    
+    .bubble { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; position: relative; margin-bottom: 8px; }
+    .bubble-lead { align-self: flex-start; background: var(--borda); color: var(--texto); border-bottom-left-radius: 2px; }
+    .bubble-ia { align-self: flex-end; background: var(--primaria); color: #fff; border-bottom-right-radius: 2px; }
+    
+    .ctx-label { font-size: 11px; text-transform: uppercase; color: var(--texto-suave); display: block; margin-bottom: 4px; }
+    .ctx-value { font-size: 14px; color: #fff; font-weight: 600; margin-bottom: 12px; }
+  </style>
 </head>
 <body class="com-page">
-<div class="layout">
-  <aside class="sidebar" id="sidebar"></aside>
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar"></aside>
 
-  <div class="conteudo" style="overflow:hidden">
-    <div class="topbar">
-      <div class="flex items-center gap-2">
-        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
-        <span class="topbar-titulo">💬 Conversas SDR</span>
-      </div>
-      <div class="flex gap-2">
-        <select id="f-instancia" onchange="carregarLeads()" style="background:var(--com-bg2);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px">
-          <option value="">Todas as instâncias</option>
-        </select>
-        <select id="f-interesse" onchange="carregarLeads()" style="background:var(--com-bg2);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px">
-          <option value="">Todos</option>
-          <option value="true">Com interesse</option>
-          <option value="false">Sem interesse</option>
-        </select>
-        <select id="f-kanban" onchange="carregarLeads()" style="background:var(--com-bg2);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px">
-          <option value="">Kanban: todos</option>
-          <option value="true">No Kanban</option>
-          <option value="false">Fora do Kanban</option>
-        </select>
-      </div>
-    </div>
+    <main class="app-content">
+      <header class="app-header"></header>
 
-    <!-- Banner informativo -->
-    <div class="com-alerta com-alerta-info" style="margin:12px 24px 0;border-radius:10px;font-size:13px">
-      <strong>ℹ️ Histórico SDR:</strong> Esta tela exibe as conversas registradas pelo agente de IA. Para atendimento humano em tempo real (live chat), utilize a integração com Chatwoot.
-    </div>
-
-    <!-- Layout 3 colunas -->
-    <div class="conversas-layout" style="height:calc(100vh - 130px);margin-top:12px">
-
-      <!-- Coluna 1: Lista de conversas -->
-      <div class="conversa-lista" style="width:300px;min-width:300px;border-right:1px solid var(--com-borda);display:flex;flex-direction:column;overflow:hidden">
-        <div style="padding:12px;border-bottom:1px solid var(--com-borda)">
-          <input type="search" id="busca-lead" placeholder="🔍 Buscar lead..." style="width:100%;padding:8px 12px;border:1px solid var(--com-borda);border-radius:8px;background:var(--com-bg2);color:var(--com-texto);font-size:13px;box-sizing:border-box" oninput="filtrarLista()">
-        </div>
-        <div style="overflow-y:auto;flex:1" id="lista-leads">
-          <div style="text-align:center;padding:40px"><div class="com-spinner"></div></div>
-        </div>
-        <div style="padding:10px 12px;border-top:1px solid var(--com-borda)">
-          <span class="com-text-suave com-text-sm" id="lista-count"></span>
-        </div>
-      </div>
-
-      <!-- Coluna 2: Janela de conversa -->
-      <div class="conversa-janela" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
-        <!-- Estado: nenhum lead selecionado -->
-        <div id="janela-vazia" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--com-suave)">
-          <div style="font-size:48px;margin-bottom:16px">💬</div>
-          <h3 style="margin:0 0 8px;color:var(--com-suave)">Selecione uma conversa</h3>
-          <p class="com-text-sm" style="color:var(--com-suave)">Clique em um lead na lista ao lado</p>
+      <div class="app-body">
+        <div class="justify-between flex items-center mb-6">
+          <div class="page-title">
+            <h1>Conversas SDR</h1>
+            <p class="text-suave">Acompanhe as interações automáticas do seu agente via WhatsApp.</p>
+          </div>
+          <div class="flex gap-2">
+             <span class="badge badge-azul"><i class="ph ph-info"></i> Histórico de IA</span>
+          </div>
         </div>
 
-        <!-- Conversa ativa -->
-        <div id="janela-ativa" style="display:none;flex-direction:column;height:100%">
-          <!-- Header -->
-          <div style="padding:16px 20px;border-bottom:1px solid var(--com-borda);display:flex;justify-content:space-between;align-items:center;background:var(--com-card)">
-            <div>
-              <div style="font-size:16px;font-weight:700;color:var(--com-texto)" id="conv-nome">—</div>
-              <div class="com-text-suave com-text-sm" id="conv-empresa">—</div>
+        <div class="chat-layout">
+          <!-- Coluna 1: Lista -->
+          <div class="chat-sidebar">
+            <div class="p-4 border-b" style="border-color:var(--borda)">
+               <div style="position:relative">
+                  <i class="ph ph-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--texto-suave)"></i>
+                  <input type="text" id="busca-lead" class="form-control" placeholder="Buscar lead..." style="padding-left:40px" oninput="filtrarLista()">
+               </div>
             </div>
-            <div class="flex gap-2">
-              <span class="com-badge com-badge-azul" id="conv-instancia-badge">—</span>
-              <span id="conv-interesse-badge"></span>
+            <div class="flex-1 overflow-y-auto" id="lista-leads">
+               <div class="spinner m-10"></div>
             </div>
           </div>
 
-          <!-- Mensagens -->
-          <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px" id="mensagens-container">
-            <div style="text-align:center;padding:40px"><div class="com-spinner"></div></div>
+          <!-- Coluna 2: Chat -->
+          <div class="chat-main">
+            <div id="janela-vazia" class="flex-1 flex flex-col items-center justify-center text-suave text-center p-10">
+                <i class="ph ph-chat-centered-text" style="font-size:64px; opacity:0.2"></i>
+                <h3 class="mt-4">Selecione uma conversa</h3>
+                <p class="text-xs">Visualize o fluxo de mensagens entre o lead e sua IA.</p>
+            </div>
+
+            <div id="janela-ativa" class="d-none flex flex-col h-100">
+                <div class="p-4 border-b flex justify-between items-center" style="border-color:var(--borda); background:rgba(255,255,255,0.02)">
+                    <div>
+                        <h3 id="conv-nome" class="m-0 text-white">Lead</h3>
+                        <div id="conv-empresa" class="text-xs text-suave">Empresa</div>
+                    </div>
+                    <div id="conv-status-badge"></div>
+                </div>
+                <div class="flex-1 overflow-y-auto p-6 flex flex-col" id="mensagens-container"></div>
+                <div class="p-4 border-t flex gap-2" style="border-color:var(--borda)">
+                    <button class="btn btn-outline btn-sm w-100" onclick="assumirConversa()"><i class="ph ph-user-check"></i> Assumir</button>
+                    <button class="btn btn-primario btn-sm w-100" onclick="enviarKanban()"><i class="ph ph-funnel"></i> Mover p/ Kanban</button>
+                </div>
+            </div>
           </div>
 
-          <!-- Ações inferiores -->
-          <div style="padding:16px 20px;border-top:1px solid var(--com-borda);background:var(--com-card);display:flex;gap:8px;flex-wrap:wrap">
-            <button class="com-btn com-btn-outline com-btn-sm" onclick="assumirConversa()">👤 Assumir Conversa</button>
-            <button class="com-btn com-btn-outline com-btn-sm" onclick="enviarKanban()">📋 Enviar ao Kanban</button>
-            <button class="com-btn com-btn-outline com-btn-sm" onclick="agendarReuniao()">📅 Agendar Reunião</button>
-            <button class="com-btn com-btn-ghost com-btn-sm" onclick="marcarInteresse()">🔥 Marcar Interesse</button>
+          <!-- Coluna 3: Contexto -->
+          <div class="chat-context">
+            <div id="contexto-vazio" class="text-center text-suave mt-10">
+                <p class="text-xs">Dados do perfil aparecerão aqui.</p>
+            </div>
+            <div id="contexto-dados" class="d-none">
+                <h4 class="text-xs uppercase fw-800 text-primaria mb-4">Perfil do Cliente</h4>
+                <div id="ctx-campos"></div>
+                <hr class="my-6" style="border-color:var(--borda); opacity:0.1">
+                <button class="btn btn-outline btn-sm w-100 mb-2" onclick="agendarReuniao()"><i class="ph ph-calendar"></i> Agendar Reunião</button>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Coluna 3: Contexto do lead -->
-      <div class="conversa-contexto" style="width:280px;min-width:280px;border-left:1px solid var(--com-borda);overflow-y:auto">
-        <div id="contexto-vazio" style="padding:40px 20px;text-align:center;color:var(--com-suave)">
-          <p class="com-text-sm">Selecione um lead para ver seus dados</p>
-        </div>
-        <div id="contexto-dados" style="display:none;padding:16px">
-          <div class="com-card-titulo" style="margin-bottom:16px">Dados do Lead</div>
-
-          <div style="display:flex;flex-direction:column;gap:8px" id="ctx-campos"></div>
-
-          <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
-            <div class="com-card-titulo" style="margin-bottom:8px">Ações Rápidas</div>
-            <button class="com-btn com-btn-outline com-btn-sm" style="width:100%" onclick="abrirLead()">🔗 Ver Perfil Completo</button>
-            <button class="com-btn com-btn-ghost com-btn-sm" style="width:100%" onclick="agendarReuniao()">📅 Agendar Reunião</button>
-            <button class="com-btn com-btn-ghost com-btn-sm" style="width:100%" onclick="enviarKanban()">📋 Mover para Kanban</button>
-          </div>
-
-          <div style="margin-top:20px" id="ctx-campanha-box"></div>
-        </div>
-      </div>
-
-    </div>
+    </main>
   </div>
-</div>
 
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/auth.js"></script>
-<script src="/assets/js/sidebar-admin.js"></script>
-<script>
-const usuario = protegerPagina(['admin','comercial']);
-let leadsCache = [];
-let leadAtualId = null;
-let leadAtualDados = null;
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/sidebar-admin.js"></script>
+  <script>
+    const usuario = protegerPagina(['admin','comercial']);
+    let leadsCache = [], leadAtualId = null;
 
-if (usuario) {
-  inicializarLayout();
-  carregarInstancias();
-  carregarLeads();
-}
+    if (usuario) { inicializarLayout(); carregarLeads(); }
 
-async function carregarInstancias() {
-  try {
-    const { instancias } = await api.get('/comercial/instancias');
-    const sel = document.getElementById('f-instancia');
-    (instancias || []).forEach(i => {
-      const opt = document.createElement('option');
-      opt.value = i.nome || i.id;
-      opt.textContent = i.nome;
-      sel.appendChild(opt);
-    });
-  } catch {}
-}
-
-async function carregarLeads() {
-  const params = new URLSearchParams();
-  const instancia = document.getElementById('f-instancia').value;
-  const interesse = document.getElementById('f-interesse').value;
-  const kanban = document.getElementById('f-kanban').value;
-  if (instancia) params.set('instancia', instancia);
-  if (interesse) params.set('com_interesse', interesse);
-  if (kanban) params.set('no_kanban', kanban);
-
-  document.getElementById('lista-leads').innerHTML = `<div style="text-align:center;padding:40px"><div class="com-spinner"></div></div>`;
-
-  try {
-    const { leads } = await api.get('/comercial/leads?' + params.toString());
-    leadsCache = leads || [];
-    filtrarLista();
-  } catch(err) {
-    document.getElementById('lista-leads').innerHTML =
-      `<div style="padding:20px;color:var(--com-vermelho);font-size:13px">Erro ao carregar leads</div>`;
-  }
-}
-
-function filtrarLista() {
-  const busca = (document.getElementById('busca-lead').value || '').toLowerCase();
-  const filtrados = leadsCache.filter(l => {
-    if (!busca) return true;
-    return (l.nome || '').toLowerCase().includes(busca) ||
-           (l.empresa || '').toLowerCase().includes(busca) ||
-           (l.whatsapp || '').includes(busca);
-  });
-
-  document.getElementById('lista-count').textContent = `${filtrados.length} conversa(s)`;
-
-  if (!filtrados.length) {
-    document.getElementById('lista-leads').innerHTML =
-      `<div style="padding:40px;text-align:center;color:var(--com-suave);font-size:13px">Nenhuma conversa encontrada</div>`;
-    return;
-  }
-
-  const statusCor = { novo:'azul', qualificado:'amarelo', convertido:'verde', perdido:'vermelho' };
-
-  document.getElementById('lista-leads').innerHTML = filtrados.map(l => `
-    <div class="conversa-item ${leadAtualId === l.id ? 'ativa' : ''}"
-         onclick="abrirConversa(${l.id})"
-         style="padding:14px 16px;border-bottom:1px solid var(--com-borda-suave);cursor:pointer;transition:background 0.15s;${leadAtualId === l.id ? 'background:var(--com-bg2)' : ''}">
-      <div class="com-flex-between com-mb-1">
-        <span style="font-size:14px;font-weight:600;color:var(--com-texto)">${esc(l.nome || l.empresa || l.whatsapp)}</span>
-        <span class="com-badge com-badge-${statusCor[l.status]||'cinza'}" style="font-size:10px">${l.status}</span>
-      </div>
-      ${l.empresa && l.nome ? `<div class="com-text-xs com-text-suave com-mb-1">${esc(l.empresa)}</div>` : ''}
-      <div class="com-text-xs com-text-suave" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-        ${esc(l.ultima_mensagem || 'Sem mensagens')}
-      </div>
-      <div class="com-flex-between" style="margin-top:6px">
-        ${l.instancia ? `<span class="com-badge com-badge-cinza" style="font-size:10px">${esc(l.instancia)}</span>` : '<span></span>'}
-        ${l.interesse_detectado ? `<span class="com-badge com-badge-verde" style="font-size:10px">🔥 Interesse</span>` : ''}
-        <span class="com-text-xs com-text-suave">${formatarData(l.ultima_interacao || l.atualizado_em)}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function abrirConversa(leadId) {
-  leadAtualId = leadId;
-  filtrarLista(); // Atualiza seleção visual
-
-  document.getElementById('janela-vazia').style.display = 'none';
-  document.getElementById('janela-ativa').style.display = 'flex';
-  document.getElementById('contexto-vazio').style.display = 'none';
-  document.getElementById('contexto-dados').style.display = 'block';
-  document.getElementById('mensagens-container').innerHTML =
-    `<div style="text-align:center;padding:40px"><div class="com-spinner"></div></div>`;
-  document.getElementById('ctx-campos').innerHTML = '<div class="com-spinner"></div>';
-
-  try {
-    const dados = await api.get(`/comercial/leads/${leadId}`);
-    const lead = dados.lead || dados;
-    const conversas = dados.conversas || [];
-    leadAtualDados = lead;
-
-    // Header da janela
-    document.getElementById('conv-nome').textContent = lead.nome || lead.empresa || lead.whatsapp;
-    document.getElementById('conv-empresa').textContent = lead.empresa || lead.whatsapp || '';
-    document.getElementById('conv-instancia-badge').textContent = lead.instancia || 'WhatsApp';
-    document.getElementById('conv-interesse-badge').innerHTML = lead.interesse_detectado
-      ? `<span class="com-badge com-badge-verde">🔥 Interesse</span>` : '';
-
-    // Mensagens
-    if (!conversas.length) {
-      document.getElementById('mensagens-container').innerHTML =
-        `<div style="text-align:center;padding:60px;color:var(--com-suave)">
-          <div style="font-size:32px;margin-bottom:12px">💬</div>
-          <p class="com-text-sm">Nenhuma mensagem no histórico SDR</p>
-        </div>`;
-    } else {
-      document.getElementById('mensagens-container').innerHTML = conversas.map(c => `
-        <div>
-          <div class="msg-bubble msg-lead">
-            ${esc(c.mensagem_lead)}
-            <div class="msg-hora">${formatarDataHora(c.criado_em)}</div>
-          </div>
-          ${c.resposta_ia ? `<div class="msg-bubble msg-ia">${esc(c.resposta_ia)}<div class="msg-hora">IA · ${formatarDataHora(c.criado_em)}</div></div>` : ''}
-        </div>
-      `).join('');
-      // Scroll to bottom
-      const mc = document.getElementById('mensagens-container');
-      mc.scrollTop = mc.scrollHeight;
+    async function carregarLeads() {
+        try {
+            const { leads } = await api.get('/comercial/leads');
+            leadsCache = leads || [];
+            renderizarLista(leadsCache);
+        } catch { }
     }
 
-    // Contexto
-    const scoreColor = (lead.score || 0) >= 70 ? 'var(--com-verde)' : (lead.score || 0) >= 40 ? 'var(--com-amarelo)' : 'var(--com-vermelho)';
-    document.getElementById('ctx-campos').innerHTML = `
-      ${ctxItem('Nome', lead.nome)}
-      ${ctxItem('Empresa', lead.empresa)}
-      ${ctxItem('WhatsApp', lead.whatsapp)}
-      ${ctxItem('Cidade', lead.cidade)}
-      ${ctxItem('Segmento', lead.segmento)}
-      ${ctxItem('Origem', lead.origem)}
-      ${ctxItem('Score', `<span style="font-weight:700;color:${scoreColor}">${lead.score || 0}/100</span>`)}
-      ${ctxItem('Status', `<span class="com-badge com-badge-azul">${lead.status}</span>`)}
-      ${ctxItem('No Kanban', lead.no_kanban ? '✅ Sim' : '—')}
-      ${ctxItem('Última interação', formatarDataHora(lead.ultima_interacao || lead.atualizado_em))}
-    `;
-
-    // Campanha relacionada
-    if (lead.campanha_id) {
-      document.getElementById('ctx-campanha-box').innerHTML = `
-        <div class="com-card-titulo" style="margin-bottom:8px">Campanha</div>
-        <div class="com-text-sm com-text-suave">ID: ${lead.campanha_id}</div>
-      `;
-    } else {
-      document.getElementById('ctx-campanha-box').innerHTML = '';
+    function renderizarLista(leads) {
+        const container = document.getElementById('lista-leads');
+        container.innerHTML = leads.map(l => `
+            <div class="chat-item ${leadAtualId === l.id ? 'active' : ''}" onclick="abrirConversa(${l.id})">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="fw-700 text-white text-sm">${l.nome || l.empresa || l.whatsapp}</span>
+                    <span class="text-xs text-suave">${formatarDataCurta(l.ultima_interacao || l.atualizado_em)}</span>
+                </div>
+                <div class="text-xs text-suave text-truncate">${l.ultima_mensagem || 'Sem histórico...'}</div>
+            </div>
+        `).join('');
     }
 
-  } catch(err) {
-    document.getElementById('mensagens-container').innerHTML =
-      `<div style="padding:20px;text-align:center;color:var(--com-vermelho);font-size:13px">Erro ao carregar conversa</div>`;
-  }
-}
+    async function abrirConversa(id) {
+        leadAtualId = id;
+        document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('janela-vazia').classList.add('d-none');
+        document.getElementById('janela-ativa').classList.remove('d-none');
+        document.getElementById('contexto-vazio').classList.add('d-none');
+        document.getElementById('contexto-dados').classList.remove('d-none');
+        
+        try {
+            const { lead, conversas } = await api.get(`/comercial/leads/${id}`);
+            document.getElementById('conv-nome').textContent = lead.nome || lead.whatsapp;
+            document.getElementById('conv-empresa').textContent = lead.empresa || 'Individual';
+            
+            const mc = document.getElementById('mensagens-container');
+            mc.innerHTML = conversas.map(c => `
+                <div class="bubble bubble-lead">${c.mensagem_lead}</div>
+                ${c.resposta_ia ? `<div class="bubble bubble-ia">${c.resposta_ia}</div>` : ''}
+            `).join('');
+            mc.scrollTop = mc.scrollHeight;
 
-// ── Ações ────────────────────────────────────────────────────────────────────
+            document.getElementById('ctx-campos').innerHTML = `
+                <span class="ctx-label">WhatsApp</span><div class="ctx-value">${lead.whatsapp}</div>
+                <span class="ctx-label">Cidade</span><div class="ctx-value">${lead.cidade || '—'}</div>
+                <span class="ctx-label">Score</span><div class="ctx-value text-primaria">${lead.score}%</div>
+                <span class="ctx-label">Status</span><div class="ctx-value"><span class="badge badge-azul">${lead.status}</span></div>
+            `;
+        } catch { }
+    }
 
-async function assumirConversa() {
-  if (!leadAtualId) return;
-  if (!confirm('Assumir esta conversa? Marcaremos o lead como qualificado e em atendimento humano.')) return;
-  try {
-    await api.patch(`/comercial/leads/${leadAtualId}`, { status: 'qualificado' });
-    mostrarAlerta('Conversa assumida! Lead marcado como qualificado.');
-    if (leadAtualDados) leadAtualDados.status = 'qualificado';
-  } catch(err) { mostrarAlerta(err.erro || 'Erro ao assumir', 'erro'); }
-}
+    function filtrarLista() {
+        const busca = document.getElementById('busca-lead').value.toLowerCase();
+        const filtrados = leadsCache.filter(l => (l.nome||'').toLowerCase().includes(busca) || (l.whatsapp||'').includes(busca));
+        renderizarLista(filtrados);
+    }
 
-async function enviarKanban() {
-  if (!leadAtualId || !leadAtualDados) return;
-  if (leadAtualDados.no_kanban) {
-    mostrarAlerta('Este lead já está no Kanban', 'info');
-    return;
-  }
-  try {
-    await api.post('/oportunidades', {
-      lead_id: leadAtualId,
-      titulo: leadAtualDados.nome || leadAtualDados.empresa || 'Lead',
-      motivo_qualificacao: 'Enviado manualmente via Conversas'
-    });
-    mostrarAlerta('Lead enviado para o Kanban!');
-    leadAtualDados.no_kanban = true;
-  } catch(err) { mostrarAlerta(err.erro || 'Erro ao enviar para Kanban', 'erro'); }
-}
+    function formatarDataCurta(iso) {
+        if(!iso) return '';
+        const d = new Date(iso);
+        return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+    }
 
-function agendarReuniao() {
-  if (!leadAtualId) return;
-  window.location.href = `/admin/comercial/calendario.html?lead_id=${leadAtualId}`;
-}
-
-async function marcarInteresse() {
-  if (!leadAtualId) return;
-  try {
-    await api.patch(`/comercial/leads/${leadAtualId}`, { interesse_detectado: true });
-    mostrarAlerta('Interesse marcado!');
-    if (leadAtualDados) leadAtualDados.interesse_detectado = true;
-    document.getElementById('conv-interesse-badge').innerHTML =
-      `<span class="com-badge com-badge-verde">🔥 Interesse</span>`;
-    // Atualiza lista
-    const lead = leadsCache.find(l => l.id === leadAtualId);
-    if (lead) lead.interesse_detectado = true;
-    filtrarLista();
-  } catch(err) { mostrarAlerta(err.erro || 'Erro ao marcar interesse', 'erro'); }
-}
-
-function abrirLead() {
-  if (leadAtualId) window.open(`/admin/comercial/leads.html`, '_blank');
-}
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function ctxItem(label, valor) {
-  if (!valor && valor !== 0) return '';
-  return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--com-borda-suave)">
-    <span class="com-text-xs com-text-suave">${label}</span>
-    <span style="font-size:13px;font-weight:500;color:var(--com-texto);text-align:right;max-width:160px;word-break:break-word">${valor}</span>
-  </div>`;
-}
-
-function esc(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function formatarDataHora(iso) {
-  if (!iso) return '—';
-  return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
-}
-</script>
+    async function assumirConversa() { await api.patch(`/comercial/leads/${leadAtualId}`, { status: 'qualificado' }); mostrarAlerta('Você assumiu este atendimento.'); }
+    async function enviarKanban() { await api.post('/oportunidades', { lead_id: leadAtualId }); mostrarAlerta('Oportunidade criada no Kanban.'); }
+    function agendarReuniao() { window.location.href = `/admin/comercial/calendario.html?lead_id=${leadAtualId}`; }
+  </script>
 </body>
 </html>

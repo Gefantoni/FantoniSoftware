@@ -71,9 +71,10 @@ router.post('/chat', autenticar, upload.single('arquivo'), async (req, res) => {
     if (msgError) throw new Error('Erro ao salvar mensagem: ' + msgError.message);
 
     // Atualiza timestamp do ticket
-    await supabaseAdmin.from('tickets')
-      .update({ atualizado_em: new Date().toISOString(), status: 'em_andamento' })
-      .eq('id', parseInt(ticket_id));
+    // Status só muda para em_andamento se quem enviou for admin/suporte
+    const updatePayload = { atualizado_em: new Date().toISOString() };
+    if (req.perfil.role !== 'cliente') updatePayload.status = 'em_andamento';
+    await supabaseAdmin.from('tickets').update(updatePayload).eq('id', parseInt(ticket_id));
 
     res.json({ mensagem, url: urlPublica, tipo });
   } catch (err) {

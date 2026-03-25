@@ -5,766 +5,293 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Central do Negócio — Dashboard</title>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <style>
-    /* ===== TOKENS ===== */
-    :root {
-      --saas-bg: #F1F5F9;
-      --saas-sidebar: #0F172A;
-      --saas-blue: #2563EB;
-      --saas-blue-l: #3B82F6;
-      --saas-text: #1E293B;
-      --saas-muted: #64748B;
-      --saas-border: #E2E8F0;
-      --saas-card: #FFFFFF;
-      --saas-green: #10B981;
-      --saas-amber: #F59E0B;
-      --saas-red: #EF4444;
+    .hero-glass {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0) 100%);
+      border: 1px solid var(--borda); border-radius: 24px; padding: 40px; margin-bottom: 32px;
+      position: relative; overflow: hidden;
+    }
+    .hero-glass::before {
+      content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px;
+      background: var(--primaria); filter: blur(100px); opacity: 0.1; z-index: 0;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .download-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .download-card {
+      background: var(--fundo-card); border: 1px solid var(--borda); border-radius: 16px;
+      padding: 24px; text-align: center; text-decoration: none; transition: var(--transicao);
+    }
+    .download-card:hover { border-color: var(--primaria); background: rgba(59, 130, 246, 0.05); transform: translateY(-4px); }
+    .download-card i { font-size: 40px; margin-bottom: 12px; display: block; }
+    .download-card span { display: block; }
+    .download-title { color: #fff; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+    .download-desc { color: var(--texto-suave); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
 
-    /* ===== LAYOUT PRINCIPAL ===== */
-    .app-main {
-      margin-left: 240px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      width: calc(100% - 240px);
+    .quick-access-card {
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 200px;
     }
 
-    .app-topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(241, 245, 249, 0.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--saas-border);
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 60px;
-    }
-
-    .topbar-left {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--saas-text);
-    }
-
-    .topbar-date {
-      font-size: 13px;
-      color: var(--saas-muted);
-    }
-
-    .app-content {
-      padding: 28px 32px;
-      flex: 1;
-    }
-
-    /* ===== HERO ===== */
-    .dash-hero { margin-bottom: 28px; }
-
-    .hero-welcome {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--saas-text);
-      margin-bottom: 6px;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .hero-sub { font-size: 14px; color: var(--saas-muted); }
-
-    /* ===== S-CARD (card genérico da página) ===== */
-    .s-card {
-      background: var(--saas-card);
-      border: 1px solid var(--saas-border);
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      margin-bottom: 20px;
-    }
-
-    .s-card-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--saas-text);
-      margin-bottom: 16px;
-    }
-
-    /* ===== MÉTRICAS ===== */
-    .metric-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .metric-card {
-      background: var(--saas-card);
-      border: 1px solid var(--saas-border);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: box-shadow 0.2s;
-    }
-
-    .metric-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
-
-    .metric-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .metric-label { font-size: 13px; font-weight: 500; color: var(--saas-muted); }
-    .metric-icon  { font-size: 18px; }
-
-    .metric-value {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--saas-text);
-      margin-bottom: 4px;
-    }
-
-    .metric-sub { font-size: 12px; color: var(--saas-muted); }
-
-    /* ===== ACTION CARDS ===== */
-    .action-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .action-card {
-      background: var(--saas-card);
-      border: 1px solid var(--saas-border);
-      border-radius: 12px;
-      padding: 24px;
-      transition: all 0.2s ease;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .action-card:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      transform: translateY(-2px);
-      border-color: #CBD5E1;
-    }
-
-    .action-icon {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      margin-bottom: 14px;
-    }
-
-    .icon-blue   { background: #EFF6FF; }
-    .icon-purple { background: #F5F3FF; }
-    .icon-green  { background: #F0FDF4; }
-
-    .action-title {
-      font-size: 15px; font-weight: 600; color: var(--saas-text); margin-bottom: 6px;
-    }
-
-    .action-desc {
-      font-size: 13px; color: var(--saas-muted); margin-bottom: 18px; line-height: 1.5;
-    }
-
-    .action-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 8px 16px; border-radius: 8px;
-      font-size: 13px; font-weight: 600;
-      text-decoration: none;
-      border: 1.5px solid var(--saas-border);
-      color: var(--saas-text); background: #fff;
-      transition: all 0.15s; cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .action-btn:hover { background: var(--saas-text); color: #fff; border-color: var(--saas-text); }
-
-    .action-btn.primary {
-      background: var(--saas-blue); color: #fff; border-color: var(--saas-blue);
-    }
-
-    .action-btn.primary:hover { background: #1D4ED8; border-color: #1D4ED8; }
-
-    /* ===== BOTTOM GRID ===== */
-    .bottom-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 20px;
-    }
-
-    /* ===== STATUS CONTA ===== */
-    .status-row   { display: flex; flex-direction: column; gap: 12px; }
-    .status-item  { display: flex; align-items: center; justify-content: space-between; }
-    .status-key   { font-size: 13px; color: var(--saas-muted); }
-    .status-val   { font-size: 13px; font-weight: 600; color: var(--saas-text); }
-
-    /* ===== PILLS ===== */
-    .pill {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 3px 10px; border-radius: 20px;
-      font-size: 12px; font-weight: 600;
-    }
-
-    .pill-green  { background: #D1FAE5; color: #065F46; }
-    .pill-blue   { background: #DBEAFE; color: #1E40AF; }
-    .pill-amber  { background: #FEF3C7; color: #92400E; }
-
-    .pill::before { content: '●'; font-size: 8px; }
-
-    /* ===== TICKETS ===== */
-    .ticket-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 0; border-bottom: 1px solid var(--saas-border);
-    }
-
-    .ticket-item:last-child { border: none; }
-    .ticket-titulo { font-size: 13px; font-weight: 500; color: var(--saas-text); }
-    .ticket-data   { font-size: 11px; color: var(--saas-muted); margin-top: 2px; }
-
-    /* ===== NOVIDADES ===== */
-    .news-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 0; border-bottom: 1px solid var(--saas-border);
-    }
-
-    .news-item:last-child { border: none; }
-
-    .news-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--saas-blue); margin-top: 5px; flex-shrink: 0;
-    }
-
-    .news-text { font-size: 13px; color: var(--saas-text); line-height: 1.4; }
-    .news-date { font-size: 11px; color: var(--saas-muted); margin-top: 2px; }
-
-    /* ===== AÇÕES RÁPIDAS ===== */
-    .quick-btns { display: flex; flex-direction: column; gap: 8px; }
-
-    .quick-btn {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; border-radius: 8px;
-      border: 1px solid var(--saas-border); background: #fff;
-      font-size: 13px; font-weight: 500; color: var(--saas-text);
-      text-decoration: none; transition: all 0.15s; cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .quick-btn:hover {
-      background: var(--saas-bg); border-color: #CBD5E1; transform: translateX(2px);
-    }
-
-    .quick-btn .qb-icon  { font-size: 16px; }
-    .quick-btn .qb-arrow { margin-left: auto; color: var(--saas-muted); }
-
-    /* ===== RESPONSIVO ===== */
-    @media (max-width: 1100px) {
-      .metric-row    { grid-template-columns: 1fr 1fr; }
-      .action-grid   { grid-template-columns: 1fr 1fr; }
-      .bottom-grid   { grid-template-columns: 1fr 1fr; }
-    }
-
-    @media (max-width: 768px) {
-      .app-main    { margin-left: 0; width: 100%; }
-      .app-content { padding: 16px; }
-      .app-topbar  { padding: 12px 16px; }
-
-      #sidebar-toggle { display: flex !important; }
-
-      .metric-row, .action-grid, .bottom-grid { grid-template-columns: 1fr; }
-
-      .s-card[style*="display:flex"] {
-        flex-direction: column;
-        align-items: flex-start !important;
-      }
-
-      .action-btn, .quick-btn { min-height: 44px; }
-
-      .hero-welcome { font-size: 20px; }
-      .hero-sub     { font-size: 13px; }
-
-      .download-grid { grid-template-columns: 1fr !important; }
-    }
-
-    @media (max-width: 480px) {
-      .app-content { padding: 12px; }
-      .metric-value { font-size: 22px; }
-    }
+    .news-list { display: flex; flex-direction: column; gap: 16px; }
+    .news-item { background: rgba(255,255,255,0.02); border: 1px solid var(--borda); padding: 16px; border-radius: 12px; transition: var(--transicao); }
+    .news-item:hover { background: rgba(255,255,255,0.05); border-color: var(--primaria); }
   </style>
 </head>
 <body>
   <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar"></aside>
 
-    <!-- ===== SIDEBAR ===== -->
-    <aside class="app-sidebar" id="sidebar">
-      <!-- Preenchido via sidebar-painel.js -->
-    </aside>
+    <main class="app-content">
+      <header class="app-header"></header>
 
-    <!-- ===== MAIN ===== -->
-    <main class="app-main">
-
-      <!-- TOPBAR -->
-      <div class="app-topbar">
-        <div style="display:flex;align-items:center;gap:10px">
-          <button id="sidebar-toggle"
-            style="display:none;background:none;border:none;font-size:22px;cursor:pointer;
-                   padding:4px 8px;border-radius:6px;color:var(--saas-text)"
-            aria-label="Menu">☰</button>
-          <div class="topbar-left" id="topbar-saudacao">Carregando...</div>
-        </div>
-        <div class="topbar-date" id="topbar-data"></div>
-      </div>
-
-      <!-- CONTENT -->
-      <div class="app-content">
-
-        <!-- HERO -->
-        <div class="dash-hero">
-          <h1 class="hero-welcome">Bem-vindo à Central do Negócio 👋</h1>
-          <p class="hero-sub">Aqui você gerencia seu sistema, automações, suporte e informações da sua conta.</p>
+      <div class="app-body">
+        
+        <div class="hero-glass">
+          <div style="position:relative; z-index:1">
+            <h1 id="hero-saudacao" class="text-white text-4xl mb-2">Seja bem-vindo</h1>
+            <p class="text-suave text-lg">Centralize sua operação, suporte e inteligência comercial em um só lugar.</p>
+          </div>
         </div>
 
-        <!-- MÉTRICAS -->
-        <div class="metric-row">
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Treinamento</span>
-              <span class="metric-icon">🎓</span>
+        <!-- KPIs Principais -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Treinamento EAD</span>
+              <div class="stat-icon"><i class="ph ph-graduation-cap"></i></div>
             </div>
-            <div class="metric-value" id="metric-aulas">—</div>
-            <div class="metric-sub">aulas concluídas</div>
+            <div class="stat-value" id="metric-aulas">—</div>
+            <div class="text-xs text-suave">Aulas Concluídas</div>
           </div>
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Chamados abertos</span>
-              <span class="metric-icon">🎫</span>
+          
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Suporte Ativo</span>
+              <div class="stat-icon"><i class="ph ph-ticket"></i></div>
             </div>
-            <div class="metric-value" id="metric-tickets">—</div>
-            <div class="metric-sub">em andamento</div>
+            <div class="stat-value" id="metric-tickets">—</div>
+            <div class="text-xs text-suave">Chamados Pendentes</div>
           </div>
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Status da conta</span>
-              <span class="metric-icon">✅</span>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Plano Atual</span>
+              <div class="stat-icon" style="background:rgba(16,185,129,0.1); color:var(--sucesso)">
+                <i class="ph ph-shield-check"></i>
+              </div>
             </div>
-            <div class="metric-value" style="font-size:18px;color:#10B981" id="metric-status">Ativo</div>
-            <div class="metric-sub" id="metric-plano">PDV Pro</div>
+            <div class="stat-value text-sucesso" id="metric-plano">CARREGANDO</div>
+            <div class="text-xs text-suave" id="metric-status">Status: Ativo</div>
           </div>
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Próxima cobrança</span>
-              <span class="metric-icon">📅</span>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Próxima Fatura</span>
+              <div class="stat-icon"><i class="ph ph-calendar-blank"></i></div>
             </div>
-            <div class="metric-value" style="font-size:18px" id="metric-cobranca">—</div>
-            <div class="metric-sub">data prevista</div>
+            <div class="stat-value" id="metric-cobranca">—</div>
+            <div class="text-xs text-suave">Vencimento Recorrente</div>
           </div>
         </div>
 
-        <!-- ACTION CARDS -->
-        <div class="action-grid">
-          <div class="action-card">
-            <div class="action-icon icon-blue">🖥️</div>
-            <div class="action-title">Sistema PDV</div>
-            <div class="action-desc">Acesse o treinamento completo do seu sistema de vendas e aprenda no seu ritmo.</div>
-            <a href="/painel/videoaulas.html" class="action-btn primary">Abrir Sistema →</a>
-          </div>
-          <div class="action-card">
-            <div class="action-icon icon-purple">🤖</div>
-            <div class="action-title">Agente IA</div>
-            <div class="action-desc">Tire dúvidas sobre o sistema com nosso suporte rápido inteligente — disponível a qualquer hora.</div>
-            <a href="/painel/agente-ia.html" class="action-btn">Acessar Suporte →</a>
-          </div>
-          <div class="action-card">
-            <div class="action-icon icon-green">🎫</div>
-            <div class="action-title">Suporte Técnico</div>
-            <div class="action-desc">Abra chamados, acompanhe atendimentos e fale com nossa equipe.</div>
-            <a href="/painel/tickets.html" class="action-btn">Ver chamados →</a>
-          </div>
-          <div class="action-card" style="border-color:#FCD34D">
-            <div class="action-icon" style="background:#FEF3C7;font-size:26px">🍽️</div>
-            <div class="action-title">Bares &amp; Restaurantes</div>
-            <div class="action-desc">Guia completo para empreendedores: gestão, operação, equipe, marketing e mais.</div>
-            <a href="/painel/empreendedorismo.html" class="action-btn"
-              style="background:#F59E0B;color:#fff;border-color:#F59E0B">Ver guia →</a>
-          </div>
-          <div class="action-card" style="border-color:#C4B5FD">
-            <div class="action-icon" style="background:#EDE9FE;font-size:26px">✨</div>
-            <div class="action-title">IA para Cardápio</div>
-            <div class="action-desc">Gere nomes incríveis, descrições vendedoras e imagens profissionais em segundos.</div>
-            <a href="/painel/cardapio-ia.html" class="action-btn"
-              style="background:#6366F1;color:#fff;border-color:#6366F1">Abrir Assistente →</a>
-          </div>
-        </div>
-
-        <!-- DOWNLOADS -->
-        <div class="s-card">
-          <div class="s-card-title">⬇ Download do Sistema PDV</div>
-          <div class="download-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-
-            <a href="https://navivendas.com.br/download/windows/pdvmais" target="_blank"
-              style="display:flex;flex-direction:column;align-items:center;gap:8px;
-                     padding:20px 16px;border-radius:10px;border:1.5px solid var(--saas-blue);
-                     background:#EFF6FF;text-decoration:none;transition:all 0.15s;"
-              onmouseover="this.style.background='#DBEAFE';this.style.transform='translateY(-2px)'"
-              onmouseout="this.style.background='#EFF6FF';this.style.transform=''">
-              <span style="font-size:36px">🖥️</span>
-              <span style="font-weight:700;font-size:14px;color:var(--saas-blue)">Windows</span>
-              <span style="font-size:12px;color:var(--saas-muted);text-align:center">Instale no seu computador</span>
-              <span style="background:var(--saas-blue);color:#fff;font-size:12px;font-weight:600;
-                           padding:5px 14px;border-radius:20px;margin-top:4px">⬇ Baixar agora</span>
-            </a>
-
-            <a href="https://play.google.com/store/apps/details?id=br.com.desenvolvedorpdv.pdvmais" target="_blank"
-              style="display:flex;flex-direction:column;align-items:center;gap:8px;
-                     padding:20px 16px;border-radius:10px;border:1.5px solid #22C55E;
-                     background:#F0FDF4;text-decoration:none;transition:all 0.15s;"
-              onmouseover="this.style.background='#DCFCE7';this.style.transform='translateY(-2px)'"
-              onmouseout="this.style.background='#F0FDF4';this.style.transform=''">
-              <span style="font-size:36px">🤖</span>
-              <span style="font-weight:700;font-size:14px;color:#16A34A">Android</span>
-              <span style="font-size:12px;color:var(--saas-muted);text-align:center">Google Play Store</span>
-              <span style="background:#22C55E;color:#fff;font-size:12px;font-weight:600;
-                           padding:5px 14px;border-radius:20px;margin-top:4px">⬇ Baixar agora</span>
-            </a>
-
-            <a href="https://apps.apple.com/br/app/pdv/id6443721199" target="_blank"
-              style="display:flex;flex-direction:column;align-items:center;gap:8px;
-                     padding:20px 16px;border-radius:10px;border:1.5px solid #6366F1;
-                     background:#F5F3FF;text-decoration:none;transition:all 0.15s;"
-              onmouseover="this.style.background='#EDE9FE';this.style.transform='translateY(-2px)'"
-              onmouseout="this.style.background='#F5F3FF';this.style.transform=''">
-              <span style="font-size:36px">🍎</span>
-              <span style="font-weight:700;font-size:14px;color:#4F46E5">iPhone / iPad</span>
-              <span style="font-size:12px;color:var(--saas-muted);text-align:center">Apple App Store</span>
-              <span style="background:#6366F1;color:#fff;font-size:12px;font-weight:600;
-                           padding:5px 14px;border-radius:20px;margin-top:4px">⬇ Baixar agora</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- HOMOLOGAÇÃO DE MAQUININHA -->
-        <div class="s-card">
-          <div class="s-card-title">🔧 Solicitar Homologação de Maquininha</div>
-          <p style="font-size:13px;color:var(--saas-muted);margin-bottom:16px">
-            Selecione sua maquininha de pagamento para que nossa equipe faça a homologação do sistema PDV.
-          </p>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+        <div class="grid-3 gap-6 mb-8">
+          <div class="card quick-access-card">
             <div>
-              <label style="font-size:13px;font-weight:500;color:var(--saas-muted);display:block;margin-bottom:6px">
-                Maquininha
-              </label>
-              <select id="sel-maquininha" onchange="atualizarCampoMaquininha()"
-                style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--saas-border);
-                       font-family:'Inter',sans-serif;font-size:14px;background:#fff;outline:none;color:var(--saas-text)">
-                <option value="">Selecione a maquininha...</option>
+              <div class="stat-icon mb-4"><i class="ph ph-desktop-tower"></i></div>
+              <h3 class="text-white mb-2">Sistema Fantoni PDV</h3>
+              <p class="text-suave text-sm mb-6">Domine todas as ferramentas do seu PDV através do nosso treinamento completo.</p>
+            </div>
+            <a href="/painel/videoaulas.html" class="btn btn-primario w-full">Acessar EAD</a>
+          </div>
+
+          <div class="card quick-access-card">
+            <div>
+              <div class="stat-icon mb-4" style="background:rgba(139,92,246,0.1); color:#a78bfa"><i class="ph ph-robot"></i></div>
+              <h3 class="text-white mb-2">Agente de IA</h3>
+              <p class="text-suave text-sm mb-6">Inteligência artificial disponível 24/7 para tirar dúvidas sobre o seu negócio.</p>
+            </div>
+            <a href="/painel/agente-ia.html" class="btn btn-outline w-full text-[#a78bfa] border-[#a78bfa]/30 hover:bg-[#a78bfa]/10">Falar com Consultor IA</a>
+          </div>
+
+          <div class="card quick-access-card">
+            <div>
+              <div class="stat-icon mb-4" style="background:rgba(16,185,129,0.1); color:var(--sucesso)"><i class="ph ph-headset"></i></div>
+              <h3 class="text-white mb-2">Suporte Técnico</h3>
+              <p class="text-suave text-sm mb-6">Nossa equipe de especialistas pronta para ajudar com configurações avançadas.</p>
+            </div>
+            <a href="/painel/tickets.html" class="btn btn-outline w-full text-sucesso border-sucesso/30 hover:bg-sucesso/10">Abrir Chamado</a>
+          </div>
+        </div>
+
+        <!-- Downloads Modernos -->
+        <div class="card mb-8">
+          <div class="flex items-center gap-2 mb-6 border-b border-white/5 pb-4">
+            <i class="ph ph-download-simple text-primaria"></i>
+            <h3 class="text-white m-0">Downloads Disponíveis</h3>
+          </div>
+          <div class="download-grid">
+            <a href="https://navivendas.com.br/download/windows/pdvmais" target="_blank" class="download-card">
+              <i class="ph ph-microsoft-windows text-[#0ea5e9]"></i>
+              <span class="download-title">Windows PC</span>
+              <span class="download-desc">Sistema PDV / Gestão</span>
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=br.com.desenvolvedorpdv.pdvmais" target="_blank" class="download-card">
+              <i class="ph ph-android-logo text-sucesso"></i>
+              <span class="download-title">Google Play</span>
+              <span class="download-desc">Smartphone / Tablet</span>
+            </a>
+            <a href="https://apps.apple.com/br/app/pdv/id6443721199" target="_blank" class="download-card">
+              <i class="ph ph-apple-logo text-suave"></i>
+              <span class="download-title">Apple Store</span>
+              <span class="download-desc">Painel Consulta iOS</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid-2 gap-6">
+          <div class="card">
+            <h3 class="card-titulo mb-6"><i class="ph ph-newspaper"></i> Novidades</h3>
+            <div class="news-list">
+              <div class="news-item">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="badge badge-azul">SISTEMA</span>
+                  <span class="text-[10px] text-suave">MAR 2024</span>
+                </div>
+                <h4 class="text-white text-sm mb-1">Atualização Fantoni PDV (v3.2)</h4>
+                <p class="text-xs text-suave">Novas funções de IA integradas ao fechamento de caixa e projeção de estoque.</p>
+              </div>
+              <div class="news-item">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="badge badge-verde">TREINAMENTO</span>
+                  <span class="text-[10px] text-suave">FEV 2024</span>
+                </div>
+                <h4 class="text-white text-sm mb-1">Novas Aulas: Gestão de Leads com IA</h4>
+                <p class="text-xs text-suave">Aprenda a configurar seus agentes no módulo comercial avançado.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-titulo mb-6"><i class="ph ph-wrench"></i> Homologação Payment</h3>
+            <p class="text-suave text-sm mb-6">Integre sua maquininha de cartão diretamente com o sistema Fantoni.</p>
+            
+            <div class="form-grupo mb-4">
+              <label class="text-xs text-suave uppercase block mb-2">Marca do Dispositivo</label>
+              <select id="sel-maquininha" class="form-control" onchange="atualizarCampoMaquininha()">
+                <option value="">Selecione...</option>
                 <option value="Cielo">Cielo</option>
                 <option value="Getnet">Getnet</option>
                 <option value="PagSeguro">PagSeguro</option>
                 <option value="Rede">Rede</option>
                 <option value="Stone">Stone</option>
                 <option value="Vero">Vero</option>
-                <option value="Sicredi">Sicredi</option>
-                <option value="Bin">Bin</option>
-                <option value="Azulzinha">Azulzinha</option>
               </select>
             </div>
 
-            <div id="campo-maquininha" style="display:none">
-              <label id="label-maquininha"
-                style="font-size:13px;font-weight:500;color:var(--saas-muted);display:block;margin-bottom:6px">
-                Campo
-              </label>
-              <input type="text" id="input-maquininha" placeholder=""
-                style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--saas-border);
-                       font-family:'Inter',sans-serif;font-size:14px;outline:none">
+            <div id="campo-maquininha" class="form-grupo d-none mb-4">
+              <label id="label-maquininha" class="text-xs text-suave uppercase block mb-2">Identificação</label>
+              <input type="text" id="input-maquininha" class="form-control" placeholder="Digite o código da máquina">
             </div>
-          </div>
 
-          <div id="msg-outros" style="display:none;margin-top:14px;padding:14px;border-radius:8px;
-               background:#FEF3C7;border-left:3px solid #F59E0B">
-            <div style="font-weight:600;font-size:13px;color:#92400E;margin-bottom:6px">📱 Como instalar na maquininha</div>
-            <p style="font-size:13px;color:#78350F;margin-bottom:8px">
-              Acesse a loja de apps diretamente na maquininha, busque pelo nome do sistema e faça o download.
-            </p>
-            <p style="font-size:13px;font-weight:600;color:#92400E">
-              Apps disponíveis: PDV+, Ordem de Pagamento e Pagamento Integrado
-            </p>
-          </div>
+            <div id="msg-outros" class="badge badge-azul p-4 w-full d-none mb-4" style="text-align:left; line-height:1.5">
+               <i class="ph ph-info mr-2"></i> <strong>Instalação Manual:</strong> Procure por "PDV+" na loja de aplicativos da sua máquina.
+            </div>
 
-          <div id="btn-homologacao-wrap" style="display:none;margin-top:16px">
-            <button onclick="enviarHomologacao()"
-              style="background:var(--saas-blue);color:#fff;border:none;border-radius:8px;
-                     padding:10px 22px;font-size:13px;font-weight:600;cursor:pointer;
-                     font-family:'Inter',sans-serif;transition:background 0.15s"
-              onmouseover="this.style.background='#1D4ED8'"
-              onmouseout="this.style.background='var(--saas-blue)'">
-              Solicitar Homologação →
-            </button>
-          </div>
+            <div id="btn-homologacao-wrap" class="d-none">
+              <button onclick="enviarHomologacao()" class="btn btn-primario w-full">Solicitar Integração <i class="ph ph-arrow-right ml-2"></i></button>
+            </div>
 
-          <div id="msg-homologacao-ok"
-            style="display:none;margin-top:12px;padding:12px 14px;border-radius:8px;
-                   background:#D1FAE5;border-left:3px solid #10B981;font-size:13px;color:#065F46;font-weight:500">
-            ✅ Solicitação enviada! Nossa equipe entrará em contato em breve.
+            <div id="msg-homologacao-ok" class="badge badge-verde p-4 w-full d-none">
+              <i class="ph ph-check-circle mr-2"></i> Solicitação enviada! Nossa equipe entrará em contato em breve.
+            </div>
           </div>
         </div>
 
-        <!-- TREINAMENTO CARD -->
-        <div class="s-card" style="display:flex;align-items:center;gap:20px;padding:20px 24px">
-          <div style="font-size:36px">🎓</div>
-          <div style="flex:1">
-            <div style="font-weight:700;font-size:15px;color:var(--saas-text);margin-bottom:4px">Treinamento do Sistema</div>
-            <div style="font-size:13px;color:var(--saas-muted)">
-              Continue de onde parou — <span id="inline-progresso">0/14</span> aulas concluídas
-            </div>
-          </div>
-          <a href="/painel/videoaulas.html"
-            style="display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:8px;
-                   background:#fff;color:var(--saas-text);font-size:13px;font-weight:600;
-                   text-decoration:none;border:1.5px solid var(--saas-border);white-space:nowrap;transition:all 0.15s"
-            onmouseover="this.style.background='var(--saas-text)';this.style.color='#fff'"
-            onmouseout="this.style.background='#fff';this.style.color='var(--saas-text)'">
-            Continuar →
-          </a>
-        </div>
-
-        <!-- BOTTOM GRID -->
-        <div class="bottom-grid">
-
-          <!-- STATUS DA CONTA -->
-          <div class="s-card" style="margin-bottom:0">
-            <div class="s-card-title">Status da Conta</div>
-            <div class="status-row">
-              <div class="status-item">
-                <span class="status-key">Plano</span>
-                <span class="pill pill-blue" id="status-plano">PDV Pro</span>
-              </div>
-              <div class="status-item">
-                <span class="status-key">Situação</span>
-                <span class="pill pill-green">Ativo</span>
-              </div>
-              <div class="status-item">
-                <span class="status-key">Próxima cobrança</span>
-                <span class="status-val" id="status-cobranca">—</span>
-              </div>
-              <div class="status-item">
-                <span class="status-key">Suporte</span>
-                <span class="pill pill-green">Disponível</span>
-              </div>
-            </div>
-            <a href="/painel/financeiro.html" class="action-btn" style="margin-top:18px;display:inline-flex">
-              Ver financeiro →
-            </a>
-          </div>
-
-          <!-- ÚLTIMOS CHAMADOS -->
-          <div class="s-card" style="margin-bottom:0">
-            <div class="s-card-title">Últimos Chamados</div>
-            <div id="lista-tickets">
-              <div style="text-align:center;padding:20px 0;color:var(--saas-muted);font-size:13px">Carregando...</div>
-            </div>
-            <a href="/painel/tickets.html" class="action-btn" style="margin-top:14px;display:inline-flex">
-              Ver todos →
-            </a>
-          </div>
-
-          <!-- COLUNA DIREITA: AÇÕES RÁPIDAS + NOVIDADES -->
-          <div style="display:flex;flex-direction:column;gap:16px">
-
-            <div class="s-card" style="padding:20px;margin-bottom:0">
-              <div class="s-card-title">Ações Rápidas</div>
-              <div class="quick-btns">
-                <a href="/painel/tickets.html" class="quick-btn">
-                  <span class="qb-icon">🎫</span> Novo chamado <span class="qb-arrow">›</span>
-                </a>
-                <a href="/painel/agente-ia.html" class="quick-btn">
-                  <span class="qb-icon">🤖</span> Configurar IA <span class="qb-arrow">›</span>
-                </a>
-                <a href="/painel/financeiro.html" class="quick-btn">
-                  <span class="qb-icon">📊</span> Ver financeiro <span class="qb-arrow">›</span>
-                </a>
-                <a href="/painel/videoaulas.html" class="quick-btn">
-                  <span class="qb-icon">🎓</span> Continuar treinamento <span class="qb-arrow">›</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="s-card" style="padding:20px;margin-bottom:0">
-              <div class="s-card-title">Novidades da Plataforma</div>
-              <div class="news-item">
-                <div class="news-dot"></div>
-                <div>
-                  <div class="news-text">Nova automação de WhatsApp disponível</div>
-                  <div class="news-date">Mar 2026</div>
-                </div>
-              </div>
-              <div class="news-item">
-                <div class="news-dot"></div>
-                <div>
-                  <div class="news-text">Atualização do Sistema PDV — versão 3.2</div>
-                  <div class="news-date">Fev 2026</div>
-                </div>
-              </div>
-              <div class="news-item">
-                <div class="news-dot"></div>
-                <div>
-                  <div class="news-text">Treinamento completo disponível no portal</div>
-                  <div class="news-date">Mar 2026</div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div><!-- /bottom-grid -->
-
-      </div><!-- /app-content -->
-    </main><!-- /app-main -->
-  </div><!-- /app-layout -->
+      </div>
+    </main>
+  </div>
 
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/auth.js"></script>
   <script src="/assets/js/sidebar-painel.js"></script>
   <script>
     const usuario = protegerPagina(['cliente']);
+    
     if (usuario) {
-      inicializarLayout();
-      inicializarDashboard();
+       inicializarDashboard();
     }
 
     function inicializarDashboard() {
       const hora = new Date().getHours();
       const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
-      document.getElementById('topbar-saudacao').textContent =
-        saudacao + (usuario?.nome ? `, ${usuario.nome.split(' ')[0]}` : '') + ' 👋';
-
-      const data = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-      document.getElementById('topbar-data').textContent = data.charAt(0).toUpperCase() + data.slice(1);
+      const primeiroNome = usuario?.nome?.split(' ')[0] || 'Empreendedor';
+      document.getElementById('hero-saudacao').innerHTML = `${saudacao}, <span class="text-primaria">${primeiroNome}</span>!`;
 
       const plano = usuario?.plano || 'PDV Pro';
-      document.getElementById('status-plano').textContent = plano;
       document.getElementById('metric-plano').textContent = plano;
-
-      const salvo = localStorage.getItem('pdv_progresso_v2');
-      const concluidas = salvo ? JSON.parse(salvo).length : 0;
-      document.getElementById('metric-aulas').textContent = concluidas + '/14';
-      const inlineEl = document.getElementById('inline-progresso');
-      if (inlineEl) inlineEl.textContent = concluidas + '/14';
 
       const hoje = new Date();
       const proximo = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 10);
-      const proxCobranca = proximo.toLocaleDateString('pt-BR');
-      document.getElementById('metric-cobranca').textContent = proxCobranca;
-      document.getElementById('status-cobranca').textContent = proxCobranca;
+      document.getElementById('metric-cobranca').textContent = proximo.toLocaleDateString('pt-BR');
 
-      carregarTickets();
+      const salvo = localStorage.getItem('pdv_progresso_v2');
+      const concluidas = salvo ? JSON.parse(salvo).length : 0;
+      document.getElementById('metric-aulas').textContent = `${concluidas}/14`;
+
+      carregarTicketsCount();
     }
 
-    async function carregarTickets() {
+    async function carregarTicketsCount() {
       try {
         const res = await api.get('/tickets');
         const tickets = Array.isArray(res.tickets) ? res.tickets : [];
-        const abertos = tickets.filter(t => t.status === 'aberto').length;
+        const abertos = tickets.filter(t => t.status === 'aberto' || t.status === 'aceito').length;
         document.getElementById('metric-tickets').textContent = abertos;
-
-        const recentes = tickets.slice(0, 4);
-        const el = document.getElementById('lista-tickets');
-        if (!recentes.length) {
-          el.innerHTML = '<p style="font-size:13px;color:var(--saas-muted);padding:12px 0">Nenhum chamado encontrado.</p>';
-          return;
-        }
-        const cores  = { aberto: 'pill-blue', aceito: 'pill-amber', em_andamento: 'pill-amber', resolvido: 'pill-green' };
-        const labels = { aberto: 'Aberto', aceito: 'Aceito', em_andamento: 'Em andamento', resolvido: 'Resolvido' };
-        el.innerHTML = recentes.map(t => `
-          <div class="ticket-item">
-            <div>
-              <div class="ticket-titulo">${esc(t.titulo)}</div>
-              <div class="ticket-data">${typeof formatarData === 'function' ? formatarData(t.criado_em) : (t.criado_em || '')}</div>
-            </div>
-            <span class="pill ${cores[t.status] || 'pill-blue'}">${esc(labels[t.status] || t.status)}</span>
-          </div>
-        `).join('');
       } catch {
-        document.getElementById('metric-tickets').textContent = '—';
-        document.getElementById('lista-tickets').innerHTML =
-          '<p style="font-size:13px;color:var(--saas-muted);padding:12px 0">Não foi possível carregar.</p>';
+        document.getElementById('metric-tickets').textContent = '0';
       }
     }
 
-    // ===== HOMOLOGAÇÃO DE MAQUININHA =====
     function atualizarCampoMaquininha() {
-      const marca   = document.getElementById('sel-maquininha').value;
-      const campo   = document.getElementById('campo-maquininha');
-      const label   = document.getElementById('label-maquininha');
-      const input   = document.getElementById('input-maquininha');
+      const marca = document.getElementById('sel-maquininha').value;
+      const campo = document.getElementById('campo-maquininha');
+      const label = document.getElementById('label-maquininha');
+      const input = document.getElementById('input-maquininha');
       const msgOutros = document.getElementById('msg-outros');
       const btnWrap = document.getElementById('btn-homologacao-wrap');
-      document.getElementById('msg-homologacao-ok').style.display = 'none';
-
-      campo.style.display = 'none';
-      msgOutros.style.display = 'none';
-      btnWrap.style.display = 'none';
-      input.value = '';
+      
+      campo.classList.add('d-none');
+      msgOutros.classList.add('d-none');
+      btnWrap.classList.add('d-none');
+      document.getElementById('msg-homologacao-ok').classList.add('d-none');
 
       if (!marca) return;
 
-      if (marca === 'Cielo') {
-        label.textContent = 'Número do Estabelecimento (EC)';
-        input.placeholder = 'Ex: 1234567890';
-        campo.style.display = 'block';
-        btnWrap.style.display = 'block';
-      } else if (marca === 'PagSeguro') {
-        label.textContent = 'Número de Série da Maquininha';
-        input.placeholder = 'Ex: A12345678';
-        campo.style.display = 'block';
-        btnWrap.style.display = 'block';
+      if (['Cielo', 'PagSeguro', 'Getnet'].includes(marca)) {
+        label.textContent = marca === 'Cielo' ? 'EC (Estabelecimento)' : 'Número de Série';
+        campo.classList.remove('d-none');
+        btnWrap.classList.remove('d-none');
       } else {
-        msgOutros.style.display = 'block';
+        msgOutros.classList.remove('d-none');
       }
     }
 
     async function enviarHomologacao() {
       const marca = document.getElementById('sel-maquininha').value;
-      const input = document.getElementById('input-maquininha');
-      const valor = input.value.trim();
-
-      if (!valor) { input.style.borderColor = 'var(--saas-red)'; input.focus(); return; }
-      input.style.borderColor = '';
-
-      const btnWrap = document.getElementById('btn-homologacao-wrap');
-      const btn = btnWrap.querySelector('button');
-      btn.disabled = true; btn.textContent = 'Enviando...';
-
-      const campoDef = marca === 'Cielo' ? 'Número do Estabelecimento' : 'Número de Série';
-      const descricao = `Solicitação de homologação de maquininha.\n\nMarca: ${marca}\n${campoDef}: ${valor}\n\nApps disponíveis: PDV+, Ordem de Pagamento e Pagamento Integrado`;
-
+      const valor = document.getElementById('input-maquininha').value.trim();
+      if (!valor) return;
       try {
         await api.post('/tickets', {
-          titulo: `[Homologação] Maquininha ${marca}`,
-          categoria: 'suporte',
-          prioridade: 'normal',
-          descricao
+          titulo: `[PAYMENT] ${marca}`,
+          descricao: `Homologação ${marca}. ID: ${valor}`,
+          categoria: 'suporte'
         });
-        btnWrap.style.display = 'none';
-        document.getElementById('campo-maquininha').style.display = 'none';
-        document.getElementById('msg-homologacao-ok').style.display = 'block';
-        document.getElementById('sel-maquininha').value = '';
-      } catch {
-        btn.disabled = false;
-        btn.textContent = 'Solicitar Homologação →';
-        alert('Erro ao enviar solicitação. Tente novamente ou abra um chamado manualmente.');
-      }
+        document.getElementById('btn-homologacao-wrap').classList.add('d-none');
+        document.getElementById('campo-maquininha').classList.add('d-none');
+        document.getElementById('msg-homologacao-ok').classList.remove('d-none');
+      } catch {}
     }
   </script>
 </body>

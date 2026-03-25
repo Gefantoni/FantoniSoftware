@@ -1,114 +1,174 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Financeiro — Central do Negócio</title>
+  <title>Gestão Financeira — Central do Negócio</title>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+  <style>
+    .fin-grid { display: grid; grid-template-columns: 400px 1fr; gap: 24px; }
+    
+    .margin-display {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0));
+      border: 1px solid var(--borda); border-radius: 16px; padding: 24px;
+      margin-top: 24px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .margin-value { font-size: 32px; font-weight: 800; font-family: 'Outfit'; }
 
+    .chart-container-glass {
+      background: var(--fundo-card); border: 1px solid var(--borda); border-radius: 20px;
+      padding: 30px; height: 100%; display: flex; flex-direction: column;
+    }
+    
+    @media (max-width: 1100px) { .fin-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
 <body>
   <div class="app-layout">
     <aside class="app-sidebar" id="sidebar"></aside>
 
     <main class="app-content">
-      <header class="app-header" id="topbar"></header>
+      <header class="app-header"></header>
 
-      <div class="pagina">
-        <!-- Indicadores -->
-        <div class="grid-3 mb-3" id="indicadores">
-          <div class="metrica-card">
-            <div class="metrica-label">Melhor Mês</div>
-            <div class="metrica-valor" id="melhor-mes">—</div>
+      <div class="app-body">
+        <div class="page-title mb-8">
+          <h1>Inteligência Financeira</h1>
+          <p class="text-suave text-sm">Monitore sua lucratividade e performance histórica com dados reais.</p>
+        </div>
+
+        <!-- KPIs Superiores -->
+        <div class="stats-grid mb-8">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Recorde de Vendas</span>
+              <div class="stat-icon"><i class="ph ph-trend-up"></i></div>
+            </div>
+            <div class="stat-value" id="melhor-mes">R$ 0,00</div>
+            <div class="text-xs text-suave">Melhor faturamento registrado</div>
           </div>
-          <div class="metrica-card">
-            <div class="metrica-label">Crescimento</div>
-            <div class="metrica-valor" id="crescimento">—</div>
+          
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Crescimento</span>
+              <div class="stat-icon" style="background:rgba(59,130,246,0.1); color:var(--primaria)"><i class="ph ph-chart-line"></i></div>
+            </div>
+            <div class="stat-value" id="crescimento">0%</div>
+            <div class="text-xs text-suave">Comparativo vs mês anterior</div>
           </div>
-          <div class="metrica-card">
-            <div class="metrica-label">Meta do Mês</div>
-            <div class="metrica-valor" id="meta-status">—</div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Meta do Mês</span>
+              <div class="stat-icon" id="meta-icon-status"><i class="ph ph-target"></i></div>
+            </div>
+            <div class="stat-value" id="meta-status">Pendente</div>
+            <div class="text-xs text-suave" id="meta-subtext">Aguardando dados</div>
           </div>
         </div>
 
-        <!-- Formulário de lançamento + Gráfico -->
-        <div class="grid-2 mb-3">
+        <div class="fin-grid mb-8">
+          <!-- Lançamento -->
           <div class="card">
-            <h3 class="card-titulo">Lançamento Mensal</h3>
+            <div class="flex items-center gap-2 mb-6 border-b border-white/5 pb-4">
+              <i class="ph ph-pencil-line text-primaria"></i>
+              <h3 class="text-white m-0">Lançamento por Período</h3>
+            </div>
+            
             <form id="form-financeiro" onsubmit="salvarLancamento(event)">
-              <div class="grid-2">
+              <div class="grid-2 gap-4 mb-4">
                 <div class="form-grupo">
-                  <label>Mês</label>
-                  <select id="fin-mes" required>
+                  <label class="text-xs text-suave uppercase block mb-2">Mês</label>
+                  <select id="fin-mes" class="form-control">
                     ${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${new Date().getMonth()===i?'selected':''}>
-                      ${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][i]}</option>
+                      ${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][i]}</option>
                     `).join('')}
                   </select>
                 </div>
                 <div class="form-grupo">
-                  <label>Ano</label>
-                  <input type="number" id="fin-ano" value="${new Date().getFullYear()}" required min="2020" max="2099">
+                  <label class="text-xs text-suave uppercase block mb-2">Ano</label>
+                  <input type="number" id="fin-ano" class="form-control" value="${new Date().getFullYear()}">
                 </div>
               </div>
-              <div class="form-grupo">
-                <label>Faturamento (R$)</label>
-                <input type="number" id="fin-fat" step="0.01" min="0" placeholder="0,00" required>
-              </div>
-              <div class="form-grupo">
-                <label>Custos (R$)</label>
-                <input type="number" id="fin-cus" step="0.01" min="0" placeholder="0,00" required>
-              </div>
-              <div class="form-grupo">
-                <label>Meta do Mês (R$)</label>
-                <input type="number" id="fin-meta" step="0.01" min="0" placeholder="Meta personalizada">
-                <span class="text-xs text-suave" id="meta-padrao-info">Meta sugerida: carregando...</span>
-              </div>
-              <!-- Margem calculada -->
-              <div style="background:var(--fundo);padding:12px;border-radius:var(--radius);margin-bottom:16px">
-                <div class="flex justify-between">
-                  <span class="text-sm text-suave">Margem de Lucro</span>
-                  <strong id="margem-calculada">—</strong>
+
+              <div class="form-grupo mb-4">
+                <label class="text-xs text-suave uppercase block mb-2">Faturamento Bruto (R$)</label>
+                <div style="position:relative">
+                  <span style="position:absolute; left:12px; top:12px; opacity:0.3">R$</span>
+                  <input type="number" id="fin-fat" class="form-control" style="padding-left:40px" step="0.01" placeholder="0,00" required>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primario w-100" id="btn-salvar-fin">Salvar</button>
+
+              <div class="form-grupo mb-4">
+                <label class="text-xs text-suave uppercase block mb-2">Custos Operacionais (R$)</label>
+                <div style="position:relative">
+                  <span style="position:absolute; left:12px; top:12px; opacity:0.3">R$</span>
+                  <input type="number" id="fin-cus" class="form-control" style="padding-left:40px" step="0.01" placeholder="0,00" required>
+                </div>
+              </div>
+
+              <div class="form-grupo mb-6">
+                <label class="text-xs text-suave uppercase block mb-2">Meta Personalizada (R$)</label>
+                <input type="number" id="fin-meta" class="form-control" placeholder="Opcional">
+                <p class="text-[10px] text-suave mt-2 opacity-50" id="meta-sugestao">Carregando sugestão...</p>
+              </div>
+
+              <div class="margin-display">
+                <div class="flex flex-col">
+                  <span class="text-xs text-suave uppercase fw-600">Margem Lucro</span>
+                  <span class="text-xs opacity-50">Eficiência mensal</span>
+                </div>
+                <div class="margin-value text-primaria" id="margem-valor">0%</div>
+              </div>
+
+              <button type="submit" class="btn btn-primario w-full mt-6 btn-lg" id="btn-save">Salvar Análise</button>
             </form>
           </div>
 
-          <div class="card">
-            <h3 class="card-titulo">Faturamento vs Meta</h3>
-            <canvas id="grafico-fin" height="250"></canvas>
+          <!-- Gráfico -->
+          <div class="chart-container-glass">
+             <div class="flex justify-between items-center mb-8">
+                <h3 class="text-white m-0">Performance Histórica</h3>
+                <div class="flex gap-2">
+                   <span class="badge badge-azul">Faturamento</span>
+                   <span class="badge" style="background:rgba(255,255,255,0.05); border:1px solid var(--borda)">Meta</span>
+                </div>
+             </div>
+             <div style="flex:1">
+               <canvas id="chart-fin"></canvas>
+             </div>
           </div>
         </div>
 
         <!-- Histórico -->
         <div class="card">
-          <h3 class="card-titulo mb-3">Histórico</h3>
+          <div class="flex items-center gap-2 mb-6">
+            <i class="ph ph-clock-counter-clockwise text-primaria"></i>
+            <h3 class="text-white m-0">Linha do Tempo</h3>
+          </div>
           <div class="tabela-container">
-            <table id="tabela-historico">
+            <table>
               <thead>
                 <tr>
-                  <th>Mês/Ano</th>
+                  <th class="p-4">Período</th>
                   <th>Faturamento</th>
                   <th>Custos</th>
+                  <th>Lucro Líquido</th>
                   <th>Margem</th>
-                  <th>Meta</th>
-                  <th>Atingiu</th>
+                  <th class="text-center">Status Meta</th>
                 </tr>
               </thead>
-              <tbody id="tbody-historico">
-                <tr>
-                  <td colspan="6" class="text-center text-suave">Carregando...</td>
-                </tr>
+              <tbody id="tbody-history">
+                <tr><td colspan="6" class="p-8 text-center text-suave">Processando dados...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
+
       </div>
-    </div>
+    </main>
   </div>
 
   <script src="/assets/js/api.js"></script>
@@ -116,93 +176,97 @@
   <script src="/assets/js/sidebar-painel.js"></script>
   <script>
     const usuario = protegerPagina(['cliente']);
-    let grafico = null;
-    const mesesNome = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    let chartInstance = null;
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
-    if (usuario) { inicializarLayout(); carregarFinanceiro(); }
+    if (usuario) carregarDados();
 
-    // Calcula margem em tempo real ao alterar inputs
     ['fin-fat', 'fin-cus'].forEach(id => {
       document.getElementById(id).addEventListener('input', () => {
         const fat = parseFloat(document.getElementById('fin-fat').value) || 0;
         const cus = parseFloat(document.getElementById('fin-cus').value) || 0;
         const margem = fat > 0 ? ((fat - cus) / fat * 100).toFixed(1) : 0;
-        document.getElementById('margem-calculada').textContent = `${margem}%`;
-        document.getElementById('margem-calculada').style.color = margem >= 0 ? 'var(--sucesso)' : 'var(--erro)';
+        const el = document.getElementById('margem-valor');
+        el.textContent = `${margem}%`;
+        el.style.color = margem >= 0 ? 'var(--sucesso)' : 'var(--erro)';
       });
     });
 
-    async function carregarFinanceiro() {
+    async function carregarDados() {
       try {
-        const [{ historico }, { resumo }, { meta, mes_de_uso }] = await Promise.all([
+        const [{ historico }, { resumo }, { meta }] = await Promise.all([
           api.get('/financeiro-cliente'),
           api.get('/financeiro-cliente/resumo'),
           api.get('/financeiro-cliente/meta-padrao')
         ]);
 
-        // Preenche meta padrão
-        document.getElementById('meta-padrao-info').textContent = `Meta sugerida para mês ${mes_de_uso}: ${formatarMoeda(meta)}`;
-        if (!document.getElementById('fin-meta').value) {
-          document.getElementById('fin-meta').value = meta;
-        }
-
-        // Indicadores
+        document.getElementById('meta-sugestao').innerText = `Sugestão baseada no tempo de casa: R$ ${meta.toLocaleString()}`;
+        
         if (resumo) {
-          document.getElementById('melhor-mes').textContent = formatarMoeda(resumo.melhorMes?.faturamento);
-          document.getElementById('crescimento').textContent = resumo.crescimento !== null ? `${resumo.crescimento}%` : '—';
-          document.getElementById('meta-status').textContent = resumo.metaAtingida === true ? '✅ Sim' : resumo.metaAtingida === false ? '❌ Não' : '—';
+          document.getElementById('melhor-mes').textContent = `R$ ${resumo.melhorMes?.faturamento?.toLocaleString() || '0,00'}`;
+          document.getElementById('crescimento').textContent = `${resumo.crescimento || 0}%`;
+          const metaStatus = document.getElementById('meta-status');
+          metaStatus.textContent = resumo.metaAtingida ? 'Atingida' : 'Abaixo';
+          metaStatus.className = `stat-value ${resumo.metaAtingida ? 'text-sucesso' : 'text-suave'}`;
         }
 
-        // Preenche formulário com último mês
-        if (historico.length > 0) {
-          const ultimo = historico[0];
-          document.getElementById('fin-mes').value = ultimo.mes;
-          document.getElementById('fin-ano').value = ultimo.ano;
-          document.getElementById('fin-fat').value = ultimo.faturamento;
-          document.getElementById('fin-cus').value = ultimo.custos;
-          document.getElementById('fin-meta').value = ultimo.meta || '';
+        const tbody = document.getElementById('tbody-history');
+        if(!historico.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="p-12 text-center text-suave">Nenhum dado registrado ainda. Comece lançando o mês atual.</td></tr>';
+        } else {
+            tbody.innerHTML = historico.map(h => `
+              <tr class="hover:bg-white/[0.02] transition-all">
+                <td class="p-4 fw-700 text-white">${meses[h.mes - 1]}/${h.ano}</td>
+                <td class="text-sm">R$ ${h.faturamento.toLocaleString()}</td>
+                <td class="text-sm text-erro">R$ ${h.custos.toLocaleString()}</td>
+                <td class="text-sm text-sucesso fw-600">R$ ${(h.faturamento - h.custos).toLocaleString()}</td>
+                <td><span class="badge ${h.margem_lucro >= 15 ? 'badge-verde' : 'badge-azul'}">${h.margem_lucro?.toFixed(1)}%</span></td>
+                <td class="text-center">
+                  ${h.meta ? (h.faturamento >= h.meta ? '<i class="ph-fill ph-check-circle text-sucesso i-lg"></i>' : '<i class="ph-fill ph-warning-circle text-suave i-lg"></i>') : '—'}
+                </td>
+              </tr>
+            `).join('');
         }
 
-        // Tabela histórico
-        const tbody = document.getElementById('tbody-historico');
-        tbody.innerHTML = historico.map(h => `
-        <tr>
-          <td>${mesesNome[h.mes - 1]}/${h.ano}</td>
-          <td>${formatarMoeda(h.faturamento)}</td>
-          <td>${formatarMoeda(h.custos)}</td>
-          <td><span class="${h.margem_lucro >= 0 ? 'text-sucesso' : 'text-erro'}">${h.margem_lucro?.toFixed(1) || 0}%</span></td>
-          <td>${h.meta ? formatarMoeda(h.meta) : '—'}</td>
-          <td>${h.meta ? (h.faturamento >= h.meta ? '✅' : '❌') : '—'}</td>
-        </tr>`).join('') || '<tr><td colspan="6" class="text-center text-suave">Nenhum dado</td></tr>';
-
-        // Gráfico
-        const dados = historico.slice(0, 6).reverse();
-        renderizarGrafico(dados);
-      } catch (err) {
-        console.error('Erro ao carregar financeiro:', err);
-      }
+        renderChart(historico.slice(0, 12).reverse());
+      } catch {}
     }
 
-    function renderizarGrafico(dados) {
-      const ctx = document.getElementById('grafico-fin').getContext('2d');
-      if (grafico) grafico.destroy();
-      grafico = new Chart(ctx, {
+    function renderChart(dados) {
+      const ctx = document.getElementById('chart-fin').getContext('2d');
+      if (chartInstance) chartInstance.destroy();
+      
+      chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: dados.map(d => `${mesesNome[d.mes - 1]}/${d.ano}`),
+          labels: dados.map(d => `${meses[d.mes - 1]}/${d.ano}`),
           datasets: [
-            { label: 'Faturamento', data: dados.map(d => d.faturamento), backgroundColor: '#0f1e35', borderRadius: 6 },
-            { label: 'Meta', data: dados.map(d => d.meta || 0), backgroundColor: '#c8a96e', borderRadius: 6, borderDash: [5, 5] }
+            { 
+              label: 'Faturamento', data: dados.map(d => d.faturamento), 
+              backgroundColor: '#3b82f6', borderRadius: 12, barThickness: 24, hoverBackgroundColor: '#60a5fa'
+            },
+            { 
+              label: 'Meta', data: dados.map(d => d.meta || 0), 
+              type: 'line', borderColor: 'rgba(255,255,255,0.2)', borderWidth: 2, borderDash: [5, 5],
+              pointBorderColor: 'transparent', pointBackgroundColor: 'transparent', fill: false
+            }
           ]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { callback: v => 'R$' + v.toLocaleString('pt-BR') } } } }
+        options: { 
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { 
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: { dash: [4, 4] }, ticks: { font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+          }
+        }
       });
     }
 
     async function salvarLancamento(e) {
       e.preventDefault();
-      const btn = document.getElementById('btn-salvar-fin');
-      btn.disabled = true; btn.textContent = 'Salvando...';
+      const btn = document.getElementById('btn-save');
+      btn.disabled = true; btn.textContent = 'Processando...';
       try {
         await api.post('/financeiro-cliente', {
           mes: document.getElementById('fin-mes').value,
@@ -211,16 +275,11 @@
           custos: document.getElementById('fin-cus').value,
           meta: document.getElementById('fin-meta').value || null
         });
-        mostrarAlerta('Lançamento salvo com sucesso!');
-        carregarFinanceiro();
-      } catch (err) {
-        mostrarAlerta(err.erro || 'Erro ao salvar', 'erro');
-      }
-      btn.disabled = false; btn.textContent = 'Salvar';
+        carregarDados();
+        document.getElementById('form-financeiro').reset();
+      } catch {}
+      btn.disabled = false; btn.textContent = 'Salvar Análise';
     }
   </script>
-      </div><!-- /pagina -->
-    </main><!-- /app-content -->
-  </div><!-- /app-layout -->
-
+</body>
 </html>

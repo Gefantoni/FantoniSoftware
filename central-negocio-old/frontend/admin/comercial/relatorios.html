@@ -2,291 +2,139 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relatórios — Comercial — Central do Negócio</title>
+  <title>Relatórios Comerciais — Central do Negócio</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <link rel="stylesheet" href="/assets/css/comercial.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .reports-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+    .report-card { background: var(--fundo-card); border: 1px solid var(--borda); border-radius: var(--radius-lg); padding: 24px; }
+    
+    .kpi-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-mini { background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--borda); }
+    .kpi-mini i { color: var(--primaria); font-size: 20px; margin-bottom: 8px; display: block; }
+    .kpi-mini .val { font-size: 20px; font-weight: 800; color: #fff; }
+    .kpi-mini .lab { font-size: 10px; text-transform: uppercase; color: var(--texto-suave); margin-top: 4px; }
+
+    canvas { max-height: 250px; }
+  </style>
 </head>
 <body class="com-page">
-<div class="layout">
-  <aside class="sidebar" id="sidebar"></aside>
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar"></aside>
 
-  <div class="conteudo">
-    <div class="topbar">
-      <div class="flex items-center gap-2">
-        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
-        <span class="topbar-titulo">📈 Relatórios Comerciais</span>
-      </div>
-      <div class="flex gap-2">
-        <input type="date" id="f-inicio" style="background:var(--com-card);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px" onchange="carregarTudo()">
-        <input type="date" id="f-fim"    style="background:var(--com-card);color:var(--com-texto);border:1px solid var(--com-borda);border-radius:8px;padding:6px 10px;font-size:13px" onchange="carregarTudo()">
-        <button class="com-btn com-btn-ghost com-btn-sm" onclick="mostrarAlerta('Exportação em desenvolvimento', 'aviso')">⬇️ Exportar</button>
-      </div>
-    </div>
+    <main class="app-content">
+      <header class="app-header"></header>
 
-    <div class="pagina" style="padding:24px">
-
-      <!-- Abas -->
-      <div class="com-tabs">
-        <button class="com-tab-btn ativo" onclick="setTab('leads', this)">👤 Leads</button>
-        <button class="com-tab-btn" onclick="setTab('campanhas', this)">📢 Campanhas</button>
-        <button class="com-tab-btn" onclick="setTab('ia', this)">🤖 IA</button>
-        <button class="com-tab-btn" onclick="setTab('vendedor', this)">🏆 Vendedor</button>
-      </div>
-
-      <!-- Tab: Leads -->
-      <div class="com-tab-panel ativo" id="tab-leads">
-        <div class="kpi-grid" id="kpi-leads" style="grid-template-columns:repeat(4,1fr)">
-          <div class="com-spinner" style="grid-column:1/-1"></div>
-        </div>
-        <div class="com-grid-2 com-mt-3">
-          <div class="chart-wrap">
-            <div class="chart-titulo">Funil de Conversão</div>
-            <canvas id="grafico-funil" height="200"></canvas>
+      <div class="app-body">
+        <div class="justify-between flex items-center mb-6">
+          <div class="page-title">
+            <h1>Inteligência Comercial</h1>
+            <p class="text-suave">Analise o desempenho de suas campanhas, leads e conversão.</p>
           </div>
-          <div class="chart-wrap">
-            <div class="chart-titulo">Por Status</div>
-            <canvas id="grafico-status" height="200"></canvas>
+          <div class="flex gap-2">
+            <input type="date" id="f-inicio" class="form-control" style="width:150px">
+            <input type="date" id="f-fim" class="form-control" style="width:150px">
+            <button class="btn btn-outline btn-sm" onclick="carregarTudo()"><i class="ph ph-arrows-clockwise"></i></button>
           </div>
         </div>
-        <div class="com-card com-mt-3">
-          <div class="com-card-titulo">Por Instância</div>
-          <div class="com-tabela-container" id="tabela-instancias"></div>
+
+        <div class="tabs mb-6">
+            <button class="tab-btn active" onclick="setTab('leads', this)"><i class="ph ph-users-three"></i> Leads</button>
+            <button class="tab-btn" onclick="setTab('vendedor', this)"><i class="ph ph-trend-up"></i> Vendas</button>
+            <button class="tab-btn" onclick="setTab('ia', this)"><i class="ph ph-robot"></i> Performance IA</button>
         </div>
-      </div>
 
-      <!-- Tab: Campanhas -->
-      <div class="com-tab-panel" id="tab-campanhas">
-        <div class="kpi-grid com-mb-3" id="kpi-campanhas" style="grid-template-columns:repeat(4,1fr)">
-          <div class="com-spinner" style="grid-column:1/-1"></div>
-        </div>
-        <div class="com-card">
-          <div class="com-card-titulo">Desempenho por Campanha</div>
-          <div class="com-tabela-container" id="tabela-campanhas">
-            <div class="com-spinner"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab: IA -->
-      <div class="com-tab-panel" id="tab-ia">
-        <div class="kpi-grid com-mb-3" id="kpi-ia" style="grid-template-columns:repeat(3,1fr)">
-          <div class="com-spinner" style="grid-column:1/-1"></div>
-        </div>
-        <div class="com-card com-mt-3">
-          <div class="com-card-titulo">Atividade Recente dos Agentes</div>
-          <div class="feed" id="feed-ia"><div class="com-spinner"></div></div>
-        </div>
-      </div>
-
-      <!-- Tab: Vendedor -->
-      <div class="com-tab-panel" id="tab-vendedor">
-        <div class="kpi-grid com-mb-3" id="kpi-vendedor" style="grid-template-columns:repeat(4,1fr)">
-          <div class="com-spinner" style="grid-column:1/-1"></div>
-        </div>
-        <div class="chart-wrap com-mt-3">
-          <div class="chart-titulo">Reuniões por Status</div>
-          <canvas id="grafico-reunioes" height="160"></canvas>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/auth.js"></script>
-<script src="/assets/js/sidebar-admin.js"></script>
-<script>
-const usuario = protegerPagina(['admin','comercial']);
-let chartFunil, chartStatus, chartReunioes;
-let tabAtiva = 'leads';
-
-if (usuario) {
-  inicializarLayout();
-  // Datas padrão: mês atual
-  const hoje = new Date();
-  const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-  document.getElementById('f-inicio').value = primeiroDia.toISOString().split('T')[0];
-  document.getElementById('f-fim').value = hoje.toISOString().split('T')[0];
-  carregarTudo();
-}
-
-function setTab(tab, btn) {
-  tabAtiva = tab;
-  document.querySelectorAll('.com-tab-btn').forEach(b => b.classList.remove('ativo'));
-  document.querySelectorAll('.com-tab-panel').forEach(p => p.classList.remove('ativo'));
-  btn.classList.add('ativo');
-  document.getElementById('tab-' + tab).classList.add('ativo');
-  carregarTudo();
-}
-
-function params() {
-  const i = document.getElementById('f-inicio').value;
-  const f = document.getElementById('f-fim').value;
-  const p = new URLSearchParams();
-  if (i) p.set('data_inicio', i);
-  if (f) p.set('data_fim', f + 'T23:59:59');
-  return p.toString() ? '?' + p.toString() : '';
-}
-
-async function carregarTudo() {
-  if (tabAtiva === 'leads')     await carregarLeads();
-  if (tabAtiva === 'campanhas') await carregarCampanhas();
-  if (tabAtiva === 'ia')        await carregarIA();
-  if (tabAtiva === 'vendedor')  await carregarVendedor();
-}
-
-async function carregarLeads() {
-  try {
-    const [{ funil }, dados] = await Promise.all([
-      api.get('/relatorios-comercial/funil' + params()),
-      api.get('/relatorios-comercial/leads' + params())
-    ]);
-
-    document.getElementById('kpi-leads').innerHTML = `
-      ${kpiCard('Total na Base', dados.total, 'azul', '👤')}
-      ${kpiCard('Contatados', dados.contatados, 'azul', '✅')}
-      ${kpiCard('Com Interesse', dados.com_interesse, 'amarelo', '🔥')}
-      ${kpiCard('No Kanban', dados.no_kanban, 'roxo', '📋')}
-      ${kpiCard('Convertidos', dados.convertidos, 'verde', '🏆')}
-      ${kpiCard('Perdidos', dados.perdidos, 'vermelho', '❌')}
-      ${kpiCard('Taxa de Resposta', dados.taxa_resposta + '%', 'azul', '📊')}
-      ${kpiCard('Taxa de Interesse', dados.taxa_interesse + '%', 'amarelo', '💡')}`;
-
-    // Gráfico funil
-    if (chartFunil) chartFunil.destroy();
-    const ctxF = document.getElementById('grafico-funil').getContext('2d');
-    chartFunil = new Chart(ctxF, {
-      type: 'bar',
-      data: {
-        labels: funil.map(f => f.etapa),
-        datasets: [{ data: funil.map(f => f.total),
-          backgroundColor: '#2563eb44', borderColor: '#3b82f6',
-          borderWidth: 2, borderRadius: 6 }]
-      },
-      options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } },
-        scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e3a5a' } },
-                  y: { ticks: { color: '#94a3b8' }, grid: { display: false } } } }
-    });
-
-    // Gráfico status
-    const porStatus = dados.por_status || {};
-    if (chartStatus) chartStatus.destroy();
-    const ctxS = document.getElementById('grafico-status').getContext('2d');
-    chartStatus = new Chart(ctxS, {
-      type: 'doughnut',
-      data: {
-        labels: Object.keys(porStatus),
-        datasets: [{ data: Object.values(porStatus).map(v => v.length),
-          backgroundColor: ['#2563eb','#f59e0b','#10b981','#94a3b8'],
-          borderWidth: 0 }]
-      },
-      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }
-    });
-
-    // Tabela por instância
-    const inst = dados.por_instancia || {};
-    document.getElementById('tabela-instancias').innerHTML = Object.keys(inst).length
-      ? `<table class="com-tabela"><thead><tr><th>Instância</th><th>Total</th><th>Com Interesse</th><th>No Kanban</th></tr></thead>
-          <tbody>${Object.entries(inst).map(([k, v]) => `<tr><td>${k}</td><td>${v.total}</td><td>${v.interesse}</td><td>${v.kanban}</td></tr>`).join('')}</tbody></table>`
-      : '<p class="com-text-suave com-text-sm">Sem dados de instância</p>';
-  } catch { document.getElementById('kpi-leads').innerHTML = '<p class="com-text-suave">Erro ao carregar dados</p>'; }
-}
-
-async function carregarCampanhas() {
-  try {
-    const { campanhas, totais, taxa_resposta, taxa_interesse } = await api.get('/relatorios-comercial/campanhas' + params());
-    document.getElementById('kpi-campanhas').innerHTML = `
-      ${kpiCard('Campanhas', campanhas.length, 'azul', '📢')}
-      ${kpiCard('Enviados', totais.enviados, 'azul', '📤')}
-      ${kpiCard('Respostas', totais.respostas, 'verde', '💬')}
-      ${kpiCard('Com Interesse', totais.interesse, 'amarelo', '🔥')}
-      ${kpiCard('Oportunidades', totais.oportunidades, 'roxo', '🎯')}
-      ${kpiCard('Reuniões', totais.reunioes, 'acento', '📅')}
-      ${kpiCard('Taxa Resposta', taxa_resposta + '%', 'verde', '📊')}
-      ${kpiCard('Taxa Interesse', taxa_interesse + '%', 'amarelo', '💡')}`;
-
-    const statusBadge = { ativa:'verde', pausada:'amarelo', encerrada:'cinza', rascunho:'azul' };
-    document.getElementById('tabela-campanhas').innerHTML = campanhas.length
-      ? `<table class="com-tabela">
-          <thead><tr><th>Nome</th><th>Status</th><th>Enviados</th><th>Respostas</th><th>Interesse</th><th>Oportunidades</th><th>Reuniões</th></tr></thead>
-          <tbody>${campanhas.map(c => `<tr>
-            <td style="font-weight:600;color:var(--com-texto)">${c.nome}</td>
-            <td><span class="com-badge com-badge-${statusBadge[c.status]||'cinza'}">${c.status}</span></td>
-            <td>${c.total_enviados||0}</td><td>${c.total_respostas||0}</td>
-            <td>${c.total_interesse||0}</td><td>${c.total_oportunidades||0}</td><td>${c.total_reunioes||0}</td>
-          </tr>`).join('')}
-          <tr style="font-weight:700;background:rgba(37,99,235,0.08)">
-            <td>TOTAL</td><td>—</td><td>${totais.enviados}</td><td>${totais.respostas}</td>
-            <td>${totais.interesse}</td><td>${totais.oportunidades}</td><td>${totais.reunioes}</td>
-          </tr></tbody></table>`
-      : '<p class="com-text-suave com-text-sm" style="padding:20px">Nenhuma campanha no período</p>';
-  } catch { document.getElementById('kpi-campanhas').innerHTML = '<p class="com-text-suave">Erro ao carregar</p>'; }
-}
-
-async function carregarIA() {
-  try {
-    const [dados, { atividades }] = await Promise.all([
-      api.get('/relatorios-comercial/ia' + params()),
-      api.get('/relatorios-comercial/atividades')
-    ]);
-    document.getElementById('kpi-ia').innerHTML = `
-      ${kpiCard('Conversas pela IA', dados.conversas_ia, 'azul', '🤖')}
-      ${kpiCard('Oportunidades geradas', dados.oportunidades_ia, 'verde', '🎯')}
-      ${kpiCard('Humano assumiu', dados.humano_assumiu, 'amarelo', '👤')}
-      ${kpiCard('IA desativada', dados.ia_desativada, 'vermelho', '⚠️')}
-      ${kpiCard('Reuniões pela IA', dados.reunioes_ia, 'roxo', '📅')}
-      ${kpiCard('Taxa de acerto', dados.taxa_acerto + '%', 'acento', '📊')}`;
-
-    const emojiTipo = { oportunidade_criada:'🎯', kanban_movido:'📋', reuniao_criada:'📅', reuniao_concluida:'✅', ia_desativada:'🔇', humano_assumiu:'👤' };
-    document.getElementById('feed-ia').innerHTML = atividades.length
-      ? atividades.slice(0,20).map(a => `
-          <div class="feed-item">
-            <div class="feed-icone">${emojiTipo[a.tipo] || '📌'}</div>
-            <div class="feed-corpo">
-              <div class="feed-texto">${a.descricao}</div>
-              <div class="feed-meta">${a.perfis?.nome || 'Sistema'} · ${formatarData(a.criado_em)}</div>
+        <!-- Tab Leads -->
+        <div id="tab-leads" class="tab-content active">
+            <div class="kpi-mini-grid" id="kpi-leads">
+                <div class="spinner"></div>
             </div>
-          </div>`).join('')
-      : '<p class="com-text-suave com-text-sm" style="text-align:center;padding:20px">Sem atividades no período</p>';
-  } catch { document.getElementById('kpi-ia').innerHTML = '<p class="com-text-suave">Erro ao carregar</p>'; }
-}
+            <div class="grid-2 gap-6">
+                <div class="report-card">
+                    <h3 class="card-titulo mb-4">Fluxo do Funil</h3>
+                    <canvas id="chart-funil"></canvas>
+                </div>
+                <div class="report-card">
+                    <h3 class="card-titulo mb-4">Distribuição de Status</h3>
+                    <canvas id="chart-status"></canvas>
+                </div>
+            </div>
+        </div>
 
-async function carregarVendedor() {
-  try {
-    const dados = await api.get('/relatorios-comercial/vendedor' + params());
-    document.getElementById('kpi-vendedor').innerHTML = `
-      ${kpiCard('Reuniões Agendadas', dados.r_agendadas, 'azul', '📅')}
-      ${kpiCard('Reuniões Concluídas', dados.r_concluidas, 'verde', '✅')}
-      ${kpiCard('Reuniões Canceladas', dados.r_canceladas, 'vermelho', '❌')}
-      ${kpiCard('Oportunidades Fechadas', dados.op_fechadas, 'verde', '🏆')}
-      ${kpiCard('Oportunidades Perdidas', dados.op_perdidas, 'vermelho', '💔')}
-      ${kpiCard('Taxa de Fechamento', dados.taxa_fechamento + '%', 'acento', '📊')}
-      ${kpiCard('Valor Fechado', 'R$ ' + Number(dados.valor_fechado||0).toLocaleString('pt-BR'), 'acento', '💰')}`;
+        <!-- Tab Vendedor -->
+        <div id="tab-vendedor" class="tab-content d-none">
+            <div class="kpi-mini-grid" id="kpi-vendedor"></div>
+            <div class="report-card">
+                <h3 class="card-titulo mb-4">Evolução de Fechamentos</h3>
+                <canvas id="chart-vendas"></canvas>
+            </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
-    if (chartReunioes) chartReunioes.destroy();
-    const ctx = document.getElementById('grafico-reunioes').getContext('2d');
-    chartReunioes = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Agendadas', 'Concluídas', 'Canceladas'],
-        datasets: [{ data: [dados.r_agendadas, dados.r_concluidas, dados.r_canceladas],
-          backgroundColor: ['#2563eb80','#10b98180','#ef444480'],
-          borderColor: ['#3b82f6','#10b981','#ef4444'],
-          borderWidth: 2, borderRadius: 6 }]
-      },
-      options: { responsive: true, plugins: { legend: { display: false } },
-        scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-                  y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e3a5a' }, beginAtZero: true } } }
-    });
-  } catch { document.getElementById('kpi-vendedor').innerHTML = '<p class="com-text-suave">Erro ao carregar</p>'; }
-}
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/sidebar-admin.js"></script>
+  <script>
+    const usuario = protegerPagina(['admin','comercial']);
+    let charts = {};
 
-function kpiCard(label, valor, cor, icone) {
-  return `<div class="kpi-card kpi-${cor}"><div class="kpi-icone">${icone}</div><div class="kpi-valor">${valor}</div><div class="kpi-label">${label}</div></div>`;
-}
-</script>
+    if (usuario) {
+        inicializarLayout();
+        const hoje = new Date();
+        document.getElementById('f-inicio').value = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().split('T')[0];
+        document.getElementById('f-fim').value = hoje.toISOString().split('T')[0];
+        carregarTudo();
+    }
+
+    function setTab(tab, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('d-none'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + tab).classList.remove('d-none');
+    }
+
+    async function carregarTudo() {
+        try {
+            const data = await api.get('/relatorios-comercial/leads');
+            renderLeads(data);
+            const vend = await api.get('/relatorios-comercial/vendedor');
+            renderVendedor(vend);
+        } catch { }
+    }
+
+    function renderLeads(d) {
+        document.getElementById('kpi-leads').innerHTML = `
+            <div class="kpi-mini"><i class="ph ph-users"></i><div class="val">${d.total}</div><div class="lab">Total Leads</div></div>
+            <div class="kpi-mini"><i class="ph ph-funnel"></i><div class="val">${d.no_kanban}</div><div class="lab">No Funil</div></div>
+            <div class="kpi-mini"><i class="ph ph-check-circle"></i><div class="val">${d.convertidos}</div><div class="lab">Convertidos</div></div>
+            <div class="kpi-mini"><i class="ph ph-percent"></i><div class="val">${d.taxa_resposta}%</div><div class="lab">Resposta</div></div>
+        `;
+        
+        initChart('chart-status', 'doughnut', {
+            labels: ['Novo', 'Qualificado', 'Convertido', 'Perdido'],
+            datasets: [{ data: [d.total - d.convertidos - d.perdidos, d.no_kanban, d.convertidos, d.perdidos], backgroundColor: ['#3b82f6', '#f59e0b', '#10b981', '#ef4444'], borderWidth: 0 }]
+        });
+    }
+
+    function renderVendedor(d) {
+        document.getElementById('kpi-vendedor').innerHTML = `
+            <div class="kpi-mini"><i class="ph ph-handshake"></i><div class="val">${d.op_fechadas}</div><div class="lab">Vendas</div></div>
+            <div class="kpi-mini"><i class="ph ph-calendar"></i><div class="val">${d.r_concluidas}</div><div class="lab">Reuniões</div></div>
+            <div class="kpi-mini"><i class="ph ph-currency-dollar"></i><div class="val">R$ ${d.valor_fechado || 0}</div><div class="lab">Faturamento</div></div>
+        `;
+    }
+
+    function initChart(id, type, data) {
+        if(charts[id]) charts[id].destroy();
+        charts[id] = new Chart(document.getElementById(id), {
+            type, data, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }
+        });
+    }
+  </script>
 </body>
 </html>

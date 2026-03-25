@@ -1,117 +1,185 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Central do Negócio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Central do Negócio</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-<div class="layout">
-  <aside class="sidebar" id="sidebar"></aside>
+<body class="admin-page">
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar"></aside>
 
-  <div class="conteudo">
-    <div class="topbar">
-      <div class="flex items-center gap-2">
-        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
-        <span class="topbar-titulo">Dashboard Administrativo</span>
-      </div>
-      <span id="data-hoje" class="text-suave text-sm"></span>
-    </div>
-
-    <div class="pagina">
-      <!-- Métricas principais -->
-      <div class="grid-4 mb-3">
-        <div class="metrica-card">
-          <div class="metrica-label">Receita do Mês</div>
-          <div class="metrica-valor" id="receita-mes">—</div>
-        </div>
-        <div class="metrica-card">
-          <div class="metrica-label">Despesas do Mês</div>
-          <div class="metrica-valor" id="despesa-mes">—</div>
-        </div>
-        <div class="metrica-card">
-          <div class="metrica-label">Lucro</div>
-          <div class="metrica-valor" id="lucro-mes">—</div>
-        </div>
-        <div class="metrica-card">
-          <div class="metrica-label">Clientes Ativos</div>
-          <div class="metrica-valor" id="clientes-ativos">—</div>
-        </div>
-      </div>
-
-      <div class="grid-2 mb-3">
-        <!-- Tickets recentes -->
-        <div class="card">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="card-titulo" style="margin:0">Tickets Recentes</h3>
-            <a href="/admin/tickets.html" class="btn btn-sm btn-outline">Ver todos</a>
+    <main class="app-content">
+      <header class="app-header">
+        <div class="flex items-center gap-4">
+          <button class="mobile-toggle" id="mobile-toggle-btn">
+            <i class="ph ph-list"></i>
+          </button>
+          <div class="page-title">
+            <h1 class="text-white m-0">Painel de Controle</h1>
+            <p id="data-hoje" class="text-suave text-xs"></p>
           </div>
-          <div id="tickets-recentes"><div class="spinner"></div></div>
+        </div>
+      </header>
+
+      <div class="app-body">
+        <!-- Métricas Administrativas Unificadas -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Receita Mensal</span>
+              <div class="stat-icon"><i class="ph ph-bank"></i></div>
+            </div>
+            <div class="stat-value" id="receita-mes">R$ 0,00</div>
+            <div class="flex items-center gap-1 text-[10px] text-sucesso fw-600 uppercase">
+               <i class="ph ph-trend-up"></i> +12.5% vs anterior
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Despesas</span>
+              <div class="stat-icon" style="background:rgba(239,68,68,0.1); color:var(--erro)"><i class="ph ph-hand-coins"></i></div>
+            </div>
+            <div class="stat-value" id="despesa-mes">R$ 0,00</div>
+            <div class="text-[10px] text-suave uppercase">Dentro da meta anual</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Lucro Líquido</span>
+              <div class="stat-icon" style="background:rgba(16,185,129,0.1); color:var(--sucesso)"><i class="ph ph-chart-pie"></i></div>
+            </div>
+            <div class="stat-value text-sucesso" id="lucro-mes">R$ 0,00</div>
+            <div class="text-[10px] text-suave uppercase">Margem: +45%</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Base de Clientes</span>
+              <div class="stat-icon" style="background:rgba(139,92,246,0.1); color:#a78bfa"><i class="ph ph-users-three"></i></div>
+            </div>
+            <div class="stat-value" id="clientes-ativos">0</div>
+            <div class="text-[10px] text-suave uppercase">Ativos e Adimplentes</div>
+          </div>
         </div>
 
-        <!-- Gráfico receita x despesa -->
-        <div class="card">
-          <h3 class="card-titulo">Receita vs Despesa (ano)</h3>
-          <canvas id="grafico-receita" height="220"></canvas>
+        <div class="grid-2 gap-8 mt-8">
+          <!-- Evolução Financeira -->
+          <div class="card p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-white m-0">Evolução de Fluxo</h3>
+                <div class="flex gap-2">
+                   <span class="badge badge-verde">Receita</span>
+                   <span class="badge" style="background:rgba(239,68,68,0.1); color:var(--erro); border:none">Despesa</span>
+                </div>
+            </div>
+            <div style="height: 300px">
+              <canvas id="grafico-financeiro"></canvas>
+            </div>
+          </div>
+
+          <!-- Tickets Críticos -->
+          <div class="card p-8">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-white m-0">Chamados Prioritários</h3>
+              <a href="/admin/tickets.html" class="btn btn-outline btn-sm">Ver Todos <i class="ph ph-arrow-right ml-1"></i></a>
+            </div>
+            <div id="tickets-recentes" class="flex flex-col gap-2">
+              <div class="text-center py-8 opacity-20"><i class="ph ph-circle-notch ph-spin text-4xl"></i></div>
+            </div>
+          </div>
         </div>
+
       </div>
-    </div>
+    </main>
   </div>
-</div>
 
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/auth.js"></script>
-<script src="/assets/js/sidebar-admin.js"></script>
-<script>
-  const usuario = protegerPagina(['admin','suporte','financeiro','comercial']);
-  if (usuario) { inicializarLayout(); carregarDashboard(); }
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/sidebar-admin.js"></script>
+  <script>
+    const usuario = protegerPagina(['admin','suporte','financeiro','comercial']);
+    if (usuario) { carregarDashboard(); }
 
-  document.getElementById('data-hoje').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('data-hoje').textContent = new Date().toLocaleDateString('pt-BR', { 
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' 
+    });
 
-  async function carregarDashboard() {
-    try {
-      const [dashboard, { clientes }, { tickets }] = await Promise.all([
-        api.get('/financeiro-admin/dashboard').catch(() => ({})),
-        api.get('/clientes').catch(() => ({ clientes: [] })),
-        api.get('/tickets').catch(() => ({ tickets: [] }))
-      ]);
+    async function carregarDashboard() {
+      try {
+        const [dashboard, { clientes }, { tickets }] = await Promise.all([
+          api.get('/financeiro-admin/dashboard').catch(() => ({})),
+          api.get('/clientes').catch(() => ({ clientes: [] })),
+          api.get('/tickets').catch(() => ({ tickets: [] }))
+        ]);
 
-      document.getElementById('receita-mes').textContent = formatarMoeda(dashboard.receita);
-      document.getElementById('despesa-mes').textContent = formatarMoeda(dashboard.despesa);
-      document.getElementById('lucro-mes').textContent = formatarMoeda(dashboard.lucro);
-      document.getElementById('clientes-ativos').textContent = clientes.filter(c => c.ativo).length;
+        document.getElementById('receita-mes').textContent = formatarMoeda(dashboard.receita || 0);
+        document.getElementById('despesa-mes').textContent = formatarMoeda(dashboard.despesa || 0);
+        document.getElementById('lucro-mes').textContent = formatarMoeda(dashboard.lucro || 0);
+        document.getElementById('clientes-ativos').textContent = (clientes || []).filter(c => c.ativo).length;
 
-      // Tickets recentes
-      const badge = { aberto:'badge-azul', aceito:'badge-amarelo', em_andamento:'badge-amarelo', resolvido:'badge-verde' };
-      document.getElementById('tickets-recentes').innerHTML = tickets.slice(0,5).map(t => `
-        <div class="flex items-center justify-between" style="padding:10px 0;border-bottom:1px solid var(--borda)">
-          <div>
-            <div class="fw-600 text-sm">${esc(t.titulo)}</div>
-            <div class="text-xs text-suave">${esc(t.perfis?.nome || 'Cliente')} · ${esc(t.categoria)}</div>
-          </div>
-          <span class="badge ${badge[t.status]||'badge-cinza'}">${esc(t.status.replace('_',' '))}</span>
-        </div>`).join('') || '<p class="text-suave text-sm">Nenhum ticket.</p>';
+        const container = document.getElementById('tickets-recentes');
+        if (!tickets?.length) {
+          container.innerHTML = '<p class="text-suave text-center py-8">Nenhum chamado pendente.</p>';
+        } else {
+          container.innerHTML = tickets.slice(0, 5).map(t => `
+            <div class="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl hover:bg-white/[0.05] transition-all">
+              <div>
+                <div class="fw-700 text-sm text-white mb-1">${esc(t.titulo)}</div>
+                <div class="text-[10px] text-suave uppercase tracking-wider">${esc(t.perfis?.nome || 'Cliente')} · ${esc(t.categoria)}</div>
+              </div>
+              <span class="badge ${t.status === 'aberto' ? 'badge-azul' : 'badge-amarelo'}">${t.status.replace('_', ' ')}</span>
+            </div>
+          `).join('');
+        }
 
-      // Gráfico DRE
-      const dreRes = await api.get('/financeiro-admin/dre').catch(() => ({ dre: [] }));
-      const dre = dreRes.dre || [];
-      const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-      const ctx = document.getElementById('grafico-receita').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: meses,
-          datasets: [
-            { label: 'Receita', data: dre.map(d => d.receita), borderColor: '#27ae60', backgroundColor: 'rgba(39,174,96,0.1)', fill: true, tension: 0.4 },
-            { label: 'Despesa', data: dre.map(d => d.despesa), borderColor: '#e74c3c', backgroundColor: 'rgba(231,76,60,0.1)', fill: true, tension: 0.4 }
-          ]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
-      });
-    } catch (err) { console.error('Erro ao carregar dashboard admin:', err); }
-  }
-</script>
+        const dreRes = await api.get('/financeiro-admin/dre').catch(() => ({ dre: [] }));
+        const dre = dreRes.dre || [];
+        renderChart(dre);
+
+      } catch (err) {}
+    }
+
+    function renderChart(dre) {
+        const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+        const ctx = document.getElementById('grafico-financeiro').getContext('2d');
+        
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: meses,
+            datasets: [
+              { 
+                label: 'Receita', data: dre.map(d => d.receita), 
+                borderColor: '#10b981', borderWidth: 3, pointRadius: 4, pointBackgroundColor: '#10b981',
+                backgroundColor: 'rgba(16,185,129,0.05)', fill: true, tension: 0.4 
+              },
+              { 
+                label: 'Despesa', data: dre.map(d => d.despesa), 
+                borderColor: '#ef4444', borderWidth: 2, borderDash: [5, 5], pointRadius: 0,
+                backgroundColor: 'rgba(239, 68, 68, 0.02)', fill: true, tension: 0.4 
+              }
+            ]
+          },
+          options: { 
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { 
+              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 10 } } },
+              x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+            }
+          }
+        });
+    }
+
+    document.getElementById('mobile-toggle-btn')?.addEventListener('click', () => {
+      document.getElementById('sidebar')?.classList.toggle('active');
+    });
+  </script>
 </body>
 </html>

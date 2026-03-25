@@ -1,305 +1,264 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tickets Admin — Central do Negócio</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
+  <style>
+    .chat-container-admin {
+      display: flex; flex-direction: column; height: 90vh; background: var(--fundo-card);
+      border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--borda);
+    }
+    .chat-header-admin {
+      padding: 16px 24px; border-bottom: 1px solid var(--borda);
+      background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: space-between;
+    }
+    .chat-messages-admin {
+      flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px;
+      background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.05), transparent);
+    }
+    .chat-footer-admin {
+      padding: 16px 24px; border-top: 1px solid var(--borda);
+      background: rgba(255,255,255,0.02); display: flex; gap: 12px; align-items: flex-end;
+    }
+    .ticket-row:hover { background: rgba(59, 130, 246, 0.03); cursor: pointer; }
+    
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .status-aberto { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+    .status-resolvido { background: #10b981; }
+
+    .bolha-admin { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; position: relative; }
+    .bolha-admin.minha { align-self: flex-end; background: var(--primaria); color: #fff; border-bottom-right-radius: 2px; }
+    .bolha-admin.cliente { align-self: flex-start; background: var(--borda); color: var(--texto); border-bottom-left-radius: 2px; }
+  </style>
 </head>
 <body>
-<div class="layout">
-  <aside class="sidebar" id="sidebar"></aside>
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar"></aside>
 
-  <div class="conteudo">
-    <div class="topbar">
-      <div class="flex items-center gap-2">
-        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
-        <span class="topbar-titulo">🎫 Gestão de Tickets <span id="badge-novos" class="badge badge-vermelho d-none">0</span></span>
-      </div>
-    </div>
+    <main class="app-content">
+      <header class="app-header"></header>
 
-    <div class="pagina">
-      <!-- Filtros -->
-      <div class="card mb-3">
-        <div class="flex gap-2 flex-wrap">
-          <select id="filtro-status" onchange="carregarTickets()" style="padding:8px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:14px">
-            <option value="">Todos os status</option>
-            <option value="aberto">Aberto</option>
-            <option value="aceito">Aceito</option>
-            <option value="em_andamento">Em andamento</option>
-            <option value="resolvido">Resolvido</option>
-          </select>
-          <select id="filtro-cat" onchange="carregarTickets()" style="padding:8px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:14px">
-            <option value="">Todas as categorias</option>
-            <option value="suporte">Suporte</option>
-            <option value="financeiro">Financeiro</option>
-            <option value="comercial">Comercial</option>
-          </select>
-          <select id="filtro-prior" onchange="carregarTickets()" style="padding:8px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:14px">
-            <option value="">Toda prioridade</option>
-            <option value="urgente">Urgente</option>
-            <option value="normal">Normal</option>
-            <option value="baixa">Baixa</option>
-          </select>
+      <div class="app-body">
+        <div class="justify-between flex items-center mb-6">
+          <div class="page-title">
+            <h1>Gestão de Chamados</h1>
+            <p class="text-suave">Atendimento ao cliente e resolução de tickets técnicos.</p>
+          </div>
+          <div id="badge-novos" class="badge badge-vermelho d-none">0 novos</div>
+        </div>
+
+        <div class="card mb-6" style="padding: 16px;">
+          <div class="flex gap-3 flex-wrap">
+            <div class="flex-1" style="min-width: 200px">
+                <select id="filtro-status" class="form-control" onchange="carregarTickets()">
+                    <option value="">Todos os status</option>
+                    <option value="aberto">Aberto</option>
+                    <option value="aceito">Aceito</option>
+                    <option value="em_andamento">Em andamento</option>
+                    <option value="resolvido">Resolvido</option>
+                </select>
+            </div>
+            <div class="flex-1" style="min-width: 200px">
+                <select id="filtro-cat" class="form-control" onchange="carregarTickets()">
+                    <option value="">Todas categorias</option>
+                    <option value="suporte">Suporte</option>
+                    <option value="financeiro">Financeiro</option>
+                    <option value="comercial">Comercial</option>
+                </select>
+            </div>
+            <button class="btn btn-outline" onclick="carregarTickets()"><i class="ph ph-arrows-clockwise"></i></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr><th>Cliente</th><th>Título do Chamado</th><th>Categoria</th><th>Prioridade</th><th>Status</th><th>Ações</th></tr>
+              </thead>
+              <tbody id="tbody-tickets">
+                <tr><td colspan="6" class="text-center py-6"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
+    </main>
+  </div>
 
-      <div class="card">
-        <div class="tabela-container">
-          <table>
-            <thead><tr><th>Cliente</th><th>Título</th><th>Categoria</th><th>Prioridade</th><th>Status</th><th>Criado em</th><th>Ações</th></tr></thead>
-            <tbody id="tbody-tickets"><tr><td colspan="7" class="text-center"><div class="spinner" style="margin:10px auto"></div></td></tr></tbody>
-          </table>
+  <!-- Modal Chat -->
+  <div id="modal-chat" class="modal-overlay d-none">
+    <div class="modal" style="max-width: 800px; padding: 0;">
+        <div class="chat-container-admin">
+            <div class="chat-header-admin">
+                <div>
+                    <h3 id="chat-titulo" class="text-white fw-700 m-0">Chat de Suporte</h3>
+                    <div id="chat-info" class="text-xs text-suave mt-1">Carregando histórico...</div>
+                </div>
+                <div class="flex gap-2">
+                    <select id="chat-status-sel" class="form-control" style="height: 36px; padding: 0 12px; font-size: 13px" onchange="mudarStatus()">
+                        <option value="aceito">Aceito</option>
+                        <option value="em_andamento">Em andamento</option>
+                        <option value="resolvido">Finalizar</option>
+                    </select>
+                    <button class="btn btn-outline btn-sm" onclick="fecharChat()">✕</button>
+                </div>
+            </div>
+            <div id="chat-msgs" class="chat-messages-admin"></div>
+            <div id="preview-img-admin" class="d-none" style="padding: 12px 24px; background: rgba(255,255,255,0.02); border-top: 1px solid var(--borda)">
+                <div style="position:relative; display:inline-block">
+                    <img id="preview-img-el-admin" style="height:60px; border-radius:8px">
+                    <button onclick="cancelarImagemAdmin()" style="position:absolute; top:-8px; right:-8px; background:var(--erro); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:10px">✕</button>
+                </div>
+            </div>
+            <div class="chat-footer-admin">
+                <label class="btn btn-outline" style="padding: 10px; cursor: pointer">
+                    <i class="ph ph-image"></i>
+                    <input type="file" id="input-img-admin" accept="image/*" class="d-none" onchange="selecionarImagemAdmin(event)">
+                </label>
+                <textarea id="chat-input" class="form-control" placeholder="Escreva sua resposta..." rows="1" style="resize:none" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMensagem()}"></textarea>
+                <button class="btn btn-primario" onclick="enviarMensagem()" id="btn-enviar-admin"><i class="ph ph-paper-plane-right"></i></button>
+            </div>
         </div>
-      </div>
     </div>
   </div>
-</div>
 
-<!-- Modal Chat Admin -->
-<div id="modal-chat" class="modal-overlay d-none" style="padding:16px">
-  <div style="width:100%;max-width:700px;height:90vh;background:#fff;border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden">
-    <!-- Header -->
-    <div style="padding:14px 20px;border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-      <div>
-        <h3 style="font-family:'Playfair Display',serif;font-size:17px;color:var(--primaria)" id="chat-titulo">Chat</h3>
-        <div class="text-xs text-suave" id="chat-info"></div>
-      </div>
-      <div class="flex gap-2 items-center">
-        <select id="chat-status-sel" onchange="mudarStatus()" style="padding:6px 10px;border:1.5px solid var(--borda);border-radius:var(--radius);font-size:13px">
-          <option value="aceito">Aceito</option>
-          <option value="em_andamento">Em andamento</option>
-          <option value="resolvido">Resolvido</option>
-        </select>
-        <button onclick="fecharChat()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--texto-suave)">✕</button>
-      </div>
-    </div>
-    <!-- Mensagens -->
-    <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--fundo)"></div>
-    <!-- Preview imagem -->
-    <div id="preview-img-admin" style="display:none;padding:8px 16px;background:#fff;border-top:1px solid var(--borda)">
-      <div style="position:relative;display:inline-block">
-        <img id="preview-img-el-admin" style="max-height:80px;border-radius:8px;border:2px solid var(--acento)">
-        <button onclick="cancelarImagemAdmin()" style="position:absolute;top:-6px;right:-6px;background:var(--erro);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px">✕</button>
-      </div>
-    </div>
-    <!-- Input -->
-    <div style="padding:12px 16px;border-top:1px solid var(--borda);background:#fff;display:flex;gap:8px;align-items:flex-end;flex-shrink:0">
-      <label title="Enviar imagem" style="cursor:pointer;background:var(--fundo);border:1.5px solid var(--borda);border-radius:var(--radius);width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">
-        🖼️<input type="file" id="input-img-admin" accept="image/*" style="display:none" onchange="selecionarImagemAdmin(event)">
-      </label>
-      <textarea id="chat-input" placeholder="Responder ao cliente..." rows="1"
-        style="flex:1;padding:9px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;resize:none;max-height:100px;outline:none"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMensagem()}"
-        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
-      <button onclick="enviarMensagem()" id="btn-enviar-admin"
-        style="background:var(--primaria);color:#fff;border:none;border-radius:var(--radius);width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0">➤</button>
-    </div>
-  </div>
-</div>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/sidebar-admin.js"></script>
+  <script>
+    const usuario = protegerPagina(['admin','suporte']);
+    let ticketAtual = null, pollingInterval = null, ultimaMensagemId = 0, ticketsCache = {};
 
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/auth.js"></script>
-<script src="/assets/js/sidebar-admin.js"></script>
-<script>
-  const usuario = protegerPagina(['admin','suporte']);
-  let ticketAtual = null;
-  let pollingInterval = null;
-  let ultimaMensagemId = 0;
-  let arquivoAdmin = null;
-  let ticketsCache = {};
+    if (usuario) { inicializarLayout(); carregarTickets(); }
 
-  if (usuario) { inicializarLayout(); carregarTickets(); }
-
-  // Atualiza lista a cada 30s
-  setInterval(carregarTickets, 30000);
-
-  async function carregarTickets() {
-    const params = new URLSearchParams();
-    const status = document.getElementById('filtro-status').value;
-    const cat    = document.getElementById('filtro-cat').value;
-    const prior  = document.getElementById('filtro-prior').value;
-    if (status) params.set('status', status);
-    if (cat)    params.set('categoria', cat);
-    if (prior)  params.set('prioridade', prior);
-
-    try {
-      const { tickets } = await api.get(`/tickets?${params}`);
-      const abertos = tickets.filter(t => t.status === 'aberto').length;
-      const badge = document.getElementById('badge-novos');
-      if (abertos > 0) { badge.textContent = abertos; badge.classList.remove('d-none'); }
-      else badge.classList.add('d-none');
-      renderizarTabela(tickets);
-    } catch {}
-  }
-
-  function renderizarTabela(tickets) {
-    tickets.forEach(t => ticketsCache[t.id] = t);
-    const tbody = document.getElementById('tbody-tickets');
-    if (!tickets.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-suave">Nenhum ticket.</td></tr>'; return; }
-
-    const statusBadge = { aberto:'badge-azul', aceito:'badge-amarelo', em_andamento:'badge-amarelo', resolvido:'badge-verde' };
-    const priorCor    = { urgente:'badge-vermelho', normal:'badge-cinza', baixa:'badge-cinza' };
-    const catIcon     = { suporte:'🛠', financeiro:'💰', comercial:'🤝' };
-
-    tbody.innerHTML = tickets.map(t => `
-      <tr>
-        <td>${esc(t.perfis?.nome || '—')}</td>
-        <td><strong>${esc(t.titulo)}</strong></td>
-        <td>${catIcon[t.categoria]||''} ${esc(t.categoria)}</td>
-        <td><span class="badge ${priorCor[t.prioridade]||'badge-cinza'}">${esc(t.prioridade)}</span></td>
-        <td><span class="badge ${statusBadge[t.status]||'badge-cinza'}">${esc(t.status.replace('_',' '))}</span></td>
-        <td>${formatarData(t.criado_em)}</td>
-        <td style="display:flex;gap:4px">
-          ${t.status === 'aberto' ? `<button class="btn btn-sm btn-acento" onclick="aceitarTicket(${t.id})">✓ Aceitar</button>` : ''}
-          ${['aceito','em_andamento'].includes(t.status) ? `<button class="btn btn-sm btn-primario" onclick="abrirChat(${t.id})">💬 Chat</button>` : ''}
-        </td>
-      </tr>`).join('');
-  }
-
-  async function aceitarTicket(id) {
-    try {
-      await api.patch(`/tickets/${id}/aceitar`, {});
-      mostrarAlerta('Ticket aceito! O cliente pode entrar no chat.');
-      carregarTickets();
-    } catch { mostrarAlerta('Erro ao aceitar ticket', 'erro'); }
-  }
-
-  // ── CHAT ─────────────────────────────────────────────
-  async function abrirChat(id) {
-    const t = ticketsCache[id] || {};
-    ticketAtual = id;
-    ultimaMensagemId = 0;
-    document.getElementById('chat-titulo').textContent = t.titulo || '';
-    document.getElementById('chat-status-sel').value = t.status || '';
-    document.getElementById('modal-chat').classList.remove('d-none');
-    document.getElementById('chat-msgs').innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner"></div></div>';
-    await recarregarMensagens();
-    pollingInterval = setInterval(verificarNovas, 4000);
-  }
-
-  function fecharChat() {
-    document.getElementById('modal-chat').classList.add('d-none');
-    clearInterval(pollingInterval);
-    pollingInterval = null;
-    ticketAtual = null;
-    ultimaMensagemId = 0;
-    cancelarImagemAdmin();
-  }
-
-  async function recarregarMensagens() {
-    try {
-      const { mensagens } = await api.get(`/tickets/${ticketAtual}/mensagens`);
-      renderizarMensagens(mensagens);
-      if (mensagens.length) ultimaMensagemId = mensagens[mensagens.length - 1].id;
-    } catch {}
-  }
-
-  async function verificarNovas() {
-    if (!ticketAtual) return;
-    try {
-      const { mensagens } = await api.get(`/tickets/${ticketAtual}/mensagens`);
-      const novas = mensagens.filter(m => m.id > ultimaMensagemId);
-      if (!novas.length) return;
-      const eu = getUsuario().id;
-      const container = document.getElementById('chat-msgs');
-      novas.forEach(m => container.appendChild(criarElMensagem(m, eu)));
-      container.scrollTop = container.scrollHeight;
-      ultimaMensagemId = mensagens[mensagens.length - 1].id;
-    } catch {}
-  }
-
-  function renderizarMensagens(msgs) {
-    const eu = getUsuario().id;
-    const container = document.getElementById('chat-msgs');
-    if (!msgs.length) { container.innerHTML = '<p style="text-align:center;color:var(--texto-suave);font-size:14px;margin-top:20px">Nenhuma mensagem ainda.</p>'; return; }
-    container.innerHTML = '';
-    msgs.forEach(m => container.appendChild(criarElMensagem(m, eu)));
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function criarElMensagem(m, euId) {
-    const minha = m.autor_id === euId;
-    const wrap = document.createElement('div');
-    wrap.style.cssText = `display:flex;flex-direction:column;align-items:${minha ? 'flex-end' : 'flex-start'}`;
-    const bolha = document.createElement('div');
-    bolha.style.cssText = `max-width:70%;padding:10px 14px;border-radius:${minha ? '14px 14px 4px 14px' : '14px 14px 14px 4px'};background:${minha ? 'var(--primaria)' : '#fff'};color:${minha ? '#fff' : 'var(--texto)'};box-shadow:0 1px 4px rgba(0,0,0,0.08)`;
-    if (m.tipo === 'imagem') {
-      const img = document.createElement('img');
-      img.setAttribute('src', m.conteudo);
-      img.style.cssText = 'max-width:220px;border-radius:8px;display:block;cursor:pointer';
-      img.addEventListener('click', () => window.open(m.conteudo, '_blank'));
-      bolha.appendChild(img);
-    } else if (m.tipo === 'audio') {
-      const audio = document.createElement('audio');
-      audio.controls = true;
-      audio.setAttribute('src', m.conteudo);
-      audio.style.maxWidth = '220px';
-      bolha.appendChild(audio);
-    } else {
-      bolha.textContent = m.conteudo;
+    async function carregarTickets() {
+        const status = document.getElementById('filtro-status').value;
+        const cat = document.getElementById('filtro-cat').value;
+        try {
+            const { tickets } = await api.get(`/tickets?status=${status}&categoria=${cat}`);
+            renderizarTabela(tickets);
+        } catch {}
     }
-    const hora = document.createElement('div');
-    hora.style.cssText = 'font-size:11px;margin-top:4px;opacity:0.6;color:var(--texto-suave)';
-    hora.textContent = `${m.perfis?.nome || '?'} · ${new Date(m.criado_em).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
-    wrap.appendChild(bolha); wrap.appendChild(hora);
-    return wrap;
-  }
 
-  async function enviarMensagem() {
-    if (arquivoAdmin) { await enviarImagemAdmin(); return; }
-    const input = document.getElementById('chat-input');
-    const texto = input.value.trim();
-    if (!texto || !ticketAtual) return;
-    const btn = document.getElementById('btn-enviar-admin');
-    btn.disabled = true;
-    input.value = ''; input.style.height = 'auto';
-    try {
-      await api.post(`/tickets/${ticketAtual}/mensagens`, { conteudo: texto });
-      await recarregarMensagens();
-    } catch { mostrarAlerta('Erro ao enviar', 'erro'); }
-    btn.disabled = false;
-  }
+    function renderizarTabela(tickets) {
+        const tbody = document.getElementById('tbody-tickets');
+        if(!tickets.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-suave">Nenhum ticket encontrado.</td></tr>'; return; }
+        
+        tbody.innerHTML = tickets.map(t => {
+            ticketsCache[t.id] = t;
+            const priorityBadge = { urgente: 'badge-vermelho', normal: 'badge-azul', baixa: 'badge-cinza' };
+            const statusBadge = { aberto: 'badge-azul', aceito: 'badge-amarelo', em_andamento: 'badge-amarelo', resolvido: 'badge-verde' };
+            return `
+            <tr class="ticket-row">
+                <td><div class="fw-600 text-white">${t.perfis?.nome || '—'}</div></td>
+                <td><div class="fw-500">${t.titulo}</div><div class="text-xs text-suave">${t.id}</div></td>
+                <td><span class="text-xs uppercase fw-700 text-suave">${t.categoria}</span></td>
+                <td><span class="badge ${priorityBadge[t.prioridade]}">${t.prioridade}</span></td>
+                <td><span class="badge ${statusBadge[t.status]}">${t.status.replace('_',' ')}</span></td>
+                <td>
+                    <div class="flex gap-2">
+                        ${t.status === 'aberto' ? `<button class="btn btn-primario btn-sm" onclick="aceitarTicket(${t.id})">Atender</button>` : ''}
+                        ${['aceito','em_andamento'].includes(t.status) ? `<button class="btn btn-outline btn-sm" onclick="abrirChat(${t.id})"><i class="ph ph-chat-centered-text"></i></button>` : ''}
+                        ${t.status === 'resolvido' ? `<button class="btn btn-outline btn-sm" onclick="abrirChat(${t.id})"><i class="ph ph-eye"></i></button>` : ''}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
 
-  function selecionarImagemAdmin(e) {
-    const file = e.target.files[0]; if (!file) return;
-    arquivoAdmin = file;
-    const reader = new FileReader();
-    reader.onload = ev => { document.getElementById('preview-img-el-admin').src = ev.target.result; document.getElementById('preview-img-admin').style.display = 'block'; };
-    reader.readAsDataURL(file);
-  }
+    async function aceitarTicket(id) {
+        try { await api.patch(`/tickets/${id}/aceitar`, {}); carregarTickets(); abrirChat(id); } catch { alert('Erro ao aceitar'); }
+    }
 
-  function cancelarImagemAdmin() {
-    arquivoAdmin = null;
-    document.getElementById('input-img-admin').value = '';
-    document.getElementById('preview-img-admin').style.display = 'none';
-  }
+    async function abrirChat(id) {
+        ticketAtual = id; ultimaMensagemId = 0;
+        const t = ticketsCache[id];
+        document.getElementById('chat-titulo').textContent = t.titulo;
+        document.getElementById('chat-info').textContent = `Falando com ${t.perfis?.nome}`;
+        document.getElementById('chat-status-sel').value = t.status;
+        document.getElementById('modal-chat').classList.remove('d-none');
+        document.getElementById('chat-msgs').innerHTML = '<div class="spinner" style="margin:20px auto"></div>';
+        await recarregarMensagens();
+        if(!pollingInterval) pollingInterval = setInterval(verificarNovas, 4000);
+    }
 
-  async function enviarImagemAdmin() {
-    if (!arquivoAdmin || !ticketAtual) return;
-    const btn = document.getElementById('btn-enviar-admin');
-    btn.disabled = true; btn.textContent = '⏳';
-    try {
-      const form = new FormData();
-      form.append('arquivo', arquivoAdmin);
-      form.append('ticket_id', ticketAtual);
-      const token = localStorage.getItem('cn_token');
-      const resp = await fetch('/api/upload/chat', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form });
-      if (!resp.ok) throw new Error('Falha no upload');
-      cancelarImagemAdmin();
-      await recarregarMensagens();
-    } catch (err) { mostrarAlerta('Erro ao enviar imagem: ' + err.message, 'erro'); }
-    btn.disabled = false; btn.textContent = '➤';
-  }
+    function fecharChat() {
+        document.getElementById('modal-chat').classList.add('d-none');
+        clearInterval(pollingInterval); pollingInterval = null; ticketAtual = null;
+    }
 
-  async function mudarStatus() {
-    const novoStatus = document.getElementById('chat-status-sel').value;
-    try {
-      await api.patch(`/tickets/${ticketAtual}/status`, { status: novoStatus });
-      mostrarAlerta('Status atualizado');
-      carregarTickets();
-    } catch { mostrarAlerta('Erro ao mudar status', 'erro'); }
-  }
-</script>
+    async function recarregarMensagens() {
+        try {
+            const { mensagens } = await api.get(`/tickets/${ticketAtual}/mensagens`);
+            const container = document.getElementById('chat-msgs'); container.innerHTML = '';
+            mensagens.forEach(m => container.appendChild(renderBolha(m)));
+            container.scrollTop = container.scrollHeight;
+            if(mensagens.length) ultimaMensagemId = mensagens[mensagens.length - 1].id;
+        } catch {}
+    }
+
+    async function verificarNovas() {
+        if(!ticketAtual) return;
+        try {
+            const { mensagens } = await api.get(`/tickets/${ticketAtual}/mensagens`);
+            const novas = mensagens.filter(m => m.id > ultimaMensagemId);
+            if(novas.length) {
+                const container = document.getElementById('chat-msgs');
+                novas.forEach(m => container.appendChild(renderBolha(m)));
+                container.scrollTop = container.scrollHeight;
+                ultimaMensagemId = mensagens[mensagens.length - 1].id;
+            }
+        } catch {}
+    }
+
+    function renderBolha(m) {
+        const minha = m.autor_id === getUsuario().id;
+        const div = document.createElement('div');
+        div.className = `bolha-admin ${minha?'minha':'cliente'}`;
+        if(m.tipo === 'imagem') {
+            const img = document.createElement('img'); img.src = m.conteudo; img.style.maxWidth = '100%'; img.style.borderRadius = '8px';
+            img.onclick = () => window.open(m.conteudo, '_blank');
+            div.appendChild(img);
+        } else {
+            div.textContent = m.conteudo;
+        }
+        return div;
+    }
+
+    async function enviarMensagem() {
+        const input = document.getElementById('chat-input');
+        const txt = input.value.trim(); if(!txt && !arquivoAdmin) return;
+        try {
+            if(arquivoAdmin) { await enviarImagem(); }
+            else { await api.post(`/tickets/${ticketAtual}/mensagens`, { conteudo: txt }); }
+            input.value = ''; recarregarMensagens();
+        } catch { alert('Erro ao enviar'); }
+    }
+
+    let arquivoAdmin = null;
+    function selecionarImagemAdmin(e) {
+        arquivoAdmin = e.target.files[0];
+        const r = new FileReader(); r.onload = ev => { document.getElementById('preview-img-el-admin').src = ev.target.result; document.getElementById('preview-img-admin').classList.remove('d-none'); };
+        r.readAsDataURL(arquivoAdmin);
+    }
+    function cancelarImagemAdmin() { arquivoAdmin = null; document.getElementById('preview-img-admin').classList.add('d-none'); }
+
+    async function enviarImagem() {
+        const form = new FormData(); form.append('arquivo', arquivoAdmin); form.append('ticket_id', ticketAtual);
+        const resp = await fetch('/api/upload/chat', { method:'POST', headers: { Authorization: `Bearer ${localStorage.getItem('cn_token')}` }, body: form });
+        if(resp.ok) { cancelarImagemAdmin(); recarregarMensagens(); }
+    }
+
+    async function mudarStatus() {
+        const s = document.getElementById('chat-status-sel').value;
+        await api.patch(`/tickets/${ticketAtual}/status`, { status: s });
+        carregarTickets();
+    }
+  </script>
 </body>
 </html>

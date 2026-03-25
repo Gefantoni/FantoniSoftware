@@ -167,9 +167,10 @@ router.post('/:id/mensagens', autenticar, async (req, res) => {
     if (error) throw error;
 
     // Atualiza timestamp do ticket
-    await supabaseAdmin.from('tickets')
-      .update({ atualizado_em: new Date().toISOString(), status: 'em_andamento' })
-      .eq('id', req.params.id);
+    // Status só muda para em_andamento se quem enviou for admin/suporte
+    const updatePayload = { atualizado_em: new Date().toISOString() };
+    if (req.perfil.role !== 'cliente') updatePayload.status = 'em_andamento';
+    await supabaseAdmin.from('tickets').update(updatePayload).eq('id', req.params.id);
 
     res.status(201).json({ mensagem: data });
   } catch (err) {
