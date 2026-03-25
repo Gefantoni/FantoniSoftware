@@ -31,30 +31,27 @@ async function saveToSupabase(lead) {
     return;
   }
 
-  try {
-    const resp = await fetch(`${url}/rest/v1/leads`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': key,
-        'Authorization': `Bearer ${key}`,
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify({
-        name:       lead.name,
-        email:      lead.email,
-        whatsapp:   lead.whatsapp,
-        cpf_cnpj:   lead.cpfCnpj,
-        created_at: lead.createdAt,
-      }),
-    });
+  const resp = await fetch(`${url}/rest/v1/leads`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': key,
+      'Authorization': `Bearer ${key}`,
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({
+      name:       lead.name,
+      email:      lead.email,
+      whatsapp:   lead.whatsapp,
+      cpf_cnpj:   lead.cpfCnpj,
+      created_at: lead.createdAt,
+    }),
+  });
 
-    if (!resp.ok) {
-      const err = await resp.text();
-      console.error('Supabase insert error:', err);
-    }
-  } catch (err) {
-    console.warn('Supabase falhou (não crítico):', err.message);
+  if (!resp.ok) {
+    const errText = await resp.text();
+    console.error('Supabase insert error:', errText);
+    throw new Error(`Supabase ${resp.status}: ${errText}`);
   }
 }
 
@@ -103,7 +100,7 @@ export default async function handler(req, res) {
   };
 
   // --- Salva no Supabase e notifica webhook em paralelo ---
-  await Promise.allSettled([
+  const [supabaseResult] = await Promise.allSettled([
     saveToSupabase(lead),
     notifyWebhook(lead),
   ]);
@@ -113,5 +110,11 @@ export default async function handler(req, res) {
     success: true,
     message: 'Acesso liberado! Baixe o app para começar.',
     downloads: DOWNLOAD_LINKS,
+    _debug: {
+      supabase_url_set: !!process.env.SUPABASE_URL,
+      supabase_key_set: !!process.env.SUPABASE_SERVICE_KEY,
+      supabase_status: supabaseResult?.status,
+      supabase_reason: supabaseResult?.reason?.message ?? null,
+    },
   });
 }
