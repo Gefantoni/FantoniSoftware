@@ -1704,7 +1704,7 @@
         </label>
         <span style="font-size:16px; font-weight:600; color:#64748b; transition:0.3s;" id="label-semestral">Semestral</span>
       </div>
-      <span class="badge-semestral">+ Certificado Grátis</span>
+      <span class="badge-semestral">+ Certificado Digital</span>
     </div>
 
     <style>
@@ -2051,9 +2051,9 @@
       document.getElementById('label-semestral').style.fontWeight = '800';
       document.getElementById('label-semestral').style.color = '#0f172a';
       
-      document.getElementById('price-mei').innerHTML = 'R$ 495<span style="font-size:18px; font-weight:600; color:#94a3b8;">/semestre</span>';
-      document.getElementById('price-essencial').innerHTML = 'R$ 595<span style="font-size:18px; font-weight:600; color:#94a3b8;">/semestre</span>';
-      document.getElementById('price-premium').innerHTML = 'R$ 695<span style="font-size:18px; font-weight:600; color:#94a3b8;">/semestre</span>';
+      document.getElementById('price-mei').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">6x de </span>R$ 79<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>';
+      document.getElementById('price-essencial').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">6x de </span>R$ 99<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>';
+      document.getElementById('price-premium').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">6x de </span>R$ 115<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>';
       
       document.querySelectorAll('.benefit-semestral').forEach(el => el.style.display = 'flex');
     } else {
