@@ -24,12 +24,19 @@ function today() {
   return new Date().toISOString().split('T')[0];
 }
 
-// Retorna o próximo dia 10 (cobrança recorrente fixa)
+// Retorna o próximo dia 10 em UTC-3 (Brasil) para cobrança recorrente
 function nextDay10() {
-  const d = new Date();
-  const next = new Date(d.getFullYear(), d.getMonth(), 10);
-  if (d.getDate() >= 10) next.setMonth(next.getMonth() + 1);
-  return next.toISOString().split('T')[0];
+  // Ajusta para BRT (UTC-3) para evitar que a data vire no fuso
+  const now = new Date(Date.now() - 3 * 60 * 60 * 1000);
+  const year  = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+  const day   = now.getUTCDate();
+  let m = month, y = year;
+  if (day >= 10) {
+    m++;
+    if (m > 11) { m = 0; y++; }
+  }
+  return `${y}-${String(m + 1).padStart(2, '0')}-10`;
 }
 
 function isValidEmail(email) {
@@ -38,7 +45,37 @@ function isValidEmail(email) {
 
 function isValidCpfCnpj(value) {
   const digits = value.replace(/\D/g, '');
-  return digits.length === 11 || digits.length === 14;
+  if (digits.length === 11) return isValidCpf(digits);
+  if (digits.length === 14) return isValidCnpj(digits);
+  return false;
+}
+
+function isValidCpf(d) {
+  if (/^(\d)\1{10}$/.test(d)) return false;
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(d[i]) * (10 - i);
+  let r = (sum * 10) % 11;
+  if (r >= 10) r = 0;
+  if (r !== parseInt(d[9])) return false;
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(d[i]) * (11 - i);
+  r = (sum * 10) % 11;
+  if (r >= 10) r = 0;
+  return r === parseInt(d[10]);
+}
+
+function isValidCnpj(d) {
+  if (/^(\d)\1{13}$/.test(d)) return false;
+  const w1 = [5,4,3,2,9,8,7,6,5,4,3,2];
+  const w2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
+  let sum = 0;
+  for (let i = 0; i < 12; i++) sum += parseInt(d[i]) * w1[i];
+  let r = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+  if (r !== parseInt(d[12])) return false;
+  sum = 0;
+  for (let i = 0; i < 13; i++) sum += parseInt(d[i]) * w2[i];
+  r = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+  return r === parseInt(d[13]);
 }
 
 // Salva o checkout no Supabase
@@ -69,6 +106,13 @@ export default async function handler(req, res) {
   const BASE_URL = process.env.ASAAS_BASE_URL || 'https://www.asaas.com/api/v3';
 
   const { name, email, cpfCnpj, plan, orderBump } = req.body ?? {};
+
+  // Validação de entrada
+  const erros = [];
+  if (!name || String(name).trim().length < 2)  erros.push('Nome inválido ou ausente.');
+  if (!email || !isValidEmail(email))            erros.push('E-mail inválido ou ausente.');
+  if (!cpfCnpj || !isValidCpfCnpj(cpfCnpj))     erros.push('CPF/CNPJ inválido.');
+  if (erros.length > 0) return res.status(400).json({ success: false, errors: erros });
 
   const selectedPlan = PLANS[plan];
   if (!selectedPlan) return res.status(400).json({ success: false, error: 'Plano inválido.' });
