@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baixar Aplicativo | Fantoni Software</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --azul: #1d4ed8; --azul-claro: #eff6ff; --azul-medio: #3b82f6;
+      --escuro: #0f172a; --texto: #1e293b; --cinza: #64748b;
+      --borda: #e2e8f0; --bg: #f8fafc; --branco: #ffffff;
+    }
+    body { font-family: 'Inter', sans-serif; color: var(--texto); background: var(--bg); line-height: 1.6; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; text-align: center; }
+    .container {
+      max-width: 600px; width: 100%; background: var(--branco); border-radius: 24px; padding: 48px 32px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.06); border: 1px solid var(--borda); margin: auto;
+    }
+    .check-icon {
+      width: 80px; height: 80px; border-radius: 50%; background: #dcfce7; color: #16a34a; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;
+    }
+    .check-icon svg { width: 40px; height: 40px; }
+    h1 { font-size: 28px; font-weight: 800; color: var(--escuro); margin-bottom: 12px; }
+    p { font-size: 16px; color: var(--cinza); margin-bottom: 40px; }
+    
+    .downloads { display: flex; flex-direction: column; gap: 16px; }
+    .btn-download {
+      display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;
+      padding: 16px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 16px; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-win { background: #0078d4; color: #fff; }
+    .btn-win:hover { background: #006abc; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,120,212,0.25); }
+    
+    .btn-ios { background: #000; color: #fff; }
+    .btn-ios:hover { background: #333; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.25); }
+
+    .btn-android { background: #3ddc84; color: #000; }
+    .btn-android:hover { background: #32b56c; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(61,220,132,0.25); }
+
+    .btn-download svg { width: 24px; height: 24px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="check-icon">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+      </svg>
+    </div>
+    <h1>Tudo certo!</h1>
+    <p>Baixe o aplicativo para o seu dispositivo e comece o seu teste grátis agora mesmo.</p>
+
+    <div class="downloads">
+      <a href="https://navivendas.com.br/download/windows/pdvmais" class="btn-download btn-win" target="_blank">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M0 0h11.4v11.4H0zm12.6 0H24v11.4H12.6zM0 12.6h11.4V24H0zm12.6 0H24V24H12.6z"/></svg>
+        Download para Windows
+      </a>
+      
+      <a href="https://apps.apple.com/br/app/pdv/id6443721199" class="btn-download btn-ios" target="_blank">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M17.05 13.91c-.04-2.82 2.3-4.18 2.4-4.24-1.32-1.92-3.37-2.18-4.09-2.23-1.74-.18-3.41 1.05-4.31 1.05-.88 0-2.26-1.02-3.71-.99-1.89.03-3.64 1.1-4.62 2.81-1.99 3.47-.51 8.6 1.45 11.42.95 1.38 2.06 2.92 3.56 2.86 1.47-.05 2.03-.94 3.8-.94 1.76 0 2.27.94 3.83.91 1.6-.02 2.56-1.39 3.49-2.76 1.08-1.58 1.53-3.11 1.56-3.19-.03-.01-2.92-1.12-2.96-4.7zM15.42 5.06c.8-1 1.34-2.43 1.19-3.83-1.19.05-2.68.8-3.5 1.77-.73.85-1.36 2.33-1.19 3.69 1.35.1 2.7-.68 3.5-1.63z"/></svg>
+        Baixar na App Store
+      </a>
+
+      <a href="https://play.google.com/store/apps/details?id=br.com.desenvolvedorpdv.pdvmais" class="btn-download btn-android" target="_blank">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414C17.523 15.3414 16.2413 15.3444 14.9753 14.4024L20.2453 5.2754C20.4073 4.9934 20.3113 4.6324 20.0303 4.4714C19.7493 4.3104 19.3873 4.4064 19.2263 4.6874L13.8443 14.0094C12.6563 13.5684 11.3643 13.5684 10.1553 14.0094L4.7733 4.6874C4.6113 4.4064 4.2503 4.3104 3.9693 4.4714C3.6883 4.6324 3.5933 4.9934 3.7543 5.2754L9.0243 14.4024C7.7583 15.3444 6.4763 15.3414 6.4763 15.3414C3.4243 17.5854 2.2383 20.7384 2.2383 20.7384H21.7613C21.7613 20.7384 20.5753 17.5854 17.5233 15.3414H17.523ZM8.3033 18.6434C7.8173 18.6434 7.4243 18.2504 7.4243 17.7644C7.4243 17.2784 7.8173 16.8854 8.3033 16.8854C8.7893 16.8854 9.1823 17.2784 9.1823 17.7644C9.1823 18.2504 8.7893 18.6434 8.3033 18.6434ZM15.6963 18.6434C15.2103 18.6434 14.8173 18.2504 14.8173 17.7644C14.8173 17.2784 15.2103 16.8854 15.6963 16.8854C16.1823 16.8854 16.5753 17.2784 16.5753 17.7644C16.5753 18.2504 16.1823 18.6434 15.6963 18.6434Z"/></svg>
+        Baixar no Google Play
+      </a>
+    </div>
+
+    <div style="margin-top: 32px;">
+      <a href="https://wa.me/5551996034862" style="color: var(--azul); font-size: 14px; text-decoration: none; font-weight: 600;" target="_blank">Precisa de ajuda? Falar no WhatsApp</a>
+      <div style="margin-top: 16px;">
+        <a href="/" style="color: var(--cinza); font-size: 13px; text-decoration: none;">Voltar para o site</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

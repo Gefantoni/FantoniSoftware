@@ -131,8 +131,14 @@
 
     /* ---- NAVBAR ---- */
     nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(255,255,255,0.82);
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      padding: 12px 24px;
+      transition: all 0.3s ease;
+    }
+    nav.scrolled {
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(255,255,255,0.3);
@@ -145,25 +151,76 @@
     }
     .nav-logo {
       display: flex; align-items: center; gap: 10px;
-      font-size: 20px; font-weight: 800; color: var(--azul); text-decoration: none;
+      font-size: 20px; font-weight: 800; text-decoration: none;
+      color: #fff; transition: color 0.3s ease;
     }
+    nav.scrolled .nav-logo { color: var(--azul); }
+    .nav-logo span.logo-text-dark { color: #fff; transition: color 0.3s ease; }
+    nav.scrolled .nav-logo span.logo-text-dark { color: #111827; }
+
     .nav-logo svg { width: 32px; height: 32px; }
     .nav-links { display: flex; gap: 8px; list-style: none; }
     .nav-links a {
       padding: 8px 14px; border-radius: 8px;
-      color: var(--texto); text-decoration: none; font-size: 14px; font-weight: 500;
-      transition: background .15s, color 0.15s ease;
+      color: rgba(255,255,255,0.9); text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: all .15s ease;
     }
-    .nav-links a:hover { background: var(--azul-claro); color: #1d4ed8; }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    nav.scrolled .nav-links a { color: var(--texto); }
+    nav.scrolled .nav-links a:hover { background: var(--azul-claro); color: #1d4ed8; }
+    
     .nav-cta {
-      background: var(--azul); color: var(--branco);
-      padding: 10px 22px; border-radius: 8px;
-      font-size: 14px; font-weight: 600; text-decoration: none;
-      transition: background .15s;
+      background: #2563eb; color: #fff;
+      padding: 10px 24px; border-radius: 100px;
+      font-size: 14px; font-weight: 700; text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
-    .nav-cta:hover { background: var(--azul-hover); }
-    .nav-menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
-    .nav-mobile { display: none; }
+    .nav-cta:hover { transform: translateY(-1px); background: #1d4ed8; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); }
+
+    .nav-menu-btn {
+      display: none; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px; padding: 6px; cursor: pointer; color: #fff; transition: all 0.2s;
+    }
+    nav.scrolled .nav-menu-btn { background: #f1f5f9; border-color: #e2e8f0; color: #1e293b; }
+    .nav-mobile { 
+      display: none; 
+      position: absolute; 
+      top: 100%; 
+      left: 0; 
+      width: 100%; 
+      background: rgba(15, 23, 42, 0.95); 
+      backdrop-filter: blur(12px); 
+      -webkit-backdrop-filter: blur(12px);
+      padding: 24px; 
+      border-top: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    nav.scrolled .nav-mobile {
+      background: rgba(255, 255, 255, 0.98);
+      border-top: 1px solid #e2e8f0;
+    }
+    .nav-mobile a { 
+      display: block; 
+      padding: 14px 0; 
+      color: #fff; 
+      text-decoration: none; 
+      font-weight: 600; 
+      font-size: 17px; 
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    nav.scrolled .nav-mobile a { color: #1e293b; }
+    .nav-mobile .nav-mobile-cta {
+      margin-top: 16px;
+      background: #2563eb;
+      color: #fff !important;
+      padding: 16px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
 
     /* ---- HERO ---- */
     .hero {
@@ -375,16 +432,18 @@
     .cta-final-btns { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
 
     /* ---- WHATSAPP FLOAT ---- */
-    .whatsapp-float {
+    .testar-float {
       position: fixed; bottom: 28px; right: 28px; z-index: 999;
-      width: 60px; height: 60px; border-radius: 50%;
-      background: #25d366; color: var(--branco);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(37,211,102,.4);
-      text-decoration: none; transition: transform .2s;
+      background: #2563eb; color: #fff;
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 22px; border-radius: 100px;
+      box-shadow: 0 6px 24px rgba(37,99,235,.45);
+      text-decoration: none; font-size: 15px; font-weight: 700;
+      transition: transform .2s, box-shadow .2s;
+      white-space: nowrap;
     }
-    .whatsapp-float:hover { transform: scale(1.1); }
-    .whatsapp-float svg { width: 32px; height: 32px; }
+    .testar-float:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 10px 32px rgba(37,99,235,.55); }
+    .testar-float svg { width: 18px; height: 18px; flex-shrink: 0; }
 
     /* ---- FOOTER ---- */
     footer { background: radial-gradient(ellipse at 10% 90%, #1e3a8a 0%, transparent 50%), radial-gradient(ellipse at 90% 10%, #1d4ed8 0%, transparent 40%), #0c1225; color: #94a3b8; padding: 60px 24px 32px; }
@@ -432,7 +491,7 @@
     input:checked + .slider:before { transform: translateX(24px); }
 
     .pricing-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 0 auto;
     }
     .pricing-card {
       background: var(--bg); border-radius: 24px; padding: 40px; text-align: center;
@@ -470,11 +529,13 @@
     .checkout-modal {
       background: #fff; width: 100%; max-width: 440px; padding: 40px;
       border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      position: relative;
+      position: relative; box-sizing: border-box; margin: 0 12px;
     }
     .modal-close {
       position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--cinza);
+      font-size: 18px; line-height: 1; transition: color 0.15s;
     }
+    .modal-close:hover { color: var(--escuro); }
     .form-group { margin-bottom: 20px; text-align: left; }
     .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--texto); margin-bottom: 6px; }
     .form-input {
@@ -484,16 +545,30 @@
     .form-input:focus { border-color: var(--laranja); }
     .modal-title { font-size: 24px; font-weight: 800; margin-bottom: 24px; text-align: center; }
 
+    /* ---- ORDER BUMP ---- */
+    .order-bump {
+      background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 12px; padding: 16px; margin: 16px 0;
+      display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background 0.2s;
+    }
+    .order-bump:hover { background: #fef3c7; }
+    .order-bump input[type="checkbox"] { width: 22px; height: 22px; margin-top: 4px; border-radius: 6px; border: 1.5px solid #f59e0b; accent-color: #ea580c; cursor: pointer; flex-shrink: 0; }
+    .order-bump-content h4 { font-size: 15px; font-weight: 800; color: #b45309; margin-bottom: 4px; }
+    .order-bump-content p { font-size: 13px; color: #92400e; line-height: 1.5; }
+
     /* ---- RESPONSIVO ---- */
     @media (max-width: 900px) {
       .hero-inner, .recurso-item { grid-template-columns: 1fr; }
+      .hero-inner { gap: 20px; }
       .recurso-item.reverse { direction: ltr; }
-      .hero-img { display: none; }
+      /* Hero img: mostra abaixo do texto em tablet/mobile médio */
+      .hero-img { display: flex; justify-content: center; margin-top: 0; }
+      .hero-screenshot { max-width: min(380px, 88vw); max-height: 200px; object-fit: contain; animation: none; }
       .footer-top { grid-template-columns: 1fr 1fr; }
       .stats-inner { grid-template-columns: repeat(3,1fr); }
     }
     @media (max-width: 768px) {
       .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-card-featured { transform: none !important; padding: 48px 32px !important; }
     }
     @media (max-width: 640px) {
       .nav-links, .nav-cta { display: none; }
@@ -501,6 +576,89 @@
       .footer-top { grid-template-columns: 1fr !important; }
       .grid-chart { grid-template-columns: 1fr !important; }
       .stats-inner { grid-template-columns: 1fr !important; gap: 16px !important; }
+      /* Hero: imagem menor em telas muito pequenas */
+      .hero-img { display: flex; }
+      .hero-screenshot { max-width: min(260px, 78vw) !important; max-height: 150px !important; object-fit: contain !important; }
+    }
+    /* ---- FOOTER BOTTOM ---- */
+    .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; }
+
+    /* ================================================================
+       MOBILE GLOBAL OPTIMIZATION — max-width: 768px / 640px / 480px
+       ================================================================ */
+
+    /* --- Seções: padding vertical excessivo --- */
+    @media (max-width: 768px) {
+      .recursos-grid { gap: 48px; }
+      .recurso-item { gap: 32px; }
+      .recurso-title { font-size: clamp(20px, 5vw, 26px); }
+      .pricing-grid-new { gap: 20px; }
+      .pricing-card-new { padding: 36px 24px; }
+      .footer-top { gap: 28px; padding-bottom: 32px; margin-bottom: 32px; }
+      .depo-grid { gap: 16px; }
+    }
+
+    @media (max-width: 640px) {
+      /* --- Seções padding --- */
+      section, .recursos-section { padding-top: 52px !important; padding-bottom: 52px !important; }
+      footer { padding: 40px 16px 24px !important; }
+
+      /* --- Recursos --- */
+      .recursos-grid { gap: 36px; }
+      .recurso-item { gap: 20px; }
+      .recurso-title { font-size: 20px; }
+      .recurso-desc { font-size: 14px; }
+      .recurso-lista li { font-size: 14px; }
+      .recurso-icon-wrap { width: 44px; height: 44px; margin-bottom: 14px; }
+
+      /* --- Pricing --- */
+      .pricing-card-new { padding: 28px 18px; border-radius: 20px; }
+      .price-value { font-size: 46px !important; margin-bottom: 20px; }
+      .pricing-grid-new { gap: 14px; }
+
+      /* --- Depoimentos --- */
+      .depo-card { padding: 20px 16px; }
+      .depo-texto { font-size: 14px; }
+
+      /* --- Footer --- */
+      .footer-top { grid-template-columns: 1fr !important; gap: 24px !important; }
+      .footer-brand { font-size: 16px; }
+      .footer-col h4 { margin-bottom: 12px; }
+      .footer-col ul { gap: 8px; }
+
+      /* --- Botão flutuante --- */
+      .testar-float { bottom: 14px; right: 14px; padding: 11px 16px; font-size: 13px; }
+      .testar-float svg { width: 15px; height: 15px; }
+
+      /* --- Stats: 2 colunas no mobile --- */
+      .stats-inner { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+
+      /* --- Autoridade section --- */
+      #autoridade-img { width: 140px !important; height: 140px !important; }
+      #autoridade-gap { gap: 24px !important; }
+
+      /* --- Videos --- */
+      .grid-videos { gap: 16px !important; }
+
+      /* --- CTA dentro de preços --- */
+      #preco-cta { padding: 36px 20px !important; border-radius: 16px !important; }
+    }
+
+    @media (max-width: 480px) {
+      /* --- Modal --- */
+      .checkout-modal { padding: 28px 18px; border-radius: 16px; margin: 0 12px; }
+      .modal-title { font-size: 20px; margin-bottom: 18px; }
+      .form-input { font-size: 16px; /* previne zoom iOS */ padding: 12px; }
+      .form-group { margin-bottom: 14px; }
+
+      /* --- Pricing --- */
+      .price-value { font-size: 40px !important; }
+      .pricing-card-new { padding: 24px 16px; }
+
+      /* --- Botão flutuante: só ícone em telas muito pequenas --- */
+      .testar-float-label { display: none; }
+      .testar-float { padding: 14px; border-radius: 50%; gap: 0; }
+      .testar-float svg { width: 20px; height: 20px; }
     }
   </style>
 </head>
@@ -511,112 +669,251 @@
   <div class="nav-inner">
     <a href="#" class="nav-logo">
       <img src="assets/logo.png" alt="Fantoni Software" style="height:38px;width:auto;object-fit:contain;">
-      <span style="font-size:19px;font-weight:900;color:#1d4ed8;letter-spacing:-0.5px;line-height:1;">Fantoni <span style="color:#111827;">Software</span></span>
+      <span style="font-size:19px;font-weight:900;letter-spacing:-0.5px;line-height:1;">Fantoni <span class="logo-text-dark">Software</span></span>
     </a>
     <ul class="nav-links">
       <li><a href="#integrado">Integração</a></li>
       <li><a href="#videos">Demonstração</a></li>
       <li><a href="#depoimentos">Depoimentos</a></li>
     </ul>
-    <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" class="nav-cta" target="_blank">Testar grátis</a>
-    <button class="nav-menu-btn" onclick="toggleMenu()" aria-label="Menu">
-      <svg width="24" height="24" fill="none" stroke="#1e293b" stroke-width="2" stroke-linecap="round">
-        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    <a href="#" class="nav-cta" onclick="openLeadModal(); return false;">Testar grátis</a>
+    <button class="nav-menu-btn" onclick="toggleMenu()" aria-label="Menu" style="color: inherit;">
+      <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="4" y1="7" x2="22" y2="7"/><line x1="4" y1="12" x2="22" y2="12"/><line x1="4" y1="17" x2="22" y2="17"/>
       </svg>
     </button>
   </div>
-  <div class="nav-mobile" id="navMobile" style="display:none; padding: 16px 0; border-top: 1px solid #e2e8f0;">
-    <a href="#integrado" style="display:block;padding:10px 0;color:#1e293b;text-decoration:none;font-weight:500" onclick="toggleMenu()">Integração</a>
-    <a href="#videos" style="display:block;padding:10px 0;color:#1e293b;text-decoration:none;font-weight:500" onclick="toggleMenu()">Demonstração</a>
-    <a href="#depoimentos" style="display:block;padding:10px 0;color:#1e293b;text-decoration:none;font-weight:500" onclick="toggleMenu()">Depoimentos</a>
-    <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" style="display:block;margin-top:12px;background:#1d4ed8;color:#fff;padding:12px;border-radius:8px;text-align:center;text-decoration:none;font-weight:700" target="_blank">Testar 7 dias grátis</a>
+  <div class="nav-mobile" id="navMobile">
+    <a href="#integrado">Integração</a>
+    <a href="#videos">Demonstração</a>
+    <a href="#depoimentos">Depoimentos</a>
+    <a href="#" class="nav-mobile-cta" onclick="openLeadModal(); return false;">Testar 7 dias grátis</a>
   </div>
 </nav>
 
 <!-- ===== HERO ===== -->
-<section class="hero" id="inicio" style="padding: 56px 24px; position:relative; overflow:hidden;">
-  <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;"></canvas>
-  <div style="position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(10,14,40,0.55) 0%,rgba(15,23,80,0.35) 100%);pointer-events:none;"></div>
-  <div class="hero-inner" data-aos="fade-up" style="position:relative;z-index:2;">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        Sistema PDV completo · +100 negócios ativos · 100% de aprovação
+<section class="hero" id="inicio" style="padding: 100px 24px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; min-height:85vh;">
+  
+  <style>
+    .hero-btn-group { display: flex; gap: 16px; justify-content: flex-start; width: 100%; margin-bottom: 32px; flex-wrap: wrap; }
+    .btn-hero-primary { background: #2563eb; color: #fff; border: none; padding: 16px 32px; border-radius: 12px; font-size: 16px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: all 0.2s ease; text-decoration: none; }
+    .btn-hero-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); background: #1d4ed8; }
+    .btn-hero-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.3); padding: 16px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; }
+    .btn-hero-outline:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.6); transform: translateY(-2px); }
+    .trust-badge-item { color: #e2e8f0; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+    .hero-text-col { text-align: left; }
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0px) rotate(-1deg); }
+      50%       { transform: translateY(-14px) rotate(0.5deg); }
+    }
+    .hero-screenshot {
+      width: 100%; max-width: 560px; border-radius: 20px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08);
+      position: relative; z-index: 1;
+      animation: heroFloat 6s ease-in-out infinite;
+    }
+    @media (max-width: 900px) {
+      .hero-text-col { text-align: center; padding: 28px 24px !important; }
+      .hero-btn-group { justify-content: center; }
+      .hero-trust { justify-content: center !important; }
+      .hero-price-badge { justify-content: center; }
+      .hero-img { padding: 18px !important; }
+    }
+    @media (max-width: 640px) {
+      .hero-btn-group { flex-direction: column; gap: 12px; align-items: stretch; }
+      .btn-hero-primary, .btn-hero-outline { width: 100%; justify-content: center; padding: 14px 20px !important; font-size: 15px !important; }
+      .hide-mobile { display: none; }
+      .hero-price-badge { font-size: 12px; padding: 8px 14px !important; }
+      .hero-text-col { padding: 22px 18px !important; }
+      .hero-img { padding: 14px !important; }
+      section.hero { padding-top: 80px !important; padding-bottom: 40px !important; }
+    }
+  </style>
+
+  <!-- Video Background -->
+  <video id="hero-broll" autoplay loop muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: blur(8px) brightness(0.6) scale(1.06);">
+    <source src="assets/Video b-rooll.mp4" type="video/mp4">
+  </video>
+  
+  <!-- Overlay Elegante -->
+  <div style="position: absolute; inset: 0; z-index: 1; background: linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(29,78,216,0.4) 100%); pointer-events: none;"></div>
+
+  <div class="hero-inner" data-aos="fade-up" style="position:relative; z-index:2; max-width:1200px; width:100%;">
+
+    <!-- Coluna esquerda: texto -->
+    <div class="hero-text-col" style="background:rgba(10,18,36,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px;padding:40px 36px;border:1px solid rgba(255,255,255,0.07);">
+
+      <!-- Badge Glassmorphism -->
+      <div style="background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:8px 18px;color:#fff;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:24px;">
+        Sistema PDV completo · +100 negócios ativos
       </div>
-      <h1>O sistema PDV que seu negócio precisa para <span>vender mais</span> e trabalhar menos</h1>
-      <p style="margin-bottom:10px;font-size:17px;line-height:1.7;">Frente de caixa, NFC-e, controle de estoque, financeiro e acesso remoto — <strong style="color:#fff;">tudo em um só lugar.</strong> Funciona 100% offline, em qualquer dispositivo.</p>
-      <p style="margin-bottom:24px;font-size:14px;color:#93c5fd;">Ideal para varejo, bares, restaurantes, mercados, açougues, farmácias e muito mais.</p>
-      <div class="hero-btns" style="margin-bottom:20px;">
-        <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" class="btn-primary" target="_blank">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+
+      <!-- Headline (H1) -->
+      <h1 style="font-size:clamp(32px,4.5vw,52px);font-weight:800;color:#ffffff;line-height:1.15;letter-spacing:-0.02em;margin-bottom:20px;text-shadow:0 2px 24px rgba(0,0,0,0.5);">
+        O sistema PDV que seu negócio precisa para
+        <span style="background:linear-gradient(90deg,#60a5fa,#3b82f6);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;"> vender mais</span> e trabalhar menos
+      </h1>
+
+      <!-- Subheadline -->
+      <p style="font-size:clamp(15px,2vw,18px);color:#cbd5e1;line-height:1.7;margin-bottom:24px;max-width:100%;">
+        Frente de caixa, NFC-e, controle de estoque e acesso remoto — tudo em um só lugar. Funciona 100% offline.
+      </p>
+
+      <!-- Preço em destaque -->
+      <div class="hero-price-badge" style="display:inline-flex;align-items:center;gap:10px;background:rgba(251,191,36,0.12);border:1.5px solid rgba(251,191,36,0.5);border-radius:100px;padding:10px 20px;margin-bottom:28px;flex-wrap:wrap;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+        <span style="font-size:13px;font-weight:600;color:#fcd34d;">Planos a partir de</span>
+        <span style="font-size:24px;font-weight:900;color:#fbbf24;letter-spacing:-1px;line-height:1;">R$ 99<span style="font-size:14px;font-weight:600;color:#fcd34d;">/mês</span></span>
+        <span style="width:1px;height:20px;background:rgba(251,191,36,0.3);"></span>
+        <span style="font-size:12px;color:#fcd34d;font-weight:500;">Sem fidelidade</span>
+      </div>
+
+      <!-- CTAs -->
+      <div class="hero-btn-group">
+        <a href="#" onclick="openLeadModal(); return false;" class="btn-hero-primary">
           Testar 7 dias grátis
         </a>
-        <a href="#videos" class="btn-outline">Ver demonstração</a>
+        <a href="#videos" class="btn-hero-outline">Ver demonstração</a>
       </div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;">
-        <span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:6px;">
-          <svg width="14" height="14" fill="#22c55e" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-          Sem cartão de crédito
-        </span>
-        <span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:6px;">
-          <svg width="14" height="14" fill="#22c55e" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-          100% offline
-        </span>
-        <span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:6px;">
-          <svg width="14" height="14" fill="#22c55e" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-          Cancele quando quiser
-        </span>
-        <span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:6px;">
-          <svg width="14" height="14" fill="#22c55e" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-          Suporte incluso
-        </span>
+
+      <!-- Trust Badges -->
+      <div class="hero-trust" style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
+        <span class="trust-badge-item"><span style="display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 6px #22c55e;"></span> Sem cartão de crédito</span>
+        <span class="trust-badge-item"><span style="display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 6px #22c55e;"></span> 100% offline</span>
+        <span class="trust-badge-item"><span style="display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 6px #22c55e;"></span> Cancele quando quiser</span>
       </div>
+
     </div>
+
+    <!-- Coluna direita: screenshot do sistema -->
+    <div class="hero-img" style="display:flex;align-items:center;justify-content:center;position:relative;background:rgba(10,18,36,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px;padding:28px;border:1px solid rgba(255,255,255,0.07);">
+      <!-- Glow de fundo -->
+      <div style="position:absolute;inset:-20%;border-radius:50%;background:radial-gradient(ellipse,rgba(59,130,246,0.35) 0%,transparent 65%);pointer-events:none;"></div>
+      <img
+        src="assets/Dispositivos.png"
+        alt="Fantoni PDV — disponível em qualquer dispositivo"
+        class="hero-screenshot"
+        loading="eager"
+      >
+    </div>
+
   </div>
 </section>
 
-<!-- ===== CONTAINER SCROLL ===== -->
-<section style="padding:48px 24px 0; background:#fff; overflow:hidden;">
-  <div style="max-width:680px;margin:0 auto;text-align:center;margin-bottom:28px;" data-aos="fade-up">
-    <h2 style="font-size:clamp(20px,3vw,28px);font-weight:800;color:#0f172a;margin:0 0 8px;line-height:1.2;">Veja o Fantoni PDV na prática</h2>
-    <p style="font-size:14px;color:#64748b;">Rápido, intuitivo e pensado para o seu negócio.</p>
-  </div>
-  <div id="cs-perspective" style="perspective:1200px;max-width:620px;margin:0 auto;">
-    <div id="cs-card" style="
-      transform: rotateX(20deg) scale(1.04);
-      transform-origin: center top;
-      will-change: transform;
-      border: 3px solid #2d2d2d;
-      border-radius: 20px;
-      background: #1a1a1a;
-      padding: 6px;
-      box-shadow: 0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026;
-    ">
-      <div style="border-radius:14px;overflow:hidden;background:#f1f5f9;">
-        <img src="assets/Totalemente integrado.png" alt="Fantoni PDV — Disponível em todos os dispositivos" style="width:100%;display:block;border-radius:14px;">
+<!-- ===== AUTHORITY BAR (STATS) ===== -->
+<section style="background:#0f172a; padding:32px 24px; border-bottom:1px solid rgba(255,255,255,0.05);">
+  <style>
+    .auth-bar-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .auth-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px 16px;
+      position: relative;
+    }
+    .auth-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 25%;
+      height: 50%;
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .auth-icon {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-num {
+      font-size: clamp(28px, 3vw, 36px);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+    .auth-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    @media (max-width: 768px) {
+      .auth-bar-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+      .auth-item:not(:last-child)::after {
+        display: none;
+      }
+      .auth-item:nth-child(1)::after {
+        display: block;
+        right: 0; top: 20%; height: 60%;
+      }
+      .auth-item:nth-child(3) {
+        grid-column: 1 / -1;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 20px 16px;
+        flex-direction: row;
+        justify-content: center;
+        gap: 16px;
+        text-align: left;
+      }
+      .auth-item:nth-child(3) .auth-icon { margin-bottom: 0; }
+      .auth-item:nth-child(3) .auth-num { font-size: 24px; margin-bottom: 2px; }
+      .auth-label { font-size: 11px; }
+      .auth-icon svg { width: 24px; height: 24px; }
+    }
+  </style>
+
+  <div class="auth-bar-inner" data-aos="fade-up" data-aos-delay="100">
+    
+    <!-- Item 1: Lojas / Negócios Ativos -->
+    <div class="auth-item">
+      <div class="auth-icon" style="color: #60a5fa;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="auth-num">+100</div>
+      <div class="auth-label">Negócios Ativos</div>
+    </div>
+
+    <!-- Item 2: Aprovação / Satisfação -->
+    <div class="auth-item">
+      <div class="auth-icon" style="color: #4ade80;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div class="auth-num" style="color: #4ade80;">100%</div>
+      <div class="auth-label">Satisfação Garantida</div>
+    </div>
+
+    <!-- Item 3: Offline / Nuvem Cortada -->
+    <div class="auth-item">
+      <div class="auth-icon" style="color: #38bdf8;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.61 16.95A5 5 0 0018 10h-1.26a8 8 0 00-7.05-6M5 5a8 8 0 004 15h9a5 5 0 001.7-.3"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="auth-num" style="color: #38bdf8; font-size:clamp(20px, 2.5vw, 24px);">Venda Sem Internet</div>
+        <div class="auth-label">Emissão em Contingência</div>
       </div>
     </div>
+
   </div>
 </section>
-
-
-<!-- ===== STATS ===== -->
-<div class="stats">
-  <div class="stats-inner">
-    <div>
-      <div class="stat-num">+100</div>
-      <div class="stat-label">clientes ativados</div>
-    </div>
-    <div>
-      <div class="stat-num">100%</div>
-      <div class="stat-label">de aprovação dos clientes</div>
-    </div>
-    <div>
-      <div class="stat-num">100%</div>
-      <div class="stat-label">funciona offline</div>
-    </div>
-  </div>
-</div>
 
 <style>
 .feat-grid { display:grid; grid-template-columns: repeat(4,1fr); gap:20px; max-width:1200px; margin:0 auto; }
@@ -642,126 +939,550 @@
   .feat-card h3 { font-size:13px; margin-bottom:4px; }
   .feat-card p { font-size:11px; line-height:1.45; }
 }
-.seg-grid { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; max-width:1000px; margin:0 auto; }
-.seg-item { background:#fff; border:1.5px solid #e2e8f0; border-radius:100px; padding:12px 20px; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:600; color:#1e293b; transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease; cursor:default; }
-.seg-item:hover { border-color:#1d4ed8; box-shadow: 0 2px 10px rgba(29,78,216,.12); transform: translateY(-2px); }
-.seg-item svg { width:20px; height:20px; flex-shrink:0; color:#1d4ed8; }
+.seg-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; max-width:1000px; margin:0 auto; }
+.seg-item { background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:24px; display:flex; flex-direction:column; align-items:flex-start; text-align:left; gap:16px; font-size:15px; font-weight:700; color:#0f172a; transition: all 0.2s ease; cursor:default; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.seg-item:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(37,99,235,0.08); border-color: rgba(37,99,235,0.2); }
+.seg-item svg { width:32px; height:32px; color:#2563eb; background:#eff6ff; padding:6px; border-radius:8px; }
+@media (max-width: 640px) {
+  .seg-grid { grid-template-columns: repeat(3, 1fr); gap:10px; }
+  .seg-item { padding:14px 10px; gap:8px; align-items:center; text-align:center; font-size:11px; border-radius:12px; }
+  .seg-item svg { width:26px; height:26px; padding:5px; }
+}
 </style>
 
-<!-- ===== FUNCIONALIDADES ===== -->
-<section id="funcionalidades" style="background:#f8fafc; padding:72px 24px;">
-  <div style="text-align:center; margin-bottom:48px;" data-aos="fade-up">
-    <h2 style="font-size:clamp(24px,4vw,36px); font-weight:800; color:#0f172a; margin:0 0 14px;">Um sistema completo para o seu negócio</h2>
-    <p style="font-size:16px; color:#64748b; max-width:520px; margin:0 auto;">Cada funcionalidade pensada para facilitar o dia a dia do comércio.</p>
+<!-- ===== FUNCIONALIDADES (GRADE COMPACTA) ===== -->
+<section id="funcionalidades" style="background:#f8fafc; padding:80px 24px;">
+  <div style="text-align:center; margin-bottom:56px;" data-aos="fade-up">
+    <h2 style="font-size:clamp(26px,4vw,36px); font-weight:800; color:#0f172a; margin:0 0 12px; letter-spacing:-0.02em;">Um sistema completo para o seu negócio</h2>
+    <p style="font-size:16px; color:#64748b; max-width:600px; margin:0 auto; line-height:1.6;">Cada funcionalidade pensada para facilitar o dia a dia do comércio.</p>
   </div>
-  <div class="feat-grid">
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="0"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg></div><h3>Frente de caixa</h3><p>Rápida e fácil de usar, ideal para alto volume de vendas</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="50"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg></div><h3>Controle de estoque</h3><p>Automático e em tempo real, com alertas de mínimo</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="100"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg></div><h3>Gestão financeira</h3><p>Entradas, saídas e fluxo de caixa em um só lugar</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="150"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><h3>Relatórios completos</h3><p>Vendas, desempenho e margem sempre à mão</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="200"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg></div><h3>Acesso remoto</h3><p>Pelo celular ou computador, de qualquer lugar</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="250"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></div><h3>NFC-e / NF-e</h3><p>Emissão de nota fiscal com contingência offline</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="300"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg></div><h3>Periféricos integrados</h3><p>Impressoras, leitores de código de barras e balanças</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="350"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg></div><h3>Mesas e comandas</h3><p>Controle de atendimento no local com agilidade</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="0"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg></div><h3>Autoatendimento</h3><p>Totem ou sistema para o cliente pedir sozinho</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="50"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg></div><h3>Pedidos via WhatsApp</h3><p>Integração com WhatsApp e outros canais de venda</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="100"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></div><h3>Usuários e funcionários</h3><p>Controle de acesso por perfil de cada colaborador</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="150"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg></div><h3>Cadastro de produtos</h3><p>Produtos e categorias com leitura de código de barras</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="200"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg></div><h3>Alertas de estoque</h3><p>Notificação automática ao atingir o estoque mínimo</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="250"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg></div><h3>Formas de pagamento</h3><p>PIX, cartão, dinheiro — tudo registrado e conciliado</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="300"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><h3>Histórico completo</h3><p>Todas as vendas e movimentações sempre registradas</p></div>
-    <div class="feat-card" data-aos="fade-up" data-aos-delay="350"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72l1.189-1.19A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72M6.75 18h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .414.336.75.75.75z"/></svg></div><h3>Multi segmento</h3><p>Adaptado para cada tipo de negócio</p></div>
+  
+  <style>
+    .feat-dense-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:20px; max-width:1200px; margin:0 auto; }
+    @media(max-width:1024px) { .feat-dense-grid { grid-template-columns: repeat(3, 1fr); gap:16px; } }
+    @media(max-width:768px) { .feat-dense-grid { grid-template-columns: repeat(2, 1fr); gap:12px; } }
+    
+    .feat-dense-card { 
+      background: #fff; border-radius: 16px; padding: 20px; text-align: left;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.2s ease;
+      border: 1px solid #f1f5f9; display:flex; flex-direction:column; align-items:flex-start;
+    }
+    .feat-dense-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(37,99,235,0.08); border-color: rgba(37,99,235,0.2); }
+    .feat-icon-sm { width: 40px; height: 40px; background: #eff6ff; border-radius: 10px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; color:#2563eb; }
+    .feat-icon-sm svg { width: 20px; height: 20px; }
+    .feat-dense-card h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+    .feat-dense-card p { font-size: 12px; color: #64748b; line-height: 1.4; margin:0; }
+    
+    @media(max-width:480px){
+      .feat-dense-card { padding: 14px; }
+      .feat-icon-sm { width: 36px; height: 36px; margin-bottom: 8px; }
+      .feat-icon-sm svg { width: 18px; height: 18px; }
+      .feat-dense-card h3 { font-size: 13px; margin-bottom: 4px; }
+      .feat-dense-card p { font-size: 11px; line-height: 1.35; }
+    }
+  </style>
+
+  <div class="feat-dense-grid">
+    <!-- Card 1 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg></div>
+      <h3>Frente de caixa</h3>
+      <p>Rápida e fácil de usar, ideal para alto volume de vendas</p>
+    </div>
+    <!-- Card 2 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg></div>
+      <h3>Controle de estoque</h3>
+      <p>Automático e em tempo real, com alertas de mínimo</p>
+    </div>
+    <!-- Card 3 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <h3>Gestão financeira</h3>
+      <p>Entradas, saídas e fluxo de caixa em um só lugar</p>
+    </div>
+    <!-- Card 4 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
+      <h3>Relatórios completos</h3>
+      <p>Vendas, desempenho e margem sempre à mão</p>
+    </div>
+    <!-- Card 5 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg></div>
+      <h3>Acesso remoto</h3>
+      <p>Pelo celular ou computador, de qualquer lugar</p>
+    </div>
+    <!-- Card 6 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></div>
+      <h3>NFC-e / NF-e</h3>
+      <p>Emissão de nota fiscal com contingência offline</p>
+    </div>
+    <!-- Card 7 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg></div>
+      <h3>Periféricos integrados</h3>
+      <p>Impressoras, leitores de código de barras e balanças</p>
+    </div>
+    <!-- Card 8 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg></div>
+      <h3>Mesas e comandas</h3>
+      <p>Controle de atendimento no local com agilidade</p>
+    </div>
+    <!-- Card 9 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg></div>
+      <h3>Autoatendimento</h3>
+      <p>Totem ou sistema para o cliente pedir sozinho</p>
+    </div>
+    <!-- Card 10 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg></div>
+      <h3>Pedidos via WhatsApp</h3>
+      <p>Integração com WhatsApp e outros canais de venda</p>
+    </div>
+    <!-- Card 11 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></div>
+      <h3>Usuários e funcionários</h3>
+      <p>Controle de acesso por perfil de cada colaborador</p>
+    </div>
+    <!-- Card 12 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg></div>
+      <h3>Cadastro de produtos</h3>
+      <p>Produtos e categorias com leitura de código de barras</p>
+    </div>
+    <!-- Card 13 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg></div>
+      <h3>Alertas de estoque</h3>
+      <p>Notificação automática ao atingir o estoque mínimo</p>
+    </div>
+    <!-- Card 14 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg></div>
+      <h3>Formas de pagamento</h3>
+      <p>PIX, cartão, dinheiro — tudo registrado e conciliado</p>
+    </div>
+    <!-- Card 15 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <h3>Histórico completo</h3>
+      <p>Todas as vendas e movimentações sempre registradas</p>
+    </div>
+    <!-- Card 16 -->
+    <div class="feat-dense-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feat-icon-sm"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72l1.189-1.19A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72M6.75 18h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .414.336.75.75.75z"/></svg></div>
+      <h3>Multi segmento</h3>
+      <p>Adaptado para cada tipo de negócio</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RECURSOS EM DESTAQUE (Imagens Alternadas) ===== -->
+<section style="padding:100px 24px; background:#fff;">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom:64px;" data-aos="fade-up">
+      <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;padding:6px 16px;border-radius:100px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:20px;">Como Funciona</span>
+      <h2 style="font-size:clamp(28px,4vw,40px); font-weight:800; color:#0f172a; margin-bottom:16px; letter-spacing:-0.02em;">A tecnologia trabalhando por você</h2>
+    </div>
+
+    <div class="recursos-grid">
+      <!-- Item 1 (Varejo GIF/Video) -->
+      <div class="recurso-item" data-aos="fade-up">
+        <div style="text-align:left;">
+          <div class="recurso-icon-wrap"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/></svg></div>
+          <h3 class="recurso-title">Varejo: Rápido e prático</h3>
+          <p class="recurso-desc">Interface super ágil para não travar a fila. Escaneie códigos de barras, aplique múltiplos descontos e imprima comprovantes com apenas 1 clique.</p>
+          <ul class="recurso-lista">
+            <li>Leitura instantânea de produtos</li>
+            <li>Emissão de NFC-e na mesma hora</li>
+            <li>Painel de vendas super intuitivo</li>
+          </ul>
+        </div>
+        <div style="display:flex; justify-content:center;">
+          <!-- Substituição do comportamento de GIF pela melhor prática moderna! -->
+          <video autoplay loop muted playsinline style="width:100%; max-width:320px; border-radius:24px; box-shadow:0 24px 50px rgba(0,0,0,0.1); border:6px solid #fff; background:#fff;">
+            <source src="assets/Varejo.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+
+      <!-- Item 2 (Gestão Completa) -->
+      <div class="recurso-item reverse" data-aos="fade-up">
+        <div style="text-align:left;">
+          <div class="recurso-icon-wrap"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
+          <h3 class="recurso-title">Gestão Completa</h3>
+          <p class="recurso-desc">Não fique mais no escuro. Tenha relatórios precisos do seu estoque financeiro, margem de lucro e produtos mais vendidos da semana.</p>
+          <ul class="recurso-lista">
+            <li>Histórico completo de entradas e saídas</li>
+            <li>Alertas visuais de estoque baixo</li>
+            <li>Acompanhamento financeiro avançado</li>
+          </ul>
+        </div>
+        <div style="display:flex; justify-content:center;">
+          <img src="assets/Gestão Completa (1).png" alt="Gestão Completa" style="width:100%; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+      </div>
+
+      <!-- Item 3 (Delivery) -->
+      <div class="recurso-item" data-aos="fade-up">
+        <div style="text-align:left;">
+          <div class="recurso-icon-wrap"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg></div>
+          <h3 class="recurso-title">Delivery sem erros</h3>
+          <p class="recurso-desc">Adeus pedidos bagunçados. Controle total de motoboys, cálculo automático de rotas e fluxo centralizado desde o começo até a porta do cliente.</p>
+          <ul class="recurso-lista">
+            <li>Gestão de taxas de entrega</li>
+            <li>Integração direta com WhatsApp</li>
+            <li>Monitoramento em tempo real do motoboy</li>
+          </ul>
+        </div>
+        <div style="display:flex; justify-content:center;">
+          <img src="assets/Delivery (1).png" alt="Delivery PDV" style="width:100%; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+      </div>
+
+      <!-- Item 4 (NF-e / NFC-e) -->
+      <div class="recurso-item reverse" data-aos="fade-up">
+        <div style="text-align:left;">
+          <div class="recurso-icon-wrap">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+          </div>
+          <h3 class="recurso-title">NFC-e e NF-e em segundos</h3>
+          <p class="recurso-desc">Emita notas fiscais com agilidade total — mesmo sem internet. A contingência offline garante que seu caixa nunca trava por causa de falha de conexão.</p>
+          <ul class="recurso-lista">
+            <li>Emissão de NFC-e e NF-e em tempo real</li>
+            <li>Contingência offline automática (sem internet)</li>
+            <li>XML e DANFE gerados e enviados automaticamente</li>
+            <li>Cancelamento e carta de correção integrados</li>
+          </ul>
+        </div>
+        <div style="display:flex; justify-content:center;">
+          <img src="assets/NF.png" alt="Emissão de NFC-e e NF-e — Fantoni PDV" style="width:100%; max-width:420px; max-height:360px; object-fit:contain; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.07)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
 <!-- ===== TOTALMENTE INTEGRADO ===== -->
-<section id="integrado" style="padding:72px 24px; background:#f8fafc;">
-  <div style="max-width:1200px;margin:0 auto;" class="grid-responsive" data-aos="fade-up">
-    <div>
-      <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;padding:4px 14px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Integração total</span>
-      <h2 style="font-size:clamp(24px,3vw,36px);font-weight:800;color:#0f172a;margin-bottom:16px;line-height:1.2;">Maquininha, computador, celular ou tablet — você escolhe</h2>
-      <p style="font-size:16px;color:#64748b;line-height:1.8;margin-bottom:24px;">O Fantoni PDV funciona com as maiores maquininhas do Brasil e em qualquer dispositivo. Integre tudo em um único sistema, sem cobrar a mais por isso.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;">
-        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center;font-size:13px;font-weight:700;color:#1e293b;">💻 Windows · Android · iOS</div>
-        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center;font-size:13px;font-weight:700;color:#1e293b;">🖨️ Impressora · Balança · Leitor</div>
+<section id="integrado" style="padding:80px 24px 0; background:#f8fafc; text-align:center; overflow:hidden;">
+  <div style="max-width:900px; margin:0 auto; display:flex; flex-direction:column; align-items:center;" data-aos="zoom-in">
+    <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;padding:6px 16px;border-radius:100px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:20px;">Integração Total</span>
+    <h2 style="font-size:clamp(28px,4vw,40px); font-weight:800; color:#0f172a; margin-bottom:16px; line-height:1.2; letter-spacing:-0.02em;">Disponível em qualquer dispositivo</h2>
+    <p style="font-size:17px; color:#475569; line-height:1.6; margin-bottom:24px; max-width:650px; margin-left:auto; margin-right:auto;">
+      Use no computador, celular, tablet ou direto na maquininha Smart. Conecte balanças, gavetas e impressoras com apenas um clique.
+    </p>
+    
+    <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
+      <div style="background:#fff; border:1px solid #e2e8f0; border-radius:100px; padding:10px 20px; font-weight:700; font-size:14px; color:#1e293b; display:flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px; height:18px; color:#2563eb;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg> Windows & Android & iOS
+      </div>
+      <div style="background:#fff; border:1px solid #e2e8f0; border-radius:100px; padding:10px 20px; font-weight:700; font-size:14px; color:#1e293b; display:flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px; height:18px; color:#2563eb;"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg> Impressoras & Balanças
       </div>
     </div>
-    <img src="assets/Totalemente integrado.png" alt="Fantoni PDV totalmente integrado" style="width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.1);">
+
+    <div style="display:flex; justify-content:center; transform: translateY(15px);">
+      <img src="assets/Dispositivos.png" alt="Fantoni PDV totalmente integrado" style="width:100%; max-width:850px; margin:0 auto; display:block; filter:drop-shadow(0 24px 50px rgba(0,0,0,0.12)); transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.02) translateY(-10px)'" onmouseout="this.style.transform='scale(1) translateY(0)'">
+    </div>
   </div>
 </section>
 
-<!-- ===== GRÁFICO DE CRESCIMENTO ===== -->
-<section style="padding:72px 24px; background:#fff;">
+<!-- ===== COMPARAÇÃO (NOVO DESIGN) ===== -->
+<section style="padding:60px 24px 100px; background:#f8fafc; text-align:center;">
   <div style="max-width:1000px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:48px;" data-aos="fade-up">
-      <span style="display:inline-block;background:#dcfce7;color:#16a34a;padding:4px 14px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Resultado real</span>
-      <h2 style="font-size:clamp(24px,3vw,36px);font-weight:800;color:#0f172a;margin-bottom:12px;">Do papel para o controle total — veja a diferença</h2>
-      <p style="font-size:16px;color:#64748b;max-width:560px;margin:0 auto;line-height:1.7;">Com o Fantoni PDV, você passa a ter controle real sobre notas, estoque, faturamento e margens — e ainda economiza horas por semana graças às automações.</p>
+    <div data-aos="fade-up" style="margin-bottom:48px;">
+      <span style="display:inline-block;background:#dcfce7;color:#16a34a;padding:6px 16px;border-radius:100px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:20px;">O Poder do Controle</span>
+      <h2 style="font-size:clamp(28px,4vw,40px);font-weight:800;color:#0f172a;margin-bottom:16px;letter-spacing:-0.02em;">Do caderno para a organização total</h2>
+      <p style="font-size:18px;color:#475569;max-width:650px;margin:0 auto;line-height:1.6;">Chega de adivinhar seu lucro. Veja como a automação transforma o seu negócio na prática.</p>
     </div>
 
-    <!-- Gráfico comparativo -->
-    <div style="background: linear-gradient(135deg,#f8fafc,#eff6ff); border-radius:24px; padding:40px; border:1px solid rgba(99,102,241,0.12); box-shadow: 0 4px 24px rgba(29,78,216,0.07);">
-      <div class="grid-chart">
-
-        <!-- SEM PDV -->
-        <div style="text-align:center;">
-          <div style="font-size:14px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:20px;">❌ Sem sistema PDV</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de notas fiscais</span><span>Baixo</span></div>
-              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:20%;height:100%;background: linear-gradient(90deg, #ef4444, #f87171);border-radius:100px;box-shadow: 0 0 8px rgba(239,68,68,0.4);"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de estoque</span><span>Baixo</span></div>
-              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:15%;height:100%;background: linear-gradient(90deg, #ef4444, #f87171);border-radius:100px;box-shadow: 0 0 8px rgba(239,68,68,0.4);"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de faturamento</span><span>Parcial</span></div>
-              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:30%;height:100%;background: linear-gradient(90deg, #ef4444, #f87171);border-radius:100px;box-shadow: 0 0 8px rgba(239,68,68,0.4);"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de margem</span><span>Baixo</span></div>
-              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:10%;height:100%;background: linear-gradient(90deg, #ef4444, #f87171);border-radius:100px;box-shadow: 0 0 8px rgba(239,68,68,0.4);"></div></div>
-            </div>
-          </div>
+    <!-- Cards de Comparação -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:32px; margin-bottom:64px; align-items:center;">
+      
+      <!-- Card SEM PDV -->
+      <div style="background:#fff; border:1px solid #fee2e2; border-radius:32px; padding:48px 32px; box-shadow:0 10px 30px rgba(239,68,68,0.05); position:relative;" data-aos="fade-up" data-aos-delay="0">
+        <div style="width:64px; height:64px; background:#fef2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; color:#ef4444;">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:32px;height:32px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
         </div>
-
-        <!-- COM FANTONI PDV -->
-        <div style="text-align:center;">
-          <div style="font-size:14px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:20px;">✅ Com Fantoni PDV</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de notas fiscais</span><span>Total</span></div>
-              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:100%;height:100%;background: linear-gradient(90deg, #16a34a, #22c55e);border-radius:100px;box-shadow: 0 0 8px rgba(22,197,94,0.4);"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de estoque</span><span>Total</span></div>
-              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:100%;height:100%;background: linear-gradient(90deg, #16a34a, #22c55e);border-radius:100px;box-shadow: 0 0 8px rgba(22,197,94,0.4);"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de faturamento</span><span>Total</span></div>
-              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:100%;height:100%;background: linear-gradient(90deg, #16a34a, #22c55e);border-radius:100px;box-shadow: 0 0 8px rgba(22,197,94,0.4);"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:4px;"><span>Controle de margem</span><span>Total</span></div>
-              <div style="background:#e2e8f0;border-radius:100px;height:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);"><div class="barra-anim" style="width:100%;height:100%;background: linear-gradient(90deg, #16a34a, #22c55e);border-radius:100px;box-shadow: 0 0 8px rgba(22,197,94,0.4);"></div></div>
-            </div>
+        <h3 style="font-size:24px; font-weight:800; color:#0f172a; margin-bottom:32px;">Sem sistema PDV</h3>
+        
+        <div style="display:flex; flex-direction:column; gap:20px; text-align:left;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:600; color:#475569; margin-bottom:8px;"><span>Controle de Estoque</span> <span style="color:#ef4444;">Baixo</span></div>
+            <div style="background:#f1f5f9; height:10px; border-radius:100px; overflow:hidden;"><div style="width:20%; height:100%; background:#ef4444; border-radius:100px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:600; color:#475569; margin-bottom:8px;"><span>Rapidez no Caixa</span> <span style="color:#ef4444;">Lento</span></div>
+            <div style="background:#f1f5f9; height:10px; border-radius:100px; overflow:hidden;"><div style="width:30%; height:100%; background:#ef4444; border-radius:100px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:600; color:#475569; margin-bottom:8px;"><span>Gestão de Lucro</span> <span style="color:#ef4444;">Difícil</span></div>
+            <div style="background:#f1f5f9; height:10px; border-radius:100px; overflow:hidden;"><div style="width:15%; height:100%; background:#ef4444; border-radius:100px;"></div></div>
           </div>
         </div>
       </div>
 
-      <!-- Resultado em destaque -->
-      <div style="background:linear-gradient(135deg,#0f172a,#1e3a8a);border-radius:14px;padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
-        <div>
-          <div style="color:#94a3b8;font-size:13px;margin-bottom:4px;">Economia com automações</div>
-          <div style="color:#fff;font-size:22px;font-weight:800;">Menos horas em tarefas manuais — mais tempo para vender</div>
-          <div style="color:#bfdbfe;font-size:14px;margin-top:6px;">NFC-e automática · estoque atualizado em tempo real · relatórios prontos</div>
+      <!-- Card COM PDV -->
+      <div style="background: linear-gradient(180deg, #1d4ed8 0%, #0f172a 100%); border-radius:32px; padding:56px 32px; box-shadow:0 24px 60px rgba(29,78,216,0.3); position:relative; z-index:2; border: 1px solid rgba(255,255,255,0.1);" data-aos="fade-up" data-aos-delay="150">
+        <div style="position:absolute; top:-16px; left:50%; transform:translateX(-50%); background:#f59e0b; color:#fff; font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:1px; padding:8px 20px; border-radius:100px; box-shadow:0 4px 16px rgba(245,158,11,0.4); white-space:nowrap;">Fantoni PDV</div>
+        <div style="width:72px; height:72px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; color:#4ade80;">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:36px;height:36px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
         </div>
-        <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" target="_blank" style="background:#3b82f6;color:#fff;padding:14px 24px;border-radius:10px;font-weight:700;text-decoration:none;white-space:nowrap;font-size:15px;">Quero esse resultado</a>
+        <h3 style="font-size:26px; font-weight:800; color:#fff; margin-bottom:32px;">Fluxo Perfeito</h3>
+        
+        <div style="display:flex; flex-direction:column; gap:20px; text-align:left;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:600; color:#e2e8f0; margin-bottom:8px;"><span>Controle de Estoque</span> <span style="color:#4ade80;">Total</span></div>
+            <div style="background:rgba(255,255,255,0.1); height:10px; border-radius:100px; overflow:hidden;"><div style="width:100%; height:100%; background:#4ade80; border-radius:100px; box-shadow:0 0 12px rgba(74,222,128,0.6);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:600; color:#e2e8f0; margin-bottom:8px;"><span>Rapidez no Caixa</span> <span style="color:#4ade80;">Imediato</span></div>
+            <div style="background:rgba(255,255,255,0.1); height:10px; border-radius:100px; overflow:hidden;"><div style="width:100%; height:100%; background:#4ade80; border-radius:100px; box-shadow:0 0 12px rgba(74,222,128,0.6);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:600; color:#e2e8f0; margin-bottom:8px;"><span>Gestão de Lucro</span> <span style="color:#4ade80;">Exato</span></div>
+            <div style="background:rgba(255,255,255,0.1); height:10px; border-radius:100px; overflow:hidden;"><div style="width:100%; height:100%; background:#4ade80; border-radius:100px; box-shadow:0 0 12px rgba(74,222,128,0.6);"></div></div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- CTA Highlight -->
+    <style>
+      .cta-highlight-box {
+        background:#fff; border:1px solid #e2e8f0; border-radius:100px; padding:16px 16px 16px 32px; display:inline-flex; align-items:center; gap:32px; box-shadow:0 12px 30px rgba(0,0,0,0.06); justify-content:space-between; width:100%; max-width:700px;
+      }
+      .cta-highlight-text { text-align:left; }
+      .cta-highlight-btn { background:#2563eb; color:#fff; padding:18px 36px; border-radius:100px; font-weight:800; font-size:16px; text-decoration:none; transition:all 0.3s ease; box-shadow:0 10px 25px rgba(37,99,235,0.35); flex-shrink:0; }
+      .cta-highlight-btn:hover { background:#1d4ed8; transform:translateY(-2px); box-shadow:0 14px 30px rgba(29,78,216,0.4); }
+      @media (max-width: 640px) {
+        .cta-highlight-box {
+          flex-direction: column;
+          border-radius: 28px;
+          padding: 28px;
+          gap: 20px;
+          text-align: center;
+        }
+        .cta-highlight-text { text-align: center; }
+        .cta-highlight-btn { width: 100%; padding: 16px; text-align: center; }
+      }
+    </style>
+    <div class="cta-highlight-box" data-aos="fade-up">
+      <div class="cta-highlight-text">
+        <div style="font-size:18px; font-weight:800; color:#0f172a;">Recupere horas do seu dia</div>
+        <div style="font-size:15px; color:#64748b;">Automatize o que é chato e foque em vender.</div>
+      </div>
+      <a href="#" onclick="openLeadModal(); return false;" class="cta-highlight-btn">Testar 7 dias grátis</a>
+    </div>
+
   </div>
 </section>
+
+<!-- ===== MAQUININHAS ===== -->
+<section id="maquininhas" style="padding:80px 0 100px; background:#fff; overflow:hidden;">
+  <style>
+    .maq-logo-btn {
+      display: flex; align-items: center; justify-content: center;
+      height: 52px; padding: 0 20px; border-radius: 12px;
+      border: 1.5px solid #e2e8f0; background: #fff;
+      cursor: pointer; transition: all 0.2s ease;
+      filter: grayscale(1); opacity: 0.5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .maq-logo-btn img { height: 26px; width: auto; max-width: 88px; object-fit: contain; pointer-events: none; display: block; }
+    .maq-logo-btn:hover { filter: grayscale(0); opacity: 1; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.09); border-color: #cbd5e1; }
+    .maq-logo-btn.maq-active { filter: grayscale(0); opacity: 1; border-color: #1d4ed8; background: #fff; box-shadow: 0 4px 20px rgba(29,78,216,0.18); transform: translateY(-3px); }
+
+    .maq-arrow-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 48px; height: 48px; border-radius: 50%;
+      background: #fff; border: 1px solid #e2e8f0;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 5; color: #1e293b;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transition: all 0.2s ease;
+    }
+    .maq-arrow-btn:hover { background: #1d4ed8; color: #fff; border-color: #1d4ed8; box-shadow: 0 6px 20px rgba(29,78,216,0.3); }
+
+    /* Transição suave do slider via JS (opacity + transform) */
+    #maqSlideContent { transition: opacity 0.18s ease, transform 0.18s ease; will-change: opacity, transform; }
+
+    @keyframes maqImgFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-8px); }
+    }
+    .maq-img-float { animation: maqImgFloat 4s ease-in-out infinite; }
+
+    .maq-modelo-item { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #1e293b; font-weight: 500; }
+    .maq-modelo-dot { width: 8px; height: 8px; border-radius: 50%; background: #1d4ed8; flex-shrink: 0; }
+
+    @media (max-width: 768px) {
+      .maq-slider-grid { grid-template-columns: 1fr !important; text-align: center; gap: 24px !important; }
+      .maq-img-col { order: -1; }
+      .maq-modelo-item { justify-content: center; }
+      .maq-arrow-btn { display: none; }
+      #maqSliderCard { padding: 32px 24px !important; min-height: 280px !important; border-radius: 20px !important; }
+    }
+    @media (max-width: 560px) {
+      .maq-logo-btn { height: 44px; padding: 0 14px; }
+      .maq-logo-btn img { height: 20px; }
+      #maqSliderCard { padding: 24px 16px !important; min-height: auto !important; }
+    }
+  </style>
+
+  <div style="max-width:1200px; margin:0 auto; padding:0 24px;">
+
+    <!-- Header -->
+    <div style="text-align:center; margin-bottom:52px;" data-aos="fade-up">
+      <span style="display:inline-block;background:#eff6ff;color:#1d4ed8;padding:4px 14px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Maquininhas</span>
+      <h2 style="font-size:clamp(26px,4vw,38px); font-weight:800; color:#0f172a; margin-bottom:14px; letter-spacing:-0.02em;">
+        Disponível nas principais maquininhas
+      </h2>
+      <p style="font-size:16px; color:#64748b; max-width:540px; margin:0 auto; line-height:1.6;">
+        Conecte o Fantoni PDV diretamente na sua maquininha — sem taxa extra, sem complicação.
+      </p>
+    </div>
+
+    <!-- Logo Strip -->
+    <div id="maqLogosStrip" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:48px;" data-aos="fade-up" data-aos-delay="60">
+    </div>
+
+    <!-- Slider Card -->
+    <div style="position:relative;" data-aos="fade-up" data-aos-delay="120">
+
+      <!-- Setas fora do overflow:hidden — sem clipping -->
+      <button class="maq-arrow-btn" id="maqPrevBtn" onclick="maqGo(-1)" aria-label="Anterior" style="left:-24px;">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="14 18 8 12 14 6"></polyline></svg>
+      </button>
+      <button class="maq-arrow-btn" id="maqNextBtn" onclick="maqGo(1)" aria-label="Próximo" style="right:-24px;">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="10 6 16 12 10 18"></polyline></svg>
+      </button>
+
+      <!-- Card: overflow:hidden apenas para o conteúdo do slide -->
+      <div id="maqSliderCard" style="background:#f8fafc; border-radius:28px; padding:52px 80px; border:1px solid #e2e8f0; box-shadow:0 8px 40px rgba(0,0,0,0.04); min-height:360px; display:flex; align-items:center; overflow:hidden;">
+        <div class="maq-slider-grid" id="maqSlideContent" style="display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; width:100%;">
+          <!-- injected by JS -->
+        </div>
+      </div>
+
+      <!-- Dots -->
+      <div id="maqDots" style="display:flex; gap:8px; justify-content:center; margin-top:24px;"></div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  const MAQUININHAS = [
+    { id:'azulzinha', nome:'Azulzinha', logo:'assets/Logos/logo-azulzinha.svg', imagem:'assets/Maquininhas/Navi-POS-Azulzinha.png', cor:'#0057a8', modelos:['A8 Plus','A8 Pro','A920 Pro'] },
+    { id:'bin',       nome:'Bin',       logo:'assets/Logos/logo-bin.svg',       imagem:'assets/Maquininhas/Navi-POS-Bin.png',       cor:'#e30613', modelos:['D195','D210','A8'] },
+    { id:'cielo',     nome:'Cielo',     logo:'assets/Logos/logo-cielo.svg',     imagem:'assets/Maquininhas/Navi-POS-Cielo.png',     cor:'#00a0df', modelos:['Lio V1','Lio V2','Lio V3 (Lio On)','Ingenico Dx8000'] },
+    { id:'getnet',    nome:'Getnet',    logo:'assets/Logos/logo-getnet.svg',    imagem:'assets/Maquininhas/Navi-POS-Getnet.png',    cor:'#ff6900', modelos:['Getnet Smart','PAX A920','S920'] },
+    { id:'pagbank',   nome:'PagBank',   logo:'assets/Logos/logo-pagbank.svg',   imagem:'assets/Maquininhas/Navi-POS-PagSeguro.png', cor:'#00c247', modelos:['Smart F10','Smart D195','Smart A8'] },
+    { id:'rede',      nome:'Rede',      logo:'assets/Logos/logo-rede.svg',      imagem:'assets/Maquininhas/Navi-POS-Rede.png',      cor:'#003087', modelos:['PAX A920','Verifone VX680','D195'] },
+    { id:'safrapay',  nome:'Safrapay',  logo:'assets/Logos/logo-safrapay.svg',  imagem:'assets/Maquininhas/Navi-POS-Safrapay.png',  cor:'#e8352a', modelos:['D195','A8 Pro','S920'] },
+    { id:'sicredi',   nome:'Sicredi',   logo:'assets/Logos/logo-sicredi.svg',   imagem:'assets/Maquininhas/Navi-POS-Sicredi.png',   cor:'#00843d', modelos:['Smart POS A8','Smart POS D195'] },
+    { id:'stone',     nome:'Stone',     logo:'assets/Logos/logo-stone.svg',     imagem:'assets/Maquininhas/Navi-POS-Stone.png',     cor:'#00a868', modelos:['S920','Gpos700','D195 (Ton)'] },
+    { id:'vero',      nome:'Vero',      logo:'assets/Logos/logo-vero.svg',      imagem:'assets/Maquininhas/Navi-POS-Vero.png',      cor:'#6d28d9', modelos:['D195','A8 Pro','Smart S920'] },
+  ];
+
+  let current = 0;
+
+  function buildLogos() {
+    const strip = document.getElementById('maqLogosStrip');
+    MAQUININHAS.forEach((m, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'maq-logo-btn' + (i === 0 ? ' maq-active' : '');
+      btn.setAttribute('aria-label', m.nome);
+      btn.dataset.idx = i;
+      btn.innerHTML = '<img src="' + m.logo + '" alt="' + m.nome + '" loading="lazy">';
+      btn.addEventListener('click', () => goTo(i));
+      strip.appendChild(btn);
+    });
+  }
+
+  function buildDots() {
+    const dotsEl = document.getElementById('maqDots');
+    MAQUININHAS.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.style.cssText = 'width:' + (i===0?'24px':'8px') + ';height:8px;border-radius:' + (i===0?'4px':'50%') + ';border:none;background:' + (i===0?'#1d4ed8':'#cbd5e1') + ';cursor:pointer;padding:0;transition:all 0.25s ease;';
+      d.setAttribute('aria-label', 'Slide ' + (i+1));
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    });
+  }
+
+  function updateDots() {
+    document.querySelectorAll('#maqDots button').forEach((d, i) => {
+      d.style.background    = i === current ? '#1d4ed8' : '#cbd5e1';
+      d.style.width         = i === current ? '24px'   : '8px';
+      d.style.borderRadius  = i === current ? '4px'    : '50%';
+    });
+  }
+
+  var _maqTimer = null;
+
+  function buildSlideHTML(m) {
+    return (
+      '<div class="maq-img-col" style="display:flex;align-items:center;justify-content:center;position:relative;">' +
+        '<div style="position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(ellipse,rgba(59,130,246,0.1) 0%,transparent 70%);pointer-events:none;"></div>' +
+        '<img class="maq-img-float" src="' + m.imagem + '" alt="Maquininha ' + m.nome + '" loading="lazy" style="width:100%;max-width:240px;filter:drop-shadow(0 28px 48px rgba(0,0,0,0.2));position:relative;z-index:1;">' +
+      '</div>' +
+      '<div>' +
+        '<img src="' + m.logo + '" alt="' + m.nome + '" style="height:38px;width:auto;max-width:140px;margin-bottom:24px;display:block;object-fit:contain;">' +
+        '<p style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Modelos compatíveis</p>' +
+        '<div style="display:flex;flex-direction:column;gap:14px;">' +
+          m.modelos.map(function(mod){ return '<div class="maq-modelo-item"><span class="maq-modelo-dot"></span>' + mod + '</div>'; }).join('') +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderSlide(m) {
+    var el = document.getElementById('maqSlideContent');
+    if (_maqTimer) clearTimeout(_maqTimer); // cancela transição anterior se clicou rápido
+
+    // 1. Fade out
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(10px)';
+
+    // 2. Depois de sair, troca conteúdo e entra
+    _maqTimer = setTimeout(function() {
+      el.innerHTML = buildSlideHTML(m);
+      // Força reflow para a transição CSS "ver" a mudança de opacity
+      void el.offsetWidth;
+      el.style.opacity = '1';
+      el.style.transform = 'translateX(0)';
+    }, 160);
+  }
+
+  function updateLogos() {
+    document.querySelectorAll('.maq-logo-btn').forEach((btn, i) => {
+      btn.classList.toggle('maq-active', i === current);
+    });
+  }
+
+  function goTo(i) {
+    current = ((i % MAQUININHAS.length) + MAQUININHAS.length) % MAQUININHAS.length;
+    renderSlide(MAQUININHAS[current]);
+    updateLogos();
+    updateDots();
+  }
+
+  window.maqGo = function(dir) { goTo(current + dir); };
+
+  buildLogos();
+  buildDots();
+  renderSlide(MAQUININHAS[0]);
+})();
+</script>
 
 <!-- ===== VÍDEOS ===== -->
 <section id="videos" style="padding:72px 24px; background:#f8fafc;">
@@ -809,8 +1530,10 @@
         <audio controls style="width:100%;margin-bottom:16px;">
           <source src="assets/feedback-mesa.opus" type="audio/ogg; codecs=opus">
         </audio>
-        <div class="depo-autor">
-          <div class="depo-avatar">👤</div>
+        <div class="depo-autor" style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; background:#eff6ff; color:#2563eb; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          </div>
           <div>
             <div class="depo-nome">Otavio Sanches</div>
             <div class="depo-cargo">Restaurante A Mesa · Belo Horizonte</div>
@@ -823,8 +1546,10 @@
         <audio controls style="width:100%;margin-bottom:16px;">
           <source src="assets/feedback-anaro.opus" type="audio/ogg; codecs=opus">
         </audio>
-        <div class="depo-autor">
-          <div class="depo-avatar">👤</div>
+        <div class="depo-autor" style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; background:#eff6ff; color:#2563eb; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          </div>
           <div>
             <div class="depo-nome">Anaro Pain Junior</div>
             <div class="depo-cargo">Clube do Garfo · Venâncio Aires</div>
@@ -836,8 +1561,10 @@
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Sistema tá impecável. Ponto de impressão resolveu um baita problema por aqui. Grato pelo atendimento."</p>
         <img src="assets/feedback-screenshot.png" alt="Depoimento de cliente via WhatsApp" style="width:100%;border-radius:10px;margin-bottom:16px;border:1px solid #e2e8f0;">
-        <div class="depo-autor">
-          <div class="depo-avatar">💬</div>
+        <div class="depo-autor" style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; background:#dcfce7; color:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"/></svg>
+          </div>
           <div>
             <div class="depo-nome">Cliente via WhatsApp</div>
             <div class="depo-cargo">Usuário Fantoni PDV</div>
@@ -873,9 +1600,9 @@
 
 <!-- ===== AUTORIDADE ===== -->
 <section style="padding:72px 24px; background:#fff;">
-  <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;gap:48px;flex-wrap:wrap;justify-content:center;" data-aos="fade-up">
+  <div id="autoridade-gap" style="max-width:900px;margin:0 auto;display:flex;align-items:center;gap:48px;flex-wrap:wrap;justify-content:center;" data-aos="fade-up">
     <div style="flex-shrink:0;text-align:center;">
-      <img src="assets/foto-douglas.png" alt="Douglas Fantoni — Consultor especialista em PDV" style="width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:top;box-shadow:0 8px 32px rgba(29,78,216,.18);border:4px solid #eff6ff;">
+      <img id="autoridade-img" src="assets/foto-douglas.png" alt="Douglas Fantoni — Consultor especialista em PDV" style="width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:top;box-shadow:0 8px 32px rgba(29,78,216,.18);border:4px solid #eff6ff;">
       <div style="margin-top:14px;">
         <div style="font-size:17px;font-weight:800;color:#0f172a;">Douglas Fantoni</div>
         <div style="font-size:13px;color:#1d4ed8;font-weight:600;margin-top:3px;">Fundador &amp; Consultor · Fantoni Software</div>
@@ -916,58 +1643,157 @@
   </div>
 </section>
 
-<!-- ===== PREÇO ===== -->
-<section id="preco" style="background:#f1f5f9; padding:100px 24px;">
-  <div class="section-inner">
-    <div style="text-align:center; margin-bottom:48px;" data-aos="fade-up">
-      <h2 class="section-title">Preço</h2>
-      <div class="pricing-toggle-wrap">
-        <span>mensal</span>
-        <label class="switch">
-          <input type="checkbox" id="pricing-switch">
-          <span class="slider"></span>
+<!-- ===== PREÇO (NOVO DESIGN DE CONVERSÃO) ===== -->
+<section id="preco" style="background:#f8fafc; padding:100px 24px;">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div style="text-align:center; margin-bottom:40px;" data-aos="fade-up">
+      <h2 style="font-size:clamp(32px,4vw,48px); font-weight:800; color:#0f172a; margin-bottom:16px; letter-spacing:-0.02em;">Preço Ideal para o seu Negócio</h2>
+      <p style="font-size:18px; color:#475569; line-height:1.6; max-width:600px; margin:0 auto;">Mais flexibilidade, mais controle. Escolha o plano perfeito para você e comece a testar hoje mesmo.</p>
+    </div>
+
+    <!-- Toggle Mensal / Semestral -->
+    <style>
+      .billing-toggle-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 64px;
+      }
+      .badge-semestral {
+        background: #dcfce7;
+        color: #16a34a;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 4px 8px;
+        border-radius: 100px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid rgba(22,163,74,0.2);
+        white-space: nowrap;
+      }
+      @media (max-width: 640px) {
+        .billing-toggle-wrapper {
+          flex-direction: column;
+          gap: 12px;
+          margin-bottom: 40px;
+          background: #fff;
+          padding: 16px;
+          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .billing-toggle-controls {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+        .badge-semestral {
+          margin-top: -4px;
+        }
+      }
+    </style>
+    <div class="billing-toggle-wrapper" data-aos="fade-up">
+      <div class="billing-toggle-controls">
+        <span style="font-size:16px; font-weight:800; color:#0f172a; transition:0.3s;" id="label-mensal">Mensal</span>
+        <label style="position:relative; display:inline-block; width:64px; height:32px;">
+          <input type="checkbox" id="billing-toggle" style="opacity:0; width:0; height:0;" onchange="toggleBilling()">
+          <span id="toggle-bg" style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#e2e8f0; transition:.4s; border-radius:34px;">
+            <span id="toggle-circle" style="position:absolute; height:24px; width:24px; left:4px; bottom:4px; background-color:white; transition:.4s; border-radius:50%; box-shadow:0 2px 4px rgba(0,0,0,0.2);"></span>
+          </span>
         </label>
-        <span>anual</span>
+        <span style="font-size:16px; font-weight:600; color:#64748b; transition:0.3s;" id="label-semestral">Semestral</span>
       </div>
+      <span class="badge-semestral">+ Certificado Grátis</span>
     </div>
 
-    <div class="pricing-grid">
-      <!-- Grátis -->
-      <div class="pricing-card" data-aos="fade-right">
-        <h3>Experimente!</h3>
-        <p>Teste o aplicativo com dados fictícios. Não precisa criar conta, nem inserir cartão.</p>
-        <div class="price-value">Grátis</div>
-        <a href="#" style="color:var(--laranja); text-decoration:none; font-weight:700; font-size:14px;">Testar com dados fictícios</a>
-      </div>
+    <style>
+      .pricing-grid-new { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:32px; align-items:center; }
+      @media(max-width:992px) { .pricing-grid-new { align-items:stretch; } }
+      .pricing-card-new { background:#fff; border:1px solid #e2e8f0; border-radius:32px; padding:48px 32px; box-shadow:0 10px 30px rgba(0,0,0,0.03); display:flex; flex-direction:column; justify-content:space-between; transition:all 0.3s ease; }
+      .pricing-card-new:hover { transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,0,0,0.08); }
+    </style>
 
-      <!-- Navi Vendas -->
-      <div class="pricing-card premium" data-aos="fade-left">
-        <h3>Navi Vendas</h3>
-        <p>Ative a sua conta e comece a usar para a sua empresa.</p>
-        <div class="price-value" id="price-paid">R$ 120,00<span id="price-period">/mês</span></div>
-        
-        <div style="text-align:left; margin-bottom:8px; font-size:13px; font-weight:600; color:var(--texto);">Cupom de desconto</div>
-        <div class="coupon-wrap">
-          <input type="text" placeholder="CUPOM" id="coupon-input">
-          <button type="button" onclick="applyCoupon()">aplicar</button>
+    <div class="pricing-grid-new">
+      <!-- Card 1: MEI -->
+      <div class="pricing-card-new" data-aos="fade-up" data-aos-delay="0">
+        <div>
+          <h3 style="font-size:26px; font-weight:800; color:#0f172a; margin-bottom:12px;">MEI</h3>
+          <p style="font-size:14px; font-weight:600; color:#1d4ed8; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px;">Para quem está começando</p>
+          <div style="font-size:48px; font-weight:800; color:#0f172a; margin-bottom:32px; line-height:1;" id="price-mei">R$ 99<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span></div>
+          
+          <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
+            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#16a34a; background:#dcfce7; padding:8px 12px; border-radius:8px; margin-bottom:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado A1 (e-CNPJ/CPF)</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Apenas 1 dispositivo</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Frente de Caixa (PDV) completo</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Controle de Estoque automático</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Relatórios de vendas e lucros</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#94a3b8; text-decoration:line-through;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg> Emissão de NF-e / NFC-e</li>
+          </ul>
         </div>
+        <button onclick="openCheckout('mei')" style="width:100%; background:#f1f5f9; color:#0f172a; padding:18px; border:none; border-radius:100px; font-size:16px; font-weight:700; cursor:pointer; transition:all 0.2s ease;">Assinar MEI</button>
+      </div>
 
-        <button class="btn-pricing" onclick="openCheckout()">assinar</button>
+      <!-- Card 2: Essencial -->
+      <div class="pricing-card-new pricing-card-featured" style="background:linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%); border:1px solid rgba(255,255,255,0.1); box-shadow:0 24px 60px rgba(29,78,216,0.3); position:relative; transform:scale(1.05); z-index:2; padding:56px 32px;" data-aos="fade-up" data-aos-delay="100">
+        <div style="position:absolute; top:-16px; left:50%; transform:translateX(-50%); background:#f59e0b; color:#fff; font-size:13px; font-weight:800; padding:8px 20px; border-radius:100px; text-transform:uppercase; letter-spacing:1px; white-space:nowrap; box-shadow:0 4px 16px rgba(245,158,11,0.4);">Mais Vendido</div>
+        <div>
+          <h3 style="font-size:26px; font-weight:800; color:#fff; margin-bottom:12px;">Essencial</h3>
+          <p style="font-size:14px; font-weight:600; color:#60a5fa; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px;">Varejo com emissão fiscal</p>
+          <div style="font-size:48px; font-weight:800; color:#fff; margin-bottom:32px; line-height:1;" id="price-essencial">R$ 119<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span></div>
+          
+          <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
+            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#22c55e; background:rgba(34,197,94,0.15); padding:8px 12px; border-radius:8px; margin-bottom:4px; border:1px solid rgba(34,197,94,0.3);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado A1 (e-CNPJ/CPF)</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#fff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Banco de dados local</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#e2e8f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Tudo do Plano MEI</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#e2e8f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Emissão de NF-e / NFC-e ilimitada</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#e2e8f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Gestão de Comandas (Bar e Rest.)</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#e2e8f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Integração com Maquininhas Card</li>
+          </ul>
+        </div>
+        <button onclick="openCheckout('essencial')" style="width:100%; background:#3b82f6; color:#fff; padding:18px; border:none; border-radius:100px; font-size:16px; font-weight:800; cursor:pointer; transition:all 0.2s ease; box-shadow:0 8px 16px rgba(59,130,246,0.3);">Assinar Essencial</button>
+      </div>
+
+      <!-- Card 3: Premium -->
+      <div class="pricing-card-new" data-aos="fade-up" data-aos-delay="200">
+        <div>
+          <h3 style="font-size:26px; font-weight:800; color:#0f172a; margin-bottom:12px;">Premium</h3>
+          <p style="font-size:14px; font-weight:600; color:#1d4ed8; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px;">Bares, Restaurantes e Delivery</p>
+          <div style="font-size:48px; font-weight:800; color:#0f172a; margin-bottom:32px; line-height:1;" id="price-premium">R$ 139<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span></div>
+          
+          <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
+            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#16a34a; background:#dcfce7; padding:8px 12px; border-radius:8px; margin-bottom:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado A1 (e-CNPJ/CPF)</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Banco de dados em nuvem</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Dispositivos Ilimitados</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Tudo do Plano Essencial</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Gestão de Mesas e Comandas</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Cardápio Digital QR Code</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Monitor de Cozinha (KDS)</li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Integração com iFood / Delivery</li>
+          </ul>
+        </div>
+        <button onclick="openCheckout('premium')" style="width:100%; background:#f1f5f9; color:#0f172a; padding:18px; border:none; border-radius:100px; font-size:16px; font-weight:700; cursor:pointer; transition:all 0.2s ease;">Assinar Premium</button>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ===== CTA FINAL ===== -->
-<section style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 100%);color:#fff;text-align:center;padding:80px 24px;">
-  <div style="max-width:700px;margin:0 auto;" data-aos="fade-up">
-    <h2 style="font-size:clamp(26px,3.5vw,40px);font-weight:800;margin-bottom:14px;">Pronto para modernizar seu negócio?</h2>
-    <p style="font-size:17px;color:#cbd5e1;margin-bottom:36px;">Teste 7 dias grátis, sem cartão. Comece em minutos e veja a diferença no controle das suas vendas.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;">
-      <a href="https://wa.me/5551996034862?text=Olá!+Quero+testar+o+Fantoni+PDV+grátis+por+7+dias" class="btn-primary" target="_blank">Testar 7 dias grátis</a>
-      <a href="https://wa.me/5551996034862?text=Olá!+Tenho+interesse+no+Fantoni+PDV" class="btn-outline" target="_blank">Falar com consultor</a>
     </div>
-    <p style="margin-top:20px;font-size:14px;color:#94a3b8;">Sem fidelidade · Cancele quando quiser</p>
+
+    <!-- CTA inline dentro da seção de preços -->
+    <div id="preco-cta" data-aos="fade-up" style="margin-top:64px;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 100%);border-radius:24px;padding:56px 40px;text-align:center;color:#fff;">
+      <h2 style="font-size:clamp(22px,3vw,36px);font-weight:800;margin-bottom:12px;">Ainda tem dúvidas?</h2>
+      <p style="font-size:16px;color:#cbd5e1;margin-bottom:32px;max-width:560px;margin-left:auto;margin-right:auto;">Inicie o teste grátis agora mesmo ou fale diretamente com um consultor no WhatsApp — sem compromisso.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;">
+        <a href="#" onclick="openLeadModal(); return false;" style="background:#2563eb;color:#fff;padding:16px 32px;border-radius:100px;font-size:16px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s ease;" onmouseover="this.style.background='#1d4ed8';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#2563eb';this.style.transform='translateY(0)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Testar 7 dias grátis
+        </a>
+        <a href="https://wa.me/5551996034862?text=Olá!+Tenho+interesse+no+Fantoni+PDV" target="_blank" style="background:rgba(255,255,255,0.1);color:#fff;border:1.5px solid rgba(255,255,255,0.3);padding:16px 32px;border-radius:100px;font-size:16px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s ease;backdrop-filter:blur(8px);" onmouseover="this.style.background='rgba(255,255,255,0.18)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255,255,255,0.1)';this.style.transform='translateY(0)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Falar com consultor
+        </a>
+      </div>
+      <p style="margin-top:20px;font-size:13px;color:#94a3b8;">Sem fidelidade · Cancele quando quiser</p>
+    </div>
+
   </div>
 </section>
 
@@ -1034,9 +1860,10 @@
   </div>
 </footer>
 
-<!-- ===== WHATSAPP FLUTUANTE ===== -->
-<a href="https://wa.me/5551996034862?text=Olá!+Quero+saber+mais+sobre+o+Fantoni+PDV" class="whatsapp-float" target="_blank" title="Falar no WhatsApp">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+<!-- ===== BOTÃO FLUTUANTE TESTAR ===== -->
+<a href="#preco" class="testar-float" title="Ver planos e testar grátis">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+  <span class="testar-float-label">Testar agora</span>
 </a>
 
 <!-- MODAL CHECKOUT -->
@@ -1044,7 +1871,8 @@
   <div class="checkout-modal">
     <div class="modal-close" onclick="closeCheckout()">✕</div>
     <h2 class="modal-title">Quase lá!</h2>
-    <form onsubmit="handleCheckout(event)">
+    <form id="checkout-form" onsubmit="handleCheckout(event)">
+      <input type="hidden" id="checkout-plan" value="">
       <div class="form-group">
         <label class="form-label">Nome Completo</label>
         <input type="text" id="client-name" class="form-input" required placeholder="Seu nome">
@@ -1053,13 +1881,64 @@
         <label class="form-label">E-mail</label>
         <input type="email" id="client-email" class="form-input" required placeholder="exemplo@email.com">
       </div>
-      <div class="form-group">
-        <label class="form-label">CPF ou CNPJ</label>
-        <input type="text" id="client-document" class="form-input" required placeholder="000.000.000-00">
+      <div class="form-group" style="display:flex; gap:12px;">
+        <div style="flex:1;">
+          <label class="form-label">WhatsApp</label>
+          <input type="text" id="client-whatsapp" class="form-input" required placeholder="(00) 00000-0000">
+        </div>
+        <div style="flex:1;">
+          <label class="form-label">CPF ou CNPJ</label>
+          <input type="text" id="client-document" class="form-input" required placeholder="000.000.000-00">
+        </div>
       </div>
-      <button type="submit" class="btn-pricing" style="margin-top:10px;">Continuar para Pagamento</button>
+
+      <label class="order-bump" style="border: 2px dashed #fbbf24; background: rgba(251,191,36,0.05); padding: 16px; border-radius: 12px; display: flex; gap: 12px; cursor: pointer; margin-bottom: 20px; transition: all 0.2s ease;">
+        <input type="checkbox" id="order-bump-checkbox" value="199" style="width:20px; height:20px; margin-top:4px;">
+        <div class="order-bump-content">
+          <h4 style="font-size:15px; font-weight:800; color:#d97706; margin-bottom:4px;">SIM! Quero Implantação Guiada (+ R$ 199 taxa única)</h4>
+          <p style="font-size:13px; color:#92400e; line-height:1.4;">Treinamento de 2h, apresentação e configuração completa do sistema por especialistas Fantoni PDV.</p>
+        </div>
+      </label>
+
+      <button type="submit" class="btn-pricing" id="btn-checkout-submit" style="margin-top:10px;">Continuar para Pagamento</button>
     </form>
     <p style="font-size:12px; color:var(--cinza); margin-top:20px; text-align:center;">Pagamento seguro via Asaas.</p>
+  </div>
+</div>
+
+<!-- LEADS MODAL (Teste Grátis) -->
+<div id="lead-modal" class="modal-overlay">
+  <div class="checkout-modal">
+    <div class="modal-close" onclick="closeLeadModal()">✕</div>
+    <h2 class="modal-title" style="margin-bottom:12px;">Teste Grátis!</h2>
+    <p style="text-align:center; font-size:14px; color:var(--cinza); margin-bottom:24px;">Preencha para receber os links de teste imediatamente.</p>
+    <form id="lead-form" onsubmit="handleLeadSubmit(event)">
+      <div class="form-group">
+        <input type="text" id="lead-name" class="form-input" required placeholder="Como podemos te chamar?">
+      </div>
+      <div class="form-group">
+        <input type="email" id="lead-email" class="form-input" required placeholder="Seu melhor e-mail">
+      </div>
+      <div class="form-group">
+        <input type="text" id="lead-whatsapp" class="form-input" required placeholder="Seu WhatsApp (com DDD)">
+      </div>
+      <div class="form-group">
+        <input type="text" id="lead-document" class="form-input" placeholder="CPF ou CNPJ (Opcional)">
+      </div>
+      <button type="submit" class="btn-pricing" id="btn-lead-submit" style="margin-top:10px;">Receber links de Teste</button>
+    </form>
+
+    <!-- Tela de sucesso (exibida após envio) -->
+    <div id="lead-success" style="display:none; text-align:center; padding:8px 0;">
+      <div style="width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+      </div>
+      <h3 style="font-size:20px;font-weight:800;color:#0f172a;margin-bottom:8px;">Acesso liberado!</h3>
+      <p style="font-size:14px;color:#64748b;margin-bottom:24px;">Escolha a plataforma para baixar o Fantoni PDV:</p>
+      <div id="download-links" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+
+    <p id="lead-footer-text" style="font-size:12px; color:var(--cinza); margin-top:16px; text-align:center;">Acesso imediato e sem cartão de crédito.</p>
   </div>
 </div>
 
@@ -1146,59 +2025,84 @@
   const graficoSection = document.querySelector('.grid-chart');
   if (graficoSection) barraObs.observe(graficoSection.closest('section') || graficoSection);
 
-  // ---- Pricing Toggle ----
-  const pSwitch = document.getElementById('pricing-switch');
-  const pValue = document.getElementById('price-paid');
-  
-  const PRICES = {
-    monthly: { value: 120, period: '/mês', label: 'Mensal' },
-    yearly: { value: 999, period: '/ano', label: 'Anual' }
-  };
+  // ---- Modais Logic ----
+  const modalCheckout = document.getElementById('checkout-modal');
+  const modalLead = document.getElementById('lead-modal');
 
-  function updatePriceDisplay() {
-    const plan = pSwitch && pSwitch.checked ? 'yearly' : 'monthly';
-    pValue.innerHTML = `R$ ${PRICES[plan].value.toString()},00<span id="price-period">${PRICES[plan].period}</span>`;
+  function openCheckout(planName) {
+    const isSemestral = document.getElementById('billing-toggle') && document.getElementById('billing-toggle').checked;
+    if (isSemestral && planName) {
+      planName += '-semestral';
+    }
+    document.getElementById('checkout-plan').value = planName || '';
+    modalCheckout.style.display = 'flex';
   }
 
-  if (pSwitch) {
-    pSwitch.addEventListener('change', updatePriceDisplay);
-  }
-
-  function applyCoupon() {
-    const input = document.getElementById('coupon-input');
-    if (input.value.toUpperCase() === 'FANTONI10') {
-      alert('Cupom aplicado! 10% de desconto adicional.');
+  function toggleBilling() {
+    const isSemestral = document.getElementById('billing-toggle').checked;
+    const circle = document.getElementById('toggle-circle');
+    const bg = document.getElementById('toggle-bg');
+    
+    if(isSemestral) {
+      bg.style.backgroundColor = '#2563eb';
+      circle.style.transform = 'translateX(32px)';
+      document.getElementById('label-mensal').style.fontWeight = '600';
+      document.getElementById('label-mensal').style.color = '#64748b';
+      document.getElementById('label-semestral').style.fontWeight = '800';
+      document.getElementById('label-semestral').style.color = '#0f172a';
+      
+      document.getElementById('price-mei').innerHTML = 'R$ 495<span style="font-size:18px; font-weight:600; color:#94a3b8;">/semestre</span>';
+      document.getElementById('price-essencial').innerHTML = 'R$ 595<span style="font-size:18px; font-weight:600; color:#94a3b8;">/semestre</span>';
+      document.getElementById('price-premium').innerHTML = 'R$ 695<span style="font-size:18px; font-weight:600; color:#94a3b8;">/semestre</span>';
+      
+      document.querySelectorAll('.benefit-semestral').forEach(el => el.style.display = 'flex');
     } else {
-      alert('Cupom inválido.');
+      bg.style.backgroundColor = '#e2e8f0';
+      circle.style.transform = 'translateX(0)';
+      document.getElementById('label-mensal').style.fontWeight = '800';
+      document.getElementById('label-mensal').style.color = '#0f172a';
+      document.getElementById('label-semestral').style.fontWeight = '600';
+      document.getElementById('label-semestral').style.color = '#64748b';
+      
+      document.getElementById('price-mei').innerHTML = 'R$ 99<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span>';
+      document.getElementById('price-essencial').innerHTML = 'R$ 119<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span>';
+      document.getElementById('price-premium').innerHTML = 'R$ 139<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span>';
+      
+      document.querySelectorAll('.benefit-semestral').forEach(el => el.style.display = 'none');
     }
   }
-
-  // Modal logic
-  const modal = document.getElementById('checkout-modal');
-  function openCheckout() {
-    modal.style.display = 'flex';
-  }
   function closeCheckout() {
-    modal.style.display = 'none';
+    modalCheckout.style.display = 'none';
   }
 
+  function openLeadModal() {
+    modalLead.style.display = 'flex';
+  }
+  function closeLeadModal() {
+    modalLead.style.display = 'none';
+  }
+
+  // ---- Formulário de Checkout ----
   async function handleCheckout(event) {
     event.preventDefault();
-    const btn = event.target.querySelector('button');
+    const btn = document.getElementById('btn-checkout-submit');
     const originalText = btn.innerText;
     btn.innerText = 'Processando...';
     btn.disabled = true;
 
+    const useOrderBump = document.getElementById('order-bump-checkbox').checked;
+
     const formData = {
       name: document.getElementById('client-name').value,
       email: document.getElementById('client-email').value,
+      whatsapp: document.getElementById('client-whatsapp').value,
       cpfCnpj: document.getElementById('client-document').value,
-      plan: pSwitch && pSwitch.checked ? 'yearly' : 'monthly',
-      coupon: document.getElementById('coupon-input').value
+      plan: document.getElementById('checkout-plan').value,
+      orderBump: useOrderBump
     };
 
     try {
-      const resp = await fetch('/api/subscribe', {
+      const resp = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -1212,8 +2116,58 @@
       }
     } catch (e) {
       console.error(e);
-      alert('Erro de conexão. Verifique se o backend está configurado.');
+      alert('Erro de conexão com a API de pagamento.');
     } finally {
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }
+  }
+
+  // ---- Formulário de Leads (Teste) ----
+  async function handleLeadSubmit(event) {
+    event.preventDefault();
+    const btn = document.getElementById('btn-lead-submit');
+    const originalText = btn.innerText;
+    btn.innerText = 'Enviando...';
+    btn.disabled = true;
+
+    const formData = {
+      name: document.getElementById('lead-name').value,
+      email: document.getElementById('lead-email').value,
+      whatsapp: document.getElementById('lead-whatsapp').value,
+      cpfCnpj: document.getElementById('lead-document').value || null
+    };
+
+    try {
+      const resp = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await resp.json();
+
+      // Exibe a tela de sucesso com os links de download
+      document.getElementById('lead-form').style.display = 'none';
+      document.getElementById('lead-footer-text').style.display = 'none';
+      const successEl = document.getElementById('lead-success');
+      successEl.style.display = 'block';
+
+      const downloads = data.downloads || {};
+      const linkItems = [
+        { key: 'windows', label: '💻 Baixar para Windows' },
+        { key: 'android', label: '📱 Baixar para Android' },
+        { key: 'ios',     label: '🍎 Baixar para iOS' },
+      ];
+      const linksHtml = linkItems
+        .filter(l => downloads[l.key])
+        .map(l => `<a href="${downloads[l.key]}" target="_blank" rel="noopener" style="display:block;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;">${l.label}</a>`)
+        .join('');
+      document.getElementById('download-links').innerHTML = linksHtml ||
+        '<p style="color:var(--cinza);font-size:14px;">Links enviados para o seu e-mail!</p>';
+
+    } catch (e) {
+      console.error(e);
+      alert('Erro ao enviar. Tente novamente em instantes.');
       btn.innerText = originalText;
       btn.disabled = false;
     }
@@ -1243,87 +2197,29 @@
   window.addEventListener('resize', update);
   update();
 })();
-
-// ---- WebGL Hero ----
+</script>
+<script>
+// ---- Header Scroll ----
 (function(){
-  const canvas = document.getElementById('hero-canvas');
-  if (!canvas) return;
-  const gl = canvas.getContext('webgl2');
-  if (!gl) return;
-
-  const vs = `#version 300 es
-precision highp float;
-in vec4 position;
-void main(){gl_Position=position;}`;
-
-  const fs = `#version 300 es
-precision highp float;
-out vec4 O;
-uniform vec2 resolution;
-uniform float time;
-#define FC gl_FragCoord.xy
-#define T time
-#define R resolution
-#define MN min(R.x,R.y)
-float rnd(vec2 p){p=fract(p*vec2(12.9898,78.233));p+=dot(p,p+34.56);return fract(p.x*p.y);}
-float noise(in vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f);float a=rnd(i),b=rnd(i+vec2(1,0)),c=rnd(i+vec2(0,1)),d=rnd(i+1.);return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);}
-float fbm(vec2 p){float t=.0,a=1.;mat2 m=mat2(1.,-.5,.2,1.2);for(int i=0;i<5;i++){t+=a*noise(p);p*=2.*m;a*=.5;}return t;}
-float clouds(vec2 p){float d=1.,t=.0;for(float i=.0;i<3.;i++){float a=d*fbm(i*10.+p.x*.2+.2*(1.+i)*p.y+d+i*i+p);t=mix(t,d,a);d=a;p*=2./(i+1.);}return t;}
-void main(void){
-  vec2 uv=(FC-.5*R)/MN,st=uv*vec2(2,1);
-  vec3 col=vec3(0);
-  float bg=clouds(vec2(st.x+T*.3,-st.y));
-  uv*=1.-.3*(sin(T*.15)*.5+.5);
-  for(float i=1.;i<12.;i++){
-    uv+=.1*cos(i*vec2(.1+.01*i,.8)+i*i+T*.4+.1*uv.x);
-    vec2 p=uv;
-    float d=length(p);
-    col+=.00125/d*(cos(sin(i)*vec3(0.2,0.8,2.5))+1.);
-    float b=noise(i+p+bg*1.731);
-    col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));
-    col=mix(col,vec3(bg*.02,bg*.07,bg*.45),d);
+  const nav = document.querySelector('nav');
+  function handleScroll() {
+    if (window.scrollY > 50) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
   }
-  col=mix(vec3(0.04,0.07,0.22),col,0.9);
-  O=vec4(col,1);
-}`;
-
-  function compileShader(type, src){
-    const s=gl.createShader(type);
-    gl.shaderSource(s,src); gl.compileShader(s);
-    return s;
+  window.addEventListener('scroll', handleScroll, {passive: true});
+  handleScroll();
+})();
+</script>
+<script>
+// ---- Hero B-Roll Speed ----
+(function(){
+  const heroVideo = document.getElementById('hero-broll');
+  if (heroVideo) {
+    heroVideo.playbackRate = 0.5; // Faz o vídeo rodar 2x mais lento
   }
-  const prog=gl.createProgram();
-  gl.attachShader(prog,compileShader(gl.VERTEX_SHADER,vs));
-  gl.attachShader(prog,compileShader(gl.FRAGMENT_SHADER,fs));
-  gl.linkProgram(prog);
-
-  const buf=gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
-  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,1,-1,-1,1,1,1,-1]),gl.STATIC_DRAW);
-  const pos=gl.getAttribLocation(prog,'position');
-  gl.enableVertexAttribArray(pos);
-  gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
-
-  const uRes=gl.getUniformLocation(prog,'resolution');
-  const uTime=gl.getUniformLocation(prog,'time');
-
-  function resize(){
-    const dpr=Math.min(window.devicePixelRatio||1,2);
-    canvas.width=canvas.offsetWidth*dpr;
-    canvas.height=canvas.offsetHeight*dpr;
-    gl.viewport(0,0,canvas.width,canvas.height);
-  }
-  resize();
-  window.addEventListener('resize',resize);
-
-  function loop(now){
-    gl.useProgram(prog);
-    gl.uniform2f(uRes,canvas.width,canvas.height);
-    gl.uniform1f(uTime,now*0.001);
-    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
 })();
 </script>
 </body>
