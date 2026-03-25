@@ -2161,16 +2161,14 @@
 
       const downloads = data.downloads || {};
       const linkItems = [
-        { key: 'windows', label: '💻 Baixar para Windows' },
-        { key: 'android', label: '📱 Baixar para Android' },
-        { key: 'ios',     label: '🍎 Baixar para iOS' },
+        { key: 'windows', url: downloads.windows || 'https://navivendas.com.br/download/windows/pdvmais',                    label: '💻 Baixar para Windows' },
+        { key: 'android', url: downloads.android || 'https://play.google.com/store/apps/details?id=br.com.desenvolvedorpdv.pdvmais', label: '📱 Baixar para Android' },
+        { key: 'ios',     url: downloads.ios     || 'https://apps.apple.com/br/app/pdv/id6443721199',                        label: '🍎 Baixar para iOS' },
       ];
       const linksHtml = linkItems
-        .filter(l => downloads[l.key])
-        .map(l => `<a href="${downloads[l.key]}" target="_blank" rel="noopener" style="display:block;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;">${l.label}</a>`)
+        .map(l => `<a href="${l.url}" target="_blank" rel="noopener" style="display:block;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;">${l.label}</a>`)
         .join('');
-      document.getElementById('download-links').innerHTML = linksHtml ||
-        '<p style="color:var(--cinza);font-size:14px;">Links enviados para o seu e-mail!</p>';
+      document.getElementById('download-links').innerHTML = linksHtml;
 
     } catch (e) {
       console.error(e);
