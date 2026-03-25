@@ -1,0 +1,107 @@
+(async () => {
+    let capturlyEvents = [];
+    const CONST_GA_DATA_LAYER = 'Capturly_GA4_data_layer';
+    const CONST_CAPTURLY_GA4_EVENTS = 'Capturly_GA4_Events';
+
+    function checkCapturlyGA4InStorage() {
+        let ga4items = window.localStorage.getItem(CONST_GA_DATA_LAYER);
+        let capturlyItems = window.localStorage.getItem(CONST_CAPTURLY_GA4_EVENTS);
+        if (ga4items && capturlyItems) {
+            ga4items = JSON.parse(ga4items);
+            capturlyItems = JSON.parse(capturlyItems);
+            ga4items.forEach(function (data) {
+                collectNewPurchaseEvents(data, capturlyItems);
+            })
+            window.localStorage.removeItem(CONST_CAPTURLY_GA4_EVENTS);
+            window.localStorage.removeItem(CONST_GA_DATA_LAYER);
+        }
+    }
+    checkCapturlyGA4InStorage();
+
+    function checkDataLayerChanges() {
+        window.dataLayer.forEach(function (data) {
+            collectNewPurchaseEvents(data, capturlyEvents);
+        });
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            return parts.pop().split(';').shift();
+        }
+    }
+
+    function collectNewPurchaseEvents(data, capturlyData) {
+        if (!_capturly_id) {
+            setTimeout(function () {
+                collectNewPurchaseEvents(data, capturlyData);
+            }, 500);
+            return;
+        }
+        const sessionId = getCookie('_tr_sess');
+        if (sessionId) {
+            let id = '';
+            const chars = [...sessionId];
+            for (let i = 0; i < chars.length; i++) {
+                if (isCharDigit(chars[i])) {
+                    id += chars[i];
+                } else {
+                    break;
+                }
+            }
+
+            function isCharDigit(n) {
+                return !!n.trim() && n > -1;
+            }
+            data.sessionId = id;
+        }
+        data.websiteId = _capturly_id;
+
+        const stringified = JSON.stringify(data);
+        if (
+            data[0] &&
+            data[0] === 'event' &&
+            data[1] &&
+            data[1] === 'purchase' &&
+            !capturlyData.includes(stringified) &&
+            getCookie('_tr_stop_collecting') === undefined
+        ) {
+            capturlyData.push(stringified);
+            const params = new Blob(
+                [stringified],
+                {type : 'text/plain'}
+            );
+            navigator.sendBeacon('//' + capturlyBaseUrl + '/ecommerce-analytics/collect', params);
+        }
+    }
+
+    const requestObserver = new PerformanceObserver( onRequestsObserved );
+    requestObserver.observe( { type: 'resource' , buffered: true  } );
+
+    function onRequestsObserved(batch) {
+        batch.getEntries().forEach(function(entry) {
+            if (entry.name.includes('.google-analytics.com/g/collect')) {
+                checkDataLayerChanges();
+            }
+        });
+    }
+
+    window.addEventListener("beforeunload", function () {
+        if (window.dataLayer) {
+            try {
+                window.localStorage.setItem(CONST_GA_DATA_LAYER, JSON.stringify(window.dataLayer));
+                window.localStorage.setItem(CONST_CAPTURLY_GA4_EVENTS, JSON.stringify(capturlyEvents));
+            } catch (e) {
+                console.log('Failed to save data to localStorage.');
+            }
+        }
+    });
+
+    window.addEventListener('load', function () {
+        // GA4 exists
+        if (window.dataLayer) {
+            checkDataLayerChanges();
+        }
+    }, false);
+}).call(this);

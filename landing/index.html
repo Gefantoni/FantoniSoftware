@@ -2146,6 +2146,13 @@
       });
       const data = await resp.json();
 
+      if (data.success === false) {
+        alert('Não foi possível enviar:\n\n' + (data.errors ? data.errors.join('\n') : data.error));
+        btn.innerText = originalText;
+        btn.disabled = false;
+        return;
+      }
+
       // Exibe a tela de sucesso com os links de download
       document.getElementById('lead-form').style.display = 'none';
       document.getElementById('lead-footer-text').style.display = 'none';
@@ -2167,7 +2174,7 @@
 
     } catch (e) {
       console.error(e);
-      alert('Erro ao enviar. Tente novamente em instantes.');
+      alert('Erro ao enviar. Verifique se o servidor da API (Vercel) está rodando localmente, pois o endpoint /api/lead falhou.');
       btn.innerText = originalText;
       btn.disabled = false;
     }
