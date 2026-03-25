@@ -106,28 +106,99 @@
   <link rel="canonical" href="https://fantonisoftware.com.br/" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --azul: #1d4ed8;
-      --azul-hover: #1e40af;
-      --azul-claro: #eff6ff;
-      --azul-medio: #3b82f6;
-      --escuro: #0f172a;
-      --texto: #1e293b;
-      --cinza: #64748b;
-      --borda: #e2e8f0;
-      --bg: #f8fafc;
+      /* Palette Blue (Brand) */
+      --blue-50:  #eff6ff;
+      --blue-100: #dbeafe;
+      --blue-400: #60a5fa;
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --blue-700: #1d4ed8;
+      --blue-800: #1e40af;
+      --blue-900: #1e3a8a;
+      
+      /* Palette Slate (Dark/Text) */
+      --slate-50:  #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      
+      /* Palette Accents */
+      --emerald-500: #10b981;
+      --emerald-600: #059669;
+      --amber-400:   #fbbf24;
+      --amber-500:   #f59e0b;
+
+      /* Legacy compatibility mappings (to be replaced eventually, but keeping them temporarily to not break everything at once) */
+      --azul: var(--blue-700);
+      --azul-hover: var(--blue-800);
+      --azul-claro: var(--blue-50);
+      --azul-medio: var(--blue-500);
+      --escuro: var(--slate-900);
+      --texto: var(--slate-800);
+      --cinza: var(--slate-500);
+      --borda: var(--slate-200);
+      --bg: var(--slate-50);
       --branco: #ffffff;
-      --verde: #16a34a;
-      --laranja: #f59e0b;
+      --verde: var(--emerald-600);
+      --laranja: var(--amber-500);
+
+      /* Typography */
+      --font-body: 'Inter', sans-serif;
+      --font-heading: 'Outfit', sans-serif;
     }
 
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; color: var(--texto); background: var(--branco); line-height: 1.6; }
+    body { font-family: var(--font-body); color: var(--texto); background: var(--branco); line-height: 1.6; }
+
+    /* Global Headings Reset */
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
+
+    /* =========================================
+       GLOBAL UTILITIES & COMPONENTS
+       ========================================= */
+    .bg-glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .bg-glass-dark {
+      background: rgba(10, 18, 36, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .badge {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+      border-radius: 100px; padding: 6px 16px;
+    }
+    .badge-primary { background: var(--blue-50); color: var(--blue-700); }
+    .badge-outline { background: transparent; border: 1px solid currentColor; color: inherit; }
+    .badge-glass { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+    .badge-warning { background: rgba(251, 191, 36, 0.12); border: 1.5px solid rgba(251, 191, 36, 0.5); color: var(--amber-400); }
+    .badge-success { background: #dcfce7; color: var(--emerald-600); border: 1px solid rgba(22, 163, 74, 0.2); }
+
+    .text-gradient-primary {
+      background: linear-gradient(90deg, var(--blue-400), var(--blue-500));
+      background-clip: text; -webkit-background-clip: text;
+      color: transparent; -webkit-text-fill-color: transparent;
+    }
+
+    .shadow-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .shadow-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(29, 78, 216, 0.1); }
+    /* ========================================= */
 
     /* ---- NAVBAR ---- */
     nav {
@@ -1723,7 +1794,8 @@
           <div style="font-size:48px; font-weight:800; color:#0f172a; margin-bottom:32px; line-height:1;" id="price-mei">R$ 99<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span></div>
           
           <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
-            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#16a34a; background:#dcfce7; padding:8px 12px; border-radius:8px; margin-bottom:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado A1 (e-CNPJ/CPF)</li>
+            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#16a34a; background:#dcfce7; padding:8px 12px; border-radius:8px; margin-bottom:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado Digital Incluído</li>
+            <li class="hint-cert" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#16a34a; background:#f0fdf4; padding:7px 10px; border-radius:8px; margin-bottom:4px; border:1px solid #bbf7d0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Assine semestral e ganhe o Certificado Digital</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Apenas 1 dispositivo</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Frente de Caixa (PDV) completo</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Controle de Estoque automático</li>
@@ -1743,7 +1815,8 @@
           <div style="font-size:48px; font-weight:800; color:#fff; margin-bottom:32px; line-height:1;" id="price-essencial">R$ 119<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span></div>
           
           <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
-            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#22c55e; background:rgba(34,197,94,0.15); padding:8px 12px; border-radius:8px; margin-bottom:4px; border:1px solid rgba(34,197,94,0.3);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado A1 (e-CNPJ/CPF)</li>
+            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#22c55e; background:rgba(34,197,94,0.15); padding:8px 12px; border-radius:8px; margin-bottom:4px; border:1px solid rgba(34,197,94,0.3);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado Digital Incluído</li>
+            <li class="hint-cert" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#4ade80; background:rgba(34,197,94,0.1); padding:7px 10px; border-radius:8px; margin-bottom:4px; border:1px solid rgba(74,222,128,0.3);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Assine semestral e ganhe o Certificado Digital</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#fff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Banco de dados local</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#e2e8f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Tudo do Plano MEI</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#e2e8f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Emissão de NF-e / NFC-e ilimitada</li>
@@ -1762,7 +1835,8 @@
           <div style="font-size:48px; font-weight:800; color:#0f172a; margin-bottom:32px; line-height:1;" id="price-premium">R$ 139<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span></div>
           
           <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
-            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#16a34a; background:#dcfce7; padding:8px 12px; border-radius:8px; margin-bottom:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado A1 (e-CNPJ/CPF)</li>
+            <li class="benefit-semestral" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#16a34a; background:#dcfce7; padding:8px 12px; border-radius:8px; margin-bottom:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado Digital Incluído</li>
+            <li class="hint-cert" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#16a34a; background:#f0fdf4; padding:7px 10px; border-radius:8px; margin-bottom:4px; border:1px solid #bbf7d0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Assine semestral e ganhe o Certificado Digital</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Banco de dados em nuvem</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Dispositivos Ilimitados</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Tudo do Plano Essencial</li>
@@ -2056,6 +2130,7 @@
       document.getElementById('price-premium').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">6x de </span>R$ 115<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>';
       
       document.querySelectorAll('.benefit-semestral').forEach(el => el.style.display = 'flex');
+      document.querySelectorAll('.hint-cert').forEach(el => el.style.display = 'none');
     } else {
       bg.style.backgroundColor = '#e2e8f0';
       circle.style.transform = 'translateX(0)';
@@ -2069,6 +2144,7 @@
       document.getElementById('price-premium').innerHTML = 'R$ 139<span style="font-size:18px; font-weight:600; color:#94a3b8;">/mês</span>';
       
       document.querySelectorAll('.benefit-semestral').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.hint-cert').forEach(el => el.style.display = 'flex');
     }
   }
   function closeCheckout() {
