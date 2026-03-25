@@ -2,9 +2,9 @@
 // Jornada de Teste Grátis — captura de lead, salva no Supabase e retorna links de download
 
 const DOWNLOAD_LINKS = {
-  windows: process.env.DOWNLOAD_WINDOWS || 'https://fantoni.app/download/windows',
-  android: process.env.DOWNLOAD_ANDROID || 'https://fantoni.app/download/android',
-  ios:     process.env.DOWNLOAD_IOS     || 'https://fantoni.app/download/ios',
+  windows: process.env.DOWNLOAD_WINDOWS || 'https://navivendas.com.br/download/windows/pdvmais',
+  android: process.env.DOWNLOAD_ANDROID || 'https://play.google.com/store/apps/details?id=br.com.desenvolvedorpdv.pdvmais',
+  ios:     process.env.DOWNLOAD_IOS     || 'https://apps.apple.com/br/app/pdv/id6443721199',
 };
 
 // Validações
