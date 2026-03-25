@@ -19,7 +19,37 @@ function isValidPhone(phone) {
 
 function isValidCpfCnpj(value) {
   const digits = value.replace(/\D/g, '');
-  return digits.length === 11 || digits.length === 14;
+  if (digits.length === 11) return isValidCpf(digits);
+  if (digits.length === 14) return isValidCnpj(digits);
+  return false;
+}
+
+function isValidCpf(d) {
+  if (/^(\d)\1{10}$/.test(d)) return false;
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(d[i]) * (10 - i);
+  let r = (sum * 10) % 11;
+  if (r >= 10) r = 0;
+  if (r !== parseInt(d[9])) return false;
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(d[i]) * (11 - i);
+  r = (sum * 10) % 11;
+  if (r >= 10) r = 0;
+  return r === parseInt(d[10]);
+}
+
+function isValidCnpj(d) {
+  if (/^(\d)\1{13}$/.test(d)) return false;
+  const w1 = [5,4,3,2,9,8,7,6,5,4,3,2];
+  const w2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
+  let sum = 0;
+  for (let i = 0; i < 12; i++) sum += parseInt(d[i]) * w1[i];
+  let r = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+  if (r !== parseInt(d[12])) return false;
+  sum = 0;
+  for (let i = 0; i < 13; i++) sum += parseInt(d[i]) * w2[i];
+  r = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+  return r === parseInt(d[13]);
 }
 
 // Salva lead no Supabase via REST API
@@ -111,11 +141,5 @@ export default async function handler(req, res) {
     success: true,
     message: 'Acesso liberado! Baixe o app para começar.',
     downloads: DOWNLOAD_LINKS,
-    _debug: {
-      supabase_url_set: !!process.env.SUPABASE_URL,
-      supabase_key_set: !!process.env.SUPABASE_SERVICE_KEY,
-      supabase_status: supabaseResult?.status,
-      supabase_reason: supabaseResult?.reason?.message ?? null,
-    },
   });
 }
