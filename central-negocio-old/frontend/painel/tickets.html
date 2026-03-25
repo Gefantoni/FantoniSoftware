@@ -1,441 +1,691 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chamados — Central do Negócio</title>
+  <title>Atendimento — Central do Negócio</title>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
-</head>
+  <style>
+    /* ===== LAYOUT ===== */
+    .at-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      height: calc(100vh - 180px);
+    }
 
+    /* ===== PAINEL ESQUERDO ===== */
+    .at-list-panel {
+      background: var(--fundo-card);
+      border: 1px solid var(--borda);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .at-list-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--borda);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .at-list-header h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--texto);
+      margin: 0;
+    }
+    .at-list-scroll { flex: 1; overflow-y: auto; }
+
+    .at-item {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--borda);
+      cursor: pointer;
+      transition: background 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .at-item:last-child { border-bottom: none; }
+    .at-item:hover { background: rgba(255,255,255,0.03); }
+    .at-item.ativo {
+      background: rgba(59,130,246,0.08);
+      border-left-color: var(--primaria);
+    }
+    .at-item-titulo {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--texto);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .at-item-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .at-item-cat {
+      font-size: 11px;
+      color: var(--texto-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== PAINEL DIREITO ===== */
+    .at-chat-panel {
+      background: var(--fundo-card);
+      border: 1px solid var(--borda);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .at-chat-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.3;
+      text-align: center;
+      padding: 40px;
+      gap: 12px;
+    }
+    .at-chat-empty i { font-size: 64px; }
+    .at-chat-empty h3 { font-size: 16px; color: var(--texto); }
+    .at-chat-empty p { font-size: 13px; color: var(--texto-suave); }
+
+    /* chat ativo */
+    .at-chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--borda);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .at-chat-header h3 { font-size: 15px; color: var(--texto); margin: 0 0 4px; }
+    .at-chat-header-meta { display: flex; align-items: center; gap: 10px; }
+
+    .at-msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg-linha {
+      display: flex;
+      flex-direction: column;
+    }
+    .msg-linha.minha { align-items: flex-end; }
+    .msg-linha.deles  { align-items: flex-start; }
+
+    .msg-balao {
+      max-width: 72%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .msg-linha.minha .msg-balao {
+      background: var(--primaria);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .msg-linha.deles .msg-balao {
+      background: rgba(255,255,255,0.06);
+      color: var(--texto);
+      border-bottom-left-radius: 4px;
+    }
+    .msg-hora {
+      font-size: 10px;
+      color: var(--texto-muted);
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+    .msg-aguardando {
+      text-align: center;
+      padding: 32px;
+      font-size: 13px;
+      color: var(--texto-muted);
+    }
+
+    /* input */
+    .at-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid var(--borda);
+      flex-shrink: 0;
+    }
+    .at-input-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--borda);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      transition: border-color 0.2s;
+    }
+    .at-input-box:focus-within { border-color: rgba(59,130,246,0.4); }
+    .at-textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--texto);
+      outline: none;
+      resize: none;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 4px 0;
+      max-height: 120px;
+    }
+    .at-textarea::placeholder { color: var(--texto-muted); }
+    .at-btn-icon {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid var(--borda);
+      color: var(--texto-muted);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      font-size: 17px;
+    }
+    .at-btn-icon:hover { background: rgba(255,255,255,0.06); color: var(--texto); }
+    .at-btn-send {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--primaria);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .at-btn-send:hover { background: #2563eb; transform: scale(1.05); }
+    .at-btn-send:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+    /* preview de imagem antes de enviar */
+    .img-preview-wrap {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .img-preview-wrap.visivel { display: flex; }
+    .img-preview-wrap img { height: 48px; width: 48px; object-fit: cover; border-radius: 6px; }
+    .img-preview-nome { font-size: 12px; color: var(--texto-suave); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .img-preview-remove { background: none; border: none; color: var(--texto-muted); cursor: pointer; font-size: 18px; }
+
+    /* mensagem enviando (otimista) */
+    .msg-linha.enviando { opacity: 0.5; }
+
+    /* badge status */
+    .badge-status {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+    .st-aberto     { background: rgba(59,130,246,0.1); color: #93c5fd; }
+    .st-aceito     { background: rgba(245,158,11,0.1); color: #fcd34d; }
+    .st-andamento  { background: rgba(245,158,11,0.12); color: #fcd34d; }
+    .st-resolvido  { background: rgba(16,185,129,0.1); color: #6ee7b7; }
+
+    /* tela vazia */
+    .at-empty-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      gap: 10px;
+      opacity: 0.5;
+    }
+
+    /* visibilidade */
+    .oculto { display: none !important; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .at-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .at-list-panel { height: 320px; }
+      .at-chat-panel { height: calc(100vh - 400px); min-height: 360px; }
+    }
+  </style>
+</head>
 <body>
   <div class="app-layout">
     <aside class="app-sidebar" id="sidebar"></aside>
-
     <main class="app-content">
       <header class="app-header" id="topbar"></header>
+      <div class="app-body">
 
-      <div class="pagina">
-        <div class="flex justify-between items-center mb-3">
-          <h2 style="font-size:20px;font-weight:700;color:var(--saas-text)">Chamados de Suporte</h2>
-          <button class="btn btn-primario" onclick="abrirModalNovoTicket()">+ Novo Chamado</button>
+        <!-- Cabeçalho da página -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px">
+          <div>
+            <h2 style="font-size:18px; color:var(--texto); margin:0 0 4px">Atendimento</h2>
+            <p style="font-size:13px; color:var(--texto-suave); margin:0">Abra chamados e acompanhe seu atendimento em tempo real.</p>
+          </div>
+          <button class="btn btn-primario btn-sm" onclick="abrirModal()">
+            <i class="ph ph-plus"></i> Abrir chamado
+          </button>
         </div>
-        <div id="lista-tickets">
-          <div class="spinner"></div>
+
+        <!-- Grid principal -->
+        <div class="at-grid">
+
+          <!-- Lista de chamados -->
+          <div class="at-list-panel">
+            <div class="at-list-header">
+              <h4><i class="ph ph-list-bullets" style="margin-right:6px"></i>Seus chamados</h4>
+              <span id="badge-total" class="badge badge-azul" style="display:none"></span>
+            </div>
+            <div class="at-list-scroll" id="lista-tickets">
+              <div class="at-empty-list">
+                <i class="ph ph-spinner" style="font-size:32px"></i>
+                <p>Carregando...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Área de chat -->
+          <div class="at-chat-panel" id="chat-panel">
+            <!-- Estado vazio (padrão) -->
+            <div class="at-chat-empty" id="chat-vazio">
+              <i class="ph ph-chats"></i>
+              <h3>Nenhum chamado selecionado</h3>
+              <p>Selecione um chamado ao lado ou abra um novo.</p>
+            </div>
+
+            <!-- Chat ativo (oculto por padrão) -->
+            <div id="chat-ativo" class="oculto" style="display:flex; flex-direction:column; height:100%; overflow:hidden">
+              <div class="at-chat-header">
+                <div>
+                  <h3 id="chat-titulo">—</h3>
+                  <div class="at-chat-header-meta">
+                    <span class="badge-status" id="chat-status-badge">—</span>
+                    <span style="font-size:11px; color:var(--texto-muted)" id="chat-id-label">#000</span>
+                  </div>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="fecharChat()">
+                  <i class="ph ph-arrow-left"></i> Voltar
+                </button>
+              </div>
+
+              <div class="at-msgs" id="chat-msgs"></div>
+
+              <div class="at-input-area">
+                <!-- Preview da imagem selecionada -->
+                <div class="img-preview-wrap" id="img-preview-wrap">
+                  <img id="img-preview-thumb" src="" alt="">
+                  <span class="img-preview-nome" id="img-preview-nome"></span>
+                  <button class="img-preview-remove" onclick="cancelarImagem()" title="Remover"><i class="ph ph-x"></i></button>
+                </div>
+
+                <div class="at-input-box">
+                  <!-- Botão de imagem -->
+                  <button class="at-btn-icon" onclick="document.getElementById('file-imagem').click()" title="Enviar imagem">
+                    <i class="ph ph-image"></i>
+                  </button>
+                  <input type="file" id="file-imagem" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none" onchange="selecionarImagem(event)">
+
+                  <textarea
+                    id="chat-input"
+                    class="at-textarea"
+                    placeholder="Digite sua mensagem..."
+                    rows="1"
+                    oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+                    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviar()}"
+                  ></textarea>
+                  <button class="at-btn-send" id="btn-send" onclick="enviar()">
+                    <i class="ph ph-paper-plane-tilt"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
+    </main>
   </div>
 
-  <!-- Modal Novo Ticket -->
-  <div id="modal-ticket" class="modal-overlay d-none">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-titulo">Abrir Chamado</h3>
-        <button class="modal-fechar" onclick="fecharModal()">✕</button>
-      </div>
-      <form id="form-ticket" onsubmit="criarTicket(event)">
-        <div class="form-grupo">
-          <label>Categoria</label>
-          <select id="tk-categoria" required>
-            <option value="">Selecione...</option>
-            <option value="suporte">Suporte Técnico</option>
-            <option value="financeiro">Financeiro</option>
-            <option value="comercial">Comercial</option>
-          </select>
-        </div>
-        <div class="form-grupo">
-          <label>Prioridade</label>
-          <select id="tk-prioridade">
-            <option value="normal">Normal</option>
-            <option value="baixa">Baixa</option>
-            <option value="urgente">Urgente</option>
-          </select>
-        </div>
-        <div class="form-grupo">
-          <label>Título</label>
-          <input type="text" id="tk-titulo" placeholder="Resumo do problema" required>
-        </div>
-        <div class="form-grupo">
-          <label>Descrição</label>
-          <textarea id="tk-descricao" placeholder="Descreva o problema com detalhes..." required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primario w-100" id="btn-criar-ticket">Abrir Chamado</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal Chat do Ticket -->
-  <div id="modal-chat" class="modal-overlay d-none" style="padding:16px">
-    <div
-      style="width:100%;max-width:700px;height:90vh;background:#fff;border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden">
-      <!-- Header -->
-      <div
-        style="padding:16px 20px;border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-        <div>
-          <h3 style="font-family:'Playfair Display',serif;font-size:17px;color:var(--primaria)" id="chat-titulo">Chat do
-            Chamado</h3>
-          <span class="text-xs text-suave" id="chat-status-label"></span>
-        </div>
-        <button onclick="fecharChat()"
-          style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--texto-suave)">✕</button>
+  <!-- Modal novo chamado -->
+  <div id="modal-novo" style="display:none; position:fixed; inset:0; background:rgba(2,6,23,0.8); backdrop-filter:blur(8px); z-index:1000; align-items:center; justify-content:center; padding:20px">
+    <div style="background:#18181b; border:1px solid var(--borda); border-radius:20px; padding:32px; width:100%; max-width:480px">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px">
+        <h3 style="font-size:17px; color:var(--texto); margin:0">Abrir Chamado</h3>
+        <button onclick="fecharModal()" style="background:none; border:none; color:var(--texto-muted); cursor:pointer; font-size:20px"><i class="ph ph-x"></i></button>
       </div>
 
-      <!-- Mensagens -->
-      <div id="chat-msgs"
-        style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--fundo)">
+      <div class="form-grupo">
+        <label style="display:block; font-size:12px; font-weight:600; color:var(--texto-suave); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px">Assunto</label>
+        <input type="text" id="tk-titulo" class="form-input" placeholder="Ex: Erro ao emitir NFC-e">
       </div>
 
-      <!-- Preview de imagem antes de enviar -->
-      <div id="preview-img" style="display:none;padding:8px 16px;background:#fff;border-top:1px solid var(--borda)">
-        <div style="position:relative;display:inline-block">
-          <img id="preview-img-el" style="max-height:80px;border-radius:8px;border:2px solid var(--acento)">
-          <button onclick="cancelarImagem()"
-            style="position:absolute;top:-6px;right:-6px;background:var(--erro);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center">✕</button>
-        </div>
+      <div class="form-grupo" style="margin-top:16px">
+        <label style="display:block; font-size:12px; font-weight:600; color:var(--texto-suave); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px">Departamento</label>
+        <select id="tk-categoria" class="form-input">
+          <option value="suporte">Suporte Técnico</option>
+          <option value="financeiro">Financeiro / Pagamentos</option>
+          <option value="comercial">Comercial / Planos</option>
+        </select>
       </div>
 
-      <!-- Input -->
-      <div
-        style="padding:12px 16px;border-top:1px solid var(--borda);background:#fff;display:flex;gap:8px;align-items:flex-end;flex-shrink:0">
-        <!-- Botão imagem -->
-        <label title="Enviar imagem"
-          style="cursor:pointer;background:var(--fundo);border:1.5px solid var(--borda);border-radius:var(--radius);width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">
-          🖼️
-          <input type="file" id="input-imagem" accept="image/*" style="display:none" onchange="selecionarImagem(event)">
-        </label>
-        <!-- Botão áudio -->
-        <button id="btn-gravar" onclick="toggleGravacao()" title="Gravar áudio"
-          style="background:var(--fundo);border:1.5px solid var(--borda);border-radius:var(--radius);width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;cursor:pointer">
-          🎤
+      <div class="form-grupo" style="margin-top:16px">
+        <label style="display:block; font-size:12px; font-weight:600; color:var(--texto-suave); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px">Descrição</label>
+        <textarea id="tk-descricao" class="form-input" rows="4" placeholder="Descreva o que está acontecendo..."></textarea>
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:24px">
+        <button class="btn btn-outline" style="flex:1" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-primario" style="flex:1" onclick="criarTicket()" id="btn-criar">
+          <i class="ph ph-paper-plane-tilt"></i> Enviar
         </button>
-        <!-- Textarea -->
-        <textarea id="chat-msg-input" placeholder="Digite sua mensagem..."
-          style="flex:1;padding:9px 12px;border:1.5px solid var(--borda);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;resize:none;max-height:100px;outline:none"
-          rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMensagem()}"
-          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
-        <!-- Enviar -->
-        <button onclick="enviarMensagem()" id="btn-enviar-msg"
-          style="background:var(--primaria);color:#fff;border:none;border-radius:var(--radius);width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0">
-          ➤
-        </button>
       </div>
     </div>
   </div>
-
-  <!-- Áudio de notificação -->
-  <audio id="notif-audio" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFh"
-    preload="auto"></audio>
 
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/auth.js"></script>
   <script src="/assets/js/sidebar-painel.js"></script>
   <script>
     const usuario = protegerPagina(['cliente']);
-    let ticketAtual = null;
+    let ticketAtivo = null;
     let pollingInterval = null;
-    let ultimaMensagemId = 0;
-    let arquivoSelecionado = null;
-    let ticketsCache = {};
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let gravando = false;
+    let ultimoMsgCount = 0;      // para polling inteligente
+    let imagemSelecionada = null; // arquivo de imagem pendente
 
-    if (usuario) { inicializarLayout(); carregarTickets(); }
+    if (usuario) carregarTickets();
 
-    // ── TICKETS ──────────────────────────────────────────
+    // ===== LISTA =====
     async function carregarTickets() {
       try {
         const { tickets } = await api.get('/tickets');
-        renderizarTickets(tickets);
-      } catch {
-        document.getElementById('lista-tickets').innerHTML = '<p class="alerta alerta-erro">Erro ao carregar chamados.</p>';
-      }
-    }
+        const lista = document.getElementById('lista-tickets');
+        const badge = document.getElementById('badge-total');
 
-    function renderizarTickets(tickets) {
-      const el = document.getElementById('lista-tickets');
-      if (!tickets.length) {
-        el.innerHTML = '<div class="card text-center"><p class="text-suave">Nenhum chamado encontrado.</p><button class="btn btn-primario mt-2" onclick="abrirModalNovoTicket()">Abrir primeiro chamado</button></div>';
-        return;
-      }
-      const badge = { aberto: 'badge-azul', aceito: 'badge-amarelo', em_andamento: 'badge-amarelo', resolvido: 'badge-verde' };
-      const cat = { suporte: '🛠', financeiro: '💰', comercial: '🤝' };
-      tickets.forEach(t => ticketsCache[t.id] = t);
-      el.innerHTML = `<div class="card">
-      <div class="tabela-container"><table>
-        <thead><tr><th>Chamado</th><th>Categoria</th><th>Prioridade</th><th>Status</th><th>Data</th><th>Ação</th></tr></thead>
-        <tbody>${tickets.map(t => `
-          <tr>
-            <td><strong>${esc(t.titulo)}</strong></td>
-            <td>${cat[t.categoria] || ''} ${esc(t.categoria)}</td>
-            <td>${esc(t.prioridade)}</td>
-            <td><span class="badge ${badge[t.status] || 'badge-cinza'}">${esc(t.status.replace('_', ' '))}</span></td>
-            <td>${formatarData(t.criado_em)}</td>
-            <td>${['aceito', 'em_andamento'].includes(t.status)
-          ? `<button class="btn btn-sm btn-primario" onclick="abrirChat(${JSON.stringify(t.id)})">💬 Chat</button>`
-          : '—'}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table></div>
-    </div>`;
-    }
+        if (!tickets.length) {
+          lista.innerHTML = `
+            <div class="at-empty-list">
+              <i class="ph ph-ticket" style="font-size:36px;margin-bottom:8px"></i>
+              <p style="font-size:13px">Nenhum chamado aberto ainda.</p>
+            </div>`;
+          badge.style.display = 'none';
+          return;
+        }
 
-    // ── MODAL TICKET ─────────────────────────────────────
-    function abrirModalNovoTicket() { document.getElementById('modal-ticket').classList.remove('d-none'); }
-    function fecharModal() { document.getElementById('modal-ticket').classList.add('d-none'); }
+        badge.textContent = tickets.length;
+        badge.style.display = 'inline-flex';
 
-    async function criarTicket(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-criar-ticket');
-      btn.disabled = true; btn.textContent = 'Enviando...';
-      try {
-        await api.post('/tickets', {
-          titulo: document.getElementById('tk-titulo').value,
-          categoria: document.getElementById('tk-categoria').value,
-          prioridade: document.getElementById('tk-prioridade').value,
-          descricao: document.getElementById('tk-descricao').value
-        });
-        fecharModal();
-        mostrarAlerta('Chamado aberto! Em breve nossa equipe irá atendê-lo.');
-        carregarTickets();
-        document.getElementById('form-ticket').reset();
+        lista.innerHTML = tickets.map(t => `
+          <div class="at-item ${ticketAtivo === t.id ? 'ativo' : ''}" onclick="selecionarTicket(${t.id})">
+            <div class="at-item-titulo">${escapeHtml(t.titulo)}</div>
+            <div class="at-item-meta">
+              <span class="at-item-cat">${t.categoria}</span>
+              <span class="badge-status ${statusClass(t.status)}">${statusLabel(t.status)}</span>
+            </div>
+          </div>`).join('');
+
+        // Atualiza badge do header do chat se ticket ativo mudou de status
+        if (ticketAtivo) {
+          const t = tickets.find(x => x.id === ticketAtivo);
+          if (t) atualizarHeaderChat(t);
+        }
       } catch (err) {
-        mostrarAlerta(err.erro || 'Erro ao criar chamado', 'erro');
-      }
-      btn.disabled = false; btn.textContent = 'Abrir Chamado';
-    }
-
-    // ── CHAT ─────────────────────────────────────────────
-    async function abrirChat(ticketId) {
-      const t = ticketsCache[ticketId] || {};
-      ticketAtual = ticketId;
-      ultimaMensagemId = 0;
-      document.getElementById('chat-titulo').textContent = `💬 ${t.titulo || ''}`;
-      document.getElementById('chat-status-label').textContent = 'Status: ' + (t.status || '').replace('_', ' ');
-      document.getElementById('modal-chat').classList.remove('d-none');
-      document.getElementById('chat-msgs').innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner"></div></div>';
-
-      await recarregarMensagens();
-
-      // Polling a cada 4 segundos para novas mensagens
-      pollingInterval = setInterval(verificarNovasMensagem, 4000);
-    }
-
-    function fecharChat() {
-      document.getElementById('modal-chat').classList.add('d-none');
-      clearInterval(pollingInterval);
-      pollingInterval = null;
-      ticketAtual = null;
-      ultimaMensagemId = 0;
-      cancelarImagem();
-    }
-
-    async function recarregarMensagens() {
-      try {
-        const { mensagens } = await api.get(`/tickets/${ticketAtual}/mensagens`);
-        renderizarMensagens(mensagens);
-        if (mensagens.length) ultimaMensagemId = mensagens[mensagens.length - 1].id;
-      } catch {
-        document.getElementById('chat-msgs').innerHTML = '<p style="text-align:center;color:var(--texto-suave);font-size:14px">Erro ao carregar mensagens.</p>';
+        console.error('Erro ao carregar tickets:', err);
       }
     }
 
-    async function verificarNovasMensagem() {
-      if (!ticketAtual) return;
-      try {
-        const { mensagens } = await api.get(`/tickets/${ticketAtual}/mensagens`);
-        const novas = mensagens.filter(m => m.id > ultimaMensagemId);
-        if (!novas.length) return;
+    // ===== SELECIONAR TICKET =====
+    async function selecionarTicket(id) {
+      ticketAtivo = id;
+      ultimoMsgCount = 0;
 
-        const eu = getUsuario().id;
+      document.getElementById('chat-vazio').style.display = 'none';
+      const chatAtivo = document.getElementById('chat-ativo');
+      chatAtivo.classList.remove('oculto');
+      chatAtivo.style.display = 'flex';
+
+      carregarTickets();
+
+      try {
+        const { tickets } = await api.get('/tickets');
+        const t = tickets.find(x => x.id === id);
+        if (!t) return;
+        atualizarHeaderChat(t);
+        await carregarMensagens();
+
+        // Polling rápido: 2s quando chat está aberto
+        if (pollingInterval) clearInterval(pollingInterval);
+        pollingInterval = setInterval(async () => {
+          await carregarMensagens();
+          carregarTickets(); // atualiza status na lista
+        }, 2000);
+      } catch (err) {
+        console.error('Erro ao abrir ticket:', err);
+      }
+    }
+
+    function atualizarHeaderChat(t) {
+      document.getElementById('chat-titulo').textContent = t.titulo;
+      document.getElementById('chat-id-label').textContent = `#${t.id}`;
+      const badge = document.getElementById('chat-status-badge');
+      badge.textContent = statusLabel(t.status);
+      badge.className = 'badge-status ' + statusClass(t.status);
+    }
+
+    // ===== MENSAGENS =====
+    async function carregarMensagens() {
+      if (!ticketAtivo) return;
+      try {
+        const { mensagens } = await api.get(`/tickets/${ticketAtivo}/mensagens`);
+
+        // Só re-renderiza se houver mensagens novas
+        if (mensagens.length === ultimoMsgCount) return;
+        ultimoMsgCount = mensagens.length;
+
         const container = document.getElementById('chat-msgs');
-        novas.forEach(m => {
-          // Toca notificação apenas para mensagens do atendente
-          if (m.autor_id !== eu) tocarNotificacao();
-          container.appendChild(criarElMensagem(m, eu));
-        });
-        container.scrollTop = container.scrollHeight;
-        ultimaMensagemId = mensagens[mensagens.length - 1].id;
-      } catch { }
-    }
+        const estavaNoBaixo = container.scrollTop + container.clientHeight >= container.scrollHeight - 40;
 
-    function renderizarMensagens(mensagens) {
-      const container = document.getElementById('chat-msgs');
-      const eu = getUsuario().id;
-      if (!mensagens.length) {
-        container.innerHTML = '<p style="text-align:center;color:var(--texto-suave);font-size:14px;margin-top:20px">Nenhuma mensagem ainda.</p>';
-        return;
+        if (!mensagens.length) {
+          container.innerHTML = '<div class="msg-aguardando"><i class="ph ph-hourglass" style="font-size:24px;display:block;margin-bottom:8px;opacity:.4"></i>Aguardando atendimento...</div>';
+          return;
+        }
+
+        const meuId = String(usuario.id);
+        container.innerHTML = mensagens.map(m => {
+          const minha = String(m.autor_id) === meuId;
+          const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          let conteudo;
+          if (m.tipo === 'imagem') {
+            const url = escapeHtml(m.conteudo);
+            conteudo = `<img src="${url}" style="max-width:220px;border-radius:8px;cursor:pointer;display:block" onclick="window.open('${url}','_blank')" loading="lazy">`;
+          } else {
+            conteudo = escapeHtml(m.conteudo);
+          }
+          return `
+            <div class="msg-linha ${minha ? 'minha' : 'deles'}">
+              <div class="msg-balao">${conteudo}</div>
+              <span class="msg-hora">${hora}</span>
+            </div>`;
+        }).join('');
+
+        // Só scrolla se o usuário estava no fundo
+        if (estavaNoBaixo) container.scrollTop = container.scrollHeight;
+      } catch (err) {
+        console.error('Erro ao carregar mensagens:', err);
       }
-      container.innerHTML = '';
-      mensagens.forEach(m => container.appendChild(criarElMensagem(m, eu)));
-      container.scrollTop = container.scrollHeight;
     }
 
-    function criarElMensagem(m, euId) {
-      const minha = m.autor_id === euId;
-      const wrap = document.createElement('div');
-      wrap.style.cssText = `display:flex;flex-direction:column;align-items:${minha ? 'flex-end' : 'flex-start'}`;
-
-      const bolha = document.createElement('div');
-      bolha.style.cssText = `max-width:70%;padding:10px 14px;border-radius:${minha ? '14px 14px 4px 14px' : '14px 14px 14px 4px'};background:${minha ? 'var(--primaria)' : '#fff'};color:${minha ? '#fff' : 'var(--texto)'};box-shadow:0 1px 4px rgba(0,0,0,0.08)`;
-
-      if (m.tipo === 'imagem') {
-        const img = document.createElement('img');
-        img.setAttribute('src', m.conteudo);
-        img.style.cssText = 'max-width:220px;border-radius:8px;display:block;cursor:pointer';
-        img.addEventListener('click', () => window.open(m.conteudo, '_blank'));
-        bolha.appendChild(img);
-      } else if (m.tipo === 'audio') {
-        const audio = document.createElement('audio');
-        audio.controls = true;
-        audio.setAttribute('src', m.conteudo);
-        audio.style.maxWidth = '220px';
-        bolha.appendChild(audio);
+    // ===== ENVIO (texto ou imagem) =====
+    async function enviar() {
+      if (!ticketAtivo) return;
+      if (imagemSelecionada) {
+        await enviarImagem();
       } else {
-        bolha.textContent = m.conteudo;
+        await enviarTexto();
       }
-
-      const hora = document.createElement('div');
-      hora.style.cssText = 'font-size:11px;margin-top:4px;opacity:0.6;color:var(--texto-suave)';
-      hora.textContent = `${m.perfis?.nome || (minha ? 'Você' : 'Atendente')} · ${new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-
-      wrap.appendChild(bolha);
-      wrap.appendChild(hora);
-      return wrap;
     }
 
-    // ── ENVIO DE TEXTO ────────────────────────────────────
-    async function enviarMensagem() {
-      // Se tem imagem selecionada, envia a imagem
-      if (arquivoSelecionado) { await enviarImagem(); return; }
-
-      const input = document.getElementById('chat-msg-input');
+    async function enviarTexto() {
+      const input = document.getElementById('chat-input');
       const texto = input.value.trim();
-      if (!texto || !ticketAtual) return;
+      if (!texto) return;
 
-      const btn = document.getElementById('btn-enviar-msg');
-      btn.disabled = true;
       input.value = '';
       input.style.height = 'auto';
+      setBtnSend(true);
+
+      // UI otimista
+      adicionarMsgOtimista(texto, 'texto');
 
       try {
-        await api.post(`/tickets/${ticketAtual}/mensagens`, { conteudo: texto });
-        await recarregarMensagens();
-      } catch { mostrarAlerta('Erro ao enviar mensagem', 'erro'); }
-      btn.disabled = false;
-    }
-
-    // ── ENVIO DE IMAGEM ───────────────────────────────────
-    function selecionarImagem(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      arquivoSelecionado = file;
-
-      const reader = new FileReader();
-      reader.onload = e => {
-        document.getElementById('preview-img-el').src = e.target.result;
-        document.getElementById('preview-img').style.display = 'block';
-      };
-      reader.readAsDataURL(file);
-      document.getElementById('chat-msg-input').placeholder = 'Clique em ➤ para enviar a imagem...';
-    }
-
-    function cancelarImagem() {
-      arquivoSelecionado = null;
-      document.getElementById('input-imagem').value = '';
-      document.getElementById('preview-img').style.display = 'none';
-      document.getElementById('preview-img-el').src = '';
-      document.getElementById('chat-msg-input').placeholder = 'Digite sua mensagem...';
+        await api.post(`/tickets/${ticketAtivo}/mensagens`, { conteudo: texto });
+        ultimoMsgCount = 0; // força refresh
+        await carregarMensagens();
+      } catch (err) {
+        console.error('Erro ao enviar mensagem:', err);
+      } finally {
+        setBtnSend(false);
+      }
     }
 
     async function enviarImagem() {
-      if (!arquivoSelecionado || !ticketAtual) return;
-      const btn = document.getElementById('btn-enviar-msg');
-      btn.disabled = true; btn.textContent = '⏳';
+      if (!imagemSelecionada || !ticketAtivo) return;
+      setBtnSend(true);
+
+      const formData = new FormData();
+      formData.append('arquivo', imagemSelecionada);
+      formData.append('ticket_id', ticketAtivo);
+
+      cancelarImagem();
 
       try {
-        const form = new FormData();
-        form.append('arquivo', arquivoSelecionado);
-        form.append('ticket_id', ticketAtual);
-
-        const token = localStorage.getItem('cn_token');
-        const resp = await fetch('/api/upload/chat', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: form
-        });
-        if (!resp.ok) throw new Error('Falha no upload');
-
-        cancelarImagem();
-        await recarregarMensagens();
+        await api.upload('/upload/chat', formData);
+        ultimoMsgCount = 0;
+        await carregarMensagens();
       } catch (err) {
-        mostrarAlerta('Erro ao enviar imagem: ' + err.message, 'erro');
-      }
-      btn.disabled = false; btn.textContent = '➤';
-    }
-
-    // ── GRAVAÇÃO DE ÁUDIO ─────────────────────────────────
-    async function toggleGravacao() {
-      const btn = document.getElementById('btn-gravar');
-      if (!gravando) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-          mediaRecorder.onstop = async () => {
-            stream.getTracks().forEach(t => t.stop());
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-            await enviarAudio(blob);
-          };
-          mediaRecorder.start();
-          gravando = true;
-          btn.textContent = '⏹';
-          btn.style.background = 'var(--erro)';
-          btn.style.borderColor = 'var(--erro)';
-          btn.title = 'Parar gravação';
-        } catch { mostrarAlerta('Permissão de microfone negada', 'erro'); }
-      } else {
-        mediaRecorder?.stop();
-        gravando = false;
-        btn.textContent = '🎤';
-        btn.style.background = 'var(--fundo)';
-        btn.style.borderColor = 'var(--borda)';
-        btn.title = 'Gravar áudio';
+        console.error('Erro ao enviar imagem:', err);
+        mostrarAlerta('Erro ao enviar imagem. Tente novamente.', 'erro');
+      } finally {
+        setBtnSend(false);
       }
     }
 
-    async function enviarAudio(blob) {
-      if (!ticketAtual) return;
+    // ===== UI DE IMAGEM =====
+    function selecionarImagem(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      imagemSelecionada = file;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById('img-preview-thumb').src = e.target.result;
+        document.getElementById('img-preview-nome').textContent = file.name;
+        document.getElementById('img-preview-wrap').classList.add('visivel');
+        document.getElementById('chat-input').placeholder = 'Clique em enviar para mandar a imagem...';
+      };
+      reader.readAsDataURL(file);
+      event.target.value = ''; // reseta input
+    }
+
+    function cancelarImagem() {
+      imagemSelecionada = null;
+      document.getElementById('img-preview-wrap').classList.remove('visivel');
+      document.getElementById('img-preview-thumb').src = '';
+      document.getElementById('chat-input').placeholder = 'Digite sua mensagem...';
+    }
+
+    // UI otimista — adiciona mensagem localmente antes do servidor confirmar
+    function adicionarMsgOtimista(texto, tipo) {
+      const container = document.getElementById('chat-msgs');
+      const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const div = document.createElement('div');
+      div.className = 'msg-linha minha enviando';
+      div.innerHTML = `
+        <div class="msg-balao">${escapeHtml(texto)}</div>
+        <span class="msg-hora">${hora}</span>`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function setBtnSend(disabled) {
+      document.getElementById('btn-send').disabled = disabled;
+    }
+
+    function fecharChat() {
+      ticketAtivo = null;
+      ultimoMsgCount = 0;
+      if (pollingInterval) clearInterval(pollingInterval);
+      cancelarImagem();
+      document.getElementById('chat-ativo').classList.add('oculto');
+      document.getElementById('chat-ativo').style.display = '';
+      document.getElementById('chat-vazio').style.display = '';
+      carregarTickets();
+    }
+
+    // ===== MODAL =====
+    function abrirModal() { document.getElementById('modal-novo').style.display = 'flex'; }
+    function fecharModal() {
+      document.getElementById('modal-novo').style.display = 'none';
+      document.getElementById('tk-titulo').value = '';
+      document.getElementById('tk-descricao').value = '';
+    }
+
+    async function criarTicket() {
+      const titulo    = document.getElementById('tk-titulo').value.trim();
+      const categoria = document.getElementById('tk-categoria').value;
+      const descricao = document.getElementById('tk-descricao').value.trim();
+      if (!titulo || !descricao) { alert('Preencha o assunto e a descrição.'); return; }
+
+      const btn = document.getElementById('btn-criar');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ph ph-spinner"></i> Enviando...';
+
       try {
-        const form = new FormData();
-        form.append('arquivo', blob, 'audio.webm');
-        form.append('ticket_id', ticketAtual);
-
-        const token = localStorage.getItem('cn_token');
-        const resp = await fetch('/api/upload/chat', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: form
-        });
-        if (!resp.ok) throw new Error('Falha no upload do áudio');
-
-        await recarregarMensagens();
+        const { ticket } = await api.post('/tickets', { titulo, categoria, descricao });
+        fecharModal();
+        await carregarTickets();
+        if (ticket?.id) selecionarTicket(ticket.id);
       } catch (err) {
-        mostrarAlerta('Erro ao enviar áudio: ' + err.message, 'erro');
+        alert('Erro ao criar chamado. Tente novamente.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ph ph-paper-plane-tilt"></i> Enviar';
       }
     }
 
-    // ── NOTIFICAÇÃO ───────────────────────────────────────
-    function tocarNotificacao() {
-      try { document.getElementById('notif-audio').play(); } catch { }
+    // ===== UTILITÁRIOS =====
+    function statusLabel(s) {
+      return { aberto: 'Aberto', aceito: 'Aceito', em_andamento: 'Em atendimento', resolvido: 'Resolvido' }[s] || s;
+    }
+    function statusClass(s) {
+      return { aberto: 'st-aberto', aceito: 'st-aceito', em_andamento: 'st-andamento', resolvido: 'st-resolvido' }[s] || 'st-aberto';
+    }
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
     }
   </script>
-      </div><!-- /pagina -->
-    </main><!-- /app-content -->
-  </div><!-- /app-layout -->
-
+</body>
 </html>

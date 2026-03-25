@@ -7,160 +7,42 @@
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <link rel="stylesheet" href="/assets/css/comercial.css">
-  <style>
-    /* ── Wizard Steps ── */
-    .wizard-steps { display:flex; align-items:center; gap:0; margin-bottom:28px; padding:0 2px; }
-    .wizard-step  { display:flex; align-items:center; gap:10px; flex:1; position:relative; }
-    .wizard-step:not(:last-child)::after { content:''; flex:1; height:2px; background:#e2e8f0; margin:0 8px; }
-    .wizard-step.ativo::after    { background:#3b82f6; }
-    .step-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center;
-      justify-content:center; font-size:13px; font-weight:700;
-      background:#e2e8f0; color:#64748b; flex-shrink:0; transition:all .2s; }
-    .wizard-step.ativo    .step-num { background:#3b82f6; color:#fff; }
-    .wizard-step.concluido .step-num { background:#22c55e; color:#fff; }
-    .step-label { font-size:13px; font-weight:600; color:#64748b; white-space:nowrap; }
-    .wizard-step.ativo .step-label { color:#1e293b; }
+    /* ── Dark Mode CRM Styles ── */
+    :root {
+        --fundo: #09090b;
+        --fundo-card: #18181b;
+        --primaria: #3b82f6;
+        --borda: rgba(255, 255, 255, 0.08);
+        --texto: #f4f4f5;
+        --texto-suave: #a1a1aa;
+        --sucesso: #10b981;
+        --erro: #ef4444;
+    }
 
-    /* ── Views ── */
-    .vista { display:none; }
-    .vista.ativa { display:block; }
+    .wizard-steps { display: flex; gap: 4px; margin-bottom: 32px; background: rgba(255,255,255,0.02); padding: 8px; border-radius: 12px; border: 1px solid var(--borda); }
+    .wizard-step { flex: 1; padding: 12px; text-align: center; font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--texto-suave); border-radius: 8px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .wizard-step.ativo { background: var(--primaria); color: #fff; }
+    .wizard-step.concluido { color: var(--sucesso); }
 
-    /* ── Campanha Cards ── */
-    .camp-tabela { width:100%; border-collapse:collapse; font-size:13px; }
-    .camp-tabela th { background:#f1f5f9; padding:11px 14px; text-align:left; font-weight:700; color:#475569;
-      border-bottom:1px solid #e2e8f0; white-space:nowrap; }
-    .camp-tabela td { padding:11px 14px; border-bottom:1px solid #f1f5f9; color:#334155; vertical-align:middle; }
-    .camp-tabela tr:hover td { background:#f8fafc; }
-    .camp-tabela tr:last-child td { border-bottom:none; }
+    .camp-tabela { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .camp-tabela th { background: rgba(255,255,255,0.02); padding: 16px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--texto-suave); border-bottom: 1px solid var(--borda); }
+    .camp-tabela td { padding: 16px; border-bottom: 1px solid var(--borda); color: var(--texto); font-size: 13px; }
+    .camp-tabela tr:hover td { background: rgba(59, 130, 246, 0.03); }
 
-    /* ── Progress bar inline ── */
-    .prog-mini { background:#e2e8f0; border-radius:100px; height:6px; width:100px; overflow:hidden; }
-    .prog-mini-fill { height:100%; background:linear-gradient(90deg,#3b82f6,#2563eb); border-radius:100px; }
+    .badge { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .badge-ativo { background: rgba(16, 185, 129, 0.1); color: var(--sucesso); }
+    .badge-pausado { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .badge-concluido { background: rgba(59, 130, 246, 0.1); color: var(--primaria); }
 
-    /* ── Status badges ── */
-    .badge { border-radius:6px; padding:3px 9px; font-size:11px; font-weight:700; display:inline-block; white-space:nowrap; }
-    .badge-ativo     { background:#dcfce7; color:#15803d; }
-    .badge-pausado   { background:#fef3c7; color:#b45309; }
-    .badge-concluido { background:#dbeafe; color:#1d4ed8; }
-    .badge-encerrado { background:#f1f5f9; color:#64748b; }
+    .drop-zone { border: 2px dashed var(--borda); border-radius: 16px; padding: 48px; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.01); }
+    .drop-zone:hover { border-color: var(--primaria); background: rgba(59, 130, 246, 0.05); }
+    .drop-zone-icon { font-size: 40px; color: var(--primaria); opacity: 0.5; margin-bottom: 16px; }
 
-    /* ── Painel etapa ── */
-    .painel-etapa { display:none; }
-    .painel-etapa.ativo { display:block; }
+    .chip { background: var(--fundo-card); border: 1px solid var(--borda); padding: 16px; border-radius: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .chip-num { font-size: 24px; font-weight: 800; color: #fff; }
 
-    /* ── Drop zone ── */
-    .drop-zone { border:2px dashed #cbd5e1; border-radius:14px; padding:48px 24px;
-      text-align:center; cursor:pointer; transition:all .2s; background:#f8fafc; }
-    .drop-zone:hover, .drop-zone.drag-over { border-color:#3b82f6; background:#eff6ff; }
-    .drop-zone-icon { font-size:40px; margin-bottom:12px; }
-    .drop-zone p { margin:0; color:#64748b; font-size:14px; }
-    .drop-zone strong { color:#3b82f6; }
+    .timer-wrap { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primaria); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; }
 
-    /* ── Stats chips ── */
-    .stats-chips { display:flex; gap:12px; flex-wrap:wrap; margin:20px 0; }
-    .chip { background:#fff; border:1px solid #e2e8f0; border-radius:10px;
-      padding:10px 16px; font-size:13px; font-weight:600; color:#1e293b;
-      display:flex; align-items:center; gap:8px; }
-    .chip .chip-num { font-size:20px; font-weight:800; color:#3b82f6; }
-    .chip.verde .chip-num { color:#22c55e; }
-    .chip.laranja .chip-num { color:#f59e0b; }
-
-    /* ── Tabelas de contatos/leads ── */
-    .tabela-contatos { width:100%; border-collapse:collapse; font-size:13px; }
-    .tabela-contatos th { background:#f1f5f9; padding:10px 12px; text-align:left;
-      font-weight:700; color:#475569; border-bottom:1px solid #e2e8f0; }
-    .tabela-contatos td { padding:9px 12px; border-bottom:1px solid #f1f5f9; color:#334155; }
-    .tabela-contatos tr:hover td { background:#f8fafc; }
-    .badge-ok  { background:#dcfce7; color:#15803d; border-radius:6px; padding:2px 8px; font-size:11px; font-weight:700; }
-    .badge-sem { background:#fef3c7; color:#b45309; border-radius:6px; padding:2px 8px; font-size:11px; font-weight:700; }
-
-    /* ── Config form ── */
-    .config-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-    @media(max-width:640px){ .config-grid { grid-template-columns:1fr; } }
-    .form-campo { display:flex; flex-direction:column; gap:6px; }
-    .form-campo label { font-size:13px; font-weight:600; color:#475569; }
-    .form-campo select, .form-campo input[type=time], .form-campo input[type=number] {
-      border:1px solid #e2e8f0; border-radius:8px; padding:9px 12px;
-      font-size:14px; color:#1e293b; outline:none; background:#fff; }
-    .form-campo select:focus, .form-campo input:focus { border-color:#3b82f6; }
-    .slider-wrap { display:flex; align-items:center; gap:12px; }
-    .slider-wrap input[type=range] { flex:1; accent-color:#3b82f6; }
-    .slider-val { font-weight:700; color:#3b82f6; min-width:60px; font-size:14px; }
-
-    /* ── Preview ── */
-    .preview-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;
-      padding:16px; font-size:14px; color:#334155; line-height:1.65;
-      min-height:80px; white-space:pre-wrap; }
-    .preview-label { font-size:11px; font-weight:700; text-transform:uppercase;
-      letter-spacing:.05em; color:#94a3b8; margin-bottom:6px; display:flex; justify-content:space-between; }
-
-    /* ── Instâncias ── */
-    .instancias-lista { display:flex; flex-wrap:wrap; gap:10px; }
-    .inst-item { display:flex; align-items:center; gap:8px;
-      background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;
-      padding:8px 14px; cursor:pointer; font-size:13px; font-weight:600; color:#334155; transition:all .15s; }
-    .inst-item input[type=checkbox] { accent-color:#3b82f6; width:16px; height:16px; }
-    .inst-item:has(input:checked) { border-color:#3b82f6; background:#eff6ff; color:#1d4ed8; }
-
-    /* ── Barra progresso ── */
-    .barra-prog-wrap { background:#e2e8f0; border-radius:100px; height:12px; overflow:hidden; margin:8px 0; }
-    .barra-prog-fill { height:100%; background:linear-gradient(90deg,#3b82f6,#2563eb); border-radius:100px; transition:width .4s ease; }
-    .prog-info { display:flex; justify-content:space-between; font-size:13px; color:#64748b; margin-top:4px; }
-
-    /* ── Status lead ── */
-    .status-badge { border-radius:6px; padding:2px 8px; font-size:11px; font-weight:700; display:inline-block; }
-    .status-aguardando  { background:#f1f5f9; color:#64748b; }
-    .status-enviado_wa, .status-enviado_email, .status-enviado { background:#dcfce7; color:#15803d; }
-    .status-parcial     { background:#fef3c7; color:#b45309; }
-    .status-erro_wa, .status-erro_email, .status-erro { background:#fee2e2; color:#b91c1c; }
-
-    /* ── Modal ── */
-    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000;
-      display:flex; align-items:center; justify-content:center; padding:20px; }
-    .modal-overlay.oculto { display:none; }
-    .modal-box { background:#fff; border-radius:16px; width:100%; max-width:640px;
-      box-shadow:0 20px 60px rgba(0,0,0,.25); max-height:90vh; overflow-y:auto; }
-    .modal-header { display:flex; align-items:center; justify-content:space-between;
-      padding:20px 24px 0; }
-    .modal-titulo { font-size:17px; font-weight:700; color:#0f172a; }
-    .modal-fechar { background:none; border:none; font-size:20px; color:#94a3b8;
-      cursor:pointer; line-height:1; padding:0 4px; }
-    .modal-fechar:hover { color:#334155; }
-    .modal-body { padding:20px 24px 24px; }
-
-    @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-    .spin { animation:spin 1s linear infinite; display:inline-block; }
-
-    .acoes-disparo { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
-    .btn-sm { padding:6px 12px !important; font-size:12px !important; }
-
-    /* ── Timer próximo envio ── */
-    .timer-wrap { margin-top:10px; padding:10px 14px; background:#eff6ff; border-radius:8px;
-      border:1px solid #bfdbfe; display:flex; align-items:center; gap:10px; }
-    .timer-wrap.pausado { background:#fefce8; border-color:#fde68a; }
-    .timer-num { font-weight:700; color:#1d4ed8; font-size:14px; font-variant-numeric:tabular-nums; }
-    .timer-wrap.pausado .timer-num { color:#b45309; }
-    /* Barra interna do timer */
-    .timer-barra { height:5px; background:#dbeafe; border-radius:100px; margin-top:5px; overflow:hidden; }
-    .timer-wrap.pausado .timer-barra { background:#fef3c7; }
-    .timer-barra-fill { height:100%; border-radius:100px; background:linear-gradient(90deg,#3b82f6,#2563eb); transition:width 1s linear; }
-    .timer-wrap.pausado .timer-barra-fill { background:#f59e0b; }
-    /* Resultado do envio (✓ ou ✗) */
-    .timer-resultado { font-size:12px; font-weight:700; padding:2px 8px; border-radius:6px; display:none; }
-    .timer-resultado.ok  { background:#dcfce7; color:#15803d; }
-    .timer-resultado.err { background:#fee2e2; color:#b91c1c; }
-
-    /* ── Log row flash ao enviar ── */
-    @keyframes flash-ok  { from{background:#dcfce7} to{background:transparent} }
-    @keyframes flash-err { from{background:#fee2e2} to{background:transparent} }
-    .row-ok  td { animation: flash-ok  3.5s ease forwards; }
-    .row-err td { animation: flash-err 3.5s ease forwards; }
-
-    /* ── Erro inline no log ── */
-    .erro-txt { font-size:11px; color:#b91c1c; max-width:220px; display:block;
-      overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:help; }
-    .erro-txt:empty, .sem-erro { color:#94a3b8; font-size:11px; }
-  </style>
 </head>
 <body class="com-page">
 <div class="layout">
@@ -181,55 +63,18 @@
       <!-- VISTA 1 — LISTA DE CAMPANHAS                      -->
       <!-- ══════════════════════════════════════════════════ -->
       <div class="vista ativa" id="vista-lista">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-          <div>
-            <h2 style="margin:0;font-size:18px;font-weight:700;color:#0f172a;">Campanhas de Disparo</h2>
-            <p style="margin:4px 0 0;font-size:13px;color:#64748b;">WhatsApp + Email — Prospecção automatizada com IA</p>
-          </div>
-          <button class="btn btn-primario" onclick="irParaWizard()">
-            + Nova Campanha
-          </button>
+        <div class="page-title mb-6">
+          <h2 class="text-white">Campanhas Estratégicas</h2>
+          <p class="text-suave">Disparos multicanal (WhatsApp + Email) com prospecção automatizada por IA.</p>
         </div>
 
-        <div class="card" style="padding:0;overflow:hidden;" id="area-lista">
-          <div style="padding:40px;text-align:center;color:#94a3b8;">
-            <div class="spin" style="font-size:24px;">⟳</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════════════════════════════════════════════ -->
-      <!-- VISTA 2 — WIZARD NOVA CAMPANHA                    -->
-      <!-- ══════════════════════════════════════════════════ -->
-      <div class="vista" id="vista-wizard">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-          <button class="btn btn-outline btn-sm" onclick="irParaLista()">← Voltar</button>
-          <h2 style="margin:0;font-size:17px;font-weight:700;color:#0f172a;">Nova Campanha de Disparo</h2>
-        </div>
-
-        <div class="wizard-steps">
-          <div class="wizard-step ativo" id="step-1">
-            <div class="step-num">1</div>
-            <span class="step-label">Importar lista</span>
-          </div>
-          <div class="wizard-step" id="step-2">
-            <div class="step-num">2</div>
-            <span class="step-label">Configurar</span>
-          </div>
-          <div class="wizard-step" id="step-3">
-            <div class="step-num">3</div>
-            <span class="step-label">Acompanhar</span>
-          </div>
-        </div>
-
-        <!-- Etapa 1 — Importar -->
         <div class="painel-etapa ativo" id="etapa-1">
-          <div class="card" style="margin-bottom:20px;">
-            <h3 style="margin:0 0 16px;font-size:16px;font-weight:700;color:#0f172a;">📊 Importar arquivo de contatos (.xlsx)</h3>
+          <div class="card mb-6">
+            <h3 class="card-titulo mb-6"><i class="ph ph-file-arrow-up"></i> Importar contatos B2B</h3>
             <div class="drop-zone" id="drop-zone" onclick="document.getElementById('input-arquivo').click()">
-              <div class="drop-zone-icon">📤</div>
-              <p><strong>Clique ou arraste</strong> o arquivo .xlsx aqui</p>
-              <p style="margin-top:6px;font-size:12px;color:#94a3b8;">Formato: exportação CNPJ.biz · máx 20MB</p>
+              <div class="drop-zone-icon"><i class="ph ph-cloud-arrow-up"></i></div>
+              <p class="text-white fw-700">Arraste seu arquivo .xlsx aqui</p>
+              <p class="text-suave text-xs mt-2">Suporte a planilhas de exportação CNPJ.biz</p>
             </div>
             <input type="file" id="input-arquivo" accept=".xlsx,.xls" style="display:none">
             <div id="upload-status" style="display:none;margin-top:12px;">
@@ -268,9 +113,23 @@
 
         <!-- Etapa 2 — Configurar -->
         <div class="painel-etapa" id="etapa-2">
-          <div class="card" style="margin-bottom:20px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-              <h3 style="margin:0;font-size:16px;font-weight:700;color:#0f172a;">⚙️ Configurações do disparo</h3>
+          <div class="wizard-steps">
+            <div class="wizard-step concluido" id="step-1">
+              <i class="ph ph-file-csv"></i>
+              <span class="step-label">Importar</span>
+            </div>
+            <div class="wizard-step ativo" id="step-2">
+              <i class="ph ph-sliders"></i>
+              <span class="step-label">Configurar</span>
+            </div>
+            <div class="wizard-step" id="step-3">
+              <i class="ph ph-broadcast"></i>
+              <span class="step-label">Acompanhar</span>
+            </div>
+          </div>
+          <div class="card mb-6">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="card-titulo"><i class="ph ph-gear"></i> Configurações do disparo</h3>
               <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                 <input type="text" id="cfg-nome" placeholder="Nome da campanha (ex: Bares RS — PDV)"
                   style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#1e293b;outline:none;width:260px;"
@@ -310,10 +169,10 @@
               </div>
             </div>
 
-            <div style="margin-top:20px;background:#f8fafc;border-radius:10px;padding:14px 16px;">
-              <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
-                ⏱️ Intervalo aleatório entre mensagens
-                <span style="font-size:12px;font-weight:400;color:#94a3b8;margin-left:6px;">evita detecção de padrão</span>
+            <div class="p-4 bg-borda-suave rounded-lg mt-6">
+              <label class="text-xs fw-700 text-suave uppercase block mb-3">
+                <i class="ph ph-timer"></i> Intervalo aleatório entre mensagens
+                <span class="text-xs fw-400 opacity-50 ml-2">evita detecção de padrão</span>
               </label>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                 <div class="form-campo">
@@ -336,9 +195,9 @@
               </p>
             </div>
 
-            <div style="margin-top:20px;" id="bloco-instancias">
-              <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:10px;">
-                📱 Números WhatsApp para disparo (round-robin automático)
+            <div class="mt-6" id="bloco-instancias">
+              <label class="text-xs fw-700 text-suave uppercase block mb-3">
+                <i class="ph ph-whatsapp-logo"></i> Números WhatsApp para disparo
               </label>
               <div class="instancias-lista" id="instancias-lista">
                 <span style="color:#94a3b8;font-size:13px;" id="inst-vazio">Carregando instâncias...</span>
@@ -346,9 +205,9 @@
             </div>
           </div>
 
-          <div class="card" style="margin-bottom:20px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-              <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">🤖 Prompts de geração de mensagem</h3>
+          <div class="card mb-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="card-titulo"><i class="ph ph-magic-wand"></i> Prompts de geração de mensagem</h3>
               <button class="btn btn-outline btn-sm" onclick="gerarPreview()">↺ Gerar prévia</button>
             </div>
             <p style="margin:0 0 16px;font-size:13px;color:#64748b;">
@@ -415,6 +274,20 @@
 
         <!-- Etapa 3 — Acompanhar -->
         <div class="painel-etapa" id="etapa-3">
+          <div class="wizard-steps">
+            <div class="wizard-step concluido" id="step-1">
+              <i class="ph ph-file-csv"></i>
+              <span class="step-label">Importar</span>
+            </div>
+            <div class="wizard-step concluido" id="step-2">
+              <i class="ph ph-sliders"></i>
+              <span class="step-label">Configurar</span>
+            </div>
+            <div class="wizard-step ativo" id="step-3">
+              <i class="ph ph-broadcast"></i>
+              <span class="step-label">Acompanhar</span>
+            </div>
+          </div>
           <div class="acoes-disparo">
             <button class="btn btn-outline" id="btn-pausar"   onclick="pausarDisparo()"   style="display:none;">⏸ Pausar</button>
             <button class="btn btn-primario" id="btn-retomar" onclick="retomarDisparo()"  style="display:none;">▶ Retomar</button>
@@ -477,12 +350,12 @@
       <!-- ══════════════════════════════════════════════════ -->
       <div class="vista" id="vista-detalhe">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <button class="btn btn-outline btn-sm" onclick="irParaLista()">← Voltar</button>
-            <h2 style="margin:0;font-size:17px;font-weight:700;color:#0f172a;" id="det-nome">Campanha</h2>
+          <div class="flex items-center gap-3">
+            <button class="btn btn-outline btn-sm" onclick="irParaLista()"><i class="ph ph-arrow-left"></i> Voltar</button>
+            <h2 class="m-0 text-white" id="det-nome">Campanha</h2>
             <span class="badge" id="det-badge">—</span>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;" id="det-acoes"></div>
+          <div class="flex gap-2" id="det-acoes"></div>
         </div>
 
         <!-- Info + Config -->
@@ -555,8 +428,8 @@
 <div class="modal-overlay oculto" id="modal-editar">
   <div class="modal-box">
     <div class="modal-header">
-      <span class="modal-titulo">✏️ Editar Campanha</span>
-      <button class="modal-fechar" onclick="fecharModalEditar()">✕</button>
+      <span class="modal-titulo"><i class="ph ph-note-pencil"></i> Editar Campanha</span>
+      <button class="modal-fechar" onclick="fecharModalEditar()"><i class="ph ph-x"></i></button>
     </div>
     <div class="modal-body">
       <div style="display:flex;flex-direction:column;gap:14px;">

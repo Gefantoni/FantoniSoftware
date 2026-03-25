@@ -1,193 +1,186 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Comercial — Central do Negócio</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
   <link rel="stylesheet" href="/assets/css/comercial.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .kpi-card { 
+        background: var(--fundo-card); border: 1px solid var(--borda); border-radius: var(--radius-lg); 
+        padding: 24px; transition: var(--transicao); position: relative; overflow: hidden;
+    }
+    .kpi-card:hover { transform: translateY(-4px); border-color: var(--primaria); box-shadow: var(--sombra-hover); }
+    .kpi-card i { font-size: 24px; color: var(--primaria); margin-bottom: 12px; display: block; }
+    .kpi-valor { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; }
+    .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-suave); margin-top: 8px; }
+    
+    .funil-etapa { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+    .funil-label { width: 120px; font-size: 13px; color: var(--texto-suave); }
+    .funil-track { flex: 1; height: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; }
+    .funil-fill { height: 100%; background: linear-gradient(90deg, var(--primaria), #60a5fa); transition: width 1s ease; }
+  </style>
 </head>
 <body class="com-page">
-<div class="layout">
-  <aside class="sidebar" id="sidebar"></aside>
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar"></aside>
 
-  <div class="conteudo">
-    <div class="topbar">
-      <div class="flex items-center gap-2">
-        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
-        <span class="topbar-titulo">📊 Dashboard Comercial</span>
-      </div>
-      <span id="data-hoje" class="com-text-suave com-text-sm"></span>
-    </div>
+    <main class="app-content">
+      <header class="app-header"></header>
 
-    <div class="pagina" style="padding:24px">
-
-      <!-- KPIs -->
-      <div class="kpi-grid" id="kpi-grid">
-        <div class="kpi-card kpi-azul"><div class="kpi-icone">👤</div><div class="kpi-valor" id="k-total">—</div><div class="kpi-label">Total de Leads</div></div>
-        <div class="kpi-card kpi-verde"><div class="kpi-icone">✅</div><div class="kpi-valor" id="k-hoje">—</div><div class="kpi-label">Contatados Hoje</div></div>
-        <div class="kpi-card kpi-amarelo"><div class="kpi-icone">📊</div><div class="kpi-valor" id="k-taxa">—%</div><div class="kpi-label">Taxa de Resposta</div></div>
-        <div class="kpi-card kpi-roxo"><div class="kpi-icone">🔥</div><div class="kpi-valor" id="k-interesse">—</div><div class="kpi-label">Com Interesse</div></div>
-        <div class="kpi-card kpi-azul"><div class="kpi-icone">📋</div><div class="kpi-valor" id="k-kanban">—</div><div class="kpi-label">No Kanban</div></div>
-        <div class="kpi-card kpi-amarelo"><div class="kpi-icone">📅</div><div class="kpi-valor" id="k-reunioes">—</div><div class="kpi-label">Reuniões Hoje</div></div>
-        <div class="kpi-card kpi-verde"><div class="kpi-icone">🏆</div><div class="kpi-valor" id="k-fechados">—</div><div class="kpi-label">Fechados</div></div>
-        <div class="kpi-card kpi-vermelho"><div class="kpi-icone">❌</div><div class="kpi-valor" id="k-perdidos">—</div><div class="kpi-label">Perdidos</div></div>
-      </div>
-
-      <div class="com-grid-2 com-mb-3">
-        <!-- Funil de conversão -->
-        <div class="com-card">
-          <div class="com-card-titulo">Funil de Conversão</div>
-          <div class="funil" id="funil-container">
-            <div class="com-spinner"></div>
+      <div class="app-body">
+        <div class="justify-between flex items-center mb-6">
+          <div class="page-title">
+            <h1>Dashboard Comercial</h1>
+            <p class="text-suave" id="data-hoje"></p>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-outline btn-sm" onclick="carregarDashboard()"><i class="ph ph-arrows-clockwise"></i></button>
           </div>
         </div>
 
-        <!-- Agenda do dia -->
-        <div class="com-card">
-          <div class="com-flex-between com-mb-2">
-            <div class="com-card-titulo" style="margin:0">Agenda do Dia</div>
-            <a href="/admin/comercial/calendario.html" class="com-btn com-btn-ghost com-btn-sm">Ver calendário</a>
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card"><i class="ph ph-users"></i><div class="kpi-valor" id="k-total">0</div><div class="kpi-label">Total de Leads</div></div>
+          <div class="kpi-card"><i class="ph ph-paper-plane-tilt"></i><div class="kpi-valor" id="k-hoje">0</div><div class="kpi-label">Contatados Hoje</div></div>
+          <div class="kpi-card"><i class="ph ph-chart-line-up"></i><div class="kpi-valor" id="k-taxa">0%</div><div class="kpi-label">Taxa de Resposta</div></div>
+          <div class="kpi-card"><i class="ph ph-fire"></i><div class="kpi-valor" id="k-interesse">0</div><div class="kpi-label">Com Interesse</div></div>
+          <div class="kpi-card"><i class="ph ph-columns"></i><div class="kpi-valor" id="k-kanban">0</div><div class="kpi-label">No Kanban</div></div>
+          <div class="kpi-card"><i class="ph ph-calendar-check"></i><div class="kpi-valor" id="k-reunioes">0</div><div class="kpi-label">Reuniões Hoje</div></div>
+          <div class="kpi-card"><i class="ph ph-trophy" style="color:var(--sucesso)"></i><div class="kpi-valor" id="k-fechados">0</div><div class="kpi-label">Vendas</div></div>
+          <div class="kpi-card"><i class="ph ph-prohibit" style="color:var(--erro)"></i><div class="kpi-valor" id="k-perdidos">0</div><div class="kpi-label">Perdidos</div></div>
+        </div>
+
+        <div class="grid-2 mb-6">
+          <!-- Funil -->
+          <div class="card">
+            <div class="card-titulo"><i class="ph ph-funnel"></i> Funil de Conversão</div>
+            <div id="funil-container" class="py-4">
+              <div class="spinner"></div>
+            </div>
           </div>
-          <div id="agenda-hoje">
-            <div class="com-spinner"></div>
+
+          <!-- Agenda -->
+          <div class="card">
+            <div class="justify-between flex items-center mb-4">
+               <h3 class="card-titulo m-0"><i class="ph ph-calendar-blank"></i> Agenda do Dia</h3>
+               <a href="/admin/comercial/calendario.html" class="text-xs text-primaria fw-600">Ver Calendário</a>
+            </div>
+            <div id="agenda-hoje" class="flex flex-col gap-3">
+               <div class="spinner"></div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="com-grid-3 com-mb-3">
-        <!-- Instância 1 -->
-        <div class="com-card" id="inst-1">
-          <div class="com-card-titulo">Instância 1</div>
-          <div class="com-spinner"></div>
+        <!-- Instâncias WhatsApp -->
+        <div class="page-title mb-4">
+            <h2 class="text-lg fw-700 text-white">Canais de Atendimento</h2>
         </div>
-        <!-- Instância 2 -->
-        <div class="com-card" id="inst-2">
-          <div class="com-card-titulo">Instância 2</div>
-          <div class="com-spinner"></div>
+        <div class="grid-3 mb-6" id="instancias-container">
+           <!-- Dinâmico -->
         </div>
-        <!-- Instância 3 -->
-        <div class="com-card" id="inst-3">
-          <div class="com-card-titulo">Instância 3</div>
-          <div class="com-spinner"></div>
-        </div>
-      </div>
 
-      <!-- Feed de atividade -->
-      <div class="com-card">
-        <div class="com-flex-between com-mb-2">
-          <div class="com-card-titulo" style="margin:0">Atividade Recente</div>
-          <a href="/admin/comercial/relatorios.html" class="com-btn com-btn-ghost com-btn-sm">Ver relatórios</a>
-        </div>
-        <div class="feed" id="feed-atividades">
-          <div class="com-spinner"></div>
+        <!-- Feed Atividade -->
+        <div class="card">
+           <div class="justify-between flex items-center mb-4">
+               <h3 class="card-titulo m-0"><i class="ph ph-clock-counter-clockwise"></i> Atividade Recente</h3>
+               <a href="/admin/comercial/relatorios.html" class="text-xs text-primaria fw-600">Ver Relatórios</a>
+           </div>
+           <div id="feed-atividades" class="flex flex-col gap-1">
+               <div class="spinner"></div>
+           </div>
         </div>
       </div>
-
-    </div>
+    </main>
   </div>
-</div>
 
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/auth.js"></script>
-<script src="/assets/js/sidebar-admin.js"></script>
-<script>
-const usuario = protegerPagina(['admin','comercial']);
-if (usuario) {
-  inicializarLayout();
-  document.getElementById('data-hoje').textContent =
-    new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
-  carregarDashboard();
-}
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/sidebar-admin.js"></script>
+  <script>
+    const usuario = protegerPagina(['admin','comercial']);
+    if (usuario) {
+      inicializarLayout();
+      document.getElementById('data-hoje').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+      carregarDashboard();
+    }
 
-async function carregarDashboard() {
-  try {
-    const [dash, { funil }] = await Promise.all([
-      api.get('/comercial/dashboard'),
-      api.get('/relatorios-comercial/funil')
-    ]);
+    async function carregarDashboard() {
+      try {
+        const [dash, { funil }] = await Promise.all([
+          api.get('/comercial/dashboard'),
+          api.get('/relatorios-comercial/funil')
+        ]);
 
-    // KPIs
-    const k = dash.kpis;
-    document.getElementById('k-total').textContent    = k.total_leads;
-    document.getElementById('k-hoje').textContent     = k.contatados_hoje;
-    document.getElementById('k-taxa').textContent     = k.taxa_resposta + '%';
-    document.getElementById('k-interesse').textContent = k.com_interesse;
-    document.getElementById('k-kanban').textContent   = k.no_kanban;
-    document.getElementById('k-reunioes').textContent = k.reunioes_hoje;
-    document.getElementById('k-fechados').textContent = k.fechados;
-    document.getElementById('k-perdidos').textContent = k.perdidos_ops;
+        const k = dash.kpis;
+        document.getElementById('k-total').textContent = k.total_leads;
+        document.getElementById('k-hoje').textContent = k.contatados_hoje;
+        document.getElementById('k-taxa').textContent = k.taxa_resposta + '%';
+        document.getElementById('k-interesse').textContent = k.com_interesse;
+        document.getElementById('k-kanban').textContent = k.no_kanban;
+        document.getElementById('k-reunioes').textContent = k.reunioes_hoje;
+        document.getElementById('k-fechados').textContent = k.fechados;
+        document.getElementById('k-perdidos').textContent = k.perdidos_ops;
 
-    // Funil
-    const maxTotal = funil[0]?.total || 1;
-    document.getElementById('funil-container').innerHTML = funil.map(f => `
-      <div class="funil-etapa">
-        <span class="funil-label">${f.etapa}</span>
-        <div class="funil-barra-wrap">
-          <div class="funil-barra" style="width:${Math.max(4, (f.total / maxTotal) * 100)}%">
-            ${f.total > 0 ? f.total : ''}
+        // Funil
+        const max = funil[0]?.total || 1;
+        document.getElementById('funil-container').innerHTML = funil.map(f => `
+          <div class="funil-etapa">
+            <div class="funil-label">${f.etapa}</div>
+            <div class="funil-track"><div class="funil-fill" style="width:${(f.total/max)*100}%"></div></div>
+            <div class="text-white fw-700 w-10 text-right">${f.total}</div>
           </div>
-        </div>
-        <span class="funil-total">${f.total}</span>
-      </div>
-    `).join('');
+        `).join('');
 
-    // Agenda do dia
-    const reunioes = dash.reunioes_hoje;
-    document.getElementById('agenda-hoje').innerHTML = reunioes.length ? reunioes.map(r => `
-      <div style="padding:12px 0;border-bottom:1px solid var(--com-borda-suave);display:flex;gap:12px;align-items:flex-start">
-        <div style="background:rgba(37,99,235,0.1);border-radius:8px;padding:8px 10px;text-align:center;flex-shrink:0">
-          <div style="font-size:16px;font-weight:700;color:var(--com-azul-brilho)">${new Date(r.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>
-        </div>
-        <div>
-          <div style="font-size:14px;font-weight:600;color:var(--com-texto)">${r.titulo}</div>
-          <div class="com-text-suave com-text-sm">${r.leads?.nome || r.leads?.empresa || '—'}</div>
-          <span class="com-badge com-badge-${r.status==='concluida'?'verde':r.status==='cancelada'?'vermelho':'azul'}">${r.status}</span>
-        </div>
-      </div>
-    `).join('') : '<p class="com-text-suave com-text-sm" style="text-align:center;padding:20px">Nenhuma reunião hoje</p>';
+        // Agenda
+        const reunioes = dash.reunioes_hoje;
+        document.getElementById('agenda-hoje').innerHTML = reunioes.length ? reunioes.map(r => `
+          <div class="flex gap-3 p-3" style="background:rgba(255,255,255,0.02); border:1px solid var(--borda); border-radius:8px">
+            <div class="text-center" style="min-width:60px">
+              <div class="text-primaria fw-800">${new Date(r.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>
+            </div>
+            <div>
+               <div class="text-sm fw-600 text-white">${r.titulo}</div>
+               <div class="text-xs text-suave">${r.leads?.nome || 'Lead sem nome'}</div>
+            </div>
+          </div>
+        `).join('') : '<div class="text-center text-suave py-4">Nenhuma reunião hoje.</div>';
 
-    // Instâncias
-    const insts = dash.instancias;
-    [0,1,2].forEach(i => {
-      const el = document.getElementById(`inst-${i+1}`);
-      const inst = insts[i];
-      if (!inst) { el.innerHTML = `<div class="com-card-titulo">Instância ${i+1}</div><p class="com-text-suave com-text-sm">Não configurada</p>`; return; }
-      el.innerHTML = `
-        <div class="com-flex-between com-mb-2">
-          <div class="com-card-titulo" style="margin:0">${inst.nome}</div>
-          <span class="com-badge com-badge-${inst.status==='ativo'?'verde':'cinza'}">${inst.status}</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          ${statLinha('📤 Disparos', '—')}
-          ${statLinha('💬 Respostas', '—')}
-          ${statLinha('🔥 Oportunidades', '—')}
-          ${statLinha('📅 Reuniões', '—')}
-        </div>`;
-    });
+        // Instâncias
+        const insts = dash.instancias;
+        document.getElementById('instancias-container').innerHTML = [0,1,2].map(i => {
+            const inst = insts[i];
+            if(!inst) return `<div class="card opacity-50"><div class="text-center py-4 text-suave">Canal ${i+1} não configurado</div></div>`;
+            return `
+            <div class="card">
+                <div class="justify-between flex items-center mb-3">
+                    <h3 class="card-titulo m-0"><i class="ph ph-whatsapp-logo" style="color:#25d366"></i> ${inst.nome}</h3>
+                    <span class="badge ${inst.status==='ativo'?'badge-verde':'badge-vermelho'}">${inst.status}</span>
+                </div>
+                <div class="text-xs text-suave">Conectado e pronto para disparos automáticos.</div>
+            </div>`;
+        }).join('');
 
-    // Feed de atividades
-    const atividades = dash.atividades_recentes;
-    const emojiTipo = { oportunidade_criada:'🎯', kanban_movido:'📋', reuniao_criada:'📅', reuniao_concluida:'✅', ia_desativada:'🤖', humano_assumiu:'👤', campanha_iniciada:'📢' };
-    document.getElementById('feed-atividades').innerHTML = atividades.length ? atividades.map(a => `
-      <div class="feed-item">
-        <div class="feed-icone">${emojiTipo[a.tipo] || '📌'}</div>
-        <div class="feed-corpo">
-          <div class="feed-texto">${a.descricao}</div>
-          <div class="feed-meta">${a.perfis?.nome || 'Sistema'} · ${formatarData(a.criado_em)}</div>
-        </div>
-      </div>
-    `).join('') : '<p class="com-text-suave com-text-sm" style="text-align:center;padding:20px">Nenhuma atividade registrada</p>';
+        // Feed
+        const atividades = dash.atividades_recentes;
+        const icons = { oportunidade_criada:'ph-target', kanban_movido:'ph-arrows-left-right', reuniao_criada:'ph-calendar-plus', reuniao_concluida:'ph-check-circle' };
+        document.getElementById('feed-atividades').innerHTML = atividades.map(a => `
+          <div class="flex gap-3 py-3 border-b" style="border-color:var(--borda)">
+            <i class="ph ${icons[a.type] || 'ph-dot'} text-primaria" style="font-size:18px"></i>
+            <div>
+                <div class="text-sm text-white">${a.descricao}</div>
+                <div class="text-xs text-suave">${formatarData(a.criado_em)}</div>
+            </div>
+          </div>
+        `).join('');
 
-  } catch(err) {
-    console.error('Erro ao carregar dashboard comercial:', err);
-  }
-}
-
-function statLinha(label, valor) {
-  return `<div class="com-flex-between"><span class="com-text-suave com-text-sm">${label}</span><span style="font-weight:600;color:var(--com-texto)">${valor}</span></div>`;
-}
-</script>
+      } catch(err) { console.error(err); }
+    }
+  </script>
 </body>
 </html>

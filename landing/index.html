@@ -1791,9 +1791,9 @@
     </style>
     <div class="billing-tabs" data-aos="fade-up">
       <div class="billing-tab-group">
-        <button class="billing-tab" id="tab-mensal" onclick="setBilling('mensal')">Mensal</button>
+        <button class="billing-tab active" id="tab-mensal" onclick="setBilling('mensal')">Mensal</button>
         <button class="billing-tab" id="tab-semestral" onclick="setBilling('semestral')">Semestral</button>
-        <button class="billing-tab active" id="tab-anual" onclick="setBilling('anual')">Anual <span class="badge-cert-tab">+ Cert. Digital</span></button>
+        <button class="billing-tab" id="tab-anual" onclick="setBilling('anual')">Anual <span class="badge-cert-tab">+ Cert. Digital</span></button>
       </div>
     </div>
 
@@ -2174,7 +2174,7 @@
   const modalCheckout = document.getElementById('checkout-modal');
   const modalLead = document.getElementById('lead-modal');
 
-  let billingMode = 'anual';
+  let billingMode = 'mensal';
 
   function openCheckout(planName) {
     if (billingMode !== 'mensal') planName += '-' + billingMode;
@@ -2191,21 +2191,21 @@
     const note = s => '<span style="font-size:13px;font-weight:500;color:#94a3b8;margin-top:6px;display:block;line-height:1;">' + s + '</span>';
 
     if (mode === 'mensal') {
-      document.getElementById('price-mei').innerHTML = 'R$ 99<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>';
-      document.getElementById('price-essencial').innerHTML = 'R$ 119<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>';
-      document.getElementById('price-premium').innerHTML = 'R$ 139<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>';
+      document.getElementById('price-mei').innerHTML = 'R$ 99<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Assinatura Mensal');
+      document.getElementById('price-essencial').innerHTML = 'R$ 119<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Assinatura Mensal');
+      document.getElementById('price-premium').innerHTML = 'R$ 139<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Assinatura Mensal');
       document.querySelectorAll('.benefit-anual').forEach(el => el.style.display = 'none');
       document.querySelectorAll('.hint-cert').forEach(el => el.style.display = 'flex');
     } else if (mode === 'semestral') {
-      document.getElementById('price-mei').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">6x de </span>R$ 89<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>' + note('Total: R$ 534 no semestre');
-      document.getElementById('price-essencial').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">6x de </span>R$ 109<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>' + note('Total: R$ 654 no semestre');
-      document.getElementById('price-premium').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">6x de </span>R$ 119<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>' + note('Total: R$ 714 no semestre');
+      document.getElementById('price-mei').innerHTML = 'R$ 534<span style="font-size:20px;font-weight:600;color:#94a3b8;"> à vista</span>' + note('Equivale a R$ 89/mês');
+      document.getElementById('price-essencial').innerHTML = 'R$ 654<span style="font-size:20px;font-weight:600;color:#94a3b8;"> à vista</span>' + note('Equivale a R$ 109/mês');
+      document.getElementById('price-premium').innerHTML = 'R$ 714<span style="font-size:20px;font-weight:600;color:#94a3b8;"> à vista</span>' + note('Equivale a R$ 119/mês');
       document.querySelectorAll('.benefit-anual').forEach(el => el.style.display = 'none');
       document.querySelectorAll('.hint-cert').forEach(el => el.style.display = 'flex');
     } else {
-      document.getElementById('price-mei').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">12x de </span>R$ 79<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>' + note('Total: R$ 948/ano');
-      document.getElementById('price-essencial').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">12x de </span>R$ 99<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>' + note('Total: R$ 1.188/ano');
-      document.getElementById('price-premium').innerHTML = '<span style="font-size:16px;font-weight:600;color:#94a3b8;">12x de </span>R$ 109<span style="font-size:20px;font-weight:600;color:#94a3b8;">,00</span>' + note('Total: R$ 1.308/ano');
+      document.getElementById('price-mei').innerHTML = 'R$ 948<span style="font-size:20px;font-weight:600;color:#94a3b8;"> à vista</span>' + note('Equivale a R$ 79/mês');
+      document.getElementById('price-essencial').innerHTML = 'R$ 1.188<span style="font-size:20px;font-weight:600;color:#94a3b8;"> à vista</span>' + note('Equivale a R$ 99/mês');
+      document.getElementById('price-premium').innerHTML = 'R$ 1.308<span style="font-size:20px;font-weight:600;color:#94a3b8;"> à vista</span>' + note('Equivale a R$ 109/mês');
       document.querySelectorAll('.benefit-anual').forEach(el => el.style.display = 'flex');
       document.querySelectorAll('.hint-cert').forEach(el => el.style.display = 'none');
     }

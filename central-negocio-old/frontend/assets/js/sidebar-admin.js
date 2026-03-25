@@ -1,47 +1,75 @@
 // Sidebar dinâmica para o painel admin — Central do Negócio
-// Inclua este script APÓS api.js e auth.js em todas as páginas admin
-(function injetarSidebar() {
+// Injeção de Layout Moderno em Dark Mode (Admin)
+(function injetarSidebarAdmin() {
   const sidebar = document.getElementById('sidebar');
   if (!sidebar) return;
 
+  const MENU = [
+    { label: 'Geral', items: [
+      { href: '/admin/', icone: 'ph ph-chart-line-up', label: 'Dashboard' },
+      { href: '/admin/clientes.html', icone: 'ph ph-users', label: 'Clientes' }
+    ]},
+    { label: 'Operacional', items: [
+      { href: '/admin/modulos.html', icone: 'ph ph-play-circle', label: 'Cursos e Aulas' },
+      { href: '/admin/tickets.html', icone: 'ph ph-ticket', label: 'Gestão de Tickets' }
+    ]},
+    { label: 'Financeiro', items: [
+      { href: '/admin/financeiro.html', icone: 'ph ph-bank', label: 'Controle Financeiro' }
+    ]},
+    { label: 'Crescimento', items: [
+      { href: '/admin/comercial/leads.html', icone: 'ph ph-user-focus', label: 'Leads CRM' },
+      { href: '/admin/comercial/landing-leads.html', icone: 'ph ph-globe', label: 'Leads do Site' },
+      { href: '/admin/comercial/disparos.html', icone: 'ph ph-rocket-launch', label: 'Automação Zap' },
+      { href: '/admin/comercial/kanban.html', icone: 'ph ph-layout', label: 'Kanban Vendas' },
+      { href: '/admin/comercial/relatorios.html', icone: 'ph ph-presentation-chart', label: 'Relatórios' }
+    ]}
+  ];
+
+  let menuHTML = '';
+  MENU.forEach(secao => {
+    const links = secao.items.map(item => {
+      const isActive = window.location.pathname === item.href;
+      return `<a href="${item.href}" class="nav-item ${isActive ? 'active' : ''}">
+        <i class="${item.icone} i-md"></i>
+        <span>${item.label}</span>
+      </a>`;
+    }).join('');
+    menuHTML += `<div class="nav-group"><span class="nav-label">${secao.label}</span>${links}</div>`;
+  });
+
+  const iniciais = JSON.parse(localStorage.getItem('fantoni_usuario'))?.nome?.charAt(0) || 'A';
+
   sidebar.innerHTML = `
     <div class="sidebar-logo">
-      <img src="/assets/logo.png" alt="Fantoni Software" style="height:36px;width:auto;object-fit:contain;margin-bottom:6px;display:block;">
-      <h2>Central do Negócio</h2>
-      <span>Painel Admin</span>
+      <img src="/assets/logo.png" alt="Fantoni">
+      <div>
+        <h2>Admin Fantoni</h2>
+        <p style="font-size:10px; color:var(--texto-muted); text-transform:uppercase;">Central do Negócio</p>
+      </div>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-section-title">Geral</div>
-      <a href="/admin/" class="nav-item">🏠 Dashboard</a>
-      <a href="/admin/clientes.html" class="nav-item">👥 Clientes</a>
-
-      <div class="nav-section-title">Conteúdo</div>
-      <a href="/admin/modulos.html" class="nav-item">🎬 Módulos e Aulas</a>
-
-      <div class="nav-section-title">Atendimento</div>
-      <a href="/admin/tickets.html" class="nav-item">🎫 Tickets</a>
-
-      <div class="nav-section-title">Financeiro</div>
-      <a href="/admin/financeiro.html" class="nav-item">💰 Financeiro</a>
-
-      <div class="nav-section-title">Comercial</div>
-      <a href="/admin/comercial/" class="nav-item">📊 Dashboard</a>
-      <a href="/admin/comercial/leads.html" class="nav-item">👤 Leads CRM</a>
-      <a href="/admin/comercial/landing-leads.html" class="nav-item">🌐 Leads do Site</a>
-      <a href="/admin/comercial/disparos.html" class="nav-item">🚀 Disparos em Massa</a>
-      <a href="/admin/comercial/conversas.html" class="nav-item">💬 Conversas</a>
-      <a href="/admin/comercial/kanban.html" class="nav-item">📋 Kanban</a>
-      <a href="/admin/comercial/calendario.html" class="nav-item">📅 Calendário</a>
-      <a href="/admin/comercial/relatorios.html" class="nav-item">📈 Relatórios</a>
-      <a href="/admin/comercial/ia.html" class="nav-item">🤖 IA Comercial</a>
-      <a href="/admin/comercial/configuracoes.html" class="nav-item">⚙️ Configurações</a>
+      ${menuHTML}
     </nav>
     <div class="sidebar-footer">
-      <div class="sidebar-usuario">
-        <strong id="usuario-nome">—</strong>
-        <span id="usuario-role">Admin</span>
+      <div class="user-info">
+        <div class="user-avatar" style="background:var(--texto-muted)">${iniciais}</div>
+        <div class="user-details">
+          <span class="user-name" id="admin-nome">Administrador</span>
+          <span class="user-role">Super Admin</span>
+        </div>
       </div>
-      <button class="btn-logout">Sair</button>
+      <button class="btn btn-outline btn-sm w-100" id="btn-logout-admin">
+        <i class="ph ph-sign-out"></i> Logout
+      </button>
     </div>
   `;
+
+  document.getElementById('btn-logout-admin')?.addEventListener('click', () => {
+    localStorage.removeItem('fantoni_token');
+    window.location.href = '/';
+  });
+
+  // Atualiza nome do admin se disponível
+  const user = JSON.parse(localStorage.getItem('fantoni_usuario'));
+  if (user && user.nome) document.getElementById('admin-nome').textContent = user.nome.split(' ')[0];
 })();

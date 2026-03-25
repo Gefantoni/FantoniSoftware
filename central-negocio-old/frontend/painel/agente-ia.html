@@ -1,53 +1,114 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agente IA — Central do Negócio</title>
+  <title>Consultor IA — Central do Negócio</title>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
-</head>
+  <style>
+    .ai-wrapper {
+        max-width: 1000px; margin: 0 auto; height: calc(100vh - 160px);
+        display: flex; flex-direction: column; gap: 24px;
+    }
+    
+    .chat-card {
+        flex: 1; background: var(--fundo-card); border: 1px solid var(--borda);
+        border-radius: 24px; display: flex; flex-direction: column; overflow: hidden;
+        box-shadow: var(--sombra);
+    }
+    
+    .chat-header {
+        padding: 24px 32px; border-bottom: 1px solid var(--borda);
+        background: linear-gradient(to right, rgba(59,130,246,0.05), transparent);
+        display: flex; align-items: center; gap: 16px;
+    }
+    
+    .ai-avatar {
+        width: 48px; height: 48px; border-radius: 14px; background: var(--primaria);
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 20px rgba(59,130,246,0.3);
+    }
+    
+    .msgs-container { flex: 1; overflow-y: auto; padding: 32px; display: flex; flex-direction: column; gap: 20px; }
+    
+    .msg { max-width: 85%; padding: 16px 20px; border-radius: 20px; font-size: 14px; line-height: 1.6; position: relative; }
+    .msg-bot { background: rgba(255,255,255,0.03); color: var(--texto); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--borda); }
+    .msg-user { background: var(--primaria); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(59,130,246,0.2); }
 
+    .input-group { 
+        padding: 24px 32px; border-top: 1px solid var(--borda); background: rgba(0,0,0,0.2);
+        display: flex; flex-direction: column; gap: 16px;
+    }
+    .input-box {
+        background: rgba(255,255,255,0.05); border: 1px solid var(--borda); border-radius: 16px;
+        padding: 8px 16px; display: flex; items-center; gap: 12px;
+    }
+    .chat-input { flex: 1; background: transparent; border: none; color: #fff; padding: 12px 0; outline: none; resize: none; font-family: inherit; font-size: 14px; }
+
+    .suggestions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+        background: rgba(255,255,255,0.03); border: 1px solid var(--borda);
+        padding: 8px 16px; border-radius: 10px; font-size: 11px; color: var(--texto-suave);
+        cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .chip:hover { background: rgba(59,130,246,0.1); border-color: var(--primaria); color: #fff; }
+
+    .typing { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--primaria); font-weight: 600; }
+  </style>
+</head>
 <body>
   <div class="app-layout">
     <aside class="app-sidebar" id="sidebar"></aside>
 
     <main class="app-content">
-      <header class="app-header" id="topbar"></header>
+      <header class="app-header"></header>
 
-      <div class="pagina" style="display:flex;flex-direction:column;min-height:calc(100vh - 73px);padding-bottom:0">
-        <div class="chat-container"
-          style="flex:1;margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0">
-          <div class="chat-mensagens" id="chat-mensagens">
-            <!-- Mensagem de boas-vindas -->
-            <div class="mensagem mensagem-outro">
-              👋 Olá! Sou o assistente de suporte do sistema PDV. Posso te ajudar com dúvidas sobre o sistema.
-              <div class="mensagem-hora">Agora</div>
+      <div class="app-body">
+        
+        <div class="ai-wrapper">
+            <div class="chat-card">
+                <div class="chat-header">
+                    <div class="ai-avatar"><i class="ph ph-robot text-white text-2xl"></i></div>
+                    <div>
+                        <h3 class="text-white m-0">Consultor Fantoni IA</h3>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="w-2 h-2 rounded-full bg-sucesso animate-pulse"></span>
+                            <span class="text-[10px] text-suave uppercase tracking-widest">Sempre Online</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="msgs-container" id="chat-msgs">
+                    <div class="msg msg-bot">
+                        Olá! Sou sua inteligência artificial de suporte. Como posso ajudar com sua operação Fantoni hoje?
+                        <br><br>
+                        <em>Tente perguntar sobre: "Como fechar o caixa?", "Configurar mesas" ou "Relatórios de lucratividade".</em>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="suggestions">
+                        <div class="chip" onclick="ask('Como abrir o caixa?')">Abertura de Caixa</div>
+                        <div class="chip" onclick="ask('Emitir nota fiscal')">Nota Fiscal</div>
+                        <div class="chip" onclick="ask('Configurar Mesas')">Restaurantes</div>
+                        <div class="chip" onclick="ask('Cadastrar Produto')">Produtos</div>
+                    </div>
+                    
+                    <div class="input-box">
+                        <textarea id="ai-input" class="chat-input" placeholder="Digite sua dúvida aqui..." rows="1"
+                                  onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+                        <button class="btn btn-primario btn-sm" style="width:44px; height:44px; border-radius:12px; min-width:44px" onclick="send()">
+                            <i class="ph ph-paper-plane-right"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <div class="chat-input-area">
-            <textarea class="chat-input" id="chat-input" placeholder="Digite sua dúvida..." rows="1"
-              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarPergunta()}"></textarea>
-            <button class="btn btn-primario" onclick="enviarPergunta()" id="btn-enviar">Enviar</button>
-          </div>
         </div>
 
-        <!-- Sugestões rápidas -->
-        <div style="padding:12px 0;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como fazer abertura de caixa?')">Abertura de
-            caixa</button>
-          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como emitir nota fiscal?')">Nota
-            fiscal</button>
-          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como cadastrar produto?')">Cadastro de
-            produto</button>
-          <button class="btn btn-sm btn-outline" onclick="perguntaRapida('Como fazer fechamento de caixa?')">Fechamento
-            de caixa</button>
-        </div>
       </div>
-    </div>
+    </main>
   </div>
 
   <script src="/assets/js/api.js"></script>
@@ -55,99 +116,70 @@
   <script src="/assets/js/sidebar-painel.js"></script>
   <script>
     const usuario = protegerPagina(['cliente']);
-    let historico = [];
+    let history = [];
 
-    if (usuario) inicializarLayout();
-
-    function perguntaRapida(texto) {
-      document.getElementById('chat-input').value = texto;
-      enviarPergunta();
+    function ask(txt) {
+        document.getElementById('ai-input').value = txt;
+        send();
     }
 
-    async function enviarPergunta() {
-      const input = document.getElementById('chat-input');
-      const pergunta = input.value.trim();
-      if (!pergunta) return;
+    async function send() {
+        const input = document.getElementById('ai-input');
+        const q = input.value.trim();
+        if(!q) return;
 
-      const btn = document.getElementById('btn-enviar');
-      input.value = '';
-      btn.disabled = true;
-      btn.textContent = '...';
+        input.value = '';
+        input.style.height = 'auto';
+        
+        addMsg(q, 'user');
+        history.push({ role: 'user', content: q });
 
-      // Adiciona mensagem do usuário
-      adicionarMensagem(pergunta, 'minha');
-      historico.push({ role: 'user', content: pergunta });
+        const loadingId = addMsg('Processando sua dúvida...', 'bot', true);
 
-      // Indicador de digitação
-      const typingId = adicionarMensagem('🤖 Pensando...', 'outro', true);
+        try {
+            const { resposta, videoRelacionado } = await api.post('/agente-ia/perguntar', {
+                pergunta: q,
+                historico: history.slice(-6)
+            });
 
-      try {
-        const { resposta, videoRelacionado } = await api.post('/agente-ia/perguntar', { pergunta, historico: historico.slice(-10) });
+            document.getElementById(loadingId)?.remove();
+            addMsg(resposta, 'bot');
+            history.push({ role: 'assistant', content: resposta });
 
-        // Remove indicador e adiciona resposta
-        document.getElementById(typingId)?.remove();
+            if(videoRelacionado) {
+                const container = document.getElementById('chat-msgs');
+                const btn = document.createElement('div');
+                btn.innerHTML = `
+                    <a href="${videoRelacionado}" target="_blank" class="btn btn-outline btn-sm gap-2 mt-2 border-primaria/30 text-primaria hover:bg-primaria/10">
+                        <i class="ph ph-play-circle"></i> Assistir Tutorial em Vídeo
+                    </a>
+                `;
+                container.appendChild(btn);
+                container.scrollTop = container.scrollHeight;
+            }
+        } catch {
+            document.getElementById(loadingId)?.remove();
+            addMsg('Desculpe, tive um problema técnico. Pode repetir?', 'bot');
+        }
+    }
 
-        let respostaCompleta = resposta;
-        if (videoRelacionado) {
-          respostaCompleta += `\n\n📹 Existe um vídeo tutorial disponível para essa dúvida.`;
+    function addMsg(txt, type, isLoading = false) {
+        const container = document.getElementById('chat-msgs');
+        const id = isLoading ? 'load-' + Date.now() : '';
+        const div = document.createElement('div');
+        div.className = `msg msg-${type}`;
+        if(id) div.id = id;
+
+        if(isLoading) {
+            div.innerHTML = `<span class="typing"><i class="ph ph-circle-notch ph-spin"></i> ${txt}</span>`;
+        } else {
+            div.innerHTML = txt.replace(/\n/g, '<br>');
         }
 
-        adicionarMensagem(respostaCompleta, 'outro');
-        historico.push({ role: 'assistant', content: resposta });
-
-        // Botão de vídeo se houver
-        if (videoRelacionado) {
-          adicionarBotaoVideo(videoRelacionado);
-        }
-      } catch (err) {
-        document.getElementById(typingId)?.remove();
-        adicionarMensagem('Desculpe, ocorreu um erro. Por favor, tente novamente ou abra um chamado.', 'outro');
-      }
-
-      btn.disabled = false;
-      btn.textContent = 'Enviar';
-    }
-
-    function adicionarMensagem(texto, tipo, comId = false) {
-      const container = document.getElementById('chat-mensagens');
-      const id = comId ? 'msg-' + Date.now() : '';
-      const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-      const el = document.createElement('div');
-      el.className = `mensagem mensagem-${tipo}`;
-      if (id) el.id = id;
-      el.innerHTML = `${esc(texto).replace(/\n/g, '<br>')}<div class="mensagem-hora">${hora}</div>`;
-      container.appendChild(el);
-      container.scrollTop = container.scrollHeight;
-      return id;
-    }
-
-    function adicionarBotaoVideo(url) {
-      const container = document.getElementById('chat-mensagens');
-      const el = document.createElement('div');
-      el.style.cssText = 'align-self:flex-start;margin-top:4px';
-      const a = document.createElement('a');
-      a.setAttribute('href', url);
-      a.target = '_blank';
-      a.className = 'btn btn-acento btn-sm';
-      a.textContent = '▶ Assistir vídeo tutorial';
-      el.appendChild(a);
-      container.appendChild(el);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    function limparConversa() {
-      historico = [];
-      const container = document.getElementById('chat-mensagens');
-      container.innerHTML = `
-      <div class="mensagem mensagem-outro">
-        👋 Olá! Sou o assistente de suporte do sistema PDV. Posso te ajudar com dúvidas sobre o sistema.
-        <div class="mensagem-hora">Agora</div>
-      </div>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        return id;
     }
   </script>
-      </div><!-- /pagina -->
-    </main><!-- /app-content -->
-  </div><!-- /app-layout -->
-
+</body>
 </html>
