@@ -950,7 +950,11 @@
 
     /* Viewport com fade suave nas bordas (CSS puro, sem JS) */
     .marquee-viewport {
-      overflow: hidden;
+      /* overflow-x esconde o scroll horizontal; overflow-y visível para o scale(hover) não ser cortado */
+      overflow-x: hidden;
+      overflow-y: visible;
+      /* Padding vertical para dar espaço ao scale(1.1) sem clipping */
+      padding: 10px 0;
       -webkit-mask-image: linear-gradient(
         to right,
         transparent 0%,
