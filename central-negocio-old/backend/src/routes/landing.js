@@ -6,18 +6,20 @@ const { adminOuComercial } = require('../middleware/roles');
 
 const router = express.Router();
 
-// GET /landing/leads — leads que ativaram período teste
+// GET /landing/leads — leads do site (teste grátis + consultor)
 router.get('/leads', autenticar, adminOuComercial, async (req, res) => {
-  const { busca } = req.query;
+  const { busca, origem } = req.query;
   const limit  = Math.min(Number(req.query.limit)  || 100, 500);
   const offset = Math.max(Number(req.query.offset) || 0,   0);
   try {
     let query = supabaseAdmin
       .from('leads')
-      .select('id, name, email, whatsapp, cpf_cnpj, origem, created_at', { count: 'exact' })
-      .not('name', 'is', null)
+      .select('id, name, email, whatsapp, cpf_cnpj, origem, segmento, notas, created_at', { count: 'exact' })
+      .in('origem', ['Teste Site', 'Consultor Site'])
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
+
+    if (origem) query = query.eq('origem', origem);
 
     if (busca) {
       query = query.or(`name.ilike.%${busca}%,email.ilike.%${busca}%,whatsapp.ilike.%${busca}%`);
