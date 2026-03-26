@@ -10,172 +10,348 @@
   <link rel="stylesheet" href="/assets/css/comercial.css">
   <style>
     .chat-layout {
-      display: grid; grid-template-columns: 320px 1fr 300px; height: calc(100vh - 120px);
-      background: var(--fundo-card); border: 1px solid var(--borda); border-radius: var(--radius-lg); overflow: hidden;
+      display: grid;
+      grid-template-columns: 320px 1fr 280px;
+      height: calc(100vh - 140px);
+      background: var(--fundo-card);
+      border: 1px solid var(--borda);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
     }
-    .chat-sidebar { border-right: 1px solid var(--borda); display: flex; flex-direction: column; background: rgba(255,255,255,0.01); }
-    .chat-main { display: flex; flex-direction: column; background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.03), transparent); }
-    .chat-context { border-left: 1px solid var(--borda); padding: 24px; overflow-y: auto; background: rgba(255,255,255,0.01); }
-    
-    .chat-item { padding: 16px; border-bottom: 1px solid var(--borda); cursor: pointer; transition: var(--transicao); }
-    .chat-item:hover { background: rgba(59, 130, 246, 0.05); }
-    .chat-item.active { background: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--primaria); }
-    
-    .bubble { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; position: relative; margin-bottom: 8px; }
-    .bubble-lead { align-self: flex-start; background: var(--borda); color: var(--texto); border-bottom-left-radius: 2px; }
-    .bubble-ia { align-self: flex-end; background: var(--primaria); color: #fff; border-bottom-right-radius: 2px; }
-    
-    .ctx-label { font-size: 11px; text-transform: uppercase; color: var(--texto-suave); display: block; margin-bottom: 4px; }
-    .ctx-value { font-size: 14px; color: #fff; font-weight: 600; margin-bottom: 12px; }
+    .chat-sidebar { border-right: 1px solid var(--borda); display: flex; flex-direction: column; }
+    .chat-main    { display: flex; flex-direction: column; background: radial-gradient(circle at top right, rgba(59,130,246,.03), transparent); }
+    .chat-context { border-left: 1px solid var(--borda); padding: 20px; overflow-y: auto; }
+
+    /* ── Lista de leads ── */
+    .chat-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--borda);
+      cursor: pointer;
+      transition: var(--transicao);
+    }
+    .chat-item:hover  { background: rgba(59,130,246,.05); }
+    .chat-item.active { background: rgba(59,130,246,.12); border-left: 3px solid var(--primaria); }
+
+    .chat-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .chat-item-nome   { font-size: 13px; font-weight: 700; color: var(--texto); }
+    .chat-item-hora   { font-size: 11px; color: var(--texto-suave); }
+    .chat-item-preview { font-size: 12px; color: var(--texto-suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+
+    /* ── Badges IA ── */
+    .badge-ia-ativa  { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; background: rgba(34,197,94,.15); color: #22c55e; }
+    .badge-ia-pausada { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; background: rgba(239,68,68,.15); color: #ef4444; }
+
+    /* ── Bubbles ── */
+    .bubble { max-width: 78%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; margin-bottom: 8px; }
+    .bubble-lead { align-self: flex-start; background: rgba(255,255,255,.06); color: var(--texto); border-bottom-left-radius: 2px; }
+    .bubble-ia   { align-self: flex-end;   background: var(--primaria); color: #fff; border-bottom-right-radius: 2px; }
+    .bubble-hora { font-size: 10px; opacity: .6; margin-top: 4px; }
+
+    /* ── Contexto ── */
+    .ctx-label { font-size: 10px; text-transform: uppercase; color: var(--texto-suave); letter-spacing: .5px; display: block; margin-bottom: 3px; }
+    .ctx-value { font-size: 13px; color: var(--texto); font-weight: 600; margin-bottom: 14px; }
+
+    /* ── Estado vazio ── */
+    .estado-vazio { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--texto-suave); text-align: center; padding: 40px; }
+
+    /* ── Botão reativar ── */
+    .btn-reativar {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(34,197,94,.3);
+      background: rgba(34,197,94,.1); color: #22c55e;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-reativar:hover { background: rgba(34,197,94,.2); }
+
+    /* ── Indicador de atualização ── */
+    .polling-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #22c55e; display: inline-block; margin-left: 6px;
+      animation: pulsar 2s infinite;
+    }
+    @keyframes pulsar { 0%,100%{opacity:1} 50%{opacity:.3} }
   </style>
 </head>
 <body class="com-page">
-  <div class="app-layout">
-    <aside class="app-sidebar" id="sidebar"></aside>
+<div class="app-layout">
+  <aside class="app-sidebar" id="sidebar"></aside>
 
-    <main class="app-content">
-      <header class="app-header"></header>
+  <main class="app-content">
+    <header class="app-header"></header>
 
-      <div class="app-body">
-        <div class="justify-between flex items-center mb-6">
-          <div class="page-title">
-            <h1>Conversas SDR</h1>
-            <p class="text-suave">Acompanhe as interações automáticas do seu agente via WhatsApp.</p>
+    <div class="app-body">
+      <div class="justify-between flex items-center mb-6">
+        <div class="page-title">
+          <h1>Conversas SDR <span class="polling-dot" title="Atualizando automaticamente"></span></h1>
+          <p class="text-suave">Interações automáticas do agente via WhatsApp.</p>
+        </div>
+        <div class="flex gap-2">
+          <span class="badge badge-azul"><i class="ph ph-robot"></i> IA ativa</span>
+          <span class="badge" style="background:rgba(239,68,68,.15);color:#ef4444;"><i class="ph ph-user-check"></i> Humano assumiu</span>
+        </div>
+      </div>
+
+      <div class="chat-layout">
+        <!-- Coluna 1: Lista de leads -->
+        <div class="chat-sidebar">
+          <div class="p-3 border-b" style="border-color:var(--borda)">
+            <div style="position:relative">
+              <i class="ph ph-magnifying-glass" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--texto-suave);font-size:14px"></i>
+              <input type="text" id="busca-lead" class="form-control" placeholder="Buscar lead..." style="padding-left:34px;font-size:13px" oninput="filtrarLista()">
+            </div>
           </div>
-          <div class="flex gap-2">
-             <span class="badge badge-azul"><i class="ph ph-info"></i> Histórico de IA</span>
+          <div class="flex-1 overflow-y-auto" id="lista-leads">
+            <div class="spinner m-10"></div>
           </div>
         </div>
 
-        <div class="chat-layout">
-          <!-- Coluna 1: Lista -->
-          <div class="chat-sidebar">
-            <div class="p-4 border-b" style="border-color:var(--borda)">
-               <div style="position:relative">
-                  <i class="ph ph-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--texto-suave)"></i>
-                  <input type="text" id="busca-lead" class="form-control" placeholder="Buscar lead..." style="padding-left:40px" oninput="filtrarLista()">
-               </div>
-            </div>
-            <div class="flex-1 overflow-y-auto" id="lista-leads">
-               <div class="spinner m-10"></div>
-            </div>
+        <!-- Coluna 2: Chat -->
+        <div class="chat-main">
+          <!-- Estado vazio -->
+          <div id="janela-vazia" class="estado-vazio">
+            <i class="ph ph-chat-centered-text" style="font-size:56px;opacity:.2"></i>
+            <h3 class="mt-4" style="font-size:16px">Selecione uma conversa</h3>
+            <p class="text-xs">Visualize o fluxo de mensagens entre o lead e a IA.</p>
           </div>
 
-          <!-- Coluna 2: Chat -->
-          <div class="chat-main">
-            <div id="janela-vazia" class="flex-1 flex flex-col items-center justify-center text-suave text-center p-10">
-                <i class="ph ph-chat-centered-text" style="font-size:64px; opacity:0.2"></i>
-                <h3 class="mt-4">Selecione uma conversa</h3>
-                <p class="text-xs">Visualize o fluxo de mensagens entre o lead e sua IA.</p>
+          <!-- Chat ativo -->
+          <div id="janela-ativa" style="display:none;flex-direction:column;height:100%;">
+            <!-- Header do chat -->
+            <div class="p-4 border-b flex justify-between items-center" style="border-color:var(--borda);background:rgba(255,255,255,.02)">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 id="conv-nome" class="m-0" style="font-size:15px;color:var(--texto)">—</h3>
+                  <span id="conv-ia-badge"></span>
+                </div>
+                <div id="conv-empresa" class="text-xs text-suave">—</div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <button id="btn-reativar-ia" class="btn-reativar" onclick="reativarIA()" style="display:none">
+                  <i class="ph ph-robot"></i> Reativar IA
+                </button>
+              </div>
             </div>
 
-            <div id="janela-ativa" class="d-none flex flex-col h-100">
-                <div class="p-4 border-b flex justify-between items-center" style="border-color:var(--borda); background:rgba(255,255,255,0.02)">
-                    <div>
-                        <h3 id="conv-nome" class="m-0 text-white">Lead</h3>
-                        <div id="conv-empresa" class="text-xs text-suave">Empresa</div>
-                    </div>
-                    <div id="conv-status-badge"></div>
-                </div>
-                <div class="flex-1 overflow-y-auto p-6 flex flex-col" id="mensagens-container"></div>
-                <div class="p-4 border-t flex gap-2" style="border-color:var(--borda)">
-                    <button class="btn btn-outline btn-sm w-100" onclick="assumirConversa()"><i class="ph ph-user-check"></i> Assumir</button>
-                    <button class="btn btn-primario btn-sm w-100" onclick="enviarKanban()"><i class="ph ph-funnel"></i> Mover p/ Kanban</button>
-                </div>
+            <!-- Mensagens -->
+            <div class="flex-1 overflow-y-auto p-5 flex flex-col" id="mensagens-container"></div>
+
+            <!-- Ações -->
+            <div class="p-3 border-t flex gap-2" style="border-color:var(--borda)">
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="assumirConversa()">
+                <i class="ph ph-user-check"></i> Assumir
+              </button>
+              <button class="btn btn-primario btn-sm" style="flex:1" onclick="enviarKanban()">
+                <i class="ph ph-funnel"></i> Mover p/ Kanban
+              </button>
             </div>
           </div>
+        </div>
 
-          <!-- Coluna 3: Contexto -->
-          <div class="chat-context">
-            <div id="contexto-vazio" class="text-center text-suave mt-10">
-                <p class="text-xs">Dados do perfil aparecerão aqui.</p>
-            </div>
-            <div id="contexto-dados" class="d-none">
-                <h4 class="text-xs uppercase fw-800 text-primaria mb-4">Perfil do Cliente</h4>
-                <div id="ctx-campos"></div>
-                <hr class="my-6" style="border-color:var(--borda); opacity:0.1">
-                <button class="btn btn-outline btn-sm w-100 mb-2" onclick="agendarReuniao()"><i class="ph ph-calendar"></i> Agendar Reunião</button>
-            </div>
+        <!-- Coluna 3: Contexto -->
+        <div class="chat-context">
+          <div id="contexto-vazio" class="text-center text-suave mt-10">
+            <i class="ph ph-user-circle" style="font-size:40px;opacity:.2"></i>
+            <p class="text-xs mt-3">Selecione um lead para ver o perfil.</p>
+          </div>
+          <div id="contexto-dados" style="display:none">
+            <h4 class="text-xs uppercase fw-800 text-primaria mb-4">Perfil do Cliente</h4>
+            <div id="ctx-campos"></div>
+            <hr class="my-4" style="border-color:var(--borda);opacity:.15">
+            <button class="btn btn-outline btn-sm w-100 mb-2" onclick="agendarReuniao()">
+              <i class="ph ph-calendar"></i> Agendar Reunião
+            </button>
           </div>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
+</div>
 
-  <script src="/assets/js/api.js"></script>
-  <script src="/assets/js/auth.js"></script>
-  <script src="/assets/js/sidebar-admin.js"></script>
-  <script>
-    const usuario = protegerPagina(['admin','comercial']);
-    let leadsCache = [], leadAtualId = null;
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/sidebar-admin.js"></script>
+<script>
+  const usuario = protegerPagina(['admin', 'comercial']);
+  let leadsCache = [], leadAtualId = null, leadAtualDados = null;
+  let pollingTimer = null;
 
-    if (usuario) { inicializarLayout(); carregarLeads(); }
+  if (usuario) { inicializarLayout(); carregarLeads(); iniciarPolling(); }
 
-    async function carregarLeads() {
-        try {
-            const { leads } = await api.get('/comercial/leads');
-            leadsCache = leads || [];
-            renderizarLista(leadsCache);
-        } catch { }
+  // ── Polling automático a cada 30s ──────────────────────────────────────────
+  function iniciarPolling() {
+    pollingTimer = setInterval(async () => {
+      await carregarLeads(true); // silent = não mostra spinner
+      if (leadAtualId) await carregarConversa(leadAtualId, true);
+    }, 30000);
+  }
+
+  // ── Carrega lista de leads ─────────────────────────────────────────────────
+  async function carregarLeads(silent = false) {
+    try {
+      const { leads } = await api.get('/comercial/leads');
+      leadsCache = (leads || []).filter(l => l.origem === 'whatsapp' || l.instancia);
+      renderizarLista(leadsCache);
+    } catch (e) {
+      if (!silent) console.error('Erro ao carregar leads:', e.message);
     }
+  }
 
-    function renderizarLista(leads) {
-        const container = document.getElementById('lista-leads');
-        container.innerHTML = leads.map(l => `
-            <div class="chat-item ${leadAtualId === l.id ? 'active' : ''}" onclick="abrirConversa(${l.id})">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="fw-700 text-white text-sm">${l.nome || l.empresa || l.whatsapp}</span>
-                    <span class="text-xs text-suave">${formatarDataCurta(l.ultima_interacao || l.atualizado_em)}</span>
-                </div>
-                <div class="text-xs text-suave text-truncate">${l.ultima_mensagem || 'Sem histórico...'}</div>
-            </div>
+  function renderizarLista(leads) {
+    const container = document.getElementById('lista-leads');
+    if (!leads.length) {
+      container.innerHTML = '<div class="text-center text-suave p-8 text-xs">Nenhuma conversa ainda.</div>';
+      return;
+    }
+    container.innerHTML = leads.map(l => {
+      const iaAtiva  = l.ia_ativa !== false;
+      const badge    = iaAtiva
+        ? '<span class="badge-ia-ativa"><i class="ph ph-robot"></i> IA</span>'
+        : '<span class="badge-ia-pausada"><i class="ph ph-user-check"></i> Humano</span>';
+      const preview  = esc(l.ultima_mensagem || l.ultima_interacao ? 'Última mensagem...' : 'Sem histórico');
+      const hora     = formatarDataCurta(l.ultima_interacao || l.atualizado_em);
+      const nome     = esc(l.nome || l.empresa || l.whatsapp);
+
+      return `<div class="chat-item ${leadAtualId === l.id ? 'active' : ''}" onclick="abrirConversa(${l.id})">
+        <div class="chat-item-header">
+          <span class="chat-item-nome">${nome}</span>
+          <span class="chat-item-hora">${hora}</span>
+        </div>
+        <div class="flex justify-between items-center mt-1">
+          <span class="chat-item-preview">${preview}</span>
+          ${badge}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Abre conversa ──────────────────────────────────────────────────────────
+  async function abrirConversa(id) {
+    leadAtualId = id;
+    renderizarLista(leadsCache); // atualiza item ativo na lista
+
+    document.getElementById('janela-vazia').style.display = 'none';
+    document.getElementById('janela-ativa').style.display = 'flex';
+    document.getElementById('contexto-vazio').style.display = 'none';
+    document.getElementById('contexto-dados').style.display = 'block';
+    document.getElementById('mensagens-container').innerHTML = '<div class="spinner m-10"></div>';
+
+    await carregarConversa(id);
+  }
+
+  async function carregarConversa(id, silent = false) {
+    try {
+      const { lead, conversas } = await api.get(`/comercial/leads/${id}`);
+      leadAtualDados = lead;
+
+      // Header
+      document.getElementById('conv-nome').textContent = lead.nome || lead.whatsapp;
+      document.getElementById('conv-empresa').textContent = lead.empresa || lead.cidade || 'WhatsApp';
+
+      // Badge IA
+      const iaAtiva = lead.ia_ativa !== false;
+      document.getElementById('conv-ia-badge').innerHTML = iaAtiva
+        ? '<span class="badge-ia-ativa"><i class="ph ph-robot"></i> IA ativa</span>'
+        : '<span class="badge-ia-pausada"><i class="ph ph-user-check"></i> Humano assumiu</span>';
+
+      // Botão reativar
+      document.getElementById('btn-reativar-ia').style.display = iaAtiva ? 'none' : 'inline-flex';
+
+      // Mensagens
+      const mc = document.getElementById('mensagens-container');
+      if (!conversas || !conversas.length) {
+        mc.innerHTML = '<div class="text-center text-suave text-xs p-10">Nenhuma mensagem ainda.</div>';
+      } else {
+        mc.innerHTML = conversas.map(c => `
+          <div class="bubble bubble-lead">${esc(c.mensagem_lead)}</div>
+          ${c.resposta_ia ? `<div class="bubble bubble-ia">${esc(c.resposta_ia)}</div>` : ''}
         `).join('');
+        if (!silent) mc.scrollTop = mc.scrollHeight;
+      }
+
+      // Perfil (contexto)
+      document.getElementById('ctx-campos').innerHTML = `
+        <span class="ctx-label">WhatsApp</span>
+        <div class="ctx-value">
+          ${esc(lead.whatsapp)}
+          ${lead.whatsapp ? `<a href="https://wa.me/55${lead.whatsapp.replace(/\D/g,'')}" target="_blank" rel="noopener"
+              style="margin-left:8px;font-size:11px;color:#22c55e;font-weight:700;text-decoration:none;">
+              ↗ Abrir WA</a>` : ''}
+        </div>
+        <span class="ctx-label">Cidade</span>
+        <div class="ctx-value">${esc(lead.cidade || '—')}</div>
+        <span class="ctx-label">Score</span>
+        <div class="ctx-value" style="color:var(--primaria)">${lead.score || 0}%</div>
+        <span class="ctx-label">Status</span>
+        <div class="ctx-value"><span class="badge badge-azul">${esc(lead.status || '—')}</span></div>
+        <span class="ctx-label">IA</span>
+        <div class="ctx-value">${lead.ia_ativa !== false ? '🟢 Ativa' : '🔴 Pausada'}</div>
+      `;
+    } catch (e) {
+      if (!silent) console.error('Erro ao carregar conversa:', e.message);
     }
+  }
 
-    async function abrirConversa(id) {
-        leadAtualId = id;
-        document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
-        document.getElementById('janela-vazia').classList.add('d-none');
-        document.getElementById('janela-ativa').classList.remove('d-none');
-        document.getElementById('contexto-vazio').classList.add('d-none');
-        document.getElementById('contexto-dados').classList.remove('d-none');
-        
-        try {
-            const { lead, conversas } = await api.get(`/comercial/leads/${id}`);
-            document.getElementById('conv-nome').textContent = lead.nome || lead.whatsapp;
-            document.getElementById('conv-empresa').textContent = lead.empresa || 'Individual';
-            
-            const mc = document.getElementById('mensagens-container');
-            mc.innerHTML = conversas.map(c => `
-                <div class="bubble bubble-lead">${c.mensagem_lead}</div>
-                ${c.resposta_ia ? `<div class="bubble bubble-ia">${c.resposta_ia}</div>` : ''}
-            `).join('');
-            mc.scrollTop = mc.scrollHeight;
-
-            document.getElementById('ctx-campos').innerHTML = `
-                <span class="ctx-label">WhatsApp</span><div class="ctx-value">${lead.whatsapp}</div>
-                <span class="ctx-label">Cidade</span><div class="ctx-value">${lead.cidade || '—'}</div>
-                <span class="ctx-label">Score</span><div class="ctx-value text-primaria">${lead.score}%</div>
-                <span class="ctx-label">Status</span><div class="ctx-value"><span class="badge badge-azul">${lead.status}</span></div>
-            `;
-        } catch { }
+  // ── Reativar IA ────────────────────────────────────────────────────────────
+  async function reativarIA() {
+    if (!leadAtualId) return;
+    try {
+      await api.post(`/whatsapp/leads/${leadAtualId}/reativar-ia`, {});
+      mostrarAlerta('IA reativada! O agente voltará a responder automaticamente.');
+      await carregarConversa(leadAtualId);
+      await carregarLeads(true);
+    } catch (e) {
+      mostrarAlerta('Erro ao reativar IA: ' + e.message);
     }
+  }
 
-    function filtrarLista() {
-        const busca = document.getElementById('busca-lead').value.toLowerCase();
-        const filtrados = leadsCache.filter(l => (l.nome||'').toLowerCase().includes(busca) || (l.whatsapp||'').includes(busca));
-        renderizarLista(filtrados);
+  // ── Filtrar ───────────────────────────────────────────────────────────────
+  function filtrarLista() {
+    const busca = document.getElementById('busca-lead').value.toLowerCase();
+    const filtrados = leadsCache.filter(l =>
+      (l.nome || '').toLowerCase().includes(busca) ||
+      (l.empresa || '').toLowerCase().includes(busca) ||
+      (l.whatsapp || '').includes(busca)
+    );
+    renderizarLista(filtrados);
+  }
+
+  // ── Ações ─────────────────────────────────────────────────────────────────
+  async function assumirConversa() {
+    if (!leadAtualId) return;
+    await api.patch(`/comercial/leads/${leadAtualId}`, { status: 'qualificado' });
+    mostrarAlerta('Você assumiu este atendimento.');
+    await carregarLeads(true);
+  }
+
+  async function enviarKanban() {
+    if (!leadAtualId) return;
+    await api.post('/oportunidades', { lead_id: leadAtualId });
+    mostrarAlerta('Oportunidade criada no Kanban.');
+  }
+
+  function agendarReuniao() {
+    window.location.href = `/admin/comercial/calendario.html?lead_id=${leadAtualId}`;
+  }
+
+  // ── Utilitários ──────────────────────────────────────────────────────────
+  function formatarDataCurta(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const hoje = new Date();
+    if (d.toDateString() === hoje.toDateString()) {
+      return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     }
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  }
 
-    function formatarDataCurta(iso) {
-        if(!iso) return '';
-        const d = new Date(iso);
-        return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
-    }
-
-    async function assumirConversa() { await api.patch(`/comercial/leads/${leadAtualId}`, { status: 'qualificado' }); mostrarAlerta('Você assumiu este atendimento.'); }
-    async function enviarKanban() { await api.post('/oportunidades', { lead_id: leadAtualId }); mostrarAlerta('Oportunidade criada no Kanban.'); }
-    function agendarReuniao() { window.location.href = `/admin/comercial/calendario.html?lead_id=${leadAtualId}`; }
-  </script>
+  function mostrarAlerta(msg) {
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1d4ed8;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+</script>
 </body>
 </html>
