@@ -927,6 +927,248 @@
   </div>
 </section>
 
+<!-- ===== MARQUEE DE CLIENTES ===== -->
+<section class="marquee-section">
+  <style>
+    /* ---- MARQUEE CLIENTES ---- */
+    .marquee-section {
+      background: #0c1225;                          /* fundo idêntico ao hero para transição fluida */
+      padding: 48px 0 52px;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+    }
+    .marquee-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #475569;
+      margin: 0 0 32px;
+    }
+
+    /* Viewport com fade suave nas bordas (CSS puro, sem JS) */
+    .marquee-viewport {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 8%,
+        black 92%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 8%,
+        black 92%,
+        transparent 100%
+      );
+    }
+
+    /* Animação — de 0 a -50% porque a faixa contém 2× os itens */
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      width: max-content;
+      animation: marquee-scroll 55s linear infinite;
+    }
+    /* Pausa ao passar o mouse na faixa inteira */
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* Cada item: imagem redonda + nome abaixo */
+    .marquee-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .marquee-item img {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      object-fit: cover;
+      /* Estado padrão: cinza e opaco */
+      filter: grayscale(100%) brightness(0.8);
+      opacity: 0.5;
+      border: 2px solid rgba(255,255,255,0.07);
+      transition: filter 0.4s ease, opacity 0.4s ease, transform 0.35s ease, border-color 0.35s ease;
+    }
+    /* Hover: cor plena e leve zoom */
+    .marquee-item:hover img {
+      filter: grayscale(0%) brightness(1);
+      opacity: 1;
+      transform: scale(1.1);
+      border-color: rgba(96,165,250,0.55);
+      box-shadow: 0 0 20px rgba(96,165,250,0.25);
+    }
+    .marquee-item span {
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      transition: color 0.3s ease;
+    }
+    .marquee-item:hover span {
+      color: #94a3b8;
+    }
+
+    /* Mobile: itens ligeiramente menores */
+    @media (max-width: 640px) {
+      .marquee-item img  { width: 52px; height: 52px; }
+      .marquee-item span { font-size: 11px; }
+      .marquee-track     { gap: 32px; }
+      .marquee-section   { padding: 36px 0 40px; }
+    }
+  </style>
+
+  <!-- Subtítulo da faixa -->
+  <p class="marquee-label">Negócios que já confiam no Fantoni</p>
+
+  <div class="marquee-viewport">
+    <div class="marquee-track">
+
+      <!-- ===================== LISTA ORIGINAL ===================== -->
+      <!-- Atualize os atributos "alt" e o texto do <span> com o nome real de cada cliente -->
+
+      <div class="marquee-item">
+        <img src="assets/Clientes/247648046_1167891860401897_7794430913130241404_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/299349521_184254177328674_8431157786405199690_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/454724997_1415669592454622_1663743747484946944_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/468247218_938553924917485_8861780963270905850_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/537558186_17847873891544904_993179897591300757_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/547821670_17855577522525992_6590062570080121075_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/561013385_17919578274187131_7629516686454470466_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/567741108_17843352651598746_5196635234317495706_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/581519473_18063826394529991_1345156693572950084_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/588718824_18329675797211771_6671200268376020609_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/590405325_17842475679653889_6206541623128176191_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/612058494_17847218985663624_5588116682602689722_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/613092211_17845280004668457_1369800610467645684_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/625774279_17860914912590725_8645598921509483098_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/629091563_18391606792198658_1699655914316484511_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+
+      <!-- =========== DUPLICATA (necessária para o loop sem salto) =========== -->
+
+      <div class="marquee-item">
+        <img src="assets/Clientes/247648046_1167891860401897_7794430913130241404_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/299349521_184254177328674_8431157786405199690_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/454724997_1415669592454622_1663743747484946944_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/468247218_938553924917485_8861780963270905850_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/537558186_17847873891544904_993179897591300757_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/547821670_17855577522525992_6590062570080121075_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/561013385_17919578274187131_7629516686454470466_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/567741108_17843352651598746_5196635234317495706_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/581519473_18063826394529991_1345156693572950084_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/588718824_18329675797211771_6671200268376020609_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/590405325_17842475679653889_6206541623128176191_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/612058494_17847218985663624_5588116682602689722_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/613092211_17845280004668457_1369800610467645684_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/625774279_17860914912590725_8645598921509483098_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+      <div class="marquee-item">
+        <img src="assets/Clientes/629091563_18391606792198658_1699655914316484511_n.png" alt="Cliente Fantoni" loading="lazy">
+        <span>Cliente</span>
+      </div>
+
+    </div><!-- /marquee-track -->
+  </div><!-- /marquee-viewport -->
+</section>
+
 <!-- ===== AUTHORITY BAR (STATS) ===== -->
 <section style="background:#0f172a; padding:32px 24px; border-bottom:1px solid rgba(255,255,255,0.05);">
   <style>
