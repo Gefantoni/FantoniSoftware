@@ -20,6 +20,7 @@ async function saveLeadConsultor(lead) {
     },
     body: JSON.stringify({
       name:      lead.nome,
+      whatsapp:  lead.whatsapp,
       segmento:  lead.ramo,
       notas:     `Faturamento: ${lead.faturamento}`,
       origem:    'Consultor Site',
@@ -53,21 +54,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
-  const { nome, faturamento, ramo } = req.body ?? {};
+  const { nome, faturamento, ramo, whatsapp } = req.body ?? {};
 
   const errors = [];
   if (!nome || nome.trim().length < 2)       errors.push('Nome inválido.');
   if (!faturamento)                           errors.push('Faturamento obrigatório.');
   if (!ramo || ramo.trim().length < 2)        errors.push('Ramo de atuação obrigatório.');
+  if (!whatsapp || whatsapp.replace(/\D/g, '').length < 10) errors.push('WhatsApp inválido.');
 
   if (errors.length > 0) {
     return res.status(400).json({ success: false, errors });
   }
 
   const lead = {
-    nome:       nome.trim(),
+    nome:        nome.trim(),
     faturamento: faturamento.trim(),
     ramo:        ramo.trim(),
+    whatsapp:    whatsapp.replace(/\D/g, ''),
   };
 
   await Promise.allSettled([
