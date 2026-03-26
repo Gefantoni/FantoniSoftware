@@ -849,7 +849,11 @@
       .hero-btn-group { flex-direction: column; gap: 12px; align-items: stretch; }
       .btn-hero-primary, .btn-hero-outline { width: 100%; justify-content: center; padding: 14px 20px !important; font-size: 15px !important; }
       .hide-mobile { display: none; }
-      .hero-price-badge { font-size: 12px; padding: 8px 14px !important; }
+      .hero-price-badge { font-size: 11px; padding: 10px 16px !important; gap: 8px; justify-content: center; text-align: center; border-radius: 20px; }
+      .hero-price-badge span { font-size: 11px !important; }
+      .hero-price-badge span:nth-of-type(2) { font-size: 18px !important; }
+      .hero-price-badge span:nth-of-type(2) span { font-size: 11px !important; }
+      .hero-price-badge span:nth-of-type(3) { display: none; } /* Hidrata o separador no mobile */
       .hero-text-col { padding: 22px 18px !important; }
       .hero-img { padding: 14px !important; }
       section.hero { padding-top: 80px !important; padding-bottom: 40px !important; }

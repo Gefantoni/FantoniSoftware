@@ -214,6 +214,14 @@ router.post('/leads/bulk', autenticar, adminOuComercial, async (req, res) => {
   }
 });
 
+// GET /comercial/chatwoot-config — expõe URL pública do Chatwoot para o frontend
+router.get('/chatwoot-config', autenticar, adminOuComercial, (req, res) => {
+  res.json({
+    url:       process.env.CHATWOOT_URL       || null,
+    accountId: process.env.CHATWOOT_ACCOUNT_ID || '1'
+  });
+});
+
 // ============================================================
 // SDR (PROMPT)
 // ============================================================

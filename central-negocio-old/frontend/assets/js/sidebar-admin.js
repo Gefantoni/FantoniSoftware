@@ -18,6 +18,7 @@
     ]},
     { label: 'Crescimento', items: [
       { href: '/admin/comercial/leads.html', icone: 'ph ph-user-focus', label: 'Leads CRM' },
+      { href: '/admin/comercial/conversas.html', icone: 'ph ph-chats-circle', label: 'Conversas' },
       { href: '/admin/comercial/landing-leads.html', icone: 'ph ph-globe', label: 'Leads do Site' },
       { href: '/admin/comercial/disparos.html', icone: 'ph ph-rocket-launch', label: 'Automação Zap' },
       { href: '/admin/comercial/kanban.html', icone: 'ph ph-layout', label: 'Kanban Vendas' },
@@ -70,6 +71,6 @@
   });
 
   // Atualiza nome do admin se disponível
-  const user = JSON.parse(localStorage.getItem('fantoni_usuario'));
+  const user = JSON.parse(localStorage.getItem('cn_usuario'));
   if (user && user.nome) document.getElementById('admin-nome').textContent = user.nome.split(' ')[0];
 })();
