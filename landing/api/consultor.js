@@ -19,7 +19,7 @@ async function saveLeadConsultor(lead) {
       'Prefer': 'return=minimal',
     },
     body: JSON.stringify({
-      nome:      lead.nome,
+      name:      lead.nome,
       segmento:  lead.ramo,
       notas:     `Faturamento: ${lead.faturamento}`,
       origem:    'Consultor Site',

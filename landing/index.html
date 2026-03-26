@@ -2610,19 +2610,28 @@
       console.warn('Aviso: não foi possível salvar lead consultor:', e.message);
     }
 
-    // Monta mensagem pré-preenchida para o WhatsApp
-    const msg = encodeURIComponent(
-      `Olá! Me chamo ${nome}.\n` +
-      `Ramo: ${ramo}\n` +
-      `Faturamento mensal: ${faturamento}\n\n` +
-      `Tenho interesse no Fantoni PDV e gostaria de falar com um consultor.`
-    );
-
-    // Redireciona para WhatsApp após breve pausa (UX)
-    setTimeout(() => {
-      window.open(`https://wa.me/5551996034862?text=${msg}`, '_blank');
-      closeConsultorModal();
-    }, 1200);
+    if (faturamento === 'Ainda não faturo') {
+      // Não redireciona — exibe confirmação e aguarda contato do consultor
+      document.getElementById('consultor-loading').innerHTML = `
+        <div style="width:56px;height:56px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        </div>
+        <p style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:8px;">Recebemos seu contato, ${nome.split(' ')[0]}!</p>
+        <p style="font-size:14px;color:#64748b;margin-bottom:24px;line-height:1.6;">Um consultor da Fantoni Software entrará em contato com você em breve para entender melhor o seu negócio.</p>
+        <button onclick="closeConsultorModal()" style="width:100%;padding:13px;background:#1d4ed8;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Fechar</button>`;
+    } else {
+      // Fatura algum valor → redireciona para WhatsApp com contexto
+      const msg = encodeURIComponent(
+        `Olá! Me chamo ${nome}.\n` +
+        `Ramo: ${ramo}\n` +
+        `Faturamento mensal: ${faturamento}\n\n` +
+        `Tenho interesse no Fantoni PDV e gostaria de falar com um consultor.`
+      );
+      setTimeout(() => {
+        window.open(`https://wa.me/5551996034862?text=${msg}`, '_blank');
+        closeConsultorModal();
+      }, 1200);
+    }
   }
 
   // Fecha modal ao clicar no overlay
