@@ -262,6 +262,20 @@ async function processarWebhookEvo(payload) {
       .eq('id', lead.id)
   ]);
 
+  // 7b. Sincroniza com Chatwoot (não-bloqueante — falha silenciosa)
+  chatwootService.sincronizarMensagemRecebida(lead, numero, mensagemRecebida)
+    .then(async cwResult => {
+      if (!cwResult?.conversaId) return;
+      await chatwootService.sincronizarRespostaIA(cwResult.conversaId, respostaIA);
+      if (cwResult.conversaId !== lead.chatwoot_conversation_id) {
+        supabaseAdmin.from('leads')
+          .update({ chatwoot_conversation_id: cwResult.conversaId })
+          .eq('id', lead.id)
+          .catch(() => {});
+      }
+    })
+    .catch(err => log('CHATWOOT_SYNC_ERRO', err.message));
+
   // 8. Envia resposta via EvoAPI com 1 retry em caso de falha
   const evoUrl  = instanciaDB.api_url       || process.env.EVOLUTION_API_URL;
   const evoKey  = instanciaDB.apikey        || process.env.EVOLUTION_API_KEY;
