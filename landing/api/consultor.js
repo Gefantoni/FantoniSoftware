@@ -1,6 +1,8 @@
 // api/consultor.js
 // Captura lead qualificado vindo do botão "Falar com consultor"
-// Salva faturamento, ramo e nome no Supabase
+// Salva no Supabase + dispara evento Lead na Meta Conversions API
+
+import { sendCapiEvent } from './_capi.js';
 
 async function saveLeadConsultor(lead) {
   const url = process.env.SUPABASE_URL;
@@ -54,7 +56,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
-  const { nome, faturamento, ramo, whatsapp } = req.body ?? {};
+  const { nome, faturamento, ramo, whatsapp, _meta } = req.body ?? {};
 
   const errors = [];
   if (!nome || nome.trim().length < 2)       errors.push('Nome inválido.');
@@ -73,9 +75,25 @@ export default async function handler(req, res) {
     whatsapp:    whatsapp.replace(/\D/g, ''),
   };
 
+  // IP real do cliente (considera proxy Vercel)
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress;
+
   await Promise.allSettled([
     saveLeadConsultor(lead),
     notifyWebhook(lead),
+    sendCapiEvent({
+      eventName: 'Lead',
+      eventId:   _meta?.event_id || `consultor_${Date.now()}`,
+      sourceUrl: _meta?.page_url,
+      userData:  {
+        name:  lead.nome,
+        phone: lead.whatsapp,
+        fbp:   _meta?.fbp,
+        fbc:   _meta?.fbc,
+      },
+      ip,
+      userAgent: _meta?.user_agent || req.headers['user-agent'],
+    }),
   ]);
 
   return res.status(200).json({ success: true });
