@@ -2610,7 +2610,7 @@
       console.warn('Aviso: não foi possível salvar lead consultor:', e.message);
     }
 
-    if (faturamento === 'Ainda não faturo') {
+    if (faturamento === 'Ainda não faturo' || faturamento.startsWith('Ainda')) {
       // Não redireciona — exibe confirmação e aguarda contato do consultor
       document.getElementById('consultor-loading').innerHTML = `
         <div style="width:56px;height:56px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
