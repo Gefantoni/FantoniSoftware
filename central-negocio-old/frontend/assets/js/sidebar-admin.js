@@ -37,7 +37,7 @@
     menuHTML += `<div class="nav-group"><span class="nav-label">${secao.label}</span>${links}</div>`;
   });
 
-  const iniciais = JSON.parse(localStorage.getItem('fantoni_usuario'))?.nome?.charAt(0) || 'A';
+  const iniciais = JSON.parse(localStorage.getItem('cn_usuario'))?.nome?.charAt(0) || 'A';
 
   sidebar.innerHTML = `
     <div class="sidebar-logo">
@@ -65,7 +65,7 @@
   `;
 
   document.getElementById('btn-logout-admin')?.addEventListener('click', () => {
-    localStorage.removeItem('fantoni_token');
+    localStorage.removeItem('cn_token');
     window.location.href = '/';
   });
 
