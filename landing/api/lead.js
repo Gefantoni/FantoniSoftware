@@ -1,5 +1,8 @@
 // api/lead.js
-// Jornada de Teste Grátis — captura de lead, salva no Supabase e retorna links de download
+// Jornada de Teste Grátis — captura de lead, salva no Supabase,
+// dispara evento Lead na Meta Conversions API e retorna links de download
+
+import { sendCapiEvent } from './_capi.js';
 
 const DOWNLOAD_LINKS = {
   windows: process.env.DOWNLOAD_WINDOWS || 'https://navivendas.com.br/download/windows/pdvmais',
@@ -7,7 +10,6 @@ const DOWNLOAD_LINKS = {
   ios:     process.env.DOWNLOAD_IOS     || 'https://apps.apple.com/br/app/pdv/id6443721199',
 };
 
-// Validações
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -52,7 +54,6 @@ function isValidCnpj(d) {
   return r === parseInt(d[13]);
 }
 
-// Salva lead no Supabase via REST API
 async function saveToSupabase(lead) {
   const url  = process.env.SUPABASE_URL;
   const key  = process.env.SUPABASE_SERVICE_KEY;
@@ -86,11 +87,9 @@ async function saveToSupabase(lead) {
   }
 }
 
-// Opcional: envia o lead para um webhook externo (N8N, Typebot, etc.)
 async function notifyWebhook(lead) {
   const url = process.env.LEAD_WEBHOOK_URL;
   if (!url) return;
-
   try {
     await fetch(url, {
       method: 'POST',
@@ -107,11 +106,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
-  const { name, email, whatsapp, cpfCnpj } = req.body ?? {};
+  const { name, email, whatsapp, cpfCnpj, _meta } = req.body ?? {};
 
-  // --- Validação dos campos ---
   const errors = [];
-
   if (!name || name.trim().length < 2)          errors.push('Nome inválido ou ausente.');
   if (!email || !isValidEmail(email))            errors.push('E-mail inválido ou ausente.');
   if (!whatsapp || !isValidPhone(whatsapp))      errors.push('WhatsApp inválido. Informe DDD + número (10 ou 11 dígitos).');
@@ -121,7 +118,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ success: false, errors });
   }
 
-  // --- Dados normalizados ---
   const lead = {
     name:      name.trim(),
     email:     email.trim().toLowerCase(),
@@ -130,13 +126,27 @@ export default async function handler(req, res) {
     createdAt: new Date().toISOString(),
   };
 
-  // --- Salva no Supabase e notifica webhook em paralelo ---
-  const [supabaseResult] = await Promise.allSettled([
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress;
+
+  await Promise.allSettled([
     saveToSupabase(lead),
     notifyWebhook(lead),
+    sendCapiEvent({
+      eventName: 'Lead',
+      eventId:   _meta?.event_id || `lead_${Date.now()}`,
+      sourceUrl: _meta?.page_url,
+      userData:  {
+        name:  lead.name,
+        email: lead.email,
+        phone: lead.whatsapp,
+        fbp:   _meta?.fbp,
+        fbc:   _meta?.fbc,
+      },
+      ip,
+      userAgent: _meta?.user_agent || req.headers['user-agent'],
+    }),
   ]);
 
-  // --- Retorna links de download ---
   return res.status(200).json({
     success: true,
     message: 'Acesso liberado! Baixe o app para começar.',

@@ -2549,6 +2549,31 @@
   const graficoSection = document.querySelector('.grid-chart');
   if (graficoSection) barraObs.observe(graficoSection.closest('section') || graficoSection);
 
+  // ---- Meta Pixel helpers ----
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : undefined;
+  }
+  function genEventId(prefix) {
+    return prefix + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  }
+  function metaMeta(prefix) {
+    return {
+      event_id:   genEventId(prefix),
+      fbp:        getCookie('_fbp'),
+      fbc:        getCookie('_fbc'),
+      page_url:   window.location.href,
+      user_agent: navigator.userAgent,
+    };
+  }
+
+  // Preços por plano (BRL) — usados no InitiateCheckout
+  const PLAN_PRICES = {
+    'mei': 99,        'mei-semestral': 534,        'mei-anual': 948,
+    'essencial': 119, 'essencial-semestral': 654,  'essencial-anual': 1188,
+    'premium': 139,   'premium-semestral': 714,    'premium-anual': 1308,
+  };
+
   // ---- Modais Logic ----
   const modalCheckout = document.getElementById('checkout-modal');
   const modalLead = document.getElementById('lead-modal');
@@ -2556,9 +2581,20 @@
   let billingMode = 'mensal';
 
   function openCheckout(planName) {
-    if (billingMode !== 'mensal') planName += '-' + billingMode;
-    document.getElementById('checkout-plan').value = planName || '';
+    const fullPlanName = billingMode !== 'mensal' ? planName + '-' + billingMode : planName;
+    document.getElementById('checkout-plan').value = fullPlanName || '';
     modalCheckout.style.display = 'flex';
+
+    // Pixel: InitiateCheckout
+    if (typeof fbq !== 'undefined') {
+      fbq('track', 'InitiateCheckout', {
+        value:        PLAN_PRICES[fullPlanName] || PLAN_PRICES[planName] || 0,
+        currency:     'BRL',
+        content_ids:  [fullPlanName],
+        content_type: 'product',
+        num_items:    1,
+      });
+    }
   }
 
   function setBilling(mode) {
@@ -2638,11 +2674,18 @@
     document.getElementById('consultor-form-wrap').style.display = 'none';
     document.getElementById('consultor-loading').style.display = 'block';
 
+    const meta = metaMeta('consultor');
+
+    // Pixel: Lead (browser) — dispara em paralelo com o servidor
+    if (typeof fbq !== 'undefined') {
+      fbq('track', 'Lead', { content_name: 'Consultor Site' }, { eventID: meta.event_id });
+    }
+
     try {
       await fetch('/api/consultor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, faturamento, ramo, whatsapp }),
+        body: JSON.stringify({ nome, faturamento, ramo, whatsapp, _meta: meta }),
       });
     } catch (e) {
       console.warn('Aviso: não foi possível salvar lead consultor:', e.message);
@@ -2733,11 +2776,18 @@
       cpfCnpj: document.getElementById('lead-document').value || null
     };
 
+    const meta = metaMeta('lead');
+
+    // Pixel: Lead (browser) — dispara em paralelo com o servidor
+    if (typeof fbq !== 'undefined') {
+      fbq('track', 'Lead', { content_name: 'Teste Grátis' }, { eventID: meta.event_id });
+    }
+
     try {
       const resp = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, _meta: meta })
       });
       const data = await resp.json();
 
