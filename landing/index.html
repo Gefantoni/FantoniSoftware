@@ -2176,7 +2176,7 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           Testar 7 dias grátis
         </a>
-        <a href="https://wa.me/5551996034862?text=Olá!+Tenho+interesse+no+Fantoni+PDV" target="_blank" class="btn btn-lg btn-outline shadow-hover">
+        <a href="#" onclick="openConsultorModal(); return false;" class="btn btn-lg btn-outline shadow-hover">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
           Falar com consultor
         </a>
@@ -2296,6 +2296,82 @@
   </div>
 </div>
 
+<!-- CONSULTOR MODAL -->
+<div id="consultor-modal" class="modal-overlay" style="display:none;">
+  <div class="checkout-modal" style="max-width:480px;">
+    <div class="modal-close" onclick="closeConsultorModal()">✕</div>
+
+    <!-- Formulário -->
+    <div id="consultor-form-wrap">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="width:52px;height:52px;background:#eff6ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h2 class="modal-title" style="margin-bottom:6px;">Falar com Consultor</h2>
+        <p style="font-size:14px;color:var(--cinza);margin:0;">Responda 3 perguntas rápidas e entraremos em contato pelo WhatsApp.</p>
+      </div>
+
+      <form id="consultor-form" onsubmit="handleConsultorSubmit(event)">
+
+        <!-- Pergunta 1: Faturamento -->
+        <div class="form-group" style="margin-bottom:20px;">
+          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:10px;">
+            Qual é o faturamento mensal do seu negócio?
+          </label>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <label class="consultor-radio">
+              <input type="radio" name="faturamento" value="Ainda não faturo" required>
+              <span>Ainda não faturo</span>
+            </label>
+            <label class="consultor-radio">
+              <input type="radio" name="faturamento" value="R$ 1 a R$ 10.000">
+              <span>R$ 1 a R$ 10.000</span>
+            </label>
+            <label class="consultor-radio">
+              <input type="radio" name="faturamento" value="R$ 10.000 a R$ 100.000">
+              <span>R$ 10.000 a R$ 100.000</span>
+            </label>
+            <label class="consultor-radio">
+              <input type="radio" name="faturamento" value="Acima de R$ 100.000">
+              <span>Acima de R$ 100.000</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pergunta 2: Ramo -->
+        <div class="form-group" style="margin-bottom:20px;">
+          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">
+            Qual é o ramo do seu negócio?
+          </label>
+          <input type="text" id="consultor-ramo" class="form-input" required
+            placeholder="Ex: Restaurante, Bar, Mercado, Farmácia…">
+        </div>
+
+        <!-- Pergunta 3: Nome -->
+        <div class="form-group" style="margin-bottom:24px;">
+          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">
+            Como podemos te chamar?
+          </label>
+          <input type="text" id="consultor-nome" class="form-input" required
+            placeholder="Seu nome">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block shadow-hover" id="btn-consultor-submit">
+          Falar com consultor no WhatsApp
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-left:6px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Tela de carregamento/redirecionamento -->
+    <div id="consultor-loading" style="display:none;text-align:center;padding:32px 0;">
+      <div style="width:52px;height:52px;border:3px solid #bfdbfe;border-top-color:#1d4ed8;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 20px;"></div>
+      <p style="font-size:15px;color:#374151;font-weight:600;">Salvando suas informações…</p>
+      <p style="font-size:13px;color:var(--cinza);">Você será redirecionado para o WhatsApp em instantes.</p>
+    </div>
+  </div>
+</div>
+
 <!-- LEADS MODAL (Teste Grátis) -->
 <div id="lead-modal" class="modal-overlay">
   <div class="checkout-modal">
@@ -2335,6 +2411,27 @@
 <style>
   /* Previne scroll horizontal em mobile */
   html, body { overflow-x: hidden; }
+
+  /* ---- Radio buttons do modal consultor ---- */
+  .consultor-radio {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    transition: border-color .2s, background .2s;
+    user-select: none;
+  }
+  .consultor-radio:hover { border-color: #93c5fd; background: #f0f7ff; }
+  .consultor-radio input[type="radio"] { accent-color: #1d4ed8; width: 16px; height: 16px; flex-shrink: 0; }
+  .consultor-radio:has(input:checked) { border-color: #1d4ed8; background: #eff6ff; color: #1d4ed8; font-weight: 600; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   @keyframes barraCresce { from { width: 0 !important; } }
   .barra-anim { animation: barraCresce 1.2s ease-out forwards; }
@@ -2469,6 +2566,69 @@
   function closeLeadModal() {
     modalLead.style.display = 'none';
   }
+
+  // ---- Modal Consultor ----
+  const modalConsultor = document.getElementById('consultor-modal');
+
+  function openConsultorModal() {
+    // Reseta o estado
+    document.getElementById('consultor-form-wrap').style.display = 'block';
+    document.getElementById('consultor-loading').style.display = 'none';
+    document.getElementById('consultor-form').reset();
+    const btn = document.getElementById('btn-consultor-submit');
+    btn.disabled = false;
+    btn.innerHTML = 'Falar com consultor no WhatsApp <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-left:6px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>';
+    modalConsultor.style.display = 'flex';
+  }
+  function closeConsultorModal() {
+    modalConsultor.style.display = 'none';
+  }
+
+  async function handleConsultorSubmit(event) {
+    event.preventDefault();
+
+    const nome       = document.getElementById('consultor-nome').value.trim();
+    const ramo       = document.getElementById('consultor-ramo').value.trim();
+    const faturamento = document.querySelector('input[name="faturamento"]:checked')?.value;
+
+    if (!faturamento) {
+      alert('Por favor, selecione o faturamento do seu negócio.');
+      return;
+    }
+
+    // Mostra loading
+    document.getElementById('consultor-form-wrap').style.display = 'none';
+    document.getElementById('consultor-loading').style.display = 'block';
+
+    try {
+      await fetch('/api/consultor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, faturamento, ramo }),
+      });
+    } catch (e) {
+      console.warn('Aviso: não foi possível salvar lead consultor:', e.message);
+    }
+
+    // Monta mensagem pré-preenchida para o WhatsApp
+    const msg = encodeURIComponent(
+      `Olá! Me chamo ${nome}.\n` +
+      `Ramo: ${ramo}\n` +
+      `Faturamento mensal: ${faturamento}\n\n` +
+      `Tenho interesse no Fantoni PDV e gostaria de falar com um consultor.`
+    );
+
+    // Redireciona para WhatsApp após breve pausa (UX)
+    setTimeout(() => {
+      window.open(`https://wa.me/5551996034862?text=${msg}`, '_blank');
+      closeConsultorModal();
+    }, 1200);
+  }
+
+  // Fecha modal ao clicar no overlay
+  modalConsultor.addEventListener('click', (e) => {
+    if (e.target === modalConsultor) closeConsultorModal();
+  });
 
   // ---- Formulário de Checkout ----
   async function handleCheckout(event) {
