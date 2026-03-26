@@ -2348,12 +2348,21 @@
         </div>
 
         <!-- Pergunta 3: Nome -->
-        <div class="form-group" style="margin-bottom:24px;">
+        <div class="form-group" style="margin-bottom:16px;">
           <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">
             Como podemos te chamar?
           </label>
           <input type="text" id="consultor-nome" class="form-input" required
             placeholder="Seu nome">
+        </div>
+
+        <!-- WhatsApp para contato -->
+        <div class="form-group" style="margin-bottom:24px;">
+          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">
+            Seu WhatsApp <span style="font-weight:400;color:#94a3b8;">(para o consultor entrar em contato)</span>
+          </label>
+          <input type="tel" id="consultor-whatsapp" class="form-input" required
+            placeholder="(00) 00000-0000">
         </div>
 
         <button type="submit" class="btn btn-primary btn-block shadow-hover" id="btn-consultor-submit">
@@ -2587,8 +2596,9 @@
   async function handleConsultorSubmit(event) {
     event.preventDefault();
 
-    const nome       = document.getElementById('consultor-nome').value.trim();
-    const ramo       = document.getElementById('consultor-ramo').value.trim();
+    const nome        = document.getElementById('consultor-nome').value.trim();
+    const ramo        = document.getElementById('consultor-ramo').value.trim();
+    const whatsapp    = document.getElementById('consultor-whatsapp').value.trim();
     const faturamento = document.querySelector('input[name="faturamento"]:checked')?.value;
 
     if (!faturamento) {
@@ -2604,7 +2614,7 @@
       await fetch('/api/consultor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, faturamento, ramo }),
+        body: JSON.stringify({ nome, faturamento, ramo, whatsapp }),
       });
     } catch (e) {
       console.warn('Aviso: não foi possível salvar lead consultor:', e.message);
