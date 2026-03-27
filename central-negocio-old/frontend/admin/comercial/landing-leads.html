@@ -6,84 +6,111 @@
   <title>Leads do Site — Admin</title>
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/painel.css">
+  <link rel="stylesheet" href="/assets/css/comercial.css">
   <style>
-    body { display: flex; min-height: 100vh; background: #f8fafc; font-family: 'Inter', sans-serif; }
+    body { display: flex; min-height: 100vh; background: #0d1520; font-family: 'Inter', sans-serif; color: #e2e8f0; }
     #sidebar { width: 260px; flex-shrink: 0; }
-    .main-content { flex: 1; padding: 32px; overflow-y: auto; }
+    .main-content { flex: 1; padding: 32px; overflow-y: auto; min-width: 0; }
 
     /* ── cabeçalho ── */
     .page-header { margin-bottom: 28px; }
-    .page-header h1 { font-size: 22px; font-weight: 700; color: #0f172a; }
+    .page-header h1 { font-size: 22px; font-weight: 700; color: #f8fafc; }
     .page-header p  { font-size: 14px; color: #64748b; margin-top: 4px; }
 
     /* ── abas ── */
-    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: #f1f5f9; padding: 4px; border-radius: 10px; width: fit-content; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: #111f2e; padding: 4px; border-radius: 10px; width: fit-content; border: 1px solid #1e3a5a; }
     .tab { padding: 9px 20px; border-radius: 7px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: #64748b; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 7px; }
-    .tab.active { background: #fff; color: #0f172a; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
-    .tab-count { background: #e2e8f0; color: #475569; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 20px; }
-    .tab.active .tab-count { background: #dbeafe; color: #1d4ed8; }
+    .tab.active { background: #13233a; color: #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.30); }
+    .tab-count { background: #1e3a5a; color: #94a3b8; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 20px; }
+    .tab.active .tab-count { background: #1d4ed8; color: #bfdbfe; }
 
     /* ── cards resumo ── */
     .cards-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 20px; }
-    .card-label { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
-    .card-value { font-size: 28px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1; }
+    .card { background: #13233a; border-radius: 12px; border: 1px solid #1e3a5a; padding: 20px; }
+    .card-label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card-value { font-size: 28px; font-weight: 800; color: #f8fafc; margin-top: 6px; line-height: 1; }
     .card-sub   { font-size: 12px; color: #64748b; margin-top: 4px; }
 
     /* ── barra de ferramentas ── */
     .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-    .toolbar input { flex: 1; min-width: 200px; padding: 9px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; }
+    .toolbar input {
+      flex: 1; min-width: 200px; padding: 9px 14px;
+      border: 1px solid #1e3a5a; border-radius: 8px; font-size: 14px;
+      background: #111f2e; color: #e2e8f0; outline: none;
+    }
     .toolbar input:focus { border-color: #3b82f6; }
-    .toolbar select { padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #374151; background: #fff; cursor: pointer; outline: none; }
-    .btn-refresh { padding: 9px 16px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 600; color: #374151; cursor: pointer; white-space: nowrap; }
-    .btn-refresh:hover { background: #e2e8f0; }
+    .toolbar input::placeholder { color: #475569; }
+    .toolbar select {
+      padding: 9px 12px; border: 1px solid #1e3a5a; border-radius: 8px;
+      font-size: 14px; color: #e2e8f0; background: #111f2e; cursor: pointer; outline: none;
+    }
+    .btn-refresh {
+      padding: 9px 16px; background: #13233a; border: 1px solid #1e3a5a;
+      border-radius: 8px; font-size: 14px; font-weight: 600; color: #94a3b8;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-refresh:hover { background: #172c48; color: #e2e8f0; }
 
     /* ── tabela ── */
-    .table-wrap { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+    .table-wrap { background: #13233a; border-radius: 12px; border: 1px solid #1e3a5a; overflow: hidden; }
     table { width: 100%; border-collapse: collapse; }
-    thead th { background: #f8fafc; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; padding: 12px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-    tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.12s; }
+    thead th {
+      background: #111f2e; font-size: 11px; font-weight: 700; color: #64748b;
+      text-transform: uppercase; letter-spacing: 0.5px; padding: 12px 16px;
+      text-align: left; border-bottom: 1px solid #1e3a5a;
+    }
+    tbody tr { border-bottom: 1px solid #162d44; transition: background 0.12s; }
     tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: #f8fafc; }
-    tbody td { padding: 13px 16px; font-size: 13px; color: #374151; }
-    .td-nome { font-weight: 600; color: #0f172a; }
-    .td-muted { color: #94a3b8; font-size: 12px; }
+    tbody tr:hover { background: #172c48; }
+    tbody td { padding: 13px 16px; font-size: 13px; color: #cbd5e1; }
+    .td-nome { font-weight: 600; color: #f8fafc; }
+    .td-muted { color: #475569; font-size: 12px; }
 
-    /* ── badges status ── */
+    /* ── badges ── */
     .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-    .badge-pending   { background: #fef3c7; color: #92400e; }
-    .badge-paid      { background: #dcfce7; color: #166534; }
-    .badge-canceled  { background: #fee2e2; color: #991b1b; }
-    .badge-other     { background: #f1f5f9; color: #475569; }
-    .badge-teste     { background: #eff6ff; color: #1d4ed8; }
-    .badge-consultor { background: #f0fdf4; color: #15803d; }
+    .badge-pending   { background: #451a03; color: #fcd34d; }
+    .badge-paid      { background: #052e16; color: #4ade80; }
+    .badge-canceled  { background: #450a0a; color: #f87171; }
+    .badge-other     { background: #1e3a5a; color: #94a3b8; }
+    .badge-teste     { background: #1e3a5a; color: #60a5fa; }
+    .badge-consultor { background: #052e16; color: #4ade80; }
 
     /* ── faturamento pill ── */
-    .fat-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #fef9c3; color: #854d0e; }
-    .fat-pill.sem-fat { background: #f1f5f9; color: #64748b; }
+    .fat-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #451a03; color: #fcd34d; }
+    .fat-pill.sem-fat { background: #1e293b; color: #64748b; }
 
     /* ── plano ── */
-    .plan-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #dbeafe; color: #1d4ed8; }
+    .plan-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #1e3a5a; color: #60a5fa; }
 
     /* ── link fatura ── */
-    .link-fatura { color: #2563eb; text-decoration: none; font-size: 12px; font-weight: 600; }
-    .link-fatura:hover { text-decoration: underline; }
+    .link-fatura { color: #60a5fa; text-decoration: none; font-size: 12px; font-weight: 600; }
+    .link-fatura:hover { color: #93c5fd; }
 
     /* ── botão WhatsApp ── */
     .btn-wa {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 4px 10px; border-radius: 6px;
-      background: #dcfce7; color: #15803d;
+      background: #052e16; color: #4ade80;
       font-size: 12px; font-weight: 700;
-      text-decoration: none; border: 1px solid #bbf7d0;
-      transition: background .15s, border-color .15s;
-      white-space: nowrap;
+      text-decoration: none; border: 1px solid #166534;
+      transition: background .15s; white-space: nowrap;
     }
-    .btn-wa:hover { background: #bbf7d0; border-color: #86efac; }
+    .btn-wa:hover { background: #14532d; }
     .td-contato { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
+    /* ── botão apagar ── */
+    .btn-del {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 9px; border-radius: 6px;
+      background: transparent; color: #64748b;
+      font-size: 12px; font-weight: 600;
+      border: 1px solid #1e3a5a; cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-del:hover { background: #450a0a; color: #f87171; border-color: #7f1d1d; }
+
     /* ── estado vazio / carregando ── */
-    .state-msg { text-align: center; padding: 64px 20px; color: #94a3b8; font-size: 15px; }
+    .state-msg { text-align: center; padding: 64px 20px; color: #475569; font-size: 15px; }
     .state-msg span { font-size: 36px; display: block; margin-bottom: 12px; }
 
     /* ── seção oculta ── */
@@ -91,11 +118,45 @@
     .tab-section.active { display: block; }
 
     /* ── paginação ── */
-    .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #f1f5f9; background: #fff; font-size: 13px; color: #64748b; }
+    .pagination {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-top: 1px solid #162d44;
+      background: #111f2e; font-size: 13px; color: #64748b;
+    }
     .pag-btns { display: flex; gap: 6px; }
-    .pag-btns button { padding: 5px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; font-size: 13px; cursor: pointer; }
-    .pag-btns button:hover:not(:disabled) { background: #f1f5f9; }
-    .pag-btns button:disabled { opacity: 0.4; cursor: default; }
+    .pag-btns button {
+      padding: 5px 12px; border: 1px solid #1e3a5a; border-radius: 6px;
+      background: #13233a; color: #94a3b8; font-size: 13px; cursor: pointer;
+    }
+    .pag-btns button:hover:not(:disabled) { background: #172c48; color: #e2e8f0; }
+    .pag-btns button:disabled { opacity: 0.3; cursor: default; }
+
+    /* ── Modal de confirmação ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7); z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.aberto { display: flex; }
+    .modal-box {
+      background: #13233a; border: 1px solid #1e3a5a; border-radius: 16px;
+      padding: 32px; max-width: 400px; width: 90%; text-align: center;
+    }
+    .modal-box h3 { font-size: 18px; font-weight: 700; color: #f8fafc; margin-bottom: 10px; }
+    .modal-box p { font-size: 14px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
+    .modal-nome { color: #f87171; font-weight: 600; }
+    .modal-acoes { display: flex; gap: 12px; justify-content: center; }
+    .btn-cancelar {
+      padding: 10px 24px; border: 1px solid #1e3a5a; border-radius: 8px;
+      background: transparent; color: #94a3b8; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-cancelar:hover { background: #172c48; color: #e2e8f0; }
+    .btn-confirmar-del {
+      padding: 10px 24px; border: none; border-radius: 8px;
+      background: #dc2626; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
+    }
+    .btn-confirmar-del:hover { background: #b91c1c; }
+    .btn-confirmar-del:disabled { opacity: 0.5; cursor: default; }
   </style>
 </head>
 <body>
@@ -157,10 +218,11 @@
             <th>Faturamento</th>
             <th>Origem</th>
             <th>Cadastrado em</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="tbody-leads">
-          <tr><td colspan="6" class="state-msg"><span>⏳</span>Carregando…</td></tr>
+          <tr><td colspan="7" class="state-msg"><span>⏳</span>Carregando…</td></tr>
         </tbody>
       </table>
       <div class="pagination" id="pag-leads">
@@ -237,6 +299,18 @@
   </div>
 </div>
 
+<!-- ── Modal: confirmar exclusão ── -->
+<div class="modal-overlay" id="modal-del">
+  <div class="modal-box">
+    <h3>Apagar lead?</h3>
+    <p>Tem certeza que deseja remover <span class="modal-nome" id="modal-del-nome"></span>?<br>Esta ação não pode ser desfeita.</p>
+    <div class="modal-acoes">
+      <button class="btn-cancelar" onclick="fecharModalDel()">Cancelar</button>
+      <button class="btn-confirmar-del" id="btn-confirmar-del" onclick="confirmarDel()">Apagar</button>
+    </div>
+  </div>
+</div>
+
 <script src="/assets/js/api.js"></script>
 <script src="/assets/js/auth.js"></script>
 <script src="/assets/js/sidebar-admin.js"></script>
@@ -248,6 +322,7 @@
   let offsetLeads = 0, totalLeads = 0;
   let offsetCheckouts = 0, totalCheckouts = 0;
   let debTimer = null;
+  let pendingDelId = null;
 
   // ── Utilitários ──
   function debounce(fn, ms = 400) {
@@ -263,14 +338,6 @@
   function fmtVal(v) {
     if (v == null) return '—';
     return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-  }
-
-  function fmtDoc(doc) {
-    if (!doc) return '—';
-    const d = doc.replace(/\D/g, '');
-    if (d.length === 11) return d.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-    if (d.length === 14) return d.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-    return doc;
   }
 
   function fmtWA(w) {
@@ -309,7 +376,7 @@
     if (origem) params.set('origem', origem);
 
     const tbody = document.getElementById('tbody-leads');
-    tbody.innerHTML = '<tr><td colspan="6" class="state-msg"><span>⏳</span>Carregando…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="state-msg"><span>⏳</span>Carregando…</td></tr>';
 
     try {
       const { leads, total } = await api.get('/landing/leads?' + params);
@@ -317,7 +384,6 @@
       document.getElementById('total-leads').textContent = totalLeads;
       document.getElementById('count-leads').textContent = totalLeads;
 
-      // Calcular 24h e semana
       const agora = Date.now();
       const dia = leads.filter(l => agora - new Date(l.created_at) < 86400000).length;
       const sem = leads.filter(l => agora - new Date(l.created_at) < 7 * 86400000).length;
@@ -325,21 +391,19 @@
       document.getElementById('leads-semana').textContent = sem;
 
       if (!leads.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="state-msg"><span>📭</span>Nenhum lead encontrado.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="state-msg"><span>📭</span>Nenhum lead encontrado.</td></tr>';
       } else {
         tbody.innerHTML = leads.map(l => {
           const isConsultor = l.origem === 'Consultor Site';
           const badgeClass  = isConsultor ? 'badge-consultor' : 'badge-teste';
           const origemLabel = isConsultor ? '💬 Consultor' : '🔬 Teste Grátis';
 
-          // Faturamento vem em "notas" como "Faturamento: R$ X a R$ Y"
           const fat = l.notas ? l.notas.replace('Faturamento: ', '') : null;
-          const naoFatura = fat === 'Ainda não faturo';
+          const naoFatura = fat && fat.startsWith('Ainda');
           const fatHtml = fat
             ? `<span class="fat-pill ${naoFatura ? 'sem-fat' : ''}">${esc(fat)}</span>`
             : '<span class="td-muted">—</span>';
 
-          // Contato: número formatado + botão WhatsApp
           const waDigits = l.whatsapp ? l.whatsapp.replace(/\D/g, '') : '';
           const waLink   = waDigits ? `https://wa.me/55${waDigits}` : null;
           const contatoHtml = waDigits
@@ -359,12 +423,17 @@
             <td>${fatHtml}</td>
             <td><span class="badge ${badgeClass}">${origemLabel}</span></td>
             <td>${fmt(l.created_at)}</td>
+            <td>
+              <button class="btn-del" onclick="abrirModalDel('${l.id}', '${esc(l.name || '—')}')">
+                🗑 Apagar
+              </button>
+            </td>
           </tr>`;
         }).join('');
       }
       atualizarPagLeads();
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="6" class="state-msg"><span>⚠️</span>Erro ao carregar leads: ${esc(e.message)}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="state-msg"><span>⚠️</span>Erro ao carregar leads: ${esc(e.message)}</td></tr>`;
     }
   }
 
@@ -379,6 +448,39 @@
     document.getElementById('pag-leads-ant').disabled = offsetLeads === 0;
     document.getElementById('pag-leads-prox').disabled = fim >= totalLeads;
   }
+
+  // ── Exclusão ──
+  function abrirModalDel(id, nome) {
+    pendingDelId = id;
+    document.getElementById('modal-del-nome').textContent = nome;
+    document.getElementById('modal-del').classList.add('aberto');
+  }
+
+  function fecharModalDel() {
+    pendingDelId = null;
+    document.getElementById('modal-del').classList.remove('aberto');
+  }
+
+  async function confirmarDel() {
+    if (!pendingDelId) return;
+    const btn = document.getElementById('btn-confirmar-del');
+    btn.disabled = true;
+    btn.textContent = 'Apagando…';
+    try {
+      await api.delete(`/landing/leads/${pendingDelId}`);
+      fecharModalDel();
+      carregarLeads();
+    } catch (e) {
+      alert('Erro ao apagar lead: ' + e.message);
+      btn.disabled = false;
+      btn.textContent = 'Apagar';
+    }
+  }
+
+  // Fechar modal clicando fora
+  document.getElementById('modal-del').addEventListener('click', e => {
+    if (e.target === e.currentTarget) fecharModalDel();
+  });
 
   // ── CHECKOUTS ──
   async function carregarCheckouts() {

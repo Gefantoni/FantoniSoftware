@@ -58,4 +58,21 @@ router.get('/checkouts', autenticar, adminOuComercial, async (req, res) => {
   }
 });
 
+// DELETE /landing/leads/:id — remove um lead do site
+router.delete('/leads/:id', autenticar, adminOuComercial, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { error } = await supabaseAdmin
+      .from('leads')
+      .delete()
+      .eq('id', id)
+      .in('origem', ['Teste Site', 'Consultor Site']); // segurança: só leads do site
+    if (error) throw error;
+    res.json({ ok: true });
+  } catch (e) {
+    console.error('Erro ao apagar lead:', e.message);
+    res.status(500).json({ erro: 'Erro ao apagar lead' });
+  }
+});
+
 module.exports = router;
