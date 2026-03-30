@@ -8,42 +8,196 @@
   <link rel="stylesheet" href="/assets/css/painel.css">
   <link rel="stylesheet" href="/assets/css/comercial.css">
   <style>
-    /* ── Dark Mode CRM Styles ── */
+    /* ── Variáveis Dark Mode ── */
     :root {
-        --fundo: #09090b;
-        --fundo-card: #18181b;
-        --primaria: #3b82f6;
-        --borda: rgba(255, 255, 255, 0.08);
-        --texto: #f4f4f5;
-        --texto-suave: #a1a1aa;
-        --sucesso: #10b981;
-        --erro: #ef4444;
+      --fundo:        #09090b;
+      --fundo-card:   #18181b;
+      --primaria:     #3b82f6;
+      --borda:        rgba(255,255,255,0.08);
+      --texto:        #f4f4f5;
+      --texto-suave:  #a1a1aa;
+      --sucesso:      #10b981;
+      --erro:         #ef4444;
+      --aviso:        #f59e0b;
     }
 
-    .wizard-steps { display: flex; gap: 4px; margin-bottom: 32px; background: rgba(255,255,255,0.02); padding: 8px; border-radius: 12px; border: 1px solid var(--borda); }
-    .wizard-step { flex: 1; padding: 12px; text-align: center; font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--texto-suave); border-radius: 8px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    /* ── Utilitários ── */
+    .oculto { display: none !important; }
+    .spin { display: inline-block; animation: girar 1s linear infinite; }
+    @keyframes girar { to { transform: rotate(360deg); } }
+    .text-white  { color: var(--texto); }
+    .text-suave  { color: var(--texto-suave); }
+    .text-xs     { font-size: 11px; }
+    .fw-700      { font-weight: 700; }
+    .mb-6        { margin-bottom: 24px; }
+    .mt-6        { margin-top: 24px; }
+    .block       { display: block; }
+    .uppercase   { text-transform: uppercase; }
+    .mb-3        { margin-bottom: 12px; }
+    .mt-4        { margin-top: 16px; }
+    .ml-2        { margin-left: 8px; }
+    .flex        { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-2       { gap: 8px; }
+    .gap-3       { gap: 12px; }
+    .m-0         { margin: 0; }
+    .p-4         { padding: 16px; }
+    .rounded-lg  { border-radius: 10px; }
+    .bg-borda-suave { background: rgba(255,255,255,0.03); }
+
+    /* ── Vistas ── */
+    .vista { display: none; }
+    .vista.ativa { display: block; }
+
+    /* ── Card ── */
+    .card { background: var(--fundo-card); border: 1px solid var(--borda); border-radius: 14px; padding: 20px; }
+    .card-titulo { font-size: 14px; font-weight: 700; color: var(--texto); margin: 0; display: flex; align-items: center; gap: 8px; }
+
+    /* ── Page title ── */
+    .page-title h2 { font-size: 20px; font-weight: 700; color: var(--texto); margin: 0 0 4px; }
+    .page-title p  { font-size: 13px; color: var(--texto-suave); margin: 0; }
+
+    /* ── Modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(9,9,11,0.88); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal-box { background: var(--fundo-card); border: 1px solid var(--borda); border-radius: 16px; width: 100%; animation: modalIn 0.2s ease-out; box-shadow: 0 24px 64px rgba(0,0,0,0.6); }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(10px); } to { opacity: 1; transform: none; } }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--borda); }
+    .modal-titulo { font-size: 15px; font-weight: 700; color: var(--texto); display: flex; align-items: center; gap: 8px; }
+    .modal-fechar { background: none; border: none; color: var(--texto-suave); cursor: pointer; font-size: 18px; padding: 4px 8px; border-radius: 6px; transition: 0.2s; line-height: 1; }
+    .modal-fechar:hover { background: rgba(239,68,68,0.1); color: var(--erro); }
+    .modal-body { padding: 24px; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--borda); flex-wrap: wrap; }
+
+    /* ── Secões do modal de criação ── */
+    .secao-modal { padding-bottom: 20px; }
+    .secao-divisor { border: none; border-top: 1px solid var(--borda); margin: 20px 0; }
+    .secao-titulo { font-size: 11px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 14px; display: flex; align-items: center; gap: 6px; }
+
+    /* ── Form ── */
+    .form-campo { display: flex; flex-direction: column; gap: 6px; }
+    .form-campo label { font-size: 12px; font-weight: 600; color: var(--texto-suave); }
+    .form-campo input, .form-campo select, .form-campo textarea {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--borda); border-radius: 8px;
+      padding: 9px 12px; font-size: 13px; color: var(--texto); outline: none;
+      font-family: inherit; transition: border-color 0.2s; width: 100%; box-sizing: border-box;
+    }
+    .form-campo input:focus, .form-campo select:focus, .form-campo textarea:focus { border-color: var(--primaria); }
+    .form-campo textarea { resize: vertical; line-height: 1.6; }
+    .form-campo select option { background: #1e1e1e; color: var(--texto); }
+    .texto-ajuda { font-size: 11px; color: var(--texto-suave); font-weight: 400; text-transform: none; letter-spacing: 0; margin-top: 2px; }
+
+    /* ── Config grid ── */
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 580px) { .config-grid { grid-template-columns: 1fr; } }
+
+    /* ── Slider ── */
+    .slider-wrap { display: flex; align-items: center; gap: 10px; }
+    .slider-wrap input[type=range] { flex: 1; accent-color: var(--primaria); }
+    .slider-val { font-size: 12px; font-weight: 700; color: var(--primaria); white-space: nowrap; min-width: 44px; text-align: right; }
+
+    /* ── Drop zone ── */
+    .drop-zone { border: 2px dashed var(--borda); border-radius: 14px; padding: 36px; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.01); }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: var(--primaria); background: rgba(59,130,246,0.05); }
+    .drop-zone-icon { font-size: 36px; color: var(--primaria); opacity: 0.5; margin-bottom: 12px; }
+
+    /* ── Stats chips ── */
+    .stats-chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    @media (max-width: 580px) { .stats-chips { grid-template-columns: 1fr 1fr; } }
+    .chip { background: var(--fundo-card); border: 1px solid var(--borda); padding: 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .chip.verde { border-color: rgba(16,185,129,0.2); }
+    .chip.laranja { border-color: rgba(245,158,11,0.2); }
+    .chip-num { font-size: 22px; font-weight: 800; color: var(--texto); }
+    .chip span:last-child { font-size: 11px; color: var(--texto-suave); font-weight: 600; text-transform: uppercase; }
+
+    /* ── Instâncias ── */
+    .instancias-lista { display: flex; flex-wrap: wrap; gap: 8px; }
+    .inst-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--texto); cursor: pointer; transition: 0.2s; }
+    .inst-item:hover { border-color: var(--primaria); }
+    .inst-item input[type=checkbox] { accent-color: var(--primaria); }
+
+    /* ── Botão excluir contato ── */
+    .btn-excluir-contato { background: none; border: none; color: var(--texto-suave); cursor: pointer; padding: 2px 6px; border-radius: 4px; font-size: 13px; transition: 0.2s; line-height: 1; }
+    .btn-excluir-contato:hover { color: var(--erro); background: rgba(239,68,68,0.1); }
+
+    /* ── IA Preview ── */
+    .ai-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--primaria); margin-bottom: 6px; letter-spacing: 0.05em; }
+    .ai-variacao { background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.15); border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--texto); line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+
+    /* ── Preview label (prompt preview) ── */
+    .preview-label { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--texto-suave); margin-bottom: 8px; }
+    .preview-box { background: rgba(255,255,255,0.03); border: 1px solid var(--borda); border-radius: 8px; padding: 12px; font-size: 13px; color: var(--texto); line-height: 1.65; white-space: pre-wrap; min-height: 60px; }
+
+    /* ── Tabela de campanhas ── */
+    .camp-tabela { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .camp-tabela th { background: rgba(255,255,255,0.02); padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--texto-suave); border-bottom: 1px solid var(--borda); }
+    .camp-tabela td { padding: 14px 16px; border-bottom: 1px solid var(--borda); color: var(--texto); font-size: 13px; }
+    .camp-tabela tr:last-child td { border-bottom: none; }
+    .camp-tabela tr:hover td { background: rgba(59,130,246,0.03); }
+
+    /* ── Tabela de contatos / log ── */
+    .tabela-contatos { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .tabela-contatos th { padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--texto-suave); border-bottom: 1px solid var(--borda); font-weight: 600; }
+    .tabela-contatos td { padding: 10px 12px; border-bottom: 1px solid var(--borda); color: var(--texto); font-size: 13px; }
+    .tabela-contatos tr:last-child td { border-bottom: none; }
+    .tabela-contatos tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ── Badges ── */
+    .badge { padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+    .badge-ativo     { background: rgba(16,185,129,0.12);  color: var(--sucesso); }
+    .badge-pausado   { background: rgba(245,158,11,0.12);  color: var(--aviso); }
+    .badge-concluido { background: rgba(59,130,246,0.12);  color: var(--primaria); }
+    .badge-encerrado { background: rgba(161,161,170,0.12); color: var(--texto-suave); }
+
+    /* ── Status badges (log) ── */
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 600; }
+    .status-aguardando   { background: rgba(245,158,11,0.1);  color: var(--aviso); }
+    .status-enviado_wa   { background: rgba(16,185,129,0.1);  color: var(--sucesso); }
+    .status-enviado_email { background: rgba(59,130,246,0.1); color: var(--primaria); }
+    .status-parcial      { background: rgba(168,85,247,0.1);  color: #a855f7; }
+    .status-erro_wa      { background: rgba(239,68,68,0.1);   color: var(--erro); }
+    .status-erro_email   { background: rgba(239,68,68,0.1);   color: var(--erro); }
+
+    /* ── Tag inline (email/tel) ── */
+    .badge-ok  { background: rgba(16,185,129,0.1);  color: var(--sucesso);    font-size: 11px; padding: 2px 7px; border-radius: 5px; }
+    .badge-sem { background: rgba(161,161,170,0.08); color: var(--texto-suave); font-size: 11px; padding: 2px 7px; border-radius: 5px; }
+
+    /* ── Flash de linha (log) ── */
+    .row-ok td { animation: flashVerde 0.6s ease-out; }
+    .row-err td { animation: flashVerm  0.6s ease-out; }
+    @keyframes flashVerde { 0% { background: rgba(16,185,129,0.18); } 100% { background: transparent; } }
+    @keyframes flashVerm  { 0% { background: rgba(239,68,68,0.18); } 100% { background: transparent; } }
+
+    /* ── Erro texto ── */
+    .erro-txt { color: var(--erro); font-size: 12px; }
+    .sem-erro { color: var(--texto-suave); }
+
+    /* ── Barra de progresso ── */
+    .barra-prog-wrap { background: rgba(255,255,255,0.06); border-radius: 99px; height: 8px; overflow: hidden; margin-bottom: 8px; }
+    .barra-prog-fill { background: linear-gradient(90deg, var(--primaria), var(--sucesso)); height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+    .prog-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--texto-suave); margin-bottom: 12px; }
+    .prog-mini { background: rgba(255,255,255,0.06); border-radius: 99px; height: 5px; width: 80px; overflow: hidden; }
+    .prog-mini-fill { background: var(--primaria); height: 100%; border-radius: 99px; }
+
+    /* ── Timer ── */
+    .timer-wrap { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+    .timer-wrap.pausado { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); }
+    .timer-num { font-size: 20px; font-weight: 800; color: var(--texto); font-variant-numeric: tabular-nums; }
+    .timer-barra { height: 4px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+    .timer-barra-fill { height: 100%; background: var(--primaria); border-radius: 99px; transition: width 1s linear; }
+    .timer-resultado { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 5px; }
+    .timer-resultado.ok  { background: rgba(16,185,129,0.15); color: var(--sucesso); }
+    .timer-resultado.err { background: rgba(239,68,68,0.15);  color: var(--erro); }
+
+    /* ── Ações disparo ── */
+    .acoes-disparo { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+
+    /* ── Wizard steps (mantido para compat.) ── */
+    .wizard-steps { display: flex; gap: 4px; margin-bottom: 24px; background: rgba(255,255,255,0.02); padding: 6px; border-radius: 10px; border: 1px solid var(--borda); }
+    .wizard-step { flex: 1; padding: 10px; text-align: center; font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--texto-suave); border-radius: 6px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .wizard-step.ativo { background: var(--primaria); color: #fff; }
     .wizard-step.concluido { color: var(--sucesso); }
-
-    .camp-tabela { width: 100%; border-collapse: separate; border-spacing: 0; }
-    .camp-tabela th { background: rgba(255,255,255,0.02); padding: 16px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--texto-suave); border-bottom: 1px solid var(--borda); }
-    .camp-tabela td { padding: 16px; border-bottom: 1px solid var(--borda); color: var(--texto); font-size: 13px; }
-    .camp-tabela tr:hover td { background: rgba(59, 130, 246, 0.03); }
-
-    .badge { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .badge-ativo { background: rgba(16, 185, 129, 0.1); color: var(--sucesso); }
-    .badge-pausado { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-    .badge-concluido { background: rgba(59, 130, 246, 0.1); color: var(--primaria); }
-
-    .drop-zone { border: 2px dashed var(--borda); border-radius: 16px; padding: 48px; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.01); }
-    .drop-zone:hover { border-color: var(--primaria); background: rgba(59, 130, 246, 0.05); }
-    .drop-zone-icon { font-size: 40px; color: var(--primaria); opacity: 0.5; margin-bottom: 16px; }
-
-    .chip { background: var(--fundo-card); border: 1px solid var(--borda); padding: 16px; border-radius: 12px; display: flex; flex-direction: column; gap: 4px; }
-    .chip-num { font-size: 24px; font-weight: 800; color: #fff; }
-
-    .timer-wrap { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primaria); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; }
-
+    .step-label { display: inline; }
   </style>
 </head>
 <body class="com-page">
@@ -65,290 +219,22 @@
       <!-- VISTA 1 — LISTA DE CAMPANHAS                      -->
       <!-- ══════════════════════════════════════════════════ -->
       <div class="vista ativa" id="vista-lista">
-        <div class="page-title mb-6">
-          <h2 class="text-white">Campanhas Estratégicas</h2>
-          <p class="text-suave">Disparos multicanal (WhatsApp + Email) com prospecção automatizada por IA.</p>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+          <div class="page-title">
+            <h2>Campanhas Estratégicas</h2>
+            <p>Disparos multicanal (WhatsApp + Email) com prospecção por IA.</p>
+          </div>
+          <button class="btn btn-primario" onclick="abrirModalNovaCampanha()">
+            <i class="ph ph-plus"></i> Criar Nova Campanha
+          </button>
         </div>
-
-        <div class="painel-etapa ativo" id="etapa-1">
-          <div class="card mb-6">
-            <h3 class="card-titulo mb-6"><i class="ph ph-file-arrow-up"></i> Importar contatos B2B</h3>
-            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('input-arquivo').click()">
-              <div class="drop-zone-icon"><i class="ph ph-cloud-arrow-up"></i></div>
-              <p class="text-white fw-700">Arraste seu arquivo .xlsx aqui</p>
-              <p class="text-suave text-xs mt-2">Suporte a planilhas de exportação CNPJ.biz</p>
-            </div>
-            <input type="file" id="input-arquivo" accept=".xlsx,.xls" style="display:none">
-            <div id="upload-status" style="display:none;margin-top:12px;">
-              <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#eff6ff;border-radius:10px;">
-                <span class="spin" style="font-size:20px;">⟳</span>
-                <span style="font-size:14px;color:#1d4ed8;font-weight:600;">Processando arquivo...</span>
-              </div>
-            </div>
-          </div>
-
-          <div id="stats-area" style="display:none;">
-            <div class="stats-chips">
-              <div class="chip"><span class="chip-num" id="stat-total">0</span>Total ATIVA</div>
-              <div class="chip verde"><span class="chip-num" id="stat-email">0</span>Com email</div>
-              <div class="chip"><span class="chip-num" id="stat-tel">0</span>Com WhatsApp</div>
-              <div class="chip laranja"><span class="chip-num" id="stat-ambos">0</span>Com ambos</div>
-            </div>
-            <div class="card">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-                <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">
-                  Prévia dos contatos <span id="preview-count" style="color:#64748b;font-weight:400;font-size:13px;"></span>
-                </h3>
-                <button class="btn btn-primario btn-sm" onclick="irParaEtapa(2)">Configurar disparo →</button>
-              </div>
-              <div style="overflow-x:auto;max-height:380px;overflow-y:auto;">
-                <table class="tabela-contatos">
-                  <thead><tr>
-                    <th>Estabelecimento</th><th>Segmento</th><th>Cidade</th><th>Email</th><th>WhatsApp</th>
-                  </tr></thead>
-                  <tbody id="tabela-contatos-body"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Etapa 2 — Configurar -->
-        <div class="painel-etapa" id="etapa-2">
-          <div class="wizard-steps">
-            <div class="wizard-step concluido" id="step-1">
-              <i class="ph ph-file-csv"></i>
-              <span class="step-label">Importar</span>
-            </div>
-            <div class="wizard-step ativo" id="step-2">
-              <i class="ph ph-sliders"></i>
-              <span class="step-label">Configurar</span>
-            </div>
-            <div class="wizard-step" id="step-3">
-              <i class="ph ph-broadcast"></i>
-              <span class="step-label">Acompanhar</span>
-            </div>
-          </div>
-          <div class="card mb-6">
-            <div class="flex justify-between items-center mb-6">
-              <h3 class="card-titulo"><i class="ph ph-gear"></i> Configurações do disparo</h3>
-              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                <input type="text" id="cfg-nome" placeholder="Nome da campanha (ex: Bares RS — PDV)"
-                  style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#1e293b;outline:none;width:260px;"
-                  onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e2e8f0'">
-                <select id="sel-template" onchange="carregarTemplate(this.value)"
-                  style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#334155;outline:none;display:none;">
-                  <option value="">↩ Carregar template...</option>
-                </select>
-                <button class="btn btn-outline btn-sm" onclick="salvarTemplate()">💾 Salvar template</button>
-              </div>
-            </div>
-
-            <div class="config-grid">
-              <div class="form-campo">
-                <label>Canal de envio</label>
-                <select id="cfg-canal" onchange="atualizarVisibilidade()">
-                  <option value="ambos">WhatsApp + Email</option>
-                  <option value="whatsapp">Somente WhatsApp</option>
-                  <option value="email">Somente Email</option>
-                </select>
-              </div>
-              <div class="form-campo">
-                <label>Produto / Campanha</label>
-                <select id="cfg-produto" onchange="carregarPromptProduto()">
-                  <option value="pdv">Fantoni PDV — Sistema de gestão</option>
-                  <option value="cardapio">Fantoni Cardápio IA — Delivery</option>
-                  <option value="custom">Personalizado (editar prompt manualmente)</option>
-                </select>
-              </div>
-              <div class="form-campo">
-                <label>Horário de início</label>
-                <input type="time" id="cfg-hora-inicio" value="08:00">
-              </div>
-              <div class="form-campo">
-                <label>Horário de fim</label>
-                <input type="time" id="cfg-hora-fim" value="18:00">
-              </div>
-            </div>
-
-            <div class="p-4 bg-borda-suave rounded-lg mt-6">
-              <label class="text-xs fw-700 text-suave uppercase block mb-3">
-                <i class="ph ph-timer"></i> Intervalo aleatório entre mensagens
-                <span class="text-xs fw-400 opacity-50 ml-2">evita detecção de padrão</span>
-              </label>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-                <div class="form-campo">
-                  <label>Mínimo</label>
-                  <div class="slider-wrap">
-                    <input type="range" id="cfg-min" min="30" max="600" value="90" step="10" oninput="atualizarIntervalo()">
-                    <span class="slider-val" id="label-min">1,5 min</span>
-                  </div>
-                </div>
-                <div class="form-campo">
-                  <label>Máximo</label>
-                  <div class="slider-wrap">
-                    <input type="range" id="cfg-max" min="30" max="600" value="300" step="10" oninput="atualizarIntervalo()">
-                    <span class="slider-val" id="label-max">5 min</span>
-                  </div>
-                </div>
-              </div>
-              <p style="margin:8px 0 0;font-size:12px;color:#64748b;">
-                Intervalo aleatório entre <strong id="inf-min">1,5 min</strong> e <strong id="inf-max">5 min</strong>
-              </p>
-            </div>
-
-            <div class="mt-6" id="bloco-instancias">
-              <label class="text-xs fw-700 text-suave uppercase block mb-3">
-                <i class="ph ph-whatsapp-logo"></i> Números WhatsApp para disparo
-              </label>
-              <div class="instancias-lista" id="instancias-lista">
-                <span style="color:#94a3b8;font-size:13px;" id="inst-vazio">Carregando instâncias...</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card mb-6">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="card-titulo"><i class="ph ph-magic-wand"></i> Prompts de geração de mensagem</h3>
-              <button class="btn btn-outline btn-sm" onclick="gerarPreview()">↺ Gerar prévia</button>
-            </div>
-            <p style="margin:0 0 16px;font-size:13px;color:#64748b;">
-              Use <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{nome}}</code>,
-              <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{segmento}}</code> e
-              <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{cidade}}</code> como variáveis.
-            </p>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-              <div>
-                <div class="preview-label"><span>💬 Prompt WhatsApp</span></div>
-                <textarea id="prompt-wa" rows="7" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;" oninput="limparPreview()"></textarea>
-              </div>
-              <div>
-                <div class="preview-label"><span>📧 Prompt Email (corpo)</span></div>
-                <textarea id="prompt-email" rows="7" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;" oninput="limparPreview()"></textarea>
-              </div>
-            </div>
-            <div id="area-preview" style="display:none;margin-top:16px;">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-                <div>
-                  <div class="preview-label">
-                    <span>💬 Mensagem WA gerada</span>
-                    <span id="preview-wa-chars"></span>
-                  </div>
-                  <div class="preview-box" id="preview-wa"></div>
-                </div>
-                <div>
-                  <div class="preview-label"><span>📧 Email gerado</span></div>
-                  <div class="preview-box" id="preview-email"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Info email -->
-          <div id="info-email-bloco" style="margin-bottom:20px;padding:14px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:13px;line-height:1.7;">
-            <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleInfoEmail()">
-              <strong style="color:#15803d;">📧 Como funciona o envio de email?</strong>
-              <span id="info-email-seta" style="font-size:12px;color:#64748b;">▼ ver detalhes</span>
-            </div>
-            <div id="info-email-corpo" style="display:none;margin-top:10px;color:#166534;">
-              <div style="display:grid;grid-template-columns:120px 1fr;gap:6px 12px;font-size:12px;">
-                <span style="color:#64748b;font-weight:600;">Plataforma</span>
-                <span><strong>Resend</strong> — necessário configurar <code style="background:#dcfce7;padding:1px 5px;border-radius:4px;">RESEND_API_KEY</code> nas variáveis de ambiente do servidor</span>
-                <span style="color:#64748b;font-weight:600;">Remetente</span>
-                <span>Douglas Fantoni &lt;contato@fantonisoftware.com.br&gt; <span style="color:#64748b;">(configurável via RESEND_FROM_EMAIL)</span></span>
-                <span style="color:#64748b;font-weight:600;">Assunto</span>
-                <span><code style="background:#dcfce7;padding:1px 5px;border-radius:4px;">{Nome} — Sistema PDV para o seu negócio | Fantoni Software</code></span>
-                <span style="color:#64748b;font-weight:600;">Corpo</span>
-                <span>Template HTML com o texto gerado pela IA + features do PDV (NFC-e, estoque, financeiro) + botão WhatsApp para resposta</span>
-                <span style="color:#64748b;font-weight:600;">Rodapé</span>
-                <span>Inclui aviso de descadastro: "Você recebeu este email pois seu estabelecimento está na base pública do CNPJ. Para não receber mais, responda com 'remover'."</span>
-              </div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
-            <button class="btn btn-outline" onclick="irParaEtapa(1)">← Voltar</button>
-            <button class="btn btn-outline" id="btn-salvar-rascunho" onclick="salvarRascunho()">💾 Salvar campanha</button>
-            <button class="btn btn-primario" id="btn-iniciar" onclick="iniciarDisparo()">📨 Iniciar disparo</button>
-            <span style="font-size:12px;color:#94a3b8;">Salvar guarda os contatos sem enviar — inicie quando quiser.</span>
-          </div>
-        </div>
-
-        <!-- Etapa 3 — Acompanhar -->
-        <div class="painel-etapa" id="etapa-3">
-          <div class="wizard-steps">
-            <div class="wizard-step concluido" id="step-1">
-              <i class="ph ph-file-csv"></i>
-              <span class="step-label">Importar</span>
-            </div>
-            <div class="wizard-step concluido" id="step-2">
-              <i class="ph ph-sliders"></i>
-              <span class="step-label">Configurar</span>
-            </div>
-            <div class="wizard-step ativo" id="step-3">
-              <i class="ph ph-broadcast"></i>
-              <span class="step-label">Acompanhar</span>
-            </div>
-          </div>
-          <div class="acoes-disparo">
-            <button class="btn btn-outline" id="btn-pausar"   onclick="pausarDisparo()"   style="display:none;">⏸ Pausar</button>
-            <button class="btn btn-primario" id="btn-retomar" onclick="retomarDisparo()"  style="display:none;">▶ Retomar</button>
-            <button class="btn btn-perigo"  id="btn-encerrar" onclick="encerrarDisparo()" style="display:none;">■ Encerrar</button>
-            <button class="btn btn-outline" onclick="irParaLista()">← Ver campanhas</button>
-          </div>
-          <div class="card" style="margin-bottom:20px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-              <div>
-                <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;" id="prog-titulo">Carregando...</h3>
-                <span style="font-size:13px;color:#64748b;" id="prog-subtitulo"></span>
-              </div>
-              <span class="badge" id="prog-status-badge">—</span>
-            </div>
-            <div class="barra-prog-wrap"><div class="barra-prog-fill" id="barra-fill" style="width:0%"></div></div>
-            <div class="prog-info">
-              <span id="prog-enviados">0 enviados</span>
-              <span id="prog-pct">0%</span>
-            </div>
-            <div class="timer-wrap" id="timer-wrap" style="display:none;">
-              <span style="font-size:16px;">⏱️</span>
-              <div style="flex:1;">
-                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                  <span style="font-size:13px;color:#475569;">Próximo envio em:</span>
-                  <span class="timer-num" id="timer-countdown">—</span>
-                  <span style="font-size:11px;color:#94a3b8;" id="timer-range"></span>
-                  <span class="timer-resultado" id="timer-resultado"></span>
-                </div>
-                <div class="timer-barra"><div class="timer-barra-fill" id="timer-bar" style="width:100%;"></div></div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
-              <h3 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Log de envios</h3>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <span id="log-resumo" style="font-size:12px;color:#64748b;"></span>
-                <select id="filtro-log" onchange="renderizarLog(logLeadsCache)" style="border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:12px;color:#334155;outline:none;">
-                  <option value="">Todos</option>
-                  <option value="erro">Erros</option>
-                  <option value="enviado">Enviados</option>
-                  <option value="aguardando">Aguardando</option>
-                </select>
-              </div>
-            </div>
-            <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
-              <table class="tabela-contatos">
-                <thead><tr><th>Estabelecimento</th><th>Canal</th><th>Status</th><th>Horário</th><th>Detalhe do erro</th></tr></thead>
-                <tbody id="log-leads-body">
-                  <tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px;">Aguardando início...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div id="area-lista">
+          <!-- preenchido por carregarListaCampanhas() -->
         </div>
       </div>
 
       <!-- ══════════════════════════════════════════════════ -->
-      <!-- VISTA 3 — DETALHE DA CAMPANHA                     -->
+      <!-- VISTA 2 — DETALHE DA CAMPANHA                     -->
       <!-- ══════════════════════════════════════════════════ -->
       <div class="vista" id="vista-detalhe">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
@@ -360,42 +246,40 @@
           <div class="flex gap-2" id="det-acoes"></div>
         </div>
 
-        <!-- Info + Config -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
           <div class="card">
-            <h4 style="margin:0 0 14px;font-size:14px;font-weight:700;color:#0f172a;">Informações</h4>
+            <h4 style="margin:0 0 14px;font-size:14px;font-weight:700;color:var(--texto);">Informações</h4>
             <div id="det-info" style="display:flex;flex-direction:column;gap:8px;font-size:13px;"></div>
           </div>
           <div class="card">
-            <h4 style="margin:0 0 12px;font-size:14px;font-weight:700;color:#0f172a;">Progresso</h4>
+            <h4 style="margin:0 0 12px;font-size:14px;font-weight:700;color:var(--texto);">Progresso</h4>
             <div class="barra-prog-wrap"><div class="barra-prog-fill" id="det-barra-fill" style="width:0%"></div></div>
-            <div class="prog-info" style="margin-bottom:12px;">
+            <div class="prog-info">
               <span id="det-prog-txt">— enviados</span>
               <span id="det-prog-pct">0%</span>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">
-              <div style="background:#f8fafc;border-radius:8px;padding:10px;">
-                <div style="font-size:20px;font-weight:800;color:#3b82f6;" id="det-total">0</div>
-                <div style="font-size:11px;color:#64748b;">Total</div>
+              <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px;border:1px solid var(--borda);">
+                <div style="font-size:20px;font-weight:800;color:var(--primaria);" id="det-total">0</div>
+                <div style="font-size:11px;color:var(--texto-suave);">Total</div>
               </div>
-              <div style="background:#f8fafc;border-radius:8px;padding:10px;">
-                <div style="font-size:20px;font-weight:800;color:#22c55e;" id="det-enviados">0</div>
-                <div style="font-size:11px;color:#64748b;">Enviados</div>
+              <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px;border:1px solid var(--borda);">
+                <div style="font-size:20px;font-weight:800;color:var(--sucesso);" id="det-enviados">0</div>
+                <div style="font-size:11px;color:var(--texto-suave);">Enviados</div>
               </div>
-              <div style="background:#f8fafc;border-radius:8px;padding:10px;">
-                <div style="font-size:20px;font-weight:800;color:#ef4444;" id="det-erros">0</div>
-                <div style="font-size:11px;color:#64748b;">Erros</div>
+              <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px;border:1px solid var(--borda);">
+                <div style="font-size:20px;font-weight:800;color:var(--erro);" id="det-erros">0</div>
+                <div style="font-size:11px;color:var(--texto-suave);">Erros</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Leads da campanha -->
         <div class="card" style="padding:0;overflow:hidden;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;gap:10px;">
-            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Leads importados</h4>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--borda);flex-wrap:wrap;gap:10px;">
+            <h4 style="margin:0;font-size:14px;font-weight:700;color:var(--texto);">Leads importados</h4>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-              <select id="filtro-status-det" onchange="filtrarLeadsDet()" style="border:1px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:13px;color:#334155;outline:none;">
+              <select id="filtro-status-det" onchange="filtrarLeadsDet()" style="background:rgba(255,255,255,0.04);border:1px solid var(--borda);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--texto);outline:none;">
                 <option value="">Todos os status</option>
                 <option value="aguardando">Aguardando</option>
                 <option value="enviado_wa">Enviado WA</option>
@@ -405,8 +289,8 @@
                 <option value="erro_email">Erro Email</option>
               </select>
               <input type="search" id="busca-lead-det" placeholder="Buscar..." oninput="filtrarLeadsDet()"
-                style="border:1px solid #e2e8f0;border-radius:8px;padding:7px 12px;font-size:13px;outline:none;width:180px;">
-              <span style="font-size:12px;color:#94a3b8;" id="det-leads-count"></span>
+                style="background:rgba(255,255,255,0.04);border:1px solid var(--borda);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--texto);outline:none;width:180px;">
+              <span style="font-size:12px;color:var(--texto-suave);" id="det-leads-count"></span>
             </div>
           </div>
           <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
@@ -415,7 +299,7 @@
                 <th>Estabelecimento</th><th>Email</th><th>WhatsApp</th><th>Status</th><th>Atualizado</th><th>Erro</th>
               </tr></thead>
               <tbody id="tbody-leads-det">
-                <tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">Carregando...</td></tr>
+                <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--texto-suave);">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -426,9 +310,269 @@
   </div><!-- /conteudo -->
 </div><!-- /layout -->
 
-<!-- Modal: Editar Campanha -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- MODAL: Nova Campanha                                          -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay oculto" id="modal-nova-campanha">
+  <div class="modal-box" style="max-width:780px;max-height:92vh;overflow-y:auto;">
+    <div class="modal-header">
+      <span class="modal-titulo"><i class="ph ph-rocket-launch"></i> Nova Campanha de Disparo</span>
+      <button class="modal-fechar" onclick="fecharModalNovaCampanha()"><i class="ph ph-x"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- ── Seção A: Configuração de IA ── -->
+      <div class="secao-modal">
+        <p class="secao-titulo"><i class="ph ph-magic-wand"></i> Configuração de IA</p>
+
+        <!-- Contexto do Negócio -->
+        <div class="form-campo" style="margin-bottom:14px;">
+          <label>Contexto do Negócio</label>
+          <p class="texto-ajuda">Descreva quem você é e o que oferece. A IA usará isso como base para criar as mensagens.</p>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <textarea id="cfg-contexto" rows="3" style="flex:1;" placeholder="Somos a Fantoni Software, uma software house especializada em sistemas PDV (frente de caixa) para bares, restaurantes e comércios em geral..."></textarea>
+            <div style="display:flex;flex-direction:column;gap:6px;padding-top:2px;">
+              <button class="btn btn-outline btn-sm" onclick="salvarContextoTemplate()" title="Salvar como template" style="padding:6px 10px;">💾</button>
+            </div>
+          </div>
+          <div id="area-contexto-templates" style="display:none;margin-top:6px;">
+            <select id="sel-contexto-template" onchange="carregarContextoTemplate(this.value)" style="background:rgba(255,255,255,0.04);border:1px solid var(--borda);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--texto);outline:none;width:100%;">
+              <option value="">↩ Carregar contexto salvo...</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Inspiração -->
+        <div class="form-campo" style="margin-bottom:16px;">
+          <label>Inspiração do Contato</label>
+          <p class="texto-ajuda">O "vibe" da abordagem — tom, ângulo, o que destacar, como assinar.</p>
+          <textarea id="cfg-inspiracao" rows="3" placeholder="Abordagem descontraída e direta. Foco na dor de controlar o caixa manualmente. Máximo 3 linhas, 1 emoji. Assine como Douglas da Fantoni Software."></textarea>
+        </div>
+
+        <!-- Botão de prévia IA -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" id="btn-ai-preview" onclick="gerarAIPreview()">
+            <i class="ph ph-sparkle"></i> Gerar prévia com IA
+          </button>
+          <span style="font-size:12px;color:var(--texto-suave);">Testa o tom com um lead fictício antes de iniciar</span>
+        </div>
+
+        <!-- Área de variações da prévia -->
+        <div id="area-ai-preview" style="display:none;margin-top:14px;">
+          <div style="margin-bottom:8px;font-size:11px;color:var(--texto-suave);" id="ai-preview-lead-info"></div>
+          <div style="display:flex;flex-direction:column;gap:10px;" id="ai-preview-variacoes"></div>
+        </div>
+      </div>
+
+      <hr class="secao-divisor">
+
+      <!-- ── Seção B: Importar Contatos ── -->
+      <div class="secao-modal">
+        <p class="secao-titulo"><i class="ph ph-file-arrow-up"></i> Importar Contatos</p>
+
+        <div class="drop-zone" id="drop-zone-modal" onclick="document.getElementById('input-arquivo-modal').click()">
+          <div class="drop-zone-icon"><i class="ph ph-cloud-arrow-up"></i></div>
+          <p class="text-white fw-700" style="margin:0 0 4px;">Arraste seu arquivo .xlsx aqui</p>
+          <p class="text-suave text-xs" style="margin:0;">Exportação CNPJ.biz · somente situação ATIVA</p>
+        </div>
+        <input type="file" id="input-arquivo-modal" accept=".xlsx,.xls" style="display:none">
+
+        <div id="upload-status-modal" style="display:none;margin-top:12px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15);border-radius:10px;">
+            <span class="spin">⟳</span>
+            <span style="font-size:14px;color:var(--primaria);font-weight:600;">Processando arquivo...</span>
+          </div>
+        </div>
+
+        <div id="stats-area-modal" style="display:none;margin-top:16px;">
+          <div class="stats-chips">
+            <div class="chip"><span class="chip-num" id="stat-total-m">0</span><span>Total ATIVA</span></div>
+            <div class="chip verde"><span class="chip-num" id="stat-email-m">0</span><span>Com email</span></div>
+            <div class="chip"><span class="chip-num" id="stat-tel-m">0</span><span>Com WhatsApp</span></div>
+            <div class="chip laranja"><span class="chip-num" id="stat-ambos-m">0</span><span>Com ambos</span></div>
+          </div>
+
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--borda);flex-wrap:wrap;gap:8px;">
+              <span style="font-size:13px;color:var(--texto-suave);">
+                Prévia: <strong id="preview-count-m" style="color:var(--texto);">0</strong> contatos
+                <span id="preview-excluidos-label" style="font-size:11px;color:var(--aviso);margin-left:6px;"></span>
+              </span>
+              <span style="font-size:11px;color:var(--texto-suave);">Clique em ✕ para remover um contato antes de enviar</span>
+            </div>
+            <div style="overflow-x:auto;max-height:260px;overflow-y:auto;">
+              <table class="tabela-contatos" id="tabela-contatos-modal">
+                <thead><tr>
+                  <th style="width:32px;"></th>
+                  <th>Estabelecimento</th><th>Segmento</th><th>Cidade</th><th>Email</th><th>WhatsApp</th>
+                </tr></thead>
+                <tbody id="tabela-contatos-body-modal"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="secao-divisor">
+
+      <!-- ── Seção C: Configurações de Envio ── -->
+      <div class="secao-modal">
+        <p class="secao-titulo"><i class="ph ph-gear"></i> Configurações de Envio</p>
+
+        <div class="config-grid" style="margin-bottom:14px;">
+          <div class="form-campo">
+            <label>Nome da campanha</label>
+            <input type="text" id="cfg-nome-m" placeholder="Ex: Bares RS — PDV Junho">
+          </div>
+          <div class="form-campo">
+            <label>Canal de envio</label>
+            <select id="cfg-canal-m" onchange="atualizarVisibilidadeModal()">
+              <option value="whatsapp">Somente WhatsApp</option>
+              <option value="ambos">WhatsApp + Email</option>
+              <option value="email">Somente Email</option>
+            </select>
+          </div>
+          <div class="form-campo">
+            <label>Horário de início</label>
+            <input type="time" id="cfg-hora-inicio-m" value="08:00">
+          </div>
+          <div class="form-campo">
+            <label>Horário de fim</label>
+            <input type="time" id="cfg-hora-fim-m" value="18:00">
+          </div>
+        </div>
+
+        <!-- Intervalo em minutos -->
+        <div class="p-4 bg-borda-suave rounded-lg" style="margin-bottom:14px;">
+          <label class="text-xs fw-700 text-suave uppercase block mb-3">
+            <i class="ph ph-timer"></i> Intervalo entre mensagens (minutos) — evita detecção de padrão
+          </label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-campo">
+              <label>Mínimo</label>
+              <div class="slider-wrap">
+                <input type="range" id="cfg-min-m" min="1" max="30" value="3" step="1" oninput="atualizarIntervaloModal()">
+                <span class="slider-val" id="label-min-m">3 min</span>
+              </div>
+            </div>
+            <div class="form-campo">
+              <label>Máximo</label>
+              <div class="slider-wrap">
+                <input type="range" id="cfg-max-m" min="1" max="30" value="5" step="1" oninput="atualizarIntervaloModal()">
+                <span class="slider-val" id="label-max-m">5 min</span>
+              </div>
+            </div>
+          </div>
+          <p style="margin:8px 0 0;font-size:12px;color:var(--texto-suave);">
+            Intervalo aleatório: <strong id="inf-min-m">3 min</strong> — <strong id="inf-max-m">5 min</strong>
+          </p>
+        </div>
+
+        <!-- Instâncias -->
+        <div id="bloco-instancias-modal">
+          <label class="text-xs fw-700 text-suave uppercase block mb-3">
+            <i class="ph ph-whatsapp-logo"></i> Números WhatsApp para disparo
+          </label>
+          <div class="instancias-lista" id="instancias-lista-modal">
+            <span style="color:var(--texto-suave);font-size:13px;">Carregando instâncias...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer actions -->
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="fecharModalNovaCampanha()">Cancelar</button>
+        <button class="btn btn-outline" id="btn-salvar-rascunho-m" onclick="salvarRascunhoModal()">
+          <i class="ph ph-floppy-disk"></i> Salvar rascunho
+        </button>
+        <button class="btn btn-primario" id="btn-iniciar-m" onclick="iniciarDisparoModal()">
+          <i class="ph ph-paper-plane-tilt"></i> Iniciar disparo
+        </button>
+      </div>
+
+    </div><!-- /modal-body -->
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- MODAL: Monitorar Campanha                                     -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay oculto" id="modal-monitorar">
+  <div class="modal-box" style="max-width:880px;max-height:92vh;overflow-y:auto;">
+    <div class="modal-header">
+      <span class="modal-titulo" id="monitor-titulo"><i class="ph ph-broadcast"></i> Monitorando campanha</span>
+      <button class="modal-fechar" onclick="fecharModalMonitorar()"><i class="ph ph-x"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Controles -->
+      <div class="acoes-disparo">
+        <button class="btn btn-outline"  id="btn-pausar-m"   onclick="pausarDisparo()"   style="display:none;">⏸ Pausar</button>
+        <button class="btn btn-primario" id="btn-retomar-m"  onclick="retomarDisparo()"  style="display:none;">▶ Retomar</button>
+        <button class="btn btn-perigo"   id="btn-encerrar-m" onclick="encerrarDisparo()" style="display:none;">■ Encerrar</button>
+      </div>
+
+      <!-- Progresso -->
+      <div class="card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div>
+            <h3 style="margin:0;font-size:15px;font-weight:700;color:var(--texto);" id="prog-titulo">Carregando...</h3>
+            <span style="font-size:13px;color:var(--texto-suave);" id="prog-subtitulo"></span>
+          </div>
+          <span class="badge" id="prog-status-badge">—</span>
+        </div>
+        <div class="barra-prog-wrap"><div class="barra-prog-fill" id="barra-fill" style="width:0%"></div></div>
+        <div class="prog-info">
+          <span id="prog-enviados">0 enviados</span>
+          <span id="prog-pct">0%</span>
+        </div>
+        <div class="timer-wrap" id="timer-wrap" style="display:none;">
+          <span style="font-size:18px;">⏱️</span>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <span style="font-size:13px;color:var(--texto-suave);">Próximo envio em:</span>
+              <span class="timer-num" id="timer-countdown">—</span>
+              <span style="font-size:11px;color:var(--texto-suave);" id="timer-range"></span>
+              <span class="timer-resultado" id="timer-resultado" style="display:none;"></span>
+            </div>
+            <div class="timer-barra"><div class="timer-barra-fill" id="timer-bar" style="width:100%;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Log de envios -->
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <h3 style="margin:0;font-size:15px;font-weight:700;color:var(--texto);">Log de envios</h3>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span id="log-resumo" style="font-size:12px;color:var(--texto-suave);"></span>
+            <select id="filtro-log" onchange="renderizarLog(logLeadsCache)" style="background:rgba(255,255,255,0.04);border:1px solid var(--borda);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--texto);outline:none;">
+              <option value="">Todos</option>
+              <option value="erro">Erros</option>
+              <option value="enviado">Enviados</option>
+              <option value="aguardando">Aguardando</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto;max-height:420px;overflow-y:auto;">
+          <table class="tabela-contatos">
+            <thead><tr><th>Estabelecimento</th><th>Canal</th><th>Status</th><th>Horário</th><th>Detalhe do erro</th></tr></thead>
+            <tbody id="log-leads-body">
+              <tr><td colspan="5" style="text-align:center;color:var(--texto-suave);padding:24px;">Aguardando início...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /modal-body -->
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- MODAL: Editar Campanha                                        -->
+<!-- ══════════════════════════════════════════════════════════════ -->
 <div class="modal-overlay oculto" id="modal-editar">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:560px;">
     <div class="modal-header">
       <span class="modal-titulo"><i class="ph ph-note-pencil"></i> Editar Campanha</span>
       <button class="modal-fechar" onclick="fecharModalEditar()"><i class="ph ph-x"></i></button>
@@ -437,39 +581,36 @@
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="form-campo">
           <label>Nome da campanha</label>
-          <input type="text" id="edit-nome" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;color:#1e293b;outline:none;"
-            onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e2e8f0'">
+          <input type="text" id="edit-nome">
         </div>
         <div class="form-campo">
           <label>Canal de envio</label>
-          <select id="edit-canal" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;color:#1e293b;outline:none;">
-            <option value="ambos">WhatsApp + Email</option>
+          <select id="edit-canal">
             <option value="whatsapp">Somente WhatsApp</option>
+            <option value="ambos">WhatsApp + Email</option>
             <option value="email">Somente Email</option>
           </select>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div class="form-campo">
             <label>Horário início</label>
-            <input type="time" id="edit-hora-inicio" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;">
+            <input type="time" id="edit-hora-inicio">
           </div>
           <div class="form-campo">
             <label>Horário fim</label>
-            <input type="time" id="edit-hora-fim" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;">
+            <input type="time" id="edit-hora-fim">
           </div>
         </div>
-        <div>
-          <div class="form-campo" style="margin-bottom:8px;">
-            <label>Prompt WhatsApp</label>
-            <textarea id="edit-prompt-wa" rows="4" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:10px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;"></textarea>
-          </div>
-          <div class="form-campo">
-            <label>Prompt Email</label>
-            <textarea id="edit-prompt-email" rows="4" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:10px;font-size:13px;color:#334155;line-height:1.6;resize:vertical;outline:none;font-family:inherit;"></textarea>
-          </div>
+        <div class="form-campo">
+          <label>Contexto do Negócio</label>
+          <textarea id="edit-contexto" rows="3"></textarea>
+        </div>
+        <div class="form-campo">
+          <label>Inspiração do Contato</label>
+          <textarea id="edit-inspiracao" rows="3"></textarea>
         </div>
       </div>
-      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <div class="modal-footer">
         <button class="btn btn-outline" onclick="fecharModalEditar()">Cancelar</button>
         <button class="btn btn-primario" id="btn-salvar-edicao" onclick="salvarEdicao()">💾 Salvar alterações</button>
       </div>
@@ -481,24 +622,25 @@
 <script src="/assets/js/auth.js"></script>
 <script src="/assets/js/sidebar-admin.js"></script>
 <script>
-// ── Estado global ──────────────────────────────────────────────
-let contatosImportados    = [];
-let campanhaAtualId       = null;
-let campanhaEditandoId    = null;
-let pollingTimer          = null;
-let instanciasDisponiveis = [];
-let leadsDetBruto         = [];
-let logLeadsCache         = [];
+// ── Estado global ──────────────────────────────────────────────────────────────
+let contatosImportadosModal = [];
+let indicesToRemover        = new Set();
+let campanhaAtualId         = null;
+let campanhaEditandoId      = null;
+let pollingTimer            = null;
+let instanciasDisponiveis   = [];
+let leadsDetBruto           = [];
+let logLeadsCache           = [];
 
 // Timer countdown
-let timerInterval    = null;
-let timerSecsLeft    = 0;
-let totalSecsTimer   = 0;
-let ultimosEnviados  = -1;
-let cfgIntMin        = 90;
-let cfgIntMax        = 300;
+let timerInterval   = null;
+let timerSecsLeft   = 0;
+let totalSecsTimer  = 0;
+let ultimosEnviados = -1;
+let cfgIntMin       = 180;
+let cfgIntMax       = 300;
 
-// ── Navegação entre vistas ─────────────────────────────────────
+// ── Navegação ─────────────────────────────────────────────────────────────────
 function mostrarVista(id) {
   document.querySelectorAll('.vista').forEach(el => el.classList.remove('ativa'));
   document.getElementById(id).classList.add('ativa');
@@ -509,26 +651,20 @@ function irParaLista() {
   document.getElementById('topbar-titulo').textContent = '🚀 Disparos em Massa';
   document.getElementById('topbar-acoes').innerHTML = '';
   if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
-  pararTimer(); ultimosEnviados = -1;
+  pararTimer();
+  ultimosEnviados = -1;
   carregarListaCampanhas();
 }
 
-function irParaWizard() {
-  mostrarVista('vista-wizard');
-  irParaEtapa(1);
-  contatosImportados = [];
-  document.getElementById('stats-area').style.display = 'none';
-}
-
-// ── Lista de campanhas ─────────────────────────────────────────
+// ── Lista de campanhas ────────────────────────────────────────────────────────
 async function carregarListaCampanhas() {
   const area = document.getElementById('area-lista');
-  area.innerHTML = '<div style="padding:40px;text-align:center;color:#94a3b8;"><div class="spin" style="font-size:24px;">⟳</div></div>';
+  area.innerHTML = '<div style="padding:40px;text-align:center;color:var(--texto-suave);"><div class="spin" style="font-size:24px;">⟳</div></div>';
   try {
     const dados = await apiFetch('/disparos');
     renderizarLista(Array.isArray(dados) ? dados : []);
   } catch (e) {
-    area.innerHTML = `<div style="padding:40px;text-align:center;color:#ef4444;">Erro ao carregar campanhas: ${esc(e.message)}</div>`;
+    area.innerHTML = `<div style="padding:40px;text-align:center;color:var(--erro);">Erro ao carregar campanhas: ${esc(e.message)}</div>`;
   }
 }
 
@@ -538,9 +674,9 @@ function renderizarLista(campanhas) {
     area.innerHTML = `
       <div style="padding:60px 20px;text-align:center;">
         <div style="font-size:48px;margin-bottom:16px;">🚀</div>
-        <h3 style="color:#64748b;margin:0 0 8px;">Nenhuma campanha criada ainda</h3>
-        <p style="color:#94a3b8;font-size:14px;margin:0 0 20px;">Crie sua primeira campanha para começar a prospectar via WhatsApp e Email</p>
-        <button class="btn btn-primario" onclick="irParaWizard()">+ Nova Campanha</button>
+        <h3 style="color:var(--texto-suave);margin:0 0 8px;">Nenhuma campanha criada ainda</h3>
+        <p style="color:var(--texto-suave);font-size:14px;opacity:0.6;margin:0 0 20px;">Crie sua primeira campanha para começar a prospectar via WhatsApp e Email</p>
+        <button class="btn btn-primario" onclick="abrirModalNovaCampanha()">+ Nova Campanha</button>
       </div>`;
     return;
   }
@@ -559,29 +695,30 @@ function renderizarLista(campanhas) {
     </tr></thead>
     <tbody>
     ${campanhas.map(c => {
-      const pct   = c.total > 0 ? Math.round((c.enviados / c.total) * 100) : 0;
-      const nome  = c.nome || `Campanha ${c.id.substring(0, 8)}`;
-      const cls   = badgeMap[c.status] || 'badge-encerrado';
-      const data  = c.criado_em ? new Date(c.criado_em).toLocaleDateString('pt-BR') : '—';
-      const acoesLinha = [];
-      if (c.status === 'rascunho') acoesLinha.push(`<button class="btn btn-primario btn-sm" onclick="iniciarRascunho('${c.id}')">▶ Iniciar</button>`);
-      if (c.status === 'ativo')    acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="pausarCampanha('${c.id}')">⏸ Pausar</button>`);
-      if (c.status === 'pausado')  acoesLinha.push(`<button class="btn btn-primario btn-sm" onclick="retomarCampanha('${c.id}')">▶ Retomar</button>`);
-      acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="verDetalhe('${c.id}','${esc(nome)}')">🔍 Ver</button>`);
-      acoesLinha.push(`<button class="btn btn-outline btn-sm" onclick="abrirModalEditar('${c.id}')">✏️ Editar</button>`);
-      acoesLinha.push(`<button class="btn btn-perigo btn-sm" onclick="excluirCampanha('${c.id}','${esc(nome).replace(/'/g,"\\'")}')">🗑</button>`);
+      const pct  = c.total > 0 ? Math.round((c.enviados / c.total) * 100) : 0;
+      const nome = c.nome || `Campanha ${String(c.id).substring(0, 8)}`;
+      const cls  = badgeMap[c.status] || 'badge-encerrado';
+      const data = c.criado_em ? new Date(c.criado_em).toLocaleDateString('pt-BR') : '—';
+      const acoes = [];
+      if (c.status === 'rascunho') acoes.push(`<button class="btn btn-primario btn-sm" onclick="iniciarRascunho('${c.id}')">▶ Iniciar</button>`);
+      if (c.status === 'ativo')    acoes.push(`<button class="btn btn-outline btn-sm"  onclick="abrirModalMonitorar('${c.id}')">📡 Monitorar</button>`);
+      if (c.status === 'ativo')    acoes.push(`<button class="btn btn-outline btn-sm"  onclick="pausarCampanha('${c.id}')">⏸ Pausar</button>`);
+      if (c.status === 'pausado')  acoes.push(`<button class="btn btn-primario btn-sm" onclick="retomarCampanha('${c.id}')">▶ Retomar</button>`);
+      acoes.push(`<button class="btn btn-outline btn-sm" onclick="verDetalhe('${c.id}','${esc(nome).replace(/'/g,"\\'")}')">🔍 Ver</button>`);
+      acoes.push(`<button class="btn btn-outline btn-sm" onclick="abrirModalEditar('${c.id}')">✏️</button>`);
+      acoes.push(`<button class="btn btn-perigo btn-sm"  onclick="excluirCampanha('${c.id}','${esc(nome).replace(/'/g,"\\'")}')">🗑</button>`);
       return `<tr>
-        <td><strong>${esc(nome)}</strong></td>
-        <td>${esc(c.canal || '—')}</td>
+        <td><strong style="color:var(--texto);">${esc(nome)}</strong></td>
+        <td style="color:var(--texto-suave);">${esc(c.canal || '—')}</td>
         <td><span class="badge ${cls}">${c.status || '—'}</span></td>
         <td>
           <div style="display:flex;align-items:center;gap:8px;">
             <div class="prog-mini"><div class="prog-mini-fill" style="width:${pct}%"></div></div>
-            <span style="font-size:12px;color:#64748b;">${c.enviados || 0}/${c.total || 0}</span>
+            <span style="font-size:12px;color:var(--texto-suave);">${c.enviados || 0}/${c.total || 0}</span>
           </div>
         </td>
-        <td style="font-size:12px;color:#64748b;">${data}</td>
-        <td><div style="display:flex;gap:6px;flex-wrap:wrap;">${acoesLinha.join('')}</div></td>
+        <td style="font-size:12px;color:var(--texto-suave);">${data}</td>
+        <td><div style="display:flex;gap:5px;flex-wrap:wrap;">${acoes.join('')}</div></td>
       </tr>`;
     }).join('')}
     </tbody>
@@ -592,15 +729,12 @@ async function iniciarRascunho(id) {
   try {
     await apiFetch(`/disparos/${id}/iniciar`, { method: 'POST' });
     campanhaAtualId = id;
-    irParaEtapa(3);
-    document.getElementById('btn-pausar').style.display   = 'inline-flex';
-    document.getElementById('btn-encerrar').style.display = 'inline-flex';
+    abrirModalMonitorar(id);
     executarStep();
   } catch (e) {
     mostrarAlerta('Erro ao iniciar: ' + e.message, 'erro');
   }
 }
-
 async function pausarCampanha(id) {
   await apiFetch(`/disparos/${id}/pausar`, { method: 'POST' });
   carregarListaCampanhas();
@@ -608,9 +742,7 @@ async function pausarCampanha(id) {
 async function retomarCampanha(id) {
   await apiFetch(`/disparos/${id}/retomar`, { method: 'POST' });
   campanhaAtualId = id;
-  irParaEtapa(3);
-  document.getElementById('btn-pausar').style.display   = 'inline-flex';
-  document.getElementById('btn-encerrar').style.display = 'inline-flex';
+  abrirModalMonitorar(id);
   executarStep();
 }
 async function excluirCampanha(id, nome) {
@@ -624,14 +756,14 @@ async function excluirCampanha(id, nome) {
   }
 }
 
-// ── Detalhe da campanha ────────────────────────────────────────
+// ── Detalhe da campanha ───────────────────────────────────────────────────────
 async function verDetalhe(id, nome) {
   campanhaAtualId = id;
   mostrarVista('vista-detalhe');
   document.getElementById('det-nome').textContent = nome || 'Campanha';
   document.getElementById('det-badge').textContent = '—';
   document.getElementById('tbody-leads-det').innerHTML =
-    '<tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;"><div class="spin">⟳</div></td></tr>';
+    '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--texto-suave);"><div class="spin">⟳</div></td></tr>';
 
   try {
     const dados = await apiFetch(`/disparos/status/${id}`);
@@ -646,7 +778,6 @@ async function verDetalhe(id, nome) {
     badgeEl.textContent = camp.status || '—';
     badgeEl.className   = 'badge ' + (badgeMap[camp.status] || 'badge-encerrado');
 
-    // Progresso
     const total    = camp.total    || 0;
     const enviados = camp.enviados || 0;
     const erros    = camp.erros    || 0;
@@ -658,36 +789,34 @@ async function verDetalhe(id, nome) {
     document.getElementById('det-enviados').textContent = enviados;
     document.getElementById('det-erros').textContent    = erros;
 
-    // Info
     const cfg = camp.config || {};
     document.getElementById('det-info').innerHTML = `
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
-        <span style="color:#64748b;font-size:13px;">Canal</span>
-        <span style="font-size:13px;font-weight:600;">${esc(camp.canal || '—')}</span>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--borda);">
+        <span style="color:var(--texto-suave);font-size:13px;">Canal</span>
+        <span style="font-size:13px;font-weight:600;color:var(--texto);">${esc(camp.canal || '—')}</span>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
-        <span style="color:#64748b;font-size:13px;">Horário</span>
-        <span style="font-size:13px;font-weight:600;">${esc(cfg.horaInicio || '08:00')} — ${esc(cfg.horaFim || '18:00')}</span>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--borda);">
+        <span style="color:var(--texto-suave);font-size:13px;">Horário</span>
+        <span style="font-size:13px;font-weight:600;color:var(--texto);">${esc(cfg.horaInicio || '08:00')} — ${esc(cfg.horaFim || '18:00')}</span>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
-        <span style="color:#64748b;font-size:13px;">Intervalo</span>
-        <span style="font-size:13px;font-weight:600;">${formatarSeg(cfg.intervaloMinSeg||60)} — ${formatarSeg(cfg.intervaloMaxSeg||120)}</span>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--borda);">
+        <span style="color:var(--texto-suave);font-size:13px;">Intervalo</span>
+        <span style="font-size:13px;font-weight:600;color:var(--texto);">${formatarSeg(cfg.intervaloMinSeg||60)} — ${formatarSeg(cfg.intervaloMaxSeg||300)}</span>
       </div>
       <div style="display:flex;justify-content:space-between;padding:6px 0;">
-        <span style="color:#64748b;font-size:13px;">Criado em</span>
-        <span style="font-size:13px;font-weight:600;">${camp.criado_em ? new Date(camp.criado_em).toLocaleString('pt-BR') : '—'}</span>
+        <span style="color:var(--texto-suave);font-size:13px;">Criado em</span>
+        <span style="font-size:13px;font-weight:600;color:var(--texto);">${camp.criado_em ? new Date(camp.criado_em).toLocaleString('pt-BR') : '—'}</span>
       </div>`;
 
-    // Botões de ação
     const acoes = [];
+    if (camp.status === 'ativo')   acoes.push(`<button class="btn btn-outline btn-sm" onclick="abrirModalMonitorar('${id}')">📡 Monitorar</button>`);
     if (camp.status === 'ativo')   acoes.push(`<button class="btn btn-outline btn-sm" onclick="pausarCampanha('${id}');irParaLista()">⏸ Pausar</button>`);
-    if (camp.status === 'pausado') acoes.push(`<button class="btn btn-primario btn-sm" onclick="retomarCampanha('${id}');irParaLista()">▶ Retomar</button>`);
+    if (camp.status === 'pausado') acoes.push(`<button class="btn btn-primario btn-sm" onclick="retomarCampanha('${id}')">▶ Retomar</button>`);
     if (['ativo','pausado'].includes(camp.status)) acoes.push(`<button class="btn btn-perigo btn-sm" onclick="encerrarDetalhe('${id}')">■ Encerrar</button>`);
     acoes.push(`<button class="btn btn-outline btn-sm" onclick="abrirModalEditar('${id}')">✏️ Editar</button>`);
-    acoes.push(`<button class="btn btn-perigo btn-sm" onclick="excluirCampanha('${id}','${esc(camp.nome||'')}')">🗑 Excluir</button>`);
+    acoes.push(`<button class="btn btn-perigo btn-sm"  onclick="excluirCampanha('${id}','${esc(camp.nome||'').replace(/'/g,"\\'")}')">🗑 Excluir</button>`);
     document.getElementById('det-acoes').innerHTML = acoes.join('');
 
-    // Leads
     renderizarLeadsDet(leads);
   } catch (e) {
     mostrarAlerta('Erro ao carregar detalhe: ' + e.message, 'erro');
@@ -714,12 +843,12 @@ function renderizarLeadsDet(leads) {
   document.getElementById('det-leads-count').textContent = `${filtrados.length} lead(s)`;
   const tbody = document.getElementById('tbody-leads-det');
   if (!filtrados.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">Nenhum lead encontrado.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--texto-suave);">Nenhum lead encontrado.</td></tr>';
     return;
   }
   tbody.innerHTML = filtrados.map(l => {
     const statusCls = 'status-' + (l.status || 'aguardando').replace(/[^a-z_]/g,'');
-    const hora = l.atualizado_em ? new Date(l.atualizado_em).toLocaleTimeString('pt-BR') : '—';
+    const hora  = l.atualizado_em ? new Date(l.atualizado_em).toLocaleTimeString('pt-BR') : '—';
     const email = l.email ? `<span class="badge-ok">${esc(l.email.substring(0,28))}</span>` : '<span class="badge-sem">sem email</span>';
     const tel   = l.telefone ? `<span class="badge-ok">${esc(l.telefone)}</span>` : '<span class="badge-sem">sem tel</span>';
     const temErro = l.erro && l.erro.trim();
@@ -727,11 +856,11 @@ function renderizarLeadsDet(leads) {
       ? `<span class="erro-txt" title="${esc(l.erro)}">${esc(l.erro.length > 80 ? l.erro.substring(0,80)+'…' : l.erro)}</span>`
       : `<span class="sem-erro">—</span>`;
     return `<tr>
-      <td><strong>${esc(l.nome || '—')}</strong></td>
+      <td><strong style="color:var(--texto);">${esc(l.nome || '—')}</strong></td>
       <td>${email}</td>
       <td>${tel}</td>
       <td><span class="status-badge ${statusCls}">${esc(l.status || 'aguardando')}</span></td>
-      <td style="font-size:12px;color:#64748b;">${hora}</td>
+      <td style="font-size:12px;color:var(--texto-suave);">${hora}</td>
       <td>${erroCell}</td>
     </tr>`;
   }).join('');
@@ -739,7 +868,7 @@ function renderizarLeadsDet(leads) {
 
 function filtrarLeadsDet() { renderizarLeadsDet(leadsDetBruto); }
 
-// ── Modal Editar ───────────────────────────────────────────────
+// ── Modal Editar ──────────────────────────────────────────────────────────────
 async function abrirModalEditar(id) {
   campanhaEditandoId = id;
   document.getElementById('modal-editar').classList.remove('oculto');
@@ -747,12 +876,12 @@ async function abrirModalEditar(id) {
     const dados = await apiFetch(`/disparos/status/${id}`);
     const camp  = dados.campanha || {};
     const cfg   = camp.config    || {};
-    document.getElementById('edit-nome').value         = camp.nome    || '';
-    document.getElementById('edit-canal').value        = camp.canal   || 'ambos';
-    document.getElementById('edit-hora-inicio').value  = cfg.horaInicio  || '08:00';
-    document.getElementById('edit-hora-fim').value     = cfg.horaFim     || '18:00';
-    document.getElementById('edit-prompt-wa').value    = cfg.promptWA    || '';
-    document.getElementById('edit-prompt-email').value = cfg.promptEmail  || '';
+    document.getElementById('edit-nome').value        = camp.nome          || '';
+    document.getElementById('edit-canal').value       = camp.canal         || 'whatsapp';
+    document.getElementById('edit-hora-inicio').value = cfg.horaInicio     || '08:00';
+    document.getElementById('edit-hora-fim').value    = cfg.horaFim        || '18:00';
+    document.getElementById('edit-contexto').value    = cfg.contextoIA     || '';
+    document.getElementById('edit-inspiracao').value  = cfg.inspiracaoTexto || '';
   } catch (e) { mostrarAlerta('Erro ao carregar dados: ' + e.message, 'erro'); }
 }
 function fecharModalEditar() {
@@ -767,17 +896,16 @@ async function salvarEdicao() {
     await apiFetch(`/disparos/${campanhaEditandoId}`, {
       method: 'PATCH',
       body: JSON.stringify({
-        nome:         document.getElementById('edit-nome').value.trim(),
-        canal:        document.getElementById('edit-canal').value,
-        hora_inicio:  document.getElementById('edit-hora-inicio').value,
-        hora_fim:     document.getElementById('edit-hora-fim').value,
-        prompt_wa:    document.getElementById('edit-prompt-wa').value    || null,
-        prompt_email: document.getElementById('edit-prompt-email').value || null,
+        nome:              document.getElementById('edit-nome').value.trim()       || null,
+        canal:             document.getElementById('edit-canal').value,
+        hora_inicio:       document.getElementById('edit-hora-inicio').value,
+        hora_fim:          document.getElementById('edit-hora-fim').value,
+        contexto_ia:       document.getElementById('edit-contexto').value          || null,
+        inspiracao_texto:  document.getElementById('edit-inspiracao').value        || null,
       }),
     });
     mostrarAlerta('Campanha atualizada!', 'sucesso');
     fecharModalEditar();
-    // Recarrega a vista atual
     if (document.getElementById('vista-detalhe').classList.contains('ativa')) {
       verDetalhe(campanhaEditandoId, document.getElementById('det-nome').textContent);
     } else {
@@ -790,31 +918,38 @@ async function salvarEdicao() {
   }
 }
 
-// ── Wizard ─────────────────────────────────────────────────────
-function irParaEtapa(n) {
-  document.querySelectorAll('.painel-etapa').forEach((el, i) => el.classList.toggle('ativo', i + 1 === n));
-  document.querySelectorAll('.wizard-step').forEach((el, i) => {
-    el.classList.remove('ativo', 'concluido');
-    if (i + 1 === n) el.classList.add('ativo');
-    if (i + 1 < n)  el.classList.add('concluido');
-  });
-  if (n === 2) { carregarInstancias(); carregarPromptProduto(); gerarPreview(); atualizarSeletorTemplates(); }
-  if (n === 3) { ultimosEnviados = -1; iniciarPolling(); }
+// ── Modal Nova Campanha ───────────────────────────────────────────────────────
+function abrirModalNovaCampanha() {
+  // Reset estado
+  contatosImportadosModal = [];
+  indicesToRemover = new Set();
+  document.getElementById('stats-area-modal').style.display  = 'none';
+  document.getElementById('area-ai-preview').style.display   = 'none';
+  document.getElementById('upload-status-modal').style.display = 'none';
+  document.getElementById('cfg-contexto').value    = '';
+  document.getElementById('cfg-inspiracao').value  = '';
+  document.getElementById('cfg-nome-m').value      = '';
+  document.getElementById('cfg-canal-m').value     = 'whatsapp';
+  document.getElementById('cfg-hora-inicio-m').value = '08:00';
+  document.getElementById('cfg-hora-fim-m').value    = '18:00';
+  document.getElementById('cfg-min-m').value = 3;
+  document.getElementById('cfg-max-m').value = 5;
+  atualizarIntervaloModal();
+  atualizarVisibilidadeModal();
+  atualizarSeletorContextoTemplates();
+  carregarInstanciasModal();
+  document.getElementById('modal-nova-campanha').classList.remove('oculto');
+}
+function fecharModalNovaCampanha() {
+  document.getElementById('modal-nova-campanha').classList.add('oculto');
 }
 
-// ── Upload ─────────────────────────────────────────────────────
-const dropZone = document.getElementById('drop-zone');
-const inputArq = document.getElementById('input-arquivo');
-dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop',      e => { e.preventDefault(); dropZone.classList.remove('drag-over'); processarArquivo(e.dataTransfer.files[0]); });
-inputArq.addEventListener('change',   e => processarArquivo(e.target.files[0]));
-
-async function processarArquivo(file) {
+// ── Upload de arquivo (modal) ────────────────────────────────────────────────
+async function processarArquivoModal(file) {
   if (!file) return;
-  const statusEl = document.getElementById('upload-status');
+  const statusEl = document.getElementById('upload-status-modal');
   statusEl.style.display = 'block';
-  document.getElementById('stats-area').style.display = 'none';
+  document.getElementById('stats-area-modal').style.display = 'none';
   const base64 = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload  = e => resolve(e.target.result.split(',')[1]);
@@ -824,105 +959,87 @@ async function processarArquivo(file) {
   try {
     const dados = await apiFetch('/disparos/importar', { method: 'POST', body: JSON.stringify({ arquivo_base64: base64 }) });
     if (dados.erro) throw new Error(dados.erro);
-    contatosImportados = dados.preview;
-    document.getElementById('stat-total').textContent  = dados.total;
-    document.getElementById('stat-email').textContent  = dados.com_email;
-    document.getElementById('stat-tel').textContent    = dados.com_telefone;
-    document.getElementById('stat-ambos').textContent  = dados.com_ambos;
-    document.getElementById('preview-count').textContent = `(mostrando ${dados.preview.length} de ${dados.total})`;
-    renderizarTabela(dados.preview);
-    document.getElementById('stats-area').style.display = 'block';
+    contatosImportadosModal = dados.preview;
+    indicesToRemover = new Set();
+    document.getElementById('stat-total-m').textContent  = dados.total;
+    document.getElementById('stat-email-m').textContent  = dados.com_email;
+    document.getElementById('stat-tel-m').textContent    = dados.com_telefone;
+    document.getElementById('stat-ambos-m').textContent  = dados.com_ambos;
+    renderizarTabelaModal();
+    document.getElementById('stats-area-modal').style.display = 'block';
     statusEl.style.display = 'none';
+    // Limpar input para permitir re-upload do mesmo arquivo
+    document.getElementById('input-arquivo-modal').value = '';
   } catch (err) {
     statusEl.style.display = 'none';
     mostrarAlerta('Erro ao importar: ' + (err.erro || err.message), 'erro');
   }
 }
 
-function renderizarTabela(contatos) {
-  const tbody = document.getElementById('tabela-contatos-body');
-  tbody.innerHTML = contatos.map(c => {
+function renderizarTabelaModal() {
+  const ativos = contatosImportadosModal.length - indicesToRemover.size;
+  document.getElementById('preview-count-m').textContent = ativos;
+  const excLabel = document.getElementById('preview-excluidos-label');
+  excLabel.textContent = indicesToRemover.size > 0 ? `(${indicesToRemover.size} removido${indicesToRemover.size > 1 ? 's' : ''})` : '';
+
+  const tbody = document.getElementById('tabela-contatos-body-modal');
+  tbody.innerHTML = contatosImportadosModal.map((c, i) => {
+    if (indicesToRemover.has(i)) return '';
     const nome  = esc(c.nome_fantasia || c.razao_social || '—');
-    const seg   = esc((c.atividades_principal || '').substring(0, 40));
+    const seg   = esc((c.atividades_principal || '').substring(0, 35));
     const cid   = esc(c.municipio || '—');
     const email = c.email && c.email.includes('@')
-      ? `<span class="badge-ok">${esc(c.email.substring(0, 28))}</span>`
-      : `<span class="badge-sem">sem email</span>`;
+      ? `<span class="badge-ok">${esc(c.email.substring(0, 24))}</span>`
+      : `<span class="badge-sem">—</span>`;
     const tel   = c.telefones
-      ? `<span class="badge-ok">${esc(String(c.telefones).split(',')[0].trim().substring(0, 20))}</span>`
-      : `<span class="badge-sem">sem telefone</span>`;
-    return `<tr><td><strong>${nome}</strong></td><td>${seg}</td><td>${cid}</td><td>${email}</td><td>${tel}</td></tr>`;
+      ? `<span class="badge-ok">${esc(String(c.telefones).split(',')[0].trim().substring(0, 18))}</span>`
+      : `<span class="badge-sem">—</span>`;
+    return `<tr>
+      <td><button class="btn-excluir-contato" onclick="removerContato(${i})" title="Remover este contato">✕</button></td>
+      <td><strong style="color:var(--texto);">${nome}</strong></td>
+      <td style="color:var(--texto-suave);font-size:12px;">${seg}</td>
+      <td style="color:var(--texto-suave);">${cid}</td>
+      <td>${email}</td>
+      <td>${tel}</td>
+    </tr>`;
   }).join('');
 }
 
-// ── Configuração ───────────────────────────────────────────────
-const PROMPTS = {
-  pdv: {
-    wa: `Você é um SDR da Fantoni Software.
-Escreva uma mensagem de WhatsApp curta (máximo 3 linhas), natural e descontraída, para o primeiro contato com um estabelecimento.
-NÃO use saudações genéricas. Chame pelo nome do estabelecimento. NÃO mencione preço. Máximo 1 emoji.
-O objetivo é despertar curiosidade sobre o sistema PDV para {{segmento}} em {{cidade}}.
-Assine como Douglas, da Fantoni Software.
-
-Dados: Nome: {{nome}} | Segmento: {{segmento}} | Cidade: {{cidade}}
-
-Retorne APENAS o texto da mensagem, sem aspas.`,
-    email: `Você é um SDR da Fantoni Software.
-Escreva 2-3 frases para o corpo de um email de prospecção para um estabelecimento do segmento {{segmento}} em {{cidade}}.
-Mencione o nome "{{nome}}". Seja profissional mas próximo. Foque no problema de controle de vendas e estoque.
-NÃO mencione preço. Retorne APENAS o texto corrido, sem saudação.`,
-  },
-  cardapio: {
-    wa: `Você é um SDR da Fantoni Software.
-Escreva uma mensagem de WhatsApp curta (máximo 3 linhas), natural e descontraída, para o primeiro contato com um estabelecimento de delivery/restaurante.
-Chame pelo nome "{{nome}}". NÃO mencione preço. Máximo 1 emoji.
-O objetivo é despertar curiosidade sobre o Fantoni Cardápio IA — cardápio digital com IA para delivery e atendimento pelo WhatsApp.
-Assine como Douglas, da Fantoni Software.
-
-Retorne APENAS o texto da mensagem, sem aspas.`,
-    email: `Você é um SDR da Fantoni Software.
-Escreva 2-3 frases para o corpo de um email de prospecção para um estabelecimento de delivery/alimentação ({{segmento}}) em {{cidade}}.
-Mencione o nome "{{nome}}". Foque no problema de gerenciar pedidos pelo WhatsApp manualmente e como o Fantoni Cardápio IA resolve isso.
-NÃO mencione preço. Retorne APENAS o texto corrido, sem saudação.`,
-  },
-  custom: { wa: '', email: '' },
-};
-
-function formatarSeg(s) {
-  const v = Number(s);
-  if (v < 60) return `${v}s`;
-  const m = v / 60;
-  return m === Math.floor(m) ? `${m} min` : `${m.toFixed(1)} min`;
-}
-function atualizarIntervalo() {
-  let min = Number(document.getElementById('cfg-min').value);
-  let max = Number(document.getElementById('cfg-max').value);
-  if (max < min) { max = min; document.getElementById('cfg-max').value = min; }
-  document.getElementById('label-min').textContent = formatarSeg(min);
-  document.getElementById('label-max').textContent = formatarSeg(max);
-  document.getElementById('inf-min').textContent   = formatarSeg(min);
-  document.getElementById('inf-max').textContent   = formatarSeg(max);
-}
-function carregarPromptProduto() {
-  const produto = document.getElementById('cfg-produto').value;
-  const p = PROMPTS[produto] || PROMPTS.pdv;
-  document.getElementById('prompt-wa').value    = p.wa;
-  document.getElementById('prompt-email').value = p.email;
-  limparPreview();
-}
-function limparPreview()       { document.getElementById('area-preview').style.display = 'none'; }
-function atualizarVisibilidade() {
-  const canal = document.getElementById('cfg-canal').value;
-  document.getElementById('bloco-instancias').style.display = canal === 'email' ? 'none' : 'block';
+function removerContato(i) {
+  indicesToRemover.add(i);
+  renderizarTabelaModal();
 }
 
-async function carregarInstancias() {
+function obterContatosAtivos() {
+  return contatosImportadosModal.filter((_, i) => !indicesToRemover.has(i));
+}
+
+// ── Intervalo (minutos) ───────────────────────────────────────────────────────
+function atualizarIntervaloModal() {
+  let min = Number(document.getElementById('cfg-min-m').value);
+  let max = Number(document.getElementById('cfg-max-m').value);
+  if (max < min) { max = min; document.getElementById('cfg-max-m').value = min; }
+  document.getElementById('label-min-m').textContent = min + ' min';
+  document.getElementById('label-max-m').textContent = max + ' min';
+  document.getElementById('inf-min-m').textContent   = min + ' min';
+  document.getElementById('inf-max-m').textContent   = max + ' min';
+}
+
+// ── Visibilidade canal ────────────────────────────────────────────────────────
+function atualizarVisibilidadeModal() {
+  const canal = document.getElementById('cfg-canal-m').value;
+  document.getElementById('bloco-instancias-modal').style.display = canal === 'email' ? 'none' : 'block';
+}
+
+// ── Instâncias (modal) ────────────────────────────────────────────────────────
+async function carregarInstanciasModal() {
+  const lista = document.getElementById('instancias-lista-modal');
+  lista.innerHTML = '<span style="color:var(--texto-suave);font-size:13px;">Carregando...</span>';
   try {
     const dados = await apiFetch('/comercial/instancias');
     instanciasDisponiveis = Array.isArray(dados) ? dados : (dados.instancias || []);
-    const lista = document.getElementById('instancias-lista');
     if (!instanciasDisponiveis.length) {
-      lista.innerHTML = '<span style="color:#94a3b8;font-size:13px;">Nenhuma instância cadastrada. Configure em <a href="/admin/comercial/configuracoes.html">Configurações</a>.</span>';
+      lista.innerHTML = '<span style="color:var(--texto-suave);font-size:13px;">Nenhuma instância cadastrada. Configure em <a href="/admin/comercial/configuracoes.html" style="color:var(--primaria);">Configurações</a>.</span>';
       return;
     }
     lista.innerHTML = instanciasDisponiveis.map(inst => `
@@ -931,158 +1048,181 @@ async function carregarInstancias() {
         📱 ${esc(inst.nome || inst.nome_instancia || '—')}
       </label>`).join('');
   } catch (e) {
-    document.getElementById('inst-vazio').textContent = 'Erro ao carregar instâncias.';
+    lista.innerHTML = '<span style="color:var(--erro);font-size:13px;">Erro ao carregar instâncias.</span>';
   }
 }
 
-async function gerarPreview() {
-  if (!contatosImportados.length) return;
-  const primeiro = contatosImportados[0];
-  const wa    = document.getElementById('preview-wa');
-  const email = document.getElementById('preview-email');
-  document.getElementById('area-preview').style.display = 'block';
-  wa.innerHTML = email.innerHTML = '<span style="color:#94a3b8;font-style:italic;">Gerando com IA...</span>';
+// ── Prévia de IA ──────────────────────────────────────────────────────────────
+async function gerarAIPreview() {
+  const contexto   = document.getElementById('cfg-contexto').value.trim();
+  const inspiracao = document.getElementById('cfg-inspiracao').value.trim();
+  if (!contexto) {
+    mostrarAlerta('Preencha o Contexto do Negócio antes de gerar a prévia.', 'aviso');
+    document.getElementById('cfg-contexto').focus();
+    return;
+  }
+  const btn = document.getElementById('btn-ai-preview');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⟳</span> Gerando...';
+
   try {
-    const dados = await apiFetch('/disparos/gerar-mensagem', {
+    const dados = await apiFetch('/disparos/gerar-preview', {
       method: 'POST',
-      body: JSON.stringify({
-        nome_fantasia:        primeiro.nome_fantasia,
-        razao_social:         primeiro.razao_social,
-        municipio:            primeiro.municipio,
-        estado:               primeiro.estado,
-        atividades_principal: primeiro.atividades_principal,
-        prompt_wa:            document.getElementById('prompt-wa').value    || null,
-        prompt_email:         document.getElementById('prompt-email').value || null,
-      })
+      body: JSON.stringify({ contexto_ia: contexto, inspiracao_texto: inspiracao || null, lead: null }),
     });
-    wa.textContent    = dados.whatsapp || '—';
-    email.textContent = dados.email    || '—';
-    const chars   = (dados.whatsapp || '').length;
-    const charsEl = document.getElementById('preview-wa-chars');
-    charsEl.textContent = `${chars} caracteres`;
-    charsEl.style.color = chars > 320 ? '#ef4444' : chars > 200 ? '#f59e0b' : '#22c55e';
+    const areaPreview = document.getElementById('area-ai-preview');
+    const leadInfo = dados.lead_usado || {};
+    document.getElementById('ai-preview-lead-info').textContent =
+      `Lead fictício: ${leadInfo.nomeFantasia || 'Restaurante do João'} — ${leadInfo.segmento || 'restaurantes'} — ${leadInfo.municipio || 'Porto Alegre'}/${leadInfo.estado || 'RS'}`;
+
+    const variacoes = dados.variacoes || [];
+    document.getElementById('ai-preview-variacoes').innerHTML = variacoes.map((v, i) => `
+      <div>
+        <div class="ai-label">Variação ${i + 1}</div>
+        <div class="ai-variacao">${esc(v)}</div>
+      </div>`).join('');
+    areaPreview.style.display = 'block';
   } catch (e) {
-    wa.innerHTML = email.innerHTML = '<span style="color:#ef4444;">Erro ao gerar prévia.</span>';
+    mostrarAlerta('Erro ao gerar prévia: ' + e.message, 'erro');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ph ph-sparkle"></i> Gerar prévia com IA';
   }
 }
 
-// ── Templates ─────────────────────────────────────────────────
-const TEMPLATES_KEY = 'disparos_templates_v1';
-function listarTemplates() {
-  try { return JSON.parse(localStorage.getItem(TEMPLATES_KEY) || '[]'); } catch { return []; }
+// ── Templates de contexto ─────────────────────────────────────────────────────
+const CONTEXTO_TPL_KEY = 'disparos_contexto_tpl_v1';
+
+function listarContextoTemplates() {
+  try { return JSON.parse(localStorage.getItem(CONTEXTO_TPL_KEY) || '[]'); } catch { return []; }
 }
-function salvarTemplate() {
-  const nome = document.getElementById('cfg-nome').value.trim();
-  if (!nome) { mostrarAlerta('Dê um nome à campanha antes de salvar o template.', 'aviso'); return; }
+function salvarContextoTemplate() {
+  const contexto = document.getElementById('cfg-contexto').value.trim();
+  if (!contexto) { mostrarAlerta('Preencha o Contexto antes de salvar.', 'aviso'); return; }
+  const nome = prompt('Nome para este template de contexto:');
+  if (!nome || !nome.trim()) return;
   const tpl = {
-    nome,
-    canal:        document.getElementById('cfg-canal').value,
-    produto:      document.getElementById('cfg-produto').value,
-    hora_inicio:  document.getElementById('cfg-hora-inicio').value,
-    hora_fim:     document.getElementById('cfg-hora-fim').value,
-    min:          document.getElementById('cfg-min').value,
-    max:          document.getElementById('cfg-max').value,
-    prompt_wa:    document.getElementById('prompt-wa').value,
-    prompt_email: document.getElementById('prompt-email').value,
-    salvo_em:     new Date().toISOString(),
+    nome: nome.trim(),
+    contexto,
+    inspiracao: document.getElementById('cfg-inspiracao').value.trim(),
+    salvo_em: new Date().toISOString(),
   };
-  const lista = listarTemplates().filter(t => t.nome !== nome);
+  const lista = listarContextoTemplates().filter(t => t.nome !== tpl.nome);
   lista.unshift(tpl);
-  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(lista.slice(0, 20)));
-  atualizarSeletorTemplates();
-  mostrarAlerta(`Template "${nome}" salvo!`, 'sucesso');
+  localStorage.setItem(CONTEXTO_TPL_KEY, JSON.stringify(lista.slice(0, 10)));
+  atualizarSeletorContextoTemplates();
+  mostrarAlerta(`Template "${tpl.nome}" salvo!`, 'sucesso');
 }
-function carregarTemplate(nome) {
+function carregarContextoTemplate(nome) {
   if (!nome) return;
-  const tpl = listarTemplates().find(t => t.nome === nome);
+  const tpl = listarContextoTemplates().find(t => t.nome === nome);
   if (!tpl) return;
-  document.getElementById('cfg-nome').value         = tpl.nome;
-  document.getElementById('cfg-canal').value        = tpl.canal        || 'ambos';
-  document.getElementById('cfg-produto').value      = tpl.produto      || 'pdv';
-  document.getElementById('cfg-hora-inicio').value  = tpl.hora_inicio  || '08:00';
-  document.getElementById('cfg-hora-fim').value     = tpl.hora_fim     || '18:00';
-  document.getElementById('cfg-min').value          = tpl.min          || 90;
-  document.getElementById('cfg-max').value          = tpl.max          || 300;
-  document.getElementById('prompt-wa').value        = tpl.prompt_wa    || '';
-  document.getElementById('prompt-email').value     = tpl.prompt_email || '';
-  atualizarIntervalo(); atualizarVisibilidade(); limparPreview();
-  document.getElementById('sel-template').value = '';
+  document.getElementById('cfg-contexto').value   = tpl.contexto   || '';
+  document.getElementById('cfg-inspiracao').value = tpl.inspiracao || '';
+  document.getElementById('sel-contexto-template').value = '';
 }
-function atualizarSeletorTemplates() {
-  const sel   = document.getElementById('sel-template');
-  const lista = listarTemplates();
-  if (!lista.length) { sel.style.display = 'none'; return; }
-  sel.style.display = '';
-  sel.innerHTML = `<option value="">↩ Carregar template...</option>` +
+function atualizarSeletorContextoTemplates() {
+  const lista  = listarContextoTemplates();
+  const area   = document.getElementById('area-contexto-templates');
+  const sel    = document.getElementById('sel-contexto-template');
+  if (!lista.length) { area.style.display = 'none'; return; }
+  area.style.display = 'block';
+  sel.innerHTML = `<option value="">↩ Carregar contexto salvo...</option>` +
     lista.map(t => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join('');
 }
 
-// ── Salvar rascunho ────────────────────────────────────────────
-async function salvarRascunho() {
-  const btn = document.getElementById('btn-salvar-rascunho');
-  btn.disabled = true; btn.textContent = '⟳ Salvando...';
-  const instanciasIds = [...document.querySelectorAll('#instancias-lista input[type=checkbox]:checked')].map(el => el.value);
+// ── Salvar rascunho (modal) ───────────────────────────────────────────────────
+async function salvarRascunhoModal() {
+  const contatos = obterContatosAtivos();
+  if (!contatos.length) { mostrarAlerta('Importe ao menos um contato antes de salvar.', 'aviso'); return; }
+  const btn = document.getElementById('btn-salvar-rascunho-m');
+  btn.disabled = true; btn.innerHTML = '<span class="spin">⟳</span> Salvando...';
+  const instanciasIds = [...document.querySelectorAll('#instancias-lista-modal input[type=checkbox]:checked')].map(el => el.value);
+  const minMin = Number(document.getElementById('cfg-min-m').value);
+  const maxMin = Number(document.getElementById('cfg-max-m').value);
   try {
-    const dados = await apiFetch('/disparos/iniciar', {
+    await apiFetch('/disparos/iniciar', {
       method: 'POST',
       body: JSON.stringify({
-        nome:           document.getElementById('cfg-nome').value.trim() || null,
-        canal:          document.getElementById('cfg-canal').value,
-        intervalo_min:  document.getElementById('cfg-min').value,
-        intervalo_max:  document.getElementById('cfg-max').value,
-        hora_inicio:    document.getElementById('cfg-hora-inicio').value,
-        hora_fim:       document.getElementById('cfg-hora-fim').value,
-        instancias_ids: instanciasIds,
-        contatos:       contatosImportados,
-        prompt_wa:      document.getElementById('prompt-wa').value    || null,
-        prompt_email:   document.getElementById('prompt-email').value || null,
-        iniciar_agora:  false,
+        nome:              document.getElementById('cfg-nome-m').value.trim()       || null,
+        canal:             document.getElementById('cfg-canal-m').value,
+        intervalo_min:     minMin * 60,
+        intervalo_max:     (maxMin >= minMin ? maxMin : minMin) * 60,
+        hora_inicio:       document.getElementById('cfg-hora-inicio-m').value,
+        hora_fim:          document.getElementById('cfg-hora-fim-m').value,
+        instancias_ids:    instanciasIds,
+        contatos,
+        contexto_ia:       document.getElementById('cfg-contexto').value.trim()    || null,
+        inspiracao_texto:  document.getElementById('cfg-inspiracao').value.trim()  || null,
+        iniciar_agora:     false,
       }),
     });
-    if (dados.erro) throw new Error(dados.erro);
-    mostrarAlerta('Campanha salva! Inicie quando quiser na lista de campanhas.', 'sucesso');
-    setTimeout(() => irParaLista(), 1200);
+    mostrarAlerta('Campanha salva! Inicie quando quiser na lista.', 'sucesso');
+    fecharModalNovaCampanha();
+    carregarListaCampanhas();
   } catch (err) {
     mostrarAlerta('Erro ao salvar: ' + (err.erro || err.message), 'erro');
   } finally {
-    btn.disabled = false; btn.textContent = '💾 Salvar campanha';
+    btn.disabled = false; btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Salvar rascunho';
   }
 }
 
-// ── Iniciar disparo ────────────────────────────────────────────
-async function iniciarDisparo() {
-  const btn = document.getElementById('btn-iniciar');
-  btn.disabled = true; btn.textContent = '⟳ Iniciando...';
-  const instanciasIds = [...document.querySelectorAll('#instancias-lista input[type=checkbox]:checked')].map(el => el.value);
+// ── Iniciar disparo (modal) ───────────────────────────────────────────────────
+async function iniciarDisparoModal() {
+  const contatos = obterContatosAtivos();
+  if (!contatos.length) { mostrarAlerta('Importe ao menos um contato antes de iniciar.', 'aviso'); return; }
+  const btn = document.getElementById('btn-iniciar-m');
+  btn.disabled = true; btn.innerHTML = '<span class="spin">⟳</span> Iniciando...';
+  const instanciasIds = [...document.querySelectorAll('#instancias-lista-modal input[type=checkbox]:checked')].map(el => el.value);
+  const minMin = Number(document.getElementById('cfg-min-m').value);
+  const maxMin = Number(document.getElementById('cfg-max-m').value);
   try {
     const dados = await apiFetch('/disparos/iniciar', {
       method: 'POST',
       body: JSON.stringify({
-        nome:           document.getElementById('cfg-nome').value.trim() || null,
-        canal:          document.getElementById('cfg-canal').value,
-        intervalo_min:  document.getElementById('cfg-min').value,
-        intervalo_max:  document.getElementById('cfg-max').value,
-        hora_inicio:    document.getElementById('cfg-hora-inicio').value,
-        hora_fim:       document.getElementById('cfg-hora-fim').value,
-        instancias_ids: instanciasIds,
-        contatos:       contatosImportados,
-        prompt_wa:      document.getElementById('prompt-wa').value    || null,
-        prompt_email:   document.getElementById('prompt-email').value || null,
+        nome:              document.getElementById('cfg-nome-m').value.trim()       || null,
+        canal:             document.getElementById('cfg-canal-m').value,
+        intervalo_min:     minMin * 60,
+        intervalo_max:     (maxMin >= minMin ? maxMin : minMin) * 60,
+        hora_inicio:       document.getElementById('cfg-hora-inicio-m').value,
+        hora_fim:          document.getElementById('cfg-hora-fim-m').value,
+        instancias_ids:    instanciasIds,
+        contatos,
+        contexto_ia:       document.getElementById('cfg-contexto').value.trim()    || null,
+        inspiracao_texto:  document.getElementById('cfg-inspiracao').value.trim()  || null,
       }),
     });
     if (dados.erro) throw new Error(dados.erro);
     campanhaAtualId = dados.campanha_id;
-    irParaEtapa(3);
-    document.getElementById('btn-pausar').style.display   = 'inline-flex';
-    document.getElementById('btn-encerrar').style.display = 'inline-flex';
-    executarStep(); // inicia o primeiro envio imediatamente
+    fecharModalNovaCampanha();
+    abrirModalMonitorar(campanhaAtualId);
+    executarStep();
   } catch (err) {
     mostrarAlerta('Erro ao iniciar: ' + (err.erro || err.message), 'erro');
-    btn.disabled = false; btn.textContent = '📨 Iniciar disparo';
+    btn.disabled = false; btn.innerHTML = '<i class="ph ph-paper-plane-tilt"></i> Iniciar disparo';
   }
 }
 
-// ── Polling ────────────────────────────────────────────────────
+// ── Modal Monitorar ───────────────────────────────────────────────────────────
+function abrirModalMonitorar(id) {
+  campanhaAtualId = id;
+  ultimosEnviados = -1;
+  document.getElementById('modal-monitorar').classList.remove('oculto');
+  // Mostra controles relevantes ao abrir (serão ajustados pelo polling)
+  document.getElementById('btn-pausar-m').style.display   = 'inline-flex';
+  document.getElementById('btn-encerrar-m').style.display = 'inline-flex';
+  document.getElementById('btn-retomar-m').style.display  = 'none';
+  iniciarPolling();
+}
+function fecharModalMonitorar() {
+  document.getElementById('modal-monitorar').classList.add('oculto');
+  if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
+  pararTimer();
+  ultimosEnviados = -1;
+  carregarListaCampanhas();
+}
+
+// ── Polling de status ─────────────────────────────────────────────────────────
 function iniciarPolling() {
   if (pollingTimer) clearInterval(pollingTimer);
   atualizarStatus();
@@ -1101,8 +1241,13 @@ async function atualizarStatus() {
     const status   = camp.status || 'ativo';
     const nomeLabel = camp.nome ? `${camp.nome} — ` : '';
 
-    cfgIntMin = Number(cfg.intervaloMinSeg) || 90;
+    cfgIntMin = Number(cfg.intervaloMinSeg) || 180;
     cfgIntMax = Number(cfg.intervaloMaxSeg) || 300;
+
+    // Título do modal
+    if (document.getElementById('monitor-titulo')) {
+      document.getElementById('monitor-titulo').innerHTML = `<i class="ph ph-broadcast"></i> ${camp.nome || 'Campanha'}`;
+    }
 
     document.getElementById('prog-titulo').textContent    = `${nomeLabel}${enviados} de ${total} contatos processados`;
     document.getElementById('prog-subtitulo').textContent = `Canal: ${camp.canal || '—'} · Iniciado: ${camp.criado_em ? new Date(camp.criado_em).toLocaleTimeString('pt-BR') : '—'}`;
@@ -1121,11 +1266,10 @@ async function atualizarStatus() {
     badgeEl.className   = 'badge ' + b.cls;
     badgeEl.textContent = b.txt;
 
-    document.getElementById('btn-pausar').style.display   = status === 'ativo'   ? 'inline-flex' : 'none';
-    document.getElementById('btn-retomar').style.display  = status === 'pausado' ? 'inline-flex' : 'none';
-    document.getElementById('btn-encerrar').style.display = ['ativo','pausado'].includes(status) ? 'inline-flex' : 'none';
+    document.getElementById('btn-pausar-m').style.display   = status === 'ativo'   ? 'inline-flex' : 'none';
+    document.getElementById('btn-retomar-m').style.display  = status === 'pausado' ? 'inline-flex' : 'none';
+    document.getElementById('btn-encerrar-m').style.display = ['ativo','pausado'].includes(status) ? 'inline-flex' : 'none';
 
-    // Timer wrap — apenas visibilidade; o dispatch é controlado por executarStep()
     const timerWrap = document.getElementById('timer-wrap');
     if (status === 'ativo' && enviados < total) {
       if (timerWrap) { timerWrap.style.display = 'flex'; timerWrap.classList.remove('pausado'); }
@@ -1139,28 +1283,29 @@ async function atualizarStatus() {
       if (timerWrap) timerWrap.style.display = 'none';
     }
 
-    if (['concluido','encerrado'].includes(status) && pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
+    if (['concluido','encerrado'].includes(status) && pollingTimer) {
+      clearInterval(pollingTimer); pollingTimer = null;
+    }
     renderizarLog(dados.leads || []);
   } catch (e) { /* silencioso */ }
 }
+
 function renderizarLog(leads) {
   logLeadsCache = leads;
   const filtro  = (document.getElementById('filtro-log')?.value || '').toLowerCase();
-  const filtrados = filtro
-    ? leads.filter(l => (l.status || '').toLowerCase().includes(filtro))
-    : leads;
+  const filtrados = filtro ? leads.filter(l => (l.status || '').toLowerCase().includes(filtro)) : leads;
 
   const erros    = leads.filter(l => (l.status || '').startsWith('erro')).length;
   const enviados = leads.filter(l => (l.status || '').startsWith('enviado') || l.status === 'parcial').length;
   const resumo   = document.getElementById('log-resumo');
   if (resumo) {
-    resumo.innerHTML = `<span style="color:#22c55e;font-weight:600;">${enviados} ok</span>` +
-      (erros ? ` · <span style="color:#ef4444;font-weight:600;">${erros} erro${erros > 1 ? 's' : ''}</span>` : '');
+    resumo.innerHTML = `<span style="color:var(--sucesso);font-weight:600;">${enviados} ok</span>` +
+      (erros ? ` · <span style="color:var(--erro);font-weight:600;">${erros} erro${erros > 1 ? 's' : ''}</span>` : '');
   }
 
   const tbody = document.getElementById('log-leads-body');
   if (!filtrados.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px;">${leads.length ? 'Nenhum resultado para o filtro.' : 'Aguardando início...'}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--texto-suave);padding:24px;">${leads.length ? 'Nenhum resultado.' : 'Aguardando início...'}</td></tr>`;
     return;
   }
   const agora = Date.now();
@@ -1171,38 +1316,43 @@ function renderizarLog(leads) {
     const hora      = l.atualizado_em ? new Date(l.atualizado_em).toLocaleTimeString('pt-BR') : '—';
     const temErro   = l.erro && l.erro.trim();
     const erroCell  = temErro
-      ? `<span class="erro-txt" title="${esc(l.erro)}">${esc(l.erro.length > 90 ? l.erro.substring(0,90)+'…' : l.erro)}</span>`
+      ? `<span class="erro-txt" title="${esc(l.erro)}">${esc(l.erro.length > 80 ? l.erro.substring(0,80)+'…' : l.erro)}</span>`
       : `<span class="sem-erro">—</span>`;
-    // Flash verde/vermelho em linhas recentemente atualizadas (últimos 8s)
     const recente = l.atualizado_em && (agora - new Date(l.atualizado_em).getTime()) < 8000;
     const rowCls  = recente ? ((l.status||'').startsWith('erro') ? 'row-err' : 'row-ok') : '';
     return `<tr class="${rowCls}">
-      <td><strong>${nome}</strong></td>
-      <td>${canal}</td>
+      <td><strong style="color:var(--texto);">${nome}</strong></td>
+      <td style="color:var(--texto-suave);font-size:12px;">${canal}</td>
       <td><span class="status-badge ${statusCls}">${esc(l.status || 'aguardando')}</span></td>
-      <td style="font-size:12px;">${hora}</td>
+      <td style="font-size:12px;color:var(--texto-suave);">${hora}</td>
       <td>${erroCell}</td>
     </tr>`;
   }).join('');
 }
 
-// ── Controles do wizard ────────────────────────────────────────
-async function pausarDisparo()  { await apiFetch(`/disparos/${campanhaAtualId}/pausar`,  { method:'POST' }); pararTimer(); atualizarStatus(); }
-async function retomarDisparo() { await apiFetch(`/disparos/${campanhaAtualId}/retomar`, { method:'POST' }); executarStep(); }
+// ── Controles de disparo ──────────────────────────────────────────────────────
+async function pausarDisparo()  {
+  await apiFetch(`/disparos/${campanhaAtualId}/pausar`,  { method: 'POST' });
+  pararTimer();
+  atualizarStatus();
+}
+async function retomarDisparo() {
+  await apiFetch(`/disparos/${campanhaAtualId}/retomar`, { method: 'POST' });
+  executarStep();
+}
 async function encerrarDisparo() {
   if (!confirm('Encerrar o disparo? Isso para o envio permanentemente.')) return;
-  await apiFetch(`/disparos/${campanhaAtualId}/encerrar`, { method:'POST' });
+  await apiFetch(`/disparos/${campanhaAtualId}/encerrar`, { method: 'POST' });
   if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
   atualizarStatus();
 }
 
-// ── Timer countdown ────────────────────────────────────────────
+// ── Timer countdown ───────────────────────────────────────────────────────────
 function iniciarContagem(minSeg, maxSeg) {
   pararTimer();
   const secs = Math.floor(Math.random() * (maxSeg - minSeg + 1)) + minSeg;
-  timerSecsLeft = secs;
+  timerSecsLeft  = secs;
   totalSecsTimer = secs;
-  // Esconde resultado anterior
   const res = document.getElementById('timer-resultado');
   if (res) { res.style.display = 'none'; res.className = 'timer-resultado'; }
   atualizarTimerDisplay();
@@ -1216,34 +1366,30 @@ function iniciarContagem(minSeg, maxSeg) {
     }
   }, 1000);
 }
-
 function atualizarTimerDisplay() {
   const el = document.getElementById('timer-countdown');
   if (!el) return;
   const m = Math.floor(timerSecsLeft / 60);
   const s = timerSecsLeft % 60;
   el.textContent = m > 0 ? `${m}min ${String(s).padStart(2,'0')}s` : `${timerSecsLeft}s`;
-  // Barra: vai de 100% → 0% conforme o tempo passa
   const bar = document.getElementById('timer-bar');
   if (bar && totalSecsTimer > 0) {
     bar.style.width = Math.round((timerSecsLeft / totalSecsTimer) * 100) + '%';
   }
 }
-
 function mostrarResultadoEnvio(ok) {
   const res = document.getElementById('timer-resultado');
   if (!res) return;
   res.textContent = ok ? '✓ Enviado' : '✗ Erro';
   res.className   = 'timer-resultado ' + (ok ? 'ok' : 'err');
   res.style.display = 'inline-block';
-  // Some após 3 segundos (quando o próximo countdown já foi iniciado)
   setTimeout(() => { res.style.display = 'none'; }, 3000);
 }
-
 function pararTimer() {
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 }
 
+// ── Executar step (loop de envio) ─────────────────────────────────────────────
 async function executarStep() {
   if (!campanhaAtualId) return;
   const el  = document.getElementById('timer-countdown');
@@ -1254,17 +1400,15 @@ async function executarStep() {
     const res = await apiFetch(`/disparos/${campanhaAtualId}/step`, { method: 'POST' });
     if (!res || res.erro) {
       mostrarResultadoEnvio(false);
-      iniciarContagem(30, 30); // tenta novamente em 30s em caso de erro
+      iniciarContagem(30, 30);
       return;
     }
     if (res.ok === false) {
-      // Campanha pausada, encerrada, etc — para o timer
       pararTimer();
       atualizarStatus();
       return;
     }
     if (!res.has_more) {
-      // Concluído
       pararTimer();
       mostrarResultadoEnvio(res.enviou_ok !== false);
       atualizarStatus();
@@ -1275,25 +1419,45 @@ async function executarStep() {
       iniciarContagem(60, 60);
       return;
     }
-    // Enviado com sucesso — mostra resultado e agenda próximo
     mostrarResultadoEnvio(res.enviou_ok !== false);
     iniciarContagem(cfgIntMin, cfgIntMax);
     atualizarStatus();
   } catch (e) {
     mostrarResultadoEnvio(false);
-    iniciarContagem(30, 30); // tenta novamente em 30s
+    iniciarContagem(30, 30);
   }
 }
 
-function toggleInfoEmail() {
-  const corpo = document.getElementById('info-email-corpo');
-  const seta  = document.getElementById('info-email-seta');
-  const aberto = corpo.style.display !== 'none';
-  corpo.style.display = aberto ? 'none' : 'block';
-  seta.textContent    = aberto ? '▼ ver detalhes' : '▲ fechar';
+// ── Utilidades ────────────────────────────────────────────────────────────────
+function formatarSeg(s) {
+  const v = Number(s);
+  if (v < 60) return `${v}s`;
+  const m = v / 60;
+  return m === Math.floor(m) ? `${m} min` : `${m.toFixed(1)} min`;
 }
 
-// ── Init ───────────────────────────────────────────────────────
+// ── Drop zone (event delegation — funciona dentro do modal) ───────────────────
+document.addEventListener('dragover', e => {
+  const dz = e.target.closest('#drop-zone-modal');
+  if (dz) { e.preventDefault(); dz.classList.add('drag-over'); }
+});
+document.addEventListener('dragleave', e => {
+  const dz = e.target.closest('#drop-zone-modal');
+  if (dz) dz.classList.remove('drag-over');
+});
+document.addEventListener('drop', e => {
+  const dz = e.target.closest('#drop-zone-modal');
+  if (dz) {
+    e.preventDefault();
+    dz.classList.remove('drag-over');
+    processarArquivoModal(e.dataTransfer.files[0]);
+  }
+});
+document.getElementById('input-arquivo-modal').addEventListener('change', e => {
+  processarArquivoModal(e.target.files[0]);
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 carregarListaCampanhas();
 </script>
 </body>

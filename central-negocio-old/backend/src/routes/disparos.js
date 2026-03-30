@@ -1,67 +1,61 @@
 // Rotas do módulo de disparos em massa (WhatsApp + Email)
-const express  = require('express');
-const multer   = require('multer');
-const XLSX     = require('xlsx');
-const { autenticar }      = require('../middleware/auth');
+const express = require('express');
+const XLSX    = require('xlsx');
+const { autenticar }       = require('../middleware/auth');
 const { adminOuComercial } = require('../middleware/roles');
-const { supabaseAdmin }   = require('../supabase');
+const { supabaseAdmin }    = require('../supabase');
 const {
-  iniciarFila, pausarFila, retomarFila, pararFila, statusFila,
+  pausarFila, pararFila, statusFila,
   gerarMensagemWA, gerarMensagemEmail, normalizarTelefone,
   processarContato, dentroDoHorario,
 } = require('../services/disparos');
 
-const router  = express.Router();
-const upload  = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
+const router = express.Router();
 
-// ── Helpers ───────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function parseXLSX(buffer) {
-  const wb    = XLSX.read(buffer, { type: 'buffer' });
-  const ws    = wb.Sheets[wb.SheetNames[0]];
-  const rows  = XLSX.utils.sheet_to_json(ws, { defval: '' });
+  const wb   = XLSX.read(buffer, { type: 'buffer' });
+  const ws   = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
   return rows;
 }
 
-function filtrarContatos(rows, { apenasAtiva = true, comEmail = false, comTelefone = false } = {}) {
+function filtrarContatos(rows) {
   return rows
-    .filter(r => !apenasAtiva || String(r.situacao || '').toUpperCase() === 'ATIVA')
-    .filter(r => !comEmail    || (r.email && String(r.email).includes('@')))
-    .filter(r => !comTelefone || normalizarTelefone(r.telefones))
+    .filter(r => String(r.situacao || '').toUpperCase() === 'ATIVA')
     .map((r, i) => ({
-      _id:                 String(i),
-      nome_fantasia:       r.nome_fantasia       || '',
-      razao_social:        r.razao_social        || '',
-      email:               r.email               || '',
-      telefones:           r.telefones           || '',
-      municipio:           r.municipio           || '',
-      estado:              r.estado              || '',
-      atividades_principal: r.atividades_principal || '',
-      situacao:            r.situacao            || '',
-      cnpj:                r.cnpj                || '',
+      _id:                  String(i),
+      nome_fantasia:        r.nome_fantasia        || r['Nome Fantasia']        || '',
+      razao_social:         r.razao_social         || r['Razão Social']         || r['Razao Social'] || '',
+      email:                r.email                || r['E-mail']               || r['Email']        || '',
+      telefones:            r.telefones            || r['Telefone']             || r['Telefones']    || '',
+      municipio:            r.municipio            || r['Município']            || r['Municipio']    || '',
+      estado:               r.estado               || r['Estado']               || r['UF']           || '',
+      atividades_principal: r.atividades_principal || r['Atividade Principal']  || r['Segmento']     || '',
+      situacao:             r.situacao             || '',
+      cnpj:                 r.cnpj                 || r['CNPJ']                 || '',
     }));
 }
 
-// ── POST /api/disparos/importar ───────────────────────────────
-// Recebe arquivo .xlsx como base64 (compatível com Vercel serverless)
+// ── POST /api/disparos/importar ───────────────────────────────────────────────
 router.post('/importar', autenticar, adminOuComercial, async (req, res) => {
   try {
     const { arquivo_base64 } = req.body;
     if (!arquivo_base64) return res.status(400).json({ erro: 'Arquivo não enviado' });
 
-    const buffer = Buffer.from(arquivo_base64, 'base64');
-    const rows = parseXLSX(buffer);
-    const todos = filtrarContatos(rows);
+    const buffer      = Buffer.from(arquivo_base64, 'base64');
+    const rows        = parseXLSX(buffer);
+    const todos       = filtrarContatos(rows);
     const comEmail    = todos.filter(c => c.email && c.email.includes('@'));
     const comTelefone = todos.filter(c => normalizarTelefone(c.telefones));
     const comAmbos    = todos.filter(c => c.email && c.email.includes('@') && normalizarTelefone(c.telefones));
 
-    // Retorna até 200 contatos na prévia para não explodir o payload
     res.json({
       total:        todos.length,
       com_email:    comEmail.length,
       com_telefone: comTelefone.length,
       com_ambos:    comAmbos.length,
-      preview:      todos.slice(0, 200),
+      preview:      todos.slice(0, 500),
     });
   } catch (err) {
     console.error('[Disparos] Erro ao importar:', err);
@@ -69,15 +63,38 @@ router.post('/importar', autenticar, adminOuComercial, async (req, res) => {
   }
 });
 
-// ── POST /api/disparos/gerar-mensagem ─────────────────────────
+// ── POST /api/disparos/gerar-preview ─────────────────────────────────────────
+// Gera 2 variações de mensagem WA para validar tom de voz
+router.post('/gerar-preview', autenticar, adminOuComercial, async (req, res) => {
+  const { contexto_ia, inspiracao_texto, lead } = req.body;
+  const params = {
+    nomeFantasia: lead?.nome     || 'Restaurante do João',
+    razaoSocial:  lead?.nome     || 'Restaurante do João',
+    municipio:    lead?.cidade   || 'Porto Alegre',
+    estado:       lead?.estado   || 'RS',
+    segmento:     lead?.segmento || 'restaurantes e lanchonetes',
+  };
+  try {
+    const [v1, v2] = await Promise.all([
+      gerarMensagemWA(params, contexto_ia, inspiracao_texto),
+      gerarMensagemWA(params, contexto_ia, inspiracao_texto),
+    ]);
+    res.json({ variacoes: [v1, v2], lead_usado: params });
+  } catch (err) {
+    console.error('[Disparos] Erro ao gerar preview:', err);
+    res.status(500).json({ erro: err.message || 'Erro ao gerar preview com IA' });
+  }
+});
+
+// ── POST /api/disparos/gerar-mensagem ─────────────────────────────────────────
 // Gera prévia de mensagem WA e email para um lead
 router.post('/gerar-mensagem', autenticar, adminOuComercial, async (req, res) => {
-  const { nome_fantasia, razao_social, municipio, estado, atividades_principal, prompt_wa, prompt_email } = req.body;
+  const { nome_fantasia, razao_social, municipio, estado, atividades_principal, contexto_ia, inspiracao_texto } = req.body;
   try {
     const params = { nomeFantasia: nome_fantasia, razaoSocial: razao_social, municipio, estado, segmento: atividades_principal };
     const [msgWA, msgEmail] = await Promise.all([
-      gerarMensagemWA(params, prompt_wa || null),
-      gerarMensagemEmail(params, prompt_email || null),
+      gerarMensagemWA(params, contexto_ia || null, inspiracao_texto || null),
+      gerarMensagemEmail(params, contexto_ia || null, inspiracao_texto || null),
     ]);
     res.json({ whatsapp: msgWA, email: msgEmail });
   } catch (err) {
@@ -86,45 +103,36 @@ router.post('/gerar-mensagem', autenticar, adminOuComercial, async (req, res) =>
   }
 });
 
-// ── POST /api/disparos/iniciar ────────────────────────────────
-// Inicia campanha de disparos com lista de contatos e configurações
+// ── POST /api/disparos/iniciar ────────────────────────────────────────────────
 router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
   try {
     const config = {
-      canal:            req.body.canal          || 'ambos',
-      instancias_ids:   req.body.instancias_ids || [],
-      intervaloMinSeg:  Number(req.body.intervalo_min) || 60,
-      intervaloMaxSeg:  Number(req.body.intervalo_max) || 120,
-      horaInicio:       req.body.hora_inicio    || null,
-      horaFim:          req.body.hora_fim       || null,
-      promptWA:         req.body.prompt_wa      || null,
-      promptEmail:      req.body.prompt_email   || null,
+      canal:            req.body.canal           || 'whatsapp',
+      instancias_ids:   req.body.instancias_ids  || [],
+      intervaloMinSeg:  Number(req.body.intervalo_min) || 180,
+      intervaloMaxSeg:  Number(req.body.intervalo_max) || 300,
+      horaInicio:       req.body.hora_inicio     || null,
+      horaFim:          req.body.hora_fim        || null,
+      contextoIA:       req.body.contexto_ia     || null,
+      inspiracaoTexto:  req.body.inspiracao_texto || null,
     };
-    const nomeCampanha = req.body.nome || null;
-
-    const contatos      = req.body.contatos     || [];
-    const iniciarAgora  = req.body.iniciar_agora !== false; // default: true
+    const nomeCampanha = req.body.nome           || null;
+    const contatos     = req.body.contatos       || [];
+    const iniciarAgora = req.body.iniciar_agora  !== false;
 
     if (!contatos.length) return res.status(400).json({ erro: 'Nenhum contato válido para disparo' });
 
-    // Busca instâncias WhatsApp cadastradas
+    // Busca instâncias WhatsApp
     let instancias = [];
     if (config.instancias_ids.length > 0) {
-      const { data } = await supabaseAdmin
-        .from('instancias_whatsapp')
-        .select('*')
-        .in('id', config.instancias_ids)
-        .eq('status', 'ativo');
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').in('id', config.instancias_ids).eq('status', 'ativo');
       instancias = data || [];
     } else {
-      const { data } = await supabaseAdmin
-        .from('instancias_whatsapp')
-        .select('*')
-        .eq('status', 'ativo');
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').eq('status', 'ativo');
       instancias = data || [];
     }
 
-    // Cria registro da campanha no Supabase
+    // Cria campanha
     const { data: campanha, error } = await supabaseAdmin
       .from('disparos_campanhas')
       .insert({
@@ -134,7 +142,7 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
         enviados:      0,
         erros:         0,
         status:        iniciarAgora ? 'ativo' : 'rascunho',
-        config:        { ...config, contatos }, // armazena contatos para poder iniciar depois
+        config:        { ...config, contatos },
         criado_em:     new Date().toISOString(),
         atualizado_em: new Date().toISOString(),
       })
@@ -143,7 +151,7 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
 
     if (error) throw error;
 
-    // Insere leads da campanha
+    // Insere leads
     const leadsRows = contatos.map(c => ({
       campanha_id: campanha.id,
       lead_id:     c._id,
@@ -162,42 +170,30 @@ router.post('/iniciar', autenticar, adminOuComercial, async (req, res) => {
   }
 });
 
-// ── GET /api/disparos/status/:id ──────────────────────────────
+// ── GET /api/disparos/status/:id ──────────────────────────────────────────────
 router.get('/status/:id', autenticar, adminOuComercial, async (req, res) => {
   try {
     const { id } = req.params;
     const emMemoria = statusFila(id);
 
-    const { data: campanha } = await supabaseAdmin
-      .from('disparos_campanhas')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    const { data: leads } = await supabaseAdmin
-      .from('disparos_leads')
-      .select('*')
+    const { data: campanha } = await supabaseAdmin.from('disparos_campanhas').select('*').eq('id', id).single();
+    const { data: leads }    = await supabaseAdmin
+      .from('disparos_leads').select('*')
       .eq('campanha_id', id)
       .order('criado_em', { ascending: false })
-      .limit(200);
+      .limit(300);
 
-    res.json({
-      campanha,
-      leads:      leads || [],
-      em_execucao: !!emMemoria,
-      fila:       emMemoria,
-    });
+    res.json({ campanha, leads: leads || [], em_execucao: !!emMemoria, fila: emMemoria });
   } catch (err) {
     res.status(500).json({ erro: err.message || 'Erro ao buscar status' });
   }
 });
 
-// ── GET /api/disparos — lista campanhas ───────────────────────
+// ── GET /api/disparos — lista campanhas ───────────────────────────────────────
 router.get('/', autenticar, adminOuComercial, async (req, res) => {
   try {
     const { data } = await supabaseAdmin
-      .from('disparos_campanhas')
-      .select('*')
+      .from('disparos_campanhas').select('*')
       .order('criado_em', { ascending: false })
       .limit(50);
     res.json(data || []);
@@ -206,50 +202,35 @@ router.get('/', autenticar, adminOuComercial, async (req, res) => {
   }
 });
 
-// ── POST /api/disparos/:id/iniciar — inicia rascunho existente ─
+// ── POST /api/disparos/:id/iniciar — inicia rascunho existente ────────────────
 router.post('/:id/iniciar', autenticar, adminOuComercial, async (req, res) => {
   try {
-    const { data: camp, error } = await supabaseAdmin
-      .from('disparos_campanhas')
-      .select('*')
-      .eq('id', req.params.id)
-      .single();
+    const { data: camp, error } = await supabaseAdmin.from('disparos_campanhas').select('*').eq('id', req.params.id).single();
     if (error || !camp) return res.status(404).json({ erro: 'Campanha não encontrada' });
     if (!['rascunho', 'pausado'].includes(camp.status)) {
       return res.status(400).json({ erro: `Campanha já está ${camp.status}` });
     }
 
-    const config   = camp.config   || {};
-    const contatos = config.contatos || [];
+    const contatos = (camp.config || {}).contatos || [];
     if (!contatos.length) return res.status(400).json({ erro: 'Sem contatos salvos nesta campanha' });
-
-    // Busca instâncias
-    let instancias = [];
-    if ((config.instancias_ids || []).length > 0) {
-      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').in('id', config.instancias_ids).eq('status', 'ativo');
-      instancias = data || [];
-    } else {
-      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').eq('status', 'ativo');
-      instancias = data || [];
-    }
 
     await supabaseAdmin.from('disparos_campanhas')
       .update({ status: 'ativo', atualizado_em: new Date().toISOString() })
       .eq('id', req.params.id);
 
     res.json({ ok: true, status: 'iniciado', total: contatos.length });
+    // Nota: o loop de envio é frontend-driven via POST /:id/step
   } catch (err) {
     console.error('[Disparos] Erro ao iniciar rascunho:', err.message);
     res.status(500).json({ erro: err.message || 'Erro ao iniciar campanha' });
   }
 });
 
-// ── POST /api/disparos/:id/step — processa um contato (frontend-driven) ─
+// ── POST /api/disparos/:id/step — processa um contato (frontend-driven) ───────
 router.post('/:id/step', autenticar, adminOuComercial, async (req, res) => {
   try {
     const { id } = req.params;
-    const { data: camp, error: campErr } = await supabaseAdmin
-      .from('disparos_campanhas').select('*').eq('id', id).single();
+    const { data: camp, error: campErr } = await supabaseAdmin.from('disparos_campanhas').select('*').eq('id', id).single();
 
     if (campErr || !camp) return res.status(404).json({ erro: 'Campanha não encontrada' });
     if (camp.status !== 'ativo') return res.json({ ok: false, motivo: `campanha_${camp.status}` });
@@ -260,7 +241,7 @@ router.post('/:id/step', autenticar, adminOuComercial, async (req, res) => {
       return res.json({ ok: true, fora_horario: true, has_more: true });
     }
 
-    // Busca próximo lead aguardando
+    // Próximo lead aguardando
     const { data: proxLeads } = await supabaseAdmin
       .from('disparos_leads').select('*')
       .eq('campanha_id', id).eq('status', 'aguardando')
@@ -273,9 +254,9 @@ router.post('/:id/step', autenticar, adminOuComercial, async (req, res) => {
       return res.json({ ok: true, has_more: false, concluido: true });
     }
 
-    // Monta objeto contato (tenta achar no config, senão usa dados do lead)
+    // Monta objeto contato
     const contatos = config.contatos || [];
-    const contato = contatos.find(c => String(c._id) === String(proxLead.lead_id)) || {
+    const contato  = contatos.find(c => String(c._id) === String(proxLead.lead_id)) || {
       _id:           proxLead.lead_id,
       nome_fantasia: proxLead.nome,
       razao_social:  proxLead.nome,
@@ -286,8 +267,7 @@ router.post('/:id/step', autenticar, adminOuComercial, async (req, res) => {
     // Busca instâncias
     let instancias = [];
     if ((config.instancias_ids || []).length > 0) {
-      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*')
-        .in('id', config.instancias_ids).eq('status', 'ativo');
+      const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').in('id', config.instancias_ids).eq('status', 'ativo');
       instancias = data || [];
     } else {
       const { data } = await supabaseAdmin.from('instancias_whatsapp').select('*').eq('status', 'ativo');
@@ -295,15 +275,18 @@ router.post('/:id/step', autenticar, adminOuComercial, async (req, res) => {
     }
 
     await processarContato(id, contato, config, instancias);
-    await supabaseAdmin.rpc('disparos_incrementar_enviados', { p_id: id }).catch(() => {});
+    // Incrementa contador de enviados diretamente (sem depender de RPC)
+    const { data: campatual } = await supabaseAdmin
+      .from('disparos_campanhas').select('enviados').eq('id', id).single();
+    await supabaseAdmin.from('disparos_campanhas')
+      .update({ enviados: (campatual?.enviados || 0) + 1, atualizado_em: new Date().toISOString() })
+      .eq('id', id).catch(() => {});
 
-    // Verifica status final do lead para retornar ao frontend
     const { data: leadFinal } = await supabaseAdmin
       .from('disparos_leads').select('status')
       .eq('campanha_id', id).eq('lead_id', proxLead.lead_id).single();
     const enviouOk = leadFinal && !leadFinal.status.startsWith('erro');
 
-    // Verifica se há mais aguardando
     const { count } = await supabaseAdmin
       .from('disparos_leads').select('*', { count: 'exact', head: true })
       .eq('campanha_id', id).eq('status', 'aguardando');
@@ -321,46 +304,47 @@ router.post('/:id/step', autenticar, adminOuComercial, async (req, res) => {
   }
 });
 
-// ── POST /api/disparos/:id/pausar ─────────────────────────────
+// ── POST /api/disparos/:id/pausar ─────────────────────────────────────────────
 router.post('/:id/pausar', autenticar, adminOuComercial, async (req, res) => {
-  pausarFila(req.params.id); // tenta parar fila em memória (no-op no serverless)
+  pausarFila(req.params.id);
   await supabaseAdmin.from('disparos_campanhas').update({ status: 'pausado', atualizado_em: new Date().toISOString() }).eq('id', req.params.id);
   res.json({ ok: true });
 });
 
-// ── POST /api/disparos/:id/retomar ────────────────────────────
+// ── POST /api/disparos/:id/retomar ────────────────────────────────────────────
 router.post('/:id/retomar', autenticar, adminOuComercial, async (req, res) => {
   await supabaseAdmin.from('disparos_campanhas').update({ status: 'ativo', atualizado_em: new Date().toISOString() }).eq('id', req.params.id);
   res.json({ ok: true });
 });
 
-// ── POST /api/disparos/:id/encerrar ──────────────────────────
+// ── POST /api/disparos/:id/encerrar ──────────────────────────────────────────
 router.post('/:id/encerrar', autenticar, adminOuComercial, async (req, res) => {
   pararFila(req.params.id);
   await supabaseAdmin.from('disparos_campanhas').update({ status: 'encerrado', atualizado_em: new Date().toISOString() }).eq('id', req.params.id);
   res.json({ ok: true });
 });
 
-// ── PATCH /api/disparos/:id — edita nome/config ───────────────
+// ── PATCH /api/disparos/:id ────────────────────────────────────────────────────
 router.patch('/:id', autenticar, adminOuComercial, async (req, res) => {
   try {
-    const { nome, canal, hora_inicio, hora_fim, intervalo_min, intervalo_max, prompt_wa, prompt_email } = req.body;
+    const { nome, canal, hora_inicio, hora_fim, intervalo_min, intervalo_max, contexto_ia, inspiracao_texto } = req.body;
     const campos = { atualizado_em: new Date().toISOString() };
-    if (nome !== undefined) campos.nome = nome;
+    if (nome  !== undefined) campos.nome  = nome;
     if (canal !== undefined) campos.canal = canal;
-    // Atualiza config JSON se vieram parâmetros de configuração
+
     const configUpdate = {};
-    if (hora_inicio  !== undefined) configUpdate.horaInicio      = hora_inicio;
-    if (hora_fim     !== undefined) configUpdate.horaFim         = hora_fim;
-    if (intervalo_min !== undefined) configUpdate.intervaloMinSeg = Number(intervalo_min);
-    if (intervalo_max !== undefined) configUpdate.intervaloMaxSeg = Number(intervalo_max);
-    if (prompt_wa    !== undefined) configUpdate.promptWA        = prompt_wa;
-    if (prompt_email !== undefined) configUpdate.promptEmail     = prompt_email;
+    if (hora_inicio     !== undefined) configUpdate.horaInicio      = hora_inicio;
+    if (hora_fim        !== undefined) configUpdate.horaFim         = hora_fim;
+    if (intervalo_min   !== undefined) configUpdate.intervaloMinSeg = Number(intervalo_min);
+    if (intervalo_max   !== undefined) configUpdate.intervaloMaxSeg = Number(intervalo_max);
+    if (contexto_ia     !== undefined) configUpdate.contextoIA      = contexto_ia;
+    if (inspiracao_texto !== undefined) configUpdate.inspiracaoTexto = inspiracao_texto;
+
     if (Object.keys(configUpdate).length) {
-      // Merge config existente
       const { data: atual } = await supabaseAdmin.from('disparos_campanhas').select('config').eq('id', req.params.id).single();
       campos.config = { ...(atual?.config || {}), ...configUpdate };
     }
+
     const { data, error } = await supabaseAdmin.from('disparos_campanhas').update(campos).eq('id', req.params.id).select().single();
     if (error) throw error;
     res.json({ campanha: data });
@@ -370,7 +354,7 @@ router.patch('/:id', autenticar, adminOuComercial, async (req, res) => {
   }
 });
 
-// ── DELETE /api/disparos/:id ──────────────────────────────────
+// ── DELETE /api/disparos/:id ──────────────────────────────────────────────────
 router.delete('/:id', autenticar, adminOuComercial, async (req, res) => {
   try {
     pararFila(req.params.id);
