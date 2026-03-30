@@ -22,7 +22,8 @@
       { href: '/admin/comercial/landing-leads.html', icone: 'ph ph-globe', label: 'Leads do Site' },
       { href: '/admin/comercial/disparos.html', icone: 'ph ph-rocket-launch', label: 'Automação Zap' },
       { href: '/admin/comercial/kanban.html', icone: 'ph ph-layout', label: 'Kanban Vendas' },
-      { href: '/admin/comercial/relatorios.html', icone: 'ph ph-presentation-chart', label: 'Relatórios' }
+      { href: '/admin/comercial/relatorios.html', icone: 'ph ph-presentation-chart', label: 'Relatórios' },
+      { href: '/admin/comercial/configuracoes.html', icone: 'ph ph-gear', label: 'Configurações' }
     ]}
   ];
 
