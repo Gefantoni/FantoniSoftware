@@ -8,22 +8,18 @@ const router = express.Router();
 // 1. DASHBOARD E RESUMO FINANCEIRO
 // ==========================================
 router.get('/dashboard', autenticar, async (req, res) => {
-  const { mes, ano } = req.query;
-  const mesQuery = mes ? parseInt(mes) : new Date().getMonth() + 1;
-  const anoQuery = ano ? parseInt(ano) : new Date().getFullYear();
+  const { inicio, fim } = req.query;
 
   try {
-    // Busca lançamentos do mês e ano específicos ou todos (se quiser DRE geral)
-    // Para simplificar, trazemos tudo do mês requisitado
-    const inicioMes = new Date(anoQuery, mesQuery - 1, 1).toISOString();
-    const fimMes = new Date(anoQuery, mesQuery, 0, 23, 59, 59).toISOString();
+    const dataInicio = inicio ? new Date(`${inicio}T00:00:00.000Z`).toISOString() : new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+    const dataFim = fim ? new Date(`${fim}T23:59:59.999Z`).toISOString() : new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 59).toISOString();
 
     const { data: lancamentos, error } = await supabaseAdmin
       .from('fin_lancamentos')
       .select('valor, tipo, status')
       .eq('cliente_id', req.perfil.id)
-      .gte('data_vencimento', inicioMes)
-      .lte('data_vencimento', fimMes);
+      .gte('data_vencimento', dataInicio)
+      .lte('data_vencimento', dataFim);
 
     if (error) throw error;
 
@@ -133,7 +129,7 @@ router.post('/funcionarios', autenticar, async (req, res) => {
 // 4. LANÇAMENTOS (CONTAS P/R)
 // ==========================================
 router.get('/lancamentos', autenticar, async (req, res) => {
-  const { mes, ano, tipo, status } = req.query;
+  const { inicio, fim, tipo, status } = req.query;
   try {
     let query = supabaseAdmin
       .from('fin_lancamentos')
@@ -148,10 +144,10 @@ router.get('/lancamentos', autenticar, async (req, res) => {
     if (tipo) query = query.eq('tipo', tipo);
     if (status) query = query.eq('status', status);
 
-    if (mes && ano) {
-      const inicio = new Date(ano, mes - 1, 1).toISOString();
-      const fim = new Date(ano, mes, 0, 23, 59, 59).toISOString();
-      query = query.gte('data_vencimento', inicio).lte('data_vencimento', fim);
+    if (inicio && fim) {
+      const dataInicio = new Date(`${inicio}T00:00:00.000Z`).toISOString();
+      const dataFim = new Date(`${fim}T23:59:59.999Z`).toISOString();
+      query = query.gte('data_vencimento', dataInicio).lte('data_vencimento', dataFim);
     }
 
     const { data, error } = await query;
