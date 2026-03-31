@@ -2,36 +2,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Cores Principais (Baseadas na Landing Page) */
-  --bg-deep: #020617;
-  --bg-surface: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.5);
+  /* Cores Principais (Midnight Blue Premium) */
+  --bg-deep: #020617; /* Fundo base super escuro azulado */
+  --bg-surface: #0f172a; /* Superfícies elevadas (slate-900) */
+  --bg-card: rgba(15, 23, 42, 0.75); /* Cards translúcidos (slate-900) */
   
-  --primaria: #3b82f6;
-  --primaria-hover: #2563eb;
-  --primaria-glow: rgba(59, 130, 246, 0.3);
+  --primaria: #3b82f6; /* Azul brilhante (blue-500) */
+  --primaria-hover: #2563eb; /* Blue-600 */
+  --primaria-glow: rgba(59, 130, 246, 0.4);
   
-  --texto: #f8fafc;
-  --texto-suave: #94a3b8;
-  --texto-muted: #64748b;
+  --texto: #f8fafc; /* Slate-50 - Excelente contraste */
+  --texto-suave: #cbd5e1; /* Slate-300 - Leitura contínua amigável */
+  --texto-muted: #94a3b8; /* Slate-400 - Contraste AA perfeito em fundos 900+ */
   
-  --borda: rgba(255, 255, 255, 0.08);
+  --borda: rgba(255, 255, 255, 0.12); /* Brilho de borda mais definido */
   --borda-foca: rgba(59, 130, 246, 0.5);
   
-  --sucesso: #10b981;
-  --erro: #ef4444;
-  --aviso: #f59e0b;
-  --info: #0ea5e9;
+  --sucesso: #10b981; /* Emerald-500 */
+  --erro: #ef4444; /* Red-500 */
+  --aviso: #f59e0b; /* Amber-500 */
+  --info: #0ea5e9; /* Sky-500 */
   
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
 
   --radius: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   
-  --transicao: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transicao: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Reset & Base */

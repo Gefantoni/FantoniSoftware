@@ -270,9 +270,9 @@ router.get('/instancias', autenticar, adminOuComercial, async (req, res) => {
 });
 
 router.post('/instancias', autenticar, adminOuComercial, async (req, res) => {
-  const { nome, instancia_evo, api_url, apikey, descricao, agente_id } = req.body;
+  const { nome, instancia_evo, api_url, apikey, descricao, agente_id, numero } = req.body;
   if (!nome || !instancia_evo) return res.status(400).json({ erro: 'nome e instancia_evo são obrigatórios' });
-  const body = { nome, instancia_evo, api_url, apikey, descricao, agente_id: agente_id || null };
+  const body = { nome, instancia_evo, api_url, apikey, descricao, agente_id: agente_id || null, numero };
   try {
     const { data, error } = await supabaseAdmin
       .from('instancias_whatsapp')
@@ -290,7 +290,7 @@ router.post('/instancias', autenticar, adminOuComercial, async (req, res) => {
 });
 
 router.patch('/instancias/:id', autenticar, adminOuComercial, async (req, res) => {
-  const { nome, instancia_evo, api_url, apikey, descricao, agente_id, status } = req.body;
+  const { nome, instancia_evo, api_url, apikey, descricao, agente_id, status, numero } = req.body;
   const campos = {};
   if (nome !== undefined)         campos.nome = nome;
   if (instancia_evo !== undefined) campos.instancia_evo = instancia_evo;
@@ -299,6 +299,7 @@ router.patch('/instancias/:id', autenticar, adminOuComercial, async (req, res) =
   if (descricao !== undefined)     campos.descricao = descricao;
   if (agente_id !== undefined)     campos.agente_id = agente_id || null;
   if (status !== undefined)        campos.status = status;
+  if (numero !== undefined)        campos.numero = numero;
   try {
     const { data, error } = await supabaseAdmin
       .from('instancias_whatsapp')
