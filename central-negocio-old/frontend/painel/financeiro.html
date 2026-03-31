@@ -74,15 +74,11 @@
 
         <!-- ABA 1: DASHBOARD -->
         <div id="view-dashboard" class="erp-view active">
-          <!-- Filtro mes/ano do board -->
-          <div class="flex gap-4 mb-4 justify-end">
-            <select id="filtro-mes" class="form-control w-auto py-1 text-sm bg-transparent" onchange="loadDashboard()">
-               <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
-               <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
-               <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
-               <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-            </select>
-            <input type="number" id="filtro-ano" class="form-control w-auto py-1 text-sm bg-transparent" value="2026" onchange="loadDashboard()">
+          <div class="flex gap-4 mb-4 justify-end items-center">
+            <span class="text-xs text-suave uppercase font-bold">Período:</span>
+            <input type="date" id="filtro-inicio" class="form-control w-auto py-1 text-sm bg-transparent" onchange="atualizarPeriodo()">
+            <span class="text-xs text-suave">até</span>
+            <input type="date" id="filtro-fim" class="form-control w-auto py-1 text-sm bg-transparent" onchange="atualizarPeriodo()">
           </div>
 
           <div class="dre-grid">
@@ -242,7 +238,7 @@
            </div>
            <div class="form-grupo">
              <label>Data de Vencimento/Entrada</label>
-             <input type="date" id="ipt-lanc-data" class="form-control" required>
+             <input type="datetime-local" id="ipt-lanc-data" class="form-control" required>
            </div>
         </div>
 
@@ -273,9 +269,13 @@
   <script>
     const usuario = protegerPagina(['cliente']);
     const d = new Date();
-    document.getElementById('filtro-mes').value = d.getMonth() + 1;
-    document.getElementById('filtro-ano').value = d.getFullYear();
-    document.getElementById('ipt-lanc-data').valueAsDate = d;
+    document.getElementById('ipt-lanc-data').value = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+    
+    // Setando filtro do mês corrente
+    const primeiroDia = new Date(d.getFullYear(), d.getMonth(), 1);
+    const ultimoDia = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    document.getElementById('filtro-inicio').value = primeiroDia.toISOString().split('T')[0];
+    document.getElementById('filtro-fim').value = ultimoDia.toISOString().split('T')[0];
 
     if (usuario) {
       loadDashboard();
@@ -301,8 +301,21 @@
        return parseFloat(num).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
     function mascararData(dataStr) {
-       const [y,m,d] = dataStr.split('-');
-       return `${d}/${m}/${y}`;
+       const d = new Date(dataStr);
+       // se a string original tem T e não termina em Z, adiciona tratamento ou apenas split
+       if(dataStr.includes('T')) {
+          const arr = dataStr.split('T');
+          const [y,m,dia] = arr[0].split('-');
+          const hm = arr[1].substring(0,5);
+          return `${dia}/${m}/${y} ${hm}`;
+       }
+       const [y,m,dia] = dataStr.split('T')[0].split('-');
+       return `${dia}/${m}/${y}`;
+    }
+
+    function atualizarPeriodo() {
+       loadDashboard();
+       loadLancamentos();
     }
 
     function mudarCorForm(tipo) {
@@ -319,10 +332,10 @@
 
     /* ==== Dashboard ==== */
     async function loadDashboard() {
-       const mes = document.getElementById('filtro-mes').value;
-       const ano = document.getElementById('filtro-ano').value;
+       const inicio = document.getElementById('filtro-inicio').value;
+       const fim = document.getElementById('filtro-fim').value;
        try {
-          const { resumo } = await api.get(`/financeiro-app/dashboard?mes=${mes}&ano=${ano}`);
+          const { resumo } = await api.get(`/financeiro-app/dashboard?inicio=${inicio}&fim=${fim}`);
           if(resumo) {
              document.getElementById('dash-receita').innerText = formatMoney(resumo.faturamento_realizado);
              document.getElementById('dash-pend-receita').innerText = formatMoney(resumo.a_receber);
@@ -341,10 +354,10 @@
 
     /* ==== Lançamentos (Grid) ==== */
     async function loadLancamentos() {
-       const mes = document.getElementById('filtro-mes').value;
-       const ano = document.getElementById('filtro-ano').value;
+       const inicio = document.getElementById('filtro-inicio').value;
+       const fim = document.getElementById('filtro-fim').value;
        try {
-          const lances = await api.get(`/financeiro-app/lancamentos?mes=${mes}&ano=${ano}`);
+          const lances = await api.get(`/financeiro-app/lancamentos?inicio=${inicio}&fim=${fim}`);
           const tbody = document.getElementById('lista-lancamentos');
           
           if(!lances.length) {
@@ -417,7 +430,8 @@
           fecharModalLancamento();
           alert('Lançamento salvo com sucesso!');
           document.getElementById('form-lancamento').reset();
-          document.getElementById('ipt-lanc-data').valueAsDate = new Date();
+          const d2 = new Date();
+          document.getElementById('ipt-lanc-data').value = new Date(d2.getTime() - (d2.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
           loadLancamentos();
           loadDashboard();
        } catch (err) { alert('Erro ao salvar.'); }
