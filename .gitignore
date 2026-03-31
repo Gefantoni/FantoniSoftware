@@ -31,3 +31,5 @@ dist/
 build/
 # mp4 grandes demais para o GitHub (>100MB) ficam fora
 landing/assets/Bares e restaurantes.mp4
+.vercel
+.env*.local

@@ -1,0 +1,21 @@
+node_modules/
+ngrok-bin/
+ngrok.zip
+*.log
+logs/
+FantoniSoftware/
+.env
+.env.local
+.env.production
+uploads/
+temp/
+.DS_Store
+.idea/
+.vscode/
+dist/
+build/
+landing/assets/Bares e restaurantes.mp4
+central-negocio-old/backend/node_modules/
+central-negocio-old/backend/.env
+central-negocio-old/backend/output.txt
+central-negocio-old/backend/server-output.log

@@ -203,6 +203,58 @@
   </div>
 </div>
 
+
+<!-- Modal: Testar Instância -->
+<div class="com-modal-overlay com-d-none" id="modal-testar">
+  <div class="com-modal" style="max-width:500px">
+    <div class="com-modal-header">
+      <span class="com-modal-titulo">🧪 Testar Instância</span>
+      <button class="com-modal-fechar" onclick="fecharModalTestar()">✕</button>
+    </div>
+
+    <!-- Nome da instância -->
+    <div style="margin-bottom:18px;">
+      <div id="testar-nome" style="font-size:16px;font-weight:700;color:var(--com-texto);margin-bottom:4px;"></div>
+      <div style="font-size:12px;color:var(--com-suave);">Verifique a conexão e envie uma mensagem de teste</div>
+    </div>
+
+    <!-- Status de conexão -->
+    <div style="background:var(--com-bg2);border:1px solid var(--com-borda);border-radius:12px;padding:16px;margin-bottom:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <span style="font-size:13px;font-weight:600;color:var(--com-texto);">Status da Conexão</span>
+        <button class="com-btn com-btn-ghost com-btn-xs" id="btn-verificar" onclick="verificarConexao()">🔄 Verificar</button>
+      </div>
+      <div id="status-conexao" style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--com-suave);">
+        <span style="font-size:20px;">⏳</span> Clique em "Verificar" para checar a conexão
+      </div>
+    </div>
+
+    <!-- Envio de mensagem de teste -->
+    <div style="background:var(--com-bg2);border:1px solid var(--com-borda);border-radius:12px;padding:16px;margin-bottom:18px;">
+      <div style="font-size:13px;font-weight:600;color:var(--com-texto);margin-bottom:12px;">📤 Enviar Mensagem de Teste</div>
+      <div class="com-form-grupo">
+        <label>Número de destino (com DDI)</label>
+        <input type="text" id="testar-numero" placeholder="55 51 99999-9999" style="background:var(--com-bg);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:14px;width:100%">
+      </div>
+      <div class="com-form-grupo">
+        <label>Mensagem (opcional)</label>
+        <textarea id="testar-mensagem" rows="3" placeholder="Deixe vazio para usar a mensagem padrão de teste..." style="background:var(--com-bg);color:var(--com-texto);border:1.5px solid var(--com-borda);border-radius:8px;padding:10px;font-size:13px;width:100%;resize:vertical"></textarea>
+      </div>
+      <button class="com-btn com-btn-primario" id="btn-enviar-teste" onclick="enviarMensagemTeste()" style="width:100%">
+        📤 Enviar Mensagem de Teste
+      </button>
+    </div>
+
+    <!-- Resultado -->
+    <div id="resultado-teste" style="display:none;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;"></div>
+
+    <div class="com-flex-between com-mt-2">
+      <span style="font-size:11px;color:var(--com-suave);">A mensagem será enviada via Evolution API</span>
+      <button class="com-btn com-btn-ghost" onclick="fecharModalTestar()">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script src="/assets/js/api.js"></script>
 <script src="/assets/js/auth.js"></script>
 <script src="/assets/js/sidebar-admin.js"></script>
@@ -264,6 +316,7 @@ async function carregarInstancias() {
             ${inst.status==='ativo'?'Desconectar':'Conectar'}
           </button>
           <button class="com-btn com-btn-outline com-btn-sm" onclick="abrirModalInstancia(${JSON.stringify(inst).replace(/"/g, '&quot;')})">Editar</button>
+          <button class="com-btn com-btn-outline com-btn-sm" onclick="abrirModalTestar(${inst.id}, '${inst.nome}')">🧪 Testar</button>
         </div>
       </div>
     `).join('');
@@ -344,6 +397,102 @@ async function toggleInstancia(id, statusAtual) {
   } catch { mostrarAlerta('Erro', 'erro'); }
 }
 
+// ---- Testar Instância ----
+let testarInstanciaId = null;
+
+function abrirModalTestar(id, nome) {
+  testarInstanciaId = id;
+  document.getElementById('testar-nome').textContent = `📱 ${nome}`;
+  document.getElementById('testar-numero').value = '';
+  document.getElementById('testar-mensagem').value = '';
+  document.getElementById('resultado-teste').style.display = 'none';
+  document.getElementById('status-conexao').innerHTML = '<span style="font-size:20px;">⏳</span> Clique em "Verificar" para checar a conexão';
+  document.getElementById('modal-testar').classList.remove('com-d-none');
+}
+
+function fecharModalTestar() {
+  document.getElementById('modal-testar').classList.add('com-d-none');
+  testarInstanciaId = null;
+}
+
+async function verificarConexao() {
+  if (!testarInstanciaId) return;
+  const el  = document.getElementById('status-conexao');
+  const btn = document.getElementById('btn-verificar');
+  btn.disabled = true;
+  btn.textContent = '⟳ Verificando...';
+  el.innerHTML = '<span style="font-size:20px;display:inline-block;animation:spin 1s linear infinite">⟳</span> Verificando conexão...';
+
+  try {
+    const dados = await apiFetch(`/comercial/instancias/${testarInstanciaId}/status`);
+    if (dados.conectado) {
+      el.innerHTML = `
+        <span style="font-size:22px;">✅</span>
+        <div>
+          <div style="color:#34d399;font-weight:700;">Conectado</div>
+          <div style="color:var(--com-suave);font-size:11px;">Instância: ${dados.nome_evo} · Estado: ${dados.state}</div>
+        </div>`;
+    } else {
+      el.innerHTML = `
+        <span style="font-size:22px;">❌</span>
+        <div>
+          <div style="color:#f87171;font-weight:700;">Desconectado</div>
+          <div style="color:var(--com-suave);font-size:11px;">Estado: ${dados.state || 'unknown'} — Verifique o QR Code na Evolution API</div>
+        </div>`;
+    }
+  } catch (err) {
+    el.innerHTML = `
+      <span style="font-size:22px;">⚠️</span>
+      <div>
+        <div style="color:#fbbf24;font-weight:700;">Erro ao verificar</div>
+        <div style="color:var(--com-suave);font-size:11px;">${err.erro || err.message || 'Verifique a URL e API Key'}</div>
+      </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔄 Verificar';
+  }
+}
+
+async function enviarMensagemTeste() {
+  if (!testarInstanciaId) return;
+  const numero = document.getElementById('testar-numero').value.trim();
+  if (!numero) return mostrarAlerta('Informe o número de destino', 'aviso');
+
+  const btn = document.getElementById('btn-enviar-teste');
+  const res = document.getElementById('resultado-teste');
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> Enviando...';
+  res.style.display = 'none';
+
+  try {
+    const dados = await apiFetch(`/comercial/instancias/${testarInstanciaId}/testar`, {
+      method: 'POST',
+      body: JSON.stringify({
+        numero,
+        mensagem: document.getElementById('testar-mensagem').value.trim() || null,
+      }),
+    });
+
+    res.style.display = 'block';
+    res.style.background = 'rgba(16,185,129,0.08)';
+    res.style.border = '1px solid rgba(16,185,129,0.2)';
+    res.style.color = '#34d399';
+    res.innerHTML = `
+      <strong>✅ Mensagem enviada com sucesso!</strong><br>
+      <span style="color:var(--com-suave)">Para: ${dados.numero}</span><br><br>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px;color:var(--com-texto);font-size:12px;white-space:pre-wrap">${dados.mensagem}</div>`;
+  } catch (err) {
+    res.style.display = 'block';
+    res.style.background = 'rgba(239,68,68,0.08)';
+    res.style.border = '1px solid rgba(239,68,68,0.2)';
+    res.style.color = '#f87171';
+    res.innerHTML = `<strong>❌ Erro ao enviar mensagem</strong><br>${err.erro || err.message || 'Verifique a conexão da instância'}`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '📤 Enviar Mensagem de Teste';
+  }
+}
+
 // ---- Tags ----
 async function carregarTags() {
   try {
@@ -410,6 +559,12 @@ function integBlock(nome, sub, desc, status) {
     <span class="com-badge com-badge-${status==='ativa'?'verde':'cinza'}">${status}</span>
   </div>`;
 }
+
+// animação spin inline
+const styleEl = document.createElement('style');
+styleEl.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(styleEl);
 </script>
 </body>
 </html>
+
