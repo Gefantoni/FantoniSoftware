@@ -20,6 +20,13 @@
   --glass-borda: rgba(255, 255, 255, 0.15);
   --transicao: var(--transicao);
   --sombra: var(--shadow-lg);
+
+  /* Variáveis específicas da Sidebar */
+  --sb-bg: var(--bg-surface);
+  --sb-text: var(--texto-suave);
+  --sb-text-active: var(--primaria);
+  --sb-item-hover: rgba(255,255,255,0.03);
+  --sb-item-active: rgba(59,130,246,0.1);
 }
 
 * { box-sizing: border-box; }
@@ -38,7 +45,7 @@ h1, h2, h3, .font-title { font-family: 'Outfit', sans-serif; font-weight: 700; l
 .app-sidebar {
   width: var(--sidebar-width);
   flex-shrink: 0;
-  background: #0c0c0e;
+  background: var(--sb-bg);
   border-right: 1px solid var(--borda);
   display: flex;
   flex-direction: column;
@@ -144,7 +151,7 @@ h1, h2, h3, .font-title { font-family: 'Outfit', sans-serif; font-weight: 700; l
 .app-header {
   height: var(--header-height);
   padding: 0 32px;
-  background: rgba(2, 6, 23, 0.7);
+  background: var(--bg-deep);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--borda);
   display: flex;

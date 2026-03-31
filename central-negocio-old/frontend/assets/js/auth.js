@@ -123,6 +123,10 @@ function temPermissao(tela) {
   if (!usuario) return false;
   if (usuario.role !== 'cliente') return true; // admins/equipe sempre têm acesso
   if (!usuario.permissoes_telas) return true;  // sem restrições configuradas = tudo liberado
+  
+  // Garantir que módulos essenciais sempre abram, ou interpretar a falta explícita como "true"
+  if (['dashboard', 'financeiro', 'tickets'].includes(tela)) return true;
+  
   return usuario.permissoes_telas[tela] !== false;
 }
 
