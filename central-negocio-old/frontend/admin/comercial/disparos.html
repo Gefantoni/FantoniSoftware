@@ -507,6 +507,7 @@
 
       <!-- Controles -->
       <div class="acoes-disparo">
+        <button class="btn btn-outline"  onclick="fecharModalMonitorar()">_ Minimizar</button>
         <button class="btn btn-outline"  id="btn-pausar-m"   onclick="pausarDisparo()"   style="display:none;">⏸ Pausar</button>
         <button class="btn btn-primario" id="btn-retomar-m"  onclick="retomarDisparo()"  style="display:none;">▶ Retomar</button>
         <button class="btn btn-perigo"   id="btn-encerrar-m" onclick="encerrarDisparo()" style="display:none;">■ Encerrar</button>
@@ -650,8 +651,9 @@ function irParaLista() {
   mostrarVista('vista-lista');
   document.getElementById('topbar-titulo').textContent = '🚀 Disparos em Massa';
   document.getElementById('topbar-acoes').innerHTML = '';
-  if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
-  pararTimer();
+  // Se estiver enviando, mantemos o polling e timer rodando no background.
+  // if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
+  // pararTimer();
   ultimosEnviados = -1;
   carregarListaCampanhas();
 }
@@ -1216,8 +1218,9 @@ function abrirModalMonitorar(id) {
 }
 function fecharModalMonitorar() {
   document.getElementById('modal-monitorar').classList.add('oculto');
-  if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
-  pararTimer();
+  // Se estiver enviando, mantemos o polling e timer rodando no background.
+  // if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
+  // pararTimer();
   ultimosEnviados = -1;
   carregarListaCampanhas();
 }

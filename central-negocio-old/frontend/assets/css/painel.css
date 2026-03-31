@@ -4,21 +4,22 @@
   --sidebar-width: 280px;
   --header-height: 80px;
   
-  --fundo: #09090b;
-  --fundo-card: #18181b;
-  --primaria: #3b82f6;
-  --borda: rgba(255, 255, 255, 0.08);
-  --texto: #f4f4f5;
-  --texto-suave: #a1a1aa;
-  --texto-muted: #71717a;
-  --sucesso: #10b981;
-  --erro: #ef4444;
-  --aviso: #f59e0b;
+  /* Mapeando cores para a paleta global do sistema (Midnight Blue) */
+  --fundo: var(--bg-deep);
+  --fundo-card: var(--bg-card);
+  --primaria: var(--primaria);
+  --borda: var(--borda);
+  --texto: var(--texto);
+  --texto-suave: var(--texto-suave);
+  --texto-muted: var(--texto-muted);
+  --sucesso: var(--sucesso);
+  --erro: var(--erro);
+  --aviso: var(--aviso);
   
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-borda: rgba(255, 255, 255, 0.1);
-  --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --sombra: 0 10px 30px -10px rgba(0,0,0,0.5);
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-borda: rgba(255, 255, 255, 0.15);
+  --transicao: var(--transicao);
+  --sombra: var(--shadow-lg);
 }
 
 * { box-sizing: border-box; }

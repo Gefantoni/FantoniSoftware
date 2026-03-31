@@ -10,37 +10,32 @@
   <style>
     /* ===== HERO ===== */
     .hero-dash {
-      background: linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(59,130,246,0.02) 60%, transparent 100%);
+      background: var(--fundo-card);
       border: 1px solid var(--borda);
       border-radius: 20px;
-      padding: 32px;
+      padding: 36px;
       margin-bottom: 24px;
       position: relative;
       overflow: hidden;
+      box-shadow: var(--shadow-md);
     }
     .hero-dash::before {
       content: '';
-      position: absolute; top: -60px; right: -40px;
-      width: 220px; height: 220px;
-      background: var(--primaria);
-      filter: blur(120px); opacity: 0.12; z-index: 0;
-    }
-    .hero-dash::after {
-      content: '';
-      position: absolute; bottom: -30px; left: 30%;
-      width: 180px; height: 180px;
-      background: #8b5cf6;
-      filter: blur(100px); opacity: 0.06; z-index: 0;
+      position: absolute; top: -50%; right: -10%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, var(--primaria-glow) 0%, transparent 70%);
+      opacity: 0.15; z-index: 0;
+      pointer-events: none;
     }
     .hero-content { position: relative; z-index: 1; }
-    .hero-saudacao { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
-    .hero-sub { font-size: 14px; color: var(--texto-suave); line-height: 1.5; }
+    .hero-saudacao { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; line-height: 1.2; font-family: 'Outfit', sans-serif; letter-spacing: -0.01em; }
+    .hero-sub { font-size: 15px; color: var(--texto-suave); line-height: 1.5; }
     .hero-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25);
-      color: var(--sucesso); border-radius: 20px; padding: 4px 12px;
-      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
-      margin-bottom: 12px;
+      background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.25);
+      color: #34d399; border-radius: 99px; padding: 6px 14px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 16px;
     }
 
     /* ===== KPI CARDS ===== */
@@ -69,8 +64,8 @@
     .kpi-icon-green { background: rgba(16,185,129,0.12); color: var(--sucesso); }
     .kpi-icon-purple{ background: rgba(139,92,246,0.12); color: #a78bfa; }
     .kpi-icon-amber { background: rgba(245,158,11,0.12); color: var(--aviso); }
-    .kpi-value { font-size: 24px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 4px; }
-    .kpi-label { font-size: 11px; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+    .kpi-value { font-size: 26px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 6px; font-family: 'Outfit', sans-serif; }
+    .kpi-label { font-size: 12px; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
 
     /* ===== QUICK ACCESS ===== */
     .quick-grid {
@@ -125,8 +120,8 @@
     }
     .dl-card:hover { border-color: var(--primaria); background: rgba(59,130,246,0.05); transform: translateY(-3px); }
     .dl-card i { font-size: 30px; }
-    .dl-card-title { font-size: 13px; font-weight: 700; color: #fff; }
-    .dl-card-desc  { font-size: 10px; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.4; }
+    .dl-card-title { font-size: 14px; font-weight: 700; color: #fff; }
+    .dl-card-desc  { font-size: 12px; color: var(--texto-muted); letter-spacing: 0.02em; line-height: 1.4; }
 
     /* ===== PAYMENT HIGHLIGHT ===== */
     .payment-highlight {
@@ -153,8 +148,8 @@
     }
     .news-item:last-child { margin-bottom: 0; }
     .news-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(59,130,246,0.2); }
-    .news-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-    .news-date { font-size: 10px; color: var(--texto-muted); }
+    .news-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .news-date { font-size: 12px; color: var(--texto-muted); font-weight: 500; }
 
     /* ===== PAYMENT FORM ===== */
     .payment-card { }
@@ -226,7 +221,7 @@
               <div class="kpi-icon kpi-icon-blue"><i class="ph ph-graduation-cap"></i></div>
             </div>
             <div class="kpi-value" id="metric-aulas">—</div>
-            <div style="font-size:11px; color:var(--texto-muted); margin-top:2px;">Aulas concluídas</div>
+            <div style="font-size:12px; color:var(--texto-muted); margin-top:4px;">Aulas concluídas</div>
           </div>
 
           <div class="kpi-card">
@@ -235,7 +230,7 @@
               <div class="kpi-icon kpi-icon-amber"><i class="ph ph-headset"></i></div>
             </div>
             <div class="kpi-value" id="metric-tickets">—</div>
-            <div style="font-size:11px; color:var(--texto-muted); margin-top:2px;">Chamados ativos</div>
+            <div style="font-size:12px; color:var(--texto-muted); margin-top:4px;">Chamados ativos</div>
           </div>
 
           <div class="kpi-card">
@@ -243,8 +238,8 @@
               <span class="kpi-label">Plano</span>
               <div class="kpi-icon kpi-icon-green"><i class="ph ph-shield-check"></i></div>
             </div>
-            <div class="kpi-value text-sucesso" style="font-size:16px; padding-top:4px" id="metric-plano">—</div>
-            <div style="font-size:11px; color:var(--texto-muted); margin-top:2px;" id="metric-status">Ativo</div>
+            <div class="kpi-value text-sucesso" style="font-size:18px; padding-top:4px" id="metric-plano">—</div>
+            <div style="font-size:12px; color:var(--texto-muted); margin-top:4px;" id="metric-status">Ativo</div>
           </div>
 
           <div class="kpi-card">
@@ -252,8 +247,8 @@
               <span class="kpi-label">Fatura</span>
               <div class="kpi-icon kpi-icon-purple"><i class="ph ph-calendar-check"></i></div>
             </div>
-            <div class="kpi-value" style="font-size:16px; padding-top:4px" id="metric-cobranca">—</div>
-            <div style="font-size:11px; color:var(--texto-muted); margin-top:2px;">Próximo venc.</div>
+            <div class="kpi-value" style="font-size:18px; padding-top:4px" id="metric-cobranca">—</div>
+            <div style="font-size:12px; color:var(--texto-muted); margin-top:4px;">Próximo venc.</div>
           </div>
         </div>
 
@@ -375,7 +370,7 @@
                 <span class="badge badge-azul">SISTEMA</span>
                 <span class="news-date">MAR 2024</span>
               </div>
-              <h4 class="text-white text-sm mb-1">Atualização PDV Fantoni v3.2</h4>
+              <h4 class="text-white text-md mb-2">Atualização PDV Fantoni v3.2</h4>
               <p class="text-xs text-suave">IA integrada ao fechamento de caixa e projeção de estoque.</p>
             </div>
             <div class="news-item">

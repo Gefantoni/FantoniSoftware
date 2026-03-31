@@ -48,6 +48,7 @@ app.use('/api/videoaulas', require('./routes/videoaulas'));
 app.use('/api/agente-ia', require('./routes/agente-ia'));
 app.use('/api/tickets', require('./routes/tickets'));
 app.use('/api/financeiro-cliente', require('./routes/financeiro-cliente'));
+app.use('/api/financeiro-app', require('./routes/financeiro-app'));
 app.use('/api/financeiro-admin', require('./routes/financeiro-admin'));
 app.use('/api/asaas', require('./routes/asaas'));
 app.use('/api/comercial', require('./routes/comercial'));
