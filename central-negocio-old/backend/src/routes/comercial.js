@@ -329,6 +329,82 @@ router.delete('/instancias/:id', autenticar, adminOuComercial, async (req, res) 
   }
 });
 
+// GET /comercial/instancias/:id/status — verifica conexão na Evolution API
+router.get('/instancias/:id/status', autenticar, adminOuComercial, async (req, res) => {
+  try {
+    const { data: inst, error } = await supabaseAdmin
+      .from('instancias_whatsapp').select('*').eq('id', req.params.id).single();
+    if (error || !inst) return res.status(404).json({ erro: 'Instância não encontrada' });
+
+    const baseUrl    = inst.api_url  || process.env.EVOLUTION_API_URL;
+    const apiKey     = inst.apikey   || process.env.EVOLUTION_API_KEY;
+    const instNome   = inst.instancia_evo || inst.nome_instancia;
+
+    if (!baseUrl || !apiKey || !instNome) {
+      return res.status(400).json({ erro: 'Instância sem URL, API Key ou nome configurados' });
+    }
+
+    const axios = require('axios');
+    const resposta = await axios.get(`${baseUrl}/instance/connectionState/${instNome}`, {
+      headers: { apikey: apiKey },
+      timeout: 8000,
+    });
+
+    const state = resposta.data?.instance?.state || resposta.data?.state || 'unknown';
+    res.json({
+      instancia: inst.nome,
+      nome_evo:  instNome,
+      state,
+      conectado: state === 'open',
+      raw:       resposta.data,
+    });
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Erro ao verificar conexão';
+    res.status(502).json({ erro: msg, conectado: false });
+  }
+});
+
+// POST /comercial/instancias/:id/testar — envia mensagem de teste
+router.post('/instancias/:id/testar', autenticar, adminOuComercial, async (req, res) => {
+  const { numero, mensagem } = req.body;
+  if (!numero) return res.status(400).json({ erro: 'Número de destino obrigatório' });
+
+  try {
+    const { data: inst, error } = await supabaseAdmin
+      .from('instancias_whatsapp').select('*').eq('id', req.params.id).single();
+    if (error || !inst) return res.status(404).json({ erro: 'Instância não encontrada' });
+
+    const baseUrl  = inst.api_url  || process.env.EVOLUTION_API_URL;
+    const apiKey   = inst.apikey   || process.env.EVOLUTION_API_KEY;
+    const instNome = inst.instancia_evo || inst.nome_instancia;
+
+    if (!baseUrl || !apiKey || !instNome) {
+      return res.status(400).json({ erro: 'Instância sem URL, API Key ou nome configurados' });
+    }
+
+    // Normaliza o número
+    const numeros  = numero.replace(/\D/g, '');
+    const numFinal = numeros.startsWith('55') && numeros.length >= 12
+      ? numeros
+      : '55' + numeros;
+
+    const texto = mensagem?.trim() ||
+      `✅ Mensagem de teste — Fantoni Software\nInstância: ${inst.nome}\nHorário: ${new Date().toLocaleString('pt-BR')}`;
+
+    const axios = require('axios');
+    const resposta = await axios.post(
+      `${baseUrl}/message/sendText/${instNome}`,
+      { number: numFinal, text: texto },
+      { headers: { apikey: apiKey, 'Content-Type': 'application/json' }, timeout: 10000 }
+    );
+
+    res.json({ ok: true, numero: numFinal, mensagem: texto, raw: resposta.data });
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Erro ao enviar mensagem';
+    res.status(502).json({ erro: msg, ok: false });
+  }
+});
+
 // ============================================================
 // TAGS COMERCIAIS
 // ============================================================

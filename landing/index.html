@@ -128,8 +128,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" /></noscript>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'" />
+  <link rel="preload" as="image" href="assets/Dispositivos.png" fetchpriority="high">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -831,7 +834,7 @@
       50%       { transform: translateY(-14px) rotate(0.5deg); }
     }
     .hero-screenshot {
-      width: 100%; max-width: 560px; border-radius: 20px;
+      width: 100%; max-width: 560px; height: auto; border-radius: 20px;
       box-shadow: 0 40px 100px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08);
       position: relative; z-index: 1;
       animation: heroFloat 6s ease-in-out infinite;
@@ -879,7 +882,7 @@
   </style>
 
   <!-- Video Background -->
-  <video id="hero-broll" autoplay loop muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: blur(8px) brightness(0.6) scale(1.06);">
+  <video id="hero-broll" autoplay loop muted playsinline preload="none" poster="assets/Hero.png" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: blur(8px) brightness(0.6) scale(1.06);">
     <source src="assets/Video b-rooll.mp4" type="video/mp4">
   </video>
   
@@ -943,6 +946,9 @@
         alt="Fantoni PDV — disponível em qualquer dispositivo"
         class="hero-screenshot"
         loading="eager"
+        fetchpriority="high"
+        width="949"
+        height="595"
       >
     </div>
 
@@ -1500,8 +1506,8 @@
         </div>
         <div style="display:flex; justify-content:center;">
           <!-- Substituição do comportamento de GIF pela melhor prática moderna! -->
-          <video autoplay loop muted playsinline style="width:100%; max-width:320px; border-radius:24px; box-shadow:0 24px 50px rgba(0,0,0,0.1); border:6px solid #fff; background:#fff;">
-            <source src="assets/Varejo.mp4" type="video/mp4">
+          <video class="lazy-video" autoplay loop muted playsinline preload="none" style="width:100%; max-width:320px; border-radius:24px; box-shadow:0 24px 50px rgba(0,0,0,0.1); border:6px solid #fff; background:#fff;">
+            <source data-src="assets/Varejo.mp4" type="video/mp4">
           </video>
         </div>
       </div>
@@ -1519,7 +1525,7 @@
           </ul>
         </div>
         <div style="display:flex; justify-content:center;">
-          <img src="assets/Gestão Completa (1).png" alt="Gestão Completa" style="width:100%; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="assets/Gestão Completa (1).png" alt="Gestão Completa" loading="lazy" width="1024" height="1280" style="width:100%; height:auto; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
         </div>
       </div>
 
@@ -1536,7 +1542,7 @@
           </ul>
         </div>
         <div style="display:flex; justify-content:center;">
-          <img src="assets/Delivery (1).png" alt="Delivery PDV" style="width:100%; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="assets/Delivery (1).png" alt="Delivery PDV" loading="lazy" width="1024" height="1280" style="width:100%; height:auto; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
         </div>
       </div>
 
@@ -1556,7 +1562,7 @@
           </ul>
         </div>
         <div style="display:flex; justify-content:center;">
-          <img src="assets/NF.png" alt="Emissão de NFC-e e NF-e — Fantoni PDV" style="width:100%; max-width:420px; max-height:360px; object-fit:contain; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.07)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="assets/NF.png" alt="Emissão de NFC-e e NF-e — Fantoni PDV" loading="lazy" width="335" height="600" style="width:100%; height:auto; max-width:420px; max-height:360px; object-fit:contain; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.07)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
         </div>
       </div>
 
@@ -1583,7 +1589,7 @@
     </div>
 
     <div style="display:flex; justify-content:center; transform: translateY(15px);">
-      <img src="assets/Dispositivos.png" alt="Fantoni PDV totalmente integrado" style="width:100%; max-width:850px; margin:0 auto; display:block; filter:drop-shadow(0 24px 50px rgba(0,0,0,0.12)); transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.02) translateY(-10px)'" onmouseout="this.style.transform='scale(1) translateY(0)'">
+      <img src="assets/Dispositivos.png" alt="Fantoni PDV totalmente integrado" loading="lazy" width="949" height="595" style="width:100%; height:auto; max-width:850px; margin:0 auto; display:block; filter:drop-shadow(0 24px 50px rgba(0,0,0,0.12)); transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.02) translateY(-10px)'" onmouseout="this.style.transform='scale(1) translateY(0)'">
     </div>
   </div>
 </section>
@@ -1893,8 +1899,11 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.047 8.287 8.287 0 009 9.601a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg>
           Para Bares e Restaurantes
         </div>
-        <div style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.12);position:relative;padding-top:56.25%;">
-          <iframe src="https://www.youtube.com/embed/rQRBtZUJ36Y" title="Fantoni PDV — Bares e Restaurantes" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;"></iframe>
+        <div class="yt-facade" data-videoid="rQRBtZUJ36Y" data-title="Fantoni PDV — Bares e Restaurantes" style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.12);position:relative;padding-top:56.25%;cursor:pointer;background:#000;">
+          <img src="https://i.ytimg.com/vi/rQRBtZUJ36Y/hqdefault.jpg" alt="Fantoni PDV — Bares e Restaurantes" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.85;">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+            <svg width="68" height="48" viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#f00"/><path d="M45 24L27 14v20" fill="#fff"/></svg>
+          </div>
         </div>
       </div>
       <div data-aos="fade-up" data-aos-delay="50">
@@ -1902,8 +1911,11 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
           Para Varejo e Comércio
         </div>
-        <div style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.12);position:relative;padding-top:56.25%;">
-          <iframe src="https://www.youtube.com/embed/N4in_BcXV3s" title="Fantoni PDV — Varejo e Comércio" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;"></iframe>
+        <div class="yt-facade" data-videoid="N4in_BcXV3s" data-title="Fantoni PDV — Varejo e Comércio" style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.12);position:relative;padding-top:56.25%;cursor:pointer;background:#000;">
+          <img src="https://i.ytimg.com/vi/N4in_BcXV3s/hqdefault.jpg" alt="Fantoni PDV — Varejo e Comércio" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.85;">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+            <svg width="68" height="48" viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#f00"/><path d="M45 24L27 14v20" fill="#fff"/></svg>
+          </div>
         </div>
       </div>
     </div>
@@ -1955,7 +1967,7 @@
       <div class="depo-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Sistema tá impecável. Ponto de impressão resolveu um baita problema por aqui. Grato pelo atendimento."</p>
-        <img src="assets/feedback-screenshot.png" alt="Depoimento de cliente via WhatsApp" style="width:100%;border-radius:10px;margin-bottom:16px;border:1px solid #e2e8f0;">
+        <img src="assets/feedback-screenshot.png" alt="Depoimento de cliente via WhatsApp" loading="lazy" width="1289" height="280" style="width:100%;height:auto;border-radius:10px;margin-bottom:16px;border:1px solid #e2e8f0;">
         <div class="depo-autor" style="display:flex; align-items:center; gap:12px;">
           <div style="width:40px; height:40px; background:#dcfce7; color:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"/></svg>
@@ -1997,7 +2009,7 @@
 <section style="padding:72px 24px; background:#fff;">
   <div id="autoridade-gap" style="max-width:900px;margin:0 auto;display:flex;align-items:center;gap:48px;flex-wrap:wrap;justify-content:center;" data-aos="fade-up">
     <div style="flex-shrink:0;text-align:center;">
-      <img id="autoridade-img" src="assets/foto-douglas.png" alt="Douglas Fantoni — Consultor especialista em PDV" style="width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:top;box-shadow:0 8px 32px rgba(29,78,216,.18);border:4px solid #eff6ff;">
+      <img id="autoridade-img" src="assets/foto-douglas.jpg" alt="Douglas Fantoni — Consultor especialista em PDV" width="200" height="200" loading="lazy" style="width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:top;box-shadow:0 8px 32px rgba(29,78,216,.18);border:4px solid #eff6ff;">
       <div style="margin-top:14px;">
         <div style="font-size:17px;font-weight:800;color:#0f172a;">Douglas Fantoni</div>
         <div style="font-size:13px;color:#1d4ed8;font-weight:600;margin-top:3px;">Fundador &amp; Consultor · Fantoni Software</div>
@@ -2026,7 +2038,7 @@
 
   <!-- Sede -->
   <div style="max-width:900px;margin:32px auto 0;display:flex;align-items:center;gap:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;flex-wrap:wrap;">
-    <img src="assets/Cede.jpeg" alt="Sede da Fantoni Software em Santa Cruz do Sul" style="width:160px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+    <img src="assets/Cede.jpeg" alt="Sede da Fantoni Software em Santa Cruz do Sul" loading="lazy" width="1200" height="1600" style="width:160px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0;">
     <div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
@@ -2823,8 +2835,8 @@
     }
   }
 </script>
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-<script>AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic' });</script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+<script>document.addEventListener('DOMContentLoaded', function(){ AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic' }); });</script>
 
 <script>
 // ---- ContainerScroll ----
@@ -2870,6 +2882,45 @@
   if (heroVideo) {
     heroVideo.playbackRate = 0.8;
   }
+})();
+</script>
+<script>
+// ---- Lazy Video (IntersectionObserver) ----
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      const video = entry.target;
+      video.querySelectorAll('source[data-src]').forEach(function(source){
+        source.src = source.dataset.src;
+      });
+      video.load();
+      video.play().catch(function(){});
+      observer.unobserve(video);
+    });
+  }, { rootMargin: '200px' });
+  document.querySelectorAll('video.lazy-video').forEach(function(v){ observer.observe(v); });
+})();
+</script>
+<script>
+// ---- YouTube Facade ----
+(function(){
+  document.querySelectorAll('.yt-facade').forEach(function(facade){
+    facade.addEventListener('click', function(){
+      const id = facade.dataset.videoid;
+      const title = facade.dataset.title || '';
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+      iframe.title = title;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;display:block;';
+      facade.innerHTML = '';
+      facade.appendChild(iframe);
+      facade.style.cursor = 'default';
+    });
+  });
 })();
 </script>
 </body>
