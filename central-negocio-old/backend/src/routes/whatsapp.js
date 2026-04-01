@@ -230,6 +230,15 @@ async function processarWebhookEvo(payload) {
     .eq('lead_id', lead.id)
     .not('etapa', 'in', '("fechado","perdido")');
 
+  // 5b. Carrega config de mídias do agente (tags SDR)
+  const { data: midiasRows } = await supabaseAdmin
+    .from('sdr_midias')
+    .select('tag, tipo, url, caption, filename')
+    .eq('agente_id', agente.id)
+    .eq('ativo', true);
+  const configMidias = {};
+  for (const m of (midiasRows || [])) configMidias[m.tag] = m;
+
   // 6. Chama agente IA
   log('WEBHOOK_IA', `chamando IA para lead ${lead.id}...`);
   let respostaIA;
@@ -284,7 +293,7 @@ async function processarWebhookEvo(payload) {
   let enviado = false;
   for (let tentativa = 1; tentativa <= 2 && !enviado; tentativa++) {
     try {
-      await whatsappService.enviarMensagem(numero, respostaIA, evoInst, evoKey, evoUrl);
+      await whatsappService.enviarRespostaComMidias(numero, respostaIA, configMidias, evoInst, evoKey, evoUrl);
       log('WEBHOOK_ENVIO', `✓ enviado para ${numero} (tentativa ${tentativa})`);
       enviado = true;
     } catch (err) {

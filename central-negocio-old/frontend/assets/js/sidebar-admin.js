@@ -17,13 +17,14 @@
       { href: '/admin/financeiro.html', icone: 'ph ph-bank', label: 'Controle Financeiro' }
     ]},
     { label: 'Crescimento', items: [
-      { href: '/admin/comercial/leads.html', icone: 'ph ph-user-focus', label: 'Leads CRM' },
-      { href: '/admin/comercial/conversas.html', icone: 'ph ph-chats-circle', label: 'Conversas' },
+      { href: '/admin/comercial/leads.html', icone: 'ph ph-address-book', label: 'Leads CRM' },
+      { href: '/admin/comercial/conversas.html', icone: 'ph ph-chat-circle-dots', label: 'Conversas' },
       { href: '/admin/comercial/landing-leads.html', icone: 'ph ph-globe', label: 'Leads do Site' },
-      { href: '/admin/comercial/disparos.html', icone: 'ph ph-rocket-launch', label: 'Automação Zap' },
-      { href: '/admin/comercial/kanban.html', icone: 'ph ph-layout', label: 'Kanban Vendas' },
-      { href: '/admin/comercial/relatorios.html', icone: 'ph ph-presentation-chart', label: 'Relatórios' },
-      { href: '/admin/comercial/configuracoes.html', icone: 'ph ph-gear', label: 'Configurações' }
+      { href: '/admin/comercial/disparos.html', icone: 'ph ph-paper-plane-right', label: 'Automação Zap' },
+      { href: '/admin/comercial/kanban.html', icone: 'ph ph-kanban', label: 'Kanban Vendas' },
+      { href: '/admin/comercial/relatorios.html', icone: 'ph ph-chart-bar', label: 'Relatórios' },
+      { href: '/admin/comercial/sdr-ia.html', icone: 'ph ph-robot', label: 'SDR IA — Agente' },
+      { href: '/admin/comercial/configuracoes.html', icone: 'ph ph-sliders', label: 'Configurações' }
     ]}
   ];
 

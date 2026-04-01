@@ -1,11 +1,27 @@
 // Rotas de Agentes IA Comercial — módulo comercial
 const express = require('express');
+const multer  = require('multer');
 const { supabaseAdmin } = require('../supabase');
 const { autenticar } = require('../middleware/auth');
 const { adminOuComercial } = require('../middleware/roles');
 const { responderComAgente } = require('../services/agente-ia-comercial');
 const fs = require('fs');
 const path = require('path');
+
+// Multer para upload de mídias SDR (até 50 MB)
+const uploadMidia = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const permitidos = [
+      'video/mp4','video/webm','video/quicktime',
+      'image/jpeg','image/png','image/webp','image/gif',
+      'audio/ogg','audio/mp4','audio/webm','audio/mpeg','audio/wav'
+    ];
+    if (permitidos.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Tipo de arquivo não permitido'));
+  }
+});
 
 const router = express.Router();
 
@@ -43,6 +59,25 @@ router.post('/', autenticar, adminOuComercial, async (req, res) => {
     res.status(201).json({ agente: data });
   } catch (err) {
     res.status(500).json({ erro: 'Erro interno: ' + err.message });
+  }
+});
+
+// GET /agentes/sdr/config — deve vir ANTES de /:id para não conflitar
+router.get('/sdr/config', autenticar, adminOuComercial, async (req, res) => {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('agentes_ia_comercial')
+      .select('*')
+      .order('id')
+      .limit(10);
+    if (error) throw error;
+    const agente = (data || []).find(a => a.nome?.toLowerCase().includes('lara'))
+      || (data || []).find(a => a.system_prompt)
+      || (data || [])[0]
+      || null;
+    res.json({ agente });
+  } catch (err) {
+    res.status(500).json({ erro: 'Erro ao buscar config SDR: ' + err.message });
   }
 });
 
@@ -148,5 +183,114 @@ function preverAcao(intencao, agente) {
   if (intencao === 'desinteresse') return 'Pausar follow-up';
   return 'Continuar conversa';
 }
+
+// ─── Rotas SDR — Mídias do Agente ─────────────────────────────────────────────
+
+// GET /agentes/:id/midias — lista mídias configuradas para um agente
+router.get('/:id/midias', autenticar, adminOuComercial, async (req, res) => {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('sdr_midias')
+      .select('*')
+      .eq('agente_id', req.params.id)
+      .order('tag');
+    if (error) throw error;
+    res.json({ midias: data || [] });
+  } catch (err) {
+    res.status(500).json({ erro: 'Erro ao buscar mídias: ' + err.message });
+  }
+});
+
+// PUT /agentes/:id/midias/:tag — salva/atualiza config de uma tag de mídia
+router.put('/:id/midias/:tag', autenticar, adminOuComercial, async (req, res) => {
+  const { tipo, url, caption, filename, ativo } = req.body;
+  const TAGS_VALIDAS = ['SEND_VIDEO_DEMO', 'SEND_FOTO_IMPRESSORA', 'SEND_AUDIO_PROVA', 'SEND_CARDAPIO_DEMO', 'SEND_LINK_TESTE'];
+  if (!TAGS_VALIDAS.includes(req.params.tag)) {
+    return res.status(400).json({ erro: 'Tag inválida' });
+  }
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('sdr_midias')
+      .upsert({
+        agente_id: parseInt(req.params.id),
+        tag: req.params.tag,
+        tipo: tipo || 'link',
+        url: url || null,
+        caption: caption || null,
+        filename: filename || null,
+        ativo: ativo !== false,
+        atualizado_em: new Date().toISOString()
+      }, { onConflict: 'agente_id,tag' })
+      .select().single();
+    if (error) throw error;
+    res.json({ midia: data });
+  } catch (err) {
+    res.status(500).json({ erro: 'Erro ao salvar mídia: ' + err.message });
+  }
+});
+
+// POST /agentes/:id/midias/:tag/upload — faz upload de arquivo e retorna URL pública no Supabase Storage
+router.post('/:id/midias/:tag/upload', autenticar, adminOuComercial, uploadMidia.single('arquivo'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ erro: 'Nenhum arquivo enviado' });
+
+  const TAGS_VALIDAS = ['SEND_VIDEO_DEMO', 'SEND_FOTO_IMPRESSORA', 'SEND_AUDIO_PROVA', 'SEND_CARDAPIO_DEMO', 'SEND_LINK_TESTE'];
+  if (!TAGS_VALIDAS.includes(req.params.tag)) {
+    return res.status(400).json({ erro: 'Tag inválida' });
+  }
+
+  try {
+    const ext  = (req.file.originalname.split('.').pop() || 'bin').toLowerCase();
+    const nome = `sdr-midias/${req.params.id}/${req.params.tag}/${Date.now()}.${ext}`;
+
+    const { error: storageError } = await supabaseAdmin.storage
+      .from('chat-arquivos')
+      .upload(nome, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
+
+    if (storageError) throw new Error('Erro no storage: ' + storageError.message);
+
+    const { data: urlData } = supabaseAdmin.storage.from('chat-arquivos').getPublicUrl(nome);
+
+    res.json({ url: urlData.publicUrl, mimetype: req.file.mimetype });
+  } catch (err) {
+    console.error('Erro upload mídia SDR:', err);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+// POST /agentes/:id/testar-chat — simula conversa com histórico (para simulador)
+router.post('/:id/testar-chat', autenticar, adminOuComercial, async (req, res) => {
+  const { mensagem, historico = [] } = req.body;
+  if (!mensagem) return res.status(400).json({ erro: 'mensagem obrigatória' });
+
+  try {
+    const { data: agente } = await supabaseAdmin
+      .from('agentes_ia_comercial').select('*').eq('id', req.params.id).single();
+    if (!agente) return res.status(404).json({ erro: 'Agente não encontrado' });
+
+    const apiKey = agente.api_key || (agente.provider === 'gemini' ? process.env.GEMINI_API_KEY : process.env.OPENAI_API_KEY);
+    if (!apiKey) return res.status(400).json({ erro: 'Chave de API não configurada' });
+
+    const agenteComKey = { ...agente, api_key: apiKey };
+    const mensagensHistorico = historico.map(h => ({ role: h.role, content: h.content }));
+    const resposta = await responderComAgente(agenteComKey, mensagem, mensagensHistorico, {});
+
+    // Detecta tags de mídia na resposta para mostrar no simulador
+    const { extrairTagsMidia } = require('../services/whatsapp');
+    const { textoLimpo, tags } = extrairTagsMidia(resposta);
+
+    const intencao = detectarIntencao(mensagem);
+
+    res.json({
+      resposta,
+      textoLimpo,
+      tagsMidia: tags,
+      intencao,
+      score: calcularScore(mensagem, intencao)
+    });
+  } catch (err) {
+    console.error('Erro ao simular chat:', err);
+    res.status(500).json({ erro: 'Erro ao simular: ' + (err.message || 'desconhecido') });
+  }
+});
 
 module.exports = router;
