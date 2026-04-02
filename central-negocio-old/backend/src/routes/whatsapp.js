@@ -162,6 +162,34 @@ async function processarWebhookEvo(payload) {
       : `[Imagem enviada: ${descricao}]`;
     log('WEBHOOK_IMAGEM', `análise: "${mensagemRecebida?.substring(0, 80)}"`);
 
+  } else if (messageType === 'videoMessage') {
+    log('WEBHOOK_VIDEO', `recebido de ${numero} — analisando thumbnail...`);
+    mensagemRecebida = await agenteService.analisarVideo({
+      url:          evento.message?.videoMessage?.url,
+      caption:      evento.message?.videoMessage?.caption,
+      jpegThumbnail: evento.message?.videoMessage?.jpegThumbnail,
+      mimetype:     evento.message?.videoMessage?.mimetype
+    });
+    log('WEBHOOK_VIDEO', `análise: "${mensagemRecebida?.substring(0, 80)}"`);
+
+  } else if (messageType === 'documentMessage' || messageType === 'documentWithCaptionMessage') {
+    const doc = evento.message?.documentMessage || evento.message?.documentWithCaptionMessage?.message?.documentMessage;
+    const caption  = doc?.caption || doc?.fileName || '';
+    const fileName = doc?.fileName || 'documento';
+    mensagemRecebida = caption
+      ? `[Lead enviou um documento: "${fileName}" — ${caption}]`
+      : `[Lead enviou um documento: "${fileName}"]`;
+    log('WEBHOOK_DOC', `recebido de ${numero}: ${mensagemRecebida}`);
+
+  } else if (messageType === 'stickerMessage') {
+    mensagemRecebida = '[Lead enviou um sticker — reaja de forma natural e continue a conversa]';
+
+  } else if (messageType === 'reactionMessage') {
+    const emoji  = evento.message?.reactionMessage?.text || '';
+    mensagemRecebida = emoji
+      ? `[Lead reagiu com ${emoji} à mensagem anterior — interprete como sinal positivo/negativo e continue]`
+      : '[Lead reagiu à mensagem anterior]';
+
   } else {
     log('WEBHOOK_IGNORADO', `tipo não suportado: ${messageType}`);
     return;
