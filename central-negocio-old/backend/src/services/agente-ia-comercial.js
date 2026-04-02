@@ -475,4 +475,48 @@ async function analisarImagem(imageMessage) {
   }
 }
 
-module.exports = { responderComAgente, transcreverAudio, analisarImagem };
+// ── Análise de Vídeo (thumbnail via Vision) ───────────────────────────────────
+
+async function analisarVideo(videoMessage) {
+  try {
+    const caption = videoMessage.caption?.trim();
+
+    // WhatsApp envia sempre um jpegThumbnail (miniatura base64) junto com o vídeo
+    const thumb = videoMessage.jpegThumbnail || videoMessage.base64Thumb;
+
+    if (thumb) {
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const imageUrl = `data:image/jpeg;base64,${thumb}`;
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: 'Este é um frame/thumbnail de um vídeo enviado por um lead num contexto de vendas de software PDV para bares e restaurantes. Descreva brevemente o que aparece na cena para que um assistente comercial entenda o contexto.'
+            },
+            { type: 'image_url', image_url: { url: imageUrl } }
+          ]
+        }]
+      });
+
+      const descricao = response.choices[0].message.content;
+      return caption
+        ? `[Vídeo enviado pelo lead — legenda: "${caption}" — cena: ${descricao}]`
+        : `[Vídeo enviado pelo lead — cena: ${descricao}]`;
+    }
+
+    // Sem thumbnail — usa apenas a legenda se houver
+    return caption
+      ? `[Vídeo enviado pelo lead com legenda: "${caption}"]`
+      : '[Lead enviou um vídeo — sem prévia disponível. Responda pedindo que descreva o que enviou.]';
+
+  } catch (err) {
+    console.error('Erro ao analisar vídeo:', err.message);
+    return '[Vídeo recebido — não foi possível processar]';
+  }
+}
+
+module.exports = { responderComAgente, transcreverAudio, analisarImagem, analisarVideo };
