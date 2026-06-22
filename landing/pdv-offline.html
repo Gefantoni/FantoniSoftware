@@ -21,7 +21,9 @@
   <meta property="og:site_name" content="Fantoni Software" />
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="icon" type="image/webp" href="assets/logo.webp" />
+  <!-- Preload LCP image (hero logo) -->
+  <link rel="preload" as="image" type="image/webp" href="assets/logo.webp" />
 
   <!-- SEO: Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -108,18 +110,22 @@
   <!-- SEO: Canônico -->
   <link rel="canonical" href="https://fantonisoftware.com.br/" />
 
-  <!-- Meta Pixel Code -->
+  <!-- Meta Pixel Code (deferred to reduce TBT) -->
   <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '2035088657416576');
-  fbq('track', 'PageView');
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '2035088657416576');
+      fbq('track', 'PageView');
+    }, 2000);
+  });
   </script>
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
@@ -128,10 +134,15 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" /></noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800;900&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800;900&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800;900&display=swap" /></noscript>
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'" />
+  <style>
+    /* AOS initial hidden state (prevents FOUC while AOS CSS loads async) */
+    [data-aos] { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+    [data-aos].aos-animate { opacity: 1; transform: translateY(0); }
+  </style>
   
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -848,7 +859,7 @@
     <div data-aos="fade-up" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
       
       <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 32px;">
-        <img src="assets/logo.webp" alt="Fantoni PDV" style="height: 36px; object-fit: contain;" width="500" height="500" loading="lazy">
+        <img src="assets/logo.webp" alt="Fantoni PDV" style="height: 36px; width: auto; object-fit: contain;" width="36" height="36" fetchpriority="high">
         <span style="font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; color: #fff;">Fantoni</span>
       </div>
       
@@ -980,126 +991,126 @@
       <!-- ===================== LISTA ORIGINAL ===================== -->
 
       <div class="marquee-item">
-        <img src="assets/Clientes/A%20Mesa.png" alt="A Mesa" loading="lazy" decoding="async">
+        <img src="assets/Clientes/A%20Mesa.webp" alt="A Mesa" loading="lazy" decoding="async" width="68" height="68">
         <span>A Mesa</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Adri%20Gourmet.png" alt="Adri Gourmet" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Adri%20Gourmet.webp" alt="Adri Gourmet" loading="lazy" decoding="async" width="68" height="68">
         <span>Adri Gourmet</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Berlin%20Tap%20House.png" alt="Berlin Tap House" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Berlin%20Tap%20House.webp" alt="Berlin Tap House" loading="lazy" decoding="async" width="68" height="68">
         <span>Berlin Tap House</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Cantinho%20do%20Memel.png" alt="Cantinho do Memel" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Cantinho%20do%20Memel.webp" alt="Cantinho do Memel" loading="lazy" decoding="async" width="68" height="68">
         <span>Cantinho do Memel</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Clube%20do%20Garfo.png" alt="Clube do Garfo" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Clube%20do%20Garfo.webp" alt="Clube do Garfo" loading="lazy" decoding="async" width="68" height="68">
         <span>Clube do Garfo</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Country%20Pub%2B.png" alt="Country Pub+" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Country%20Pub%2B.webp" alt="Country Pub+" loading="lazy" decoding="async" width="68" height="68">
         <span>Country Pub+</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Coutry%20Pub.png" alt="Country Pub" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Coutry%20Pub.webp" alt="Country Pub" loading="lazy" decoding="async" width="68" height="68">
         <span>Country Pub</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Hemeli%20Vivian%20Confeitaria.png" alt="Hemeli Vivian Confeitaria" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Hemeli%20Vivian%20Confeitaria.webp" alt="Hemeli Vivian Confeitaria" loading="lazy" decoding="async" width="68" height="68">
         <span>Hemeli Vivian</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Hot%20%2B.png" alt="Hot +" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Hot%20%2B.webp" alt="Hot +" loading="lazy" decoding="async" width="68" height="68">
         <span>Hot +</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/La%20Epinoza.png" alt="La Epinoza" loading="lazy" decoding="async">
+        <img src="assets/Clientes/La%20Epinoza.webp" alt="La Epinoza" loading="lazy" decoding="async" width="68" height="68">
         <span>La Epinoza</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Pier%2077.png" alt="Pier 77" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Pier%2077.webp" alt="Pier 77" loading="lazy" decoding="async" width="68" height="68">
         <span>Pier 77</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Restaurante%20Dumer.png" alt="Restaurante Dumer" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Restaurante%20Dumer.webp" alt="Restaurante Dumer" loading="lazy" decoding="async" width="68" height="68">
         <span>Rest. Dumer</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/SBE%20Sposts.png" alt="SBE Sports" loading="lazy" decoding="async">
+        <img src="assets/Clientes/SBE%20Sposts.webp" alt="SBE Sports" loading="lazy" decoding="async" width="68" height="68">
         <span>SBE Sports</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Saint%20Lager.png" alt="Saint Lager" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Saint%20Lager.webp" alt="Saint Lager" loading="lazy" decoding="async" width="68" height="68">
         <span>Saint Lager</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Yolis%20Cosm%C3%A9tica.png" alt="Yolis Cosmética" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Yolis%20Cosm%C3%A9tica.webp" alt="Yolis Cosmética" loading="lazy" decoding="async" width="68" height="68">
         <span>Yolis Cosmética</span>
       </div>
 
       <!-- =========== DUPLICATA (necessária para o loop sem salto) =========== -->
 
       <div class="marquee-item">
-        <img src="assets/Clientes/A%20Mesa.png" alt="A Mesa" loading="lazy" decoding="async">
+        <img src="assets/Clientes/A%20Mesa.webp" alt="A Mesa" loading="lazy" decoding="async" width="68" height="68">
         <span>A Mesa</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Adri%20Gourmet.png" alt="Adri Gourmet" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Adri%20Gourmet.webp" alt="Adri Gourmet" loading="lazy" decoding="async" width="68" height="68">
         <span>Adri Gourmet</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Berlin%20Tap%20House.png" alt="Berlin Tap House" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Berlin%20Tap%20House.webp" alt="Berlin Tap House" loading="lazy" decoding="async" width="68" height="68">
         <span>Berlin Tap House</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Cantinho%20do%20Memel.png" alt="Cantinho do Memel" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Cantinho%20do%20Memel.webp" alt="Cantinho do Memel" loading="lazy" decoding="async" width="68" height="68">
         <span>Cantinho do Memel</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Clube%20do%20Garfo.png" alt="Clube do Garfo" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Clube%20do%20Garfo.webp" alt="Clube do Garfo" loading="lazy" decoding="async" width="68" height="68">
         <span>Clube do Garfo</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Country%20Pub%2B.png" alt="Country Pub+" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Country%20Pub%2B.webp" alt="Country Pub+" loading="lazy" decoding="async" width="68" height="68">
         <span>Country Pub+</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Coutry%20Pub.png" alt="Country Pub" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Coutry%20Pub.webp" alt="Country Pub" loading="lazy" decoding="async" width="68" height="68">
         <span>Country Pub</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Hemeli%20Vivian%20Confeitaria.png" alt="Hemeli Vivian Confeitaria" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Hemeli%20Vivian%20Confeitaria.webp" alt="Hemeli Vivian Confeitaria" loading="lazy" decoding="async" width="68" height="68">
         <span>Hemeli Vivian</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Hot%20%2B.png" alt="Hot +" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Hot%20%2B.webp" alt="Hot +" loading="lazy" decoding="async" width="68" height="68">
         <span>Hot +</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/La%20Epinoza.png" alt="La Epinoza" loading="lazy" decoding="async">
+        <img src="assets/Clientes/La%20Epinoza.webp" alt="La Epinoza" loading="lazy" decoding="async" width="68" height="68">
         <span>La Epinoza</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Pier%2077.png" alt="Pier 77" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Pier%2077.webp" alt="Pier 77" loading="lazy" decoding="async" width="68" height="68">
         <span>Pier 77</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Restaurante%20Dumer.png" alt="Restaurante Dumer" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Restaurante%20Dumer.webp" alt="Restaurante Dumer" loading="lazy" decoding="async" width="68" height="68">
         <span>Rest. Dumer</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/SBE%20Sposts.png" alt="SBE Sports" loading="lazy" decoding="async">
+        <img src="assets/Clientes/SBE%20Sposts.webp" alt="SBE Sports" loading="lazy" decoding="async" width="68" height="68">
         <span>SBE Sports</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Saint%20Lager.png" alt="Saint Lager" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Saint%20Lager.webp" alt="Saint Lager" loading="lazy" decoding="async" width="68" height="68">
         <span>Saint Lager</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Yolis%20Cosm%C3%A9tica.png" alt="Yolis Cosmética" loading="lazy" decoding="async">
+        <img src="assets/Clientes/Yolis%20Cosm%C3%A9tica.webp" alt="Yolis Cosmética" loading="lazy" decoding="async" width="68" height="68">
         <span>Yolis Cosmética</span>
       </div>
 
@@ -1194,8 +1205,11 @@
           </p>
         </div>
         <div style="flex: 1; display: flex; justify-content: center; min-width: 300px;" data-aos="fade-left">
-          <div style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); background: #000; width: 100%; max-width: 320px; aspect-ratio: 9/16;">
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/rQRBtZUJ36Y" title="Bares e restaurantes" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="display: block;" loading="lazy"></iframe>
+          <div id="yt-facade" style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); background: #000; width: 100%; max-width: 320px; aspect-ratio: 9/16; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center;" onclick="this.innerHTML='<iframe width=100% height=100% src=https://www.youtube.com/embed/rQRBtZUJ36Y?autoplay=1 title=Bares+e+restaurantes frameborder=0 allow=accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share referrerpolicy=strict-origin-when-cross-origin allowfullscreen style=display:block></iframe>'; this.style.cursor='default';">
+            <img src="https://i.ytimg.com/vi/rQRBtZUJ36Y/hqdefault.jpg" alt="Vídeo: Bares e restaurantes" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;" loading="lazy" decoding="async">
+            <div style="position: relative; z-index: 2; width: 72px; height: 72px; background: rgba(255,0,0,0.85); border-radius: 16px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </div>
           </div>
         </div>
       </div>
@@ -1427,7 +1441,7 @@
         <div class="depo-stars">★★★★★</div>
         <audio controls src="assets/feedback-mesa.opus" style="width: 100%; margin-bottom: 20px; height: 36px; outline: none; border-radius: 20px;"></audio>
         <div class="depo-autor">
-          <img src="assets/Clientes/A%20Mesa.png" class="depo-avatar" style="object-fit:cover;" loading="lazy" decoding="async">
+          <img src="assets/Clientes/A%20Mesa.webp" class="depo-avatar" style="object-fit:cover;" loading="lazy" decoding="async" width="44" height="44">
           <div>
             <div class="depo-nome" style="color: #fff;">A Mesa</div>
             <div class="depo-cargo">Bar e Restaurante</div>
@@ -1438,7 +1452,7 @@
         <div class="depo-stars">★★★★★</div>
         <audio controls src="assets/feedback-anaro.opus" style="width: 100%; margin-bottom: 20px; height: 36px; outline: none; border-radius: 20px;"></audio>
         <div class="depo-autor">
-          <img src="assets/Clientes/Clube%20do%20Garfo.png" class="depo-avatar" style="object-fit:cover;" loading="lazy" decoding="async">
+          <img src="assets/Clientes/Clube%20do%20Garfo.webp" class="depo-avatar" style="object-fit:cover;" loading="lazy" decoding="async" width="44" height="44">
           <div>
             <div class="depo-nome" style="color: #fff;">Anaro</div>
             <div class="depo-cargo">Restaurante</div>
@@ -1524,16 +1538,19 @@
 
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function(){ 
-    AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic' }); 
+  // Defer AOS init to after page load to reduce TBT
+  window.addEventListener('load', function(){ 
+    if (typeof AOS !== 'undefined') AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic' }); 
   });
   
   // Header Scroll
   const nav = document.querySelector('nav');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
-  }, {passive: true});
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }, {passive: true});
+  }
 </script>
 
 <a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20Fantoni%20PDV" 
