@@ -828,9 +828,18 @@
   
     /* === FIX MOBILE FINAL === */
     .testar-float { display: none !important; } /* Esconde o botão antigo azul */
+    .hero-btn-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 64px;
+      min-height: 68px;
+      contain: layout;
+    }
     
     @media (max-width: 768px) {
-      .upgrade-grid img { 
+      .upgrade-grid .upgrade-mockup-img { 
         max-width: 220px !important; 
         width: 100% !important;
         height: auto !important;
@@ -838,6 +847,66 @@
         margin: 0 auto !important; 
         display: block !important; 
         transform: scale(1) rotate(0deg) !important; /* Remove zoom e rotação no mobile para caber melhor */
+      }
+      
+      /* Bug do Logo (No Topo) */
+      .hero-logo-container {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+      }
+      .hero-logo-container img {
+        width: 40px !important;
+        height: 40px !important;
+        max-width: 40px !important;
+        max-height: 40px !important;
+        flex-shrink: 0 !important;
+        object-fit: contain !important;
+        display: inline-block !important;
+      }
+      .hero-logo-container span {
+        display: inline-block !important;
+        line-height: 1 !important;
+        align-self: center !important;
+        margin: 0 !important;
+      }
+      
+      /* Bug das Logomarcas das Adquirentes */
+      .adquirentes-logos {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 12px !important;
+        margin-top: 8px !important;
+      }
+      .adquirentes-logos img {
+        max-width: 90px !important;
+        width: auto !important;
+        height: 20px !important;
+        aspect-ratio: auto !important;
+        object-fit: contain !important;
+        display: inline-block !important;
+        margin: 0 !important;
+      }
+      
+      /* Correção de Redimensionamento Hero Screenshot */
+      .hero-screenshot {
+        width: 100% !important;
+        max-width: 637px !important;
+        height: auto !important;
+        max-height: none !important;
+        aspect-ratio: 949 / 595 !important;
+        object-fit: contain !important;
+      }
+      
+      /* Eliminar CLS do Botão */
+      .hero-btn-container {
+        min-height: 68px !important;
+        contain: layout !important;
       }
     }
   </style>
@@ -854,7 +923,7 @@
   <div class="hero-inner" style="display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 900px; gap: 0;">
     <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
       
-      <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 32px;">
+      <div class="hero-logo-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 32px;">
         <img
           src="assets/logo.webp"
           srcset="assets/logo.webp 1x, assets/logo-240.webp 2x"
@@ -863,7 +932,8 @@
           width="36"
           height="36"
           fetchpriority="high"
-          decoding="async"
+          loading="eager"
+          decoding="sync"
         >
         <span style="font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; color: #fff;">Fantoni</span>
       </div>
@@ -886,6 +956,7 @@
             src="assets/Dispositivos.png"
             alt="Fantoni PDV rodando em computador, celular e tablet"
             class="hero-screenshot"
+            loading="eager"
             fetchpriority="high"
             decoding="sync"
             width="949"
@@ -894,7 +965,7 @@
         </picture>
       </div>
 
-      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 64px; min-height: 68px;">
+      <div class="hero-btn-container">
         <a href="https://wa.me/5551996034862?text=Olá, quero falar com um especialista sobre o Fantoni PDV." target="_blank" class="btn btn-primary btn-lg" aria-label="Falar com especialista pelo WhatsApp" style="background-color: #047857; border-color: #047857; padding: 18px 48px; font-size: 18px; box-shadow: 0 10px 25px rgba(4, 120, 87, 0.4); display: inline-flex; align-items: center; justify-content: center; height: 68px; min-width: 290px;">
           Falar com especialista
         </a>
@@ -1184,7 +1255,7 @@
        
        <div style="margin-bottom: 32px;">
          <p style="color: #94a3b8; font-size: 12px; margin-bottom: 12px; font-weight: 600;">Já possui uma maquininha? Nosso PDV é compatível com:</p>
-         <div style="display: flex; gap: 16px; align-items: center; filter: grayscale(1) brightness(1.5) opacity(0.6); flex-wrap: wrap;">
+         <div class="adquirentes-logos" style="display: flex; gap: 16px; align-items: center; filter: grayscale(1) brightness(1.5) opacity(0.6); flex-wrap: wrap;">
            <img src="assets/Logos/logo-cielo.svg" alt="Cielo" style="height: 20px; width: auto; aspect-ratio: 173/60; object-fit: contain;" loading="lazy" decoding="async" width="173" height="60">
            <img src="assets/Logos/logo-stone.svg" alt="Stone" style="height: 20px; width: auto; aspect-ratio: 225/60; object-fit: contain;" loading="lazy" decoding="async" width="225" height="60">
            <img src="assets/Logos/logo-safrapay.svg" alt="Safrapay" style="height: 20px; width: auto; aspect-ratio: 246/60; object-fit: contain;" loading="lazy" decoding="async" width="246" height="60">
@@ -1199,6 +1270,7 @@
        <img
          src="assets/Maquininhas/Navi-POS-Stone.webp"
          alt="Smart POS Fantoni com PDV integrado"
+         class="upgrade-mockup-img"
          style="width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/608; object-fit: contain; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.4)); transform: scale(1.05) rotate(2deg);"
          loading="lazy"
          decoding="async"
