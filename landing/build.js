@@ -75,6 +75,7 @@ async function minifyScripts(html) {
     jsIn += inner.length;
     try {
       const res = await terserMinify(inner, {
+        ecma: 2022,
         compress: { passes: 2, dead_code: true, unused: true },
         mangle: true,
         format: { comments: false },

@@ -64,11 +64,7 @@ async function main() {
   
   // 3. Logo (precisa ser pequeno)
   console.log('\n=== Verificando logo ===');
-  if (!fs.existsSync('assets/logo.webp')) {
-    await convertToWebp('assets/logo.png', 'assets/logo.webp', { width: 200, quality: 80 });
-  } else {
-    console.log('  [SKIP] logo.webp já existe');
-  }
+  await convertToWebp('assets/logo.png', 'assets/logo.webp', { width: 120, quality: 80 });
 
   console.log('\n✓ Conversão concluída!');
 }

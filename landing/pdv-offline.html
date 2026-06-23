@@ -22,8 +22,10 @@
   
   <!-- Favicon -->
   <link rel="icon" type="image/webp" href="assets/logo.webp" />
-  <!-- Preload LCP image (hero logo) -->
-  <link rel="preload" as="image" type="image/webp" href="assets/logo.webp" />
+  <!-- Preload LCP: hero logo visível imediatamente (120px = 3.6KB) -->
+  <link rel="preload" as="image" type="image/webp" href="assets/logo.webp" fetchpriority="high" />
+  <!-- Preload LCP candidato principal: imagem do sistema -->
+  <link rel="preload" as="image" type="image/webp" href="assets/Dispositivos.webp" fetchpriority="high" />
 
   <!-- SEO: Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -110,27 +112,8 @@
   <!-- SEO: Canônico -->
   <link rel="canonical" href="https://fantonisoftware.com.br/" />
 
-  <!-- Meta Pixel Code (deferred to reduce TBT) -->
-  <script>
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '2035088657416576');
-      fbq('track', 'PageView');
-    }, 2000);
-  });
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
-  /></noscript>
-  <!-- End Meta Pixel Code -->
+  <!-- Meta Pixel: movido para o final do body para não bloquear LCP -->
+  <script>window.__fbPixelId = '2035088657416576';</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -140,6 +123,7 @@
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'" />
   <style>
     /* AOS initial hidden state (prevents FOUC while AOS CSS loads async) */
+    /* Nota: hero e elementos above-the-fold NÃO devem ter data-aos para não bloquear LCP */
     [data-aos] { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
     [data-aos].aos-animate { opacity: 1; transform: translateY(0); }
   </style>
@@ -384,6 +368,15 @@
     .hero-img {
       display: flex; align-items: center; justify-content: center;
       position: relative;
+    }
+    .hero-screenshot {
+      width: 100%;
+      max-width: 820px;
+      height: auto;
+      aspect-ratio: 949 / 595;
+      object-fit: contain;
+      border-radius: 16px;
+      filter: drop-shadow(0 24px 60px rgba(0,0,0,0.5));
     }
     .hero-foto-placeholder {
       width: 100%; max-width: 460px;
@@ -705,7 +698,7 @@
       .recurso-item.reverse { direction: ltr; }
       /* Hero img: mostra abaixo do texto em tablet/mobile médio */
       .hero-img { display: flex; justify-content: center; margin-top: 0; }
-      .hero-screenshot { max-width: min(380px, 88vw); max-height: 200px; object-fit: contain; animation: none; }
+      .hero-screenshot { max-width: min(380px, 88vw); height: auto !important; max-height: 200px; aspect-ratio: 949 / 595; object-fit: contain; animation: none; }
       .footer-top { grid-template-columns: 1fr 1fr; }
       .stats-inner { grid-template-columns: repeat(3,1fr); }
     }
@@ -721,7 +714,7 @@
       .stats-inner { grid-template-columns: 1fr !important; gap: 16px !important; }
       /* Hero: imagem menor em telas muito pequenas */
       .hero-img { display: flex; }
-      .hero-screenshot { max-width: min(260px, 78vw) !important; max-height: 150px !important; object-fit: contain !important; }
+      .hero-screenshot { max-width: min(260px, 78vw) !important; height: auto !important; max-height: 150px !important; aspect-ratio: 949 / 595 !important; object-fit: contain !important; }
     }
     /* ---- FOOTER BOTTOM ---- */
     .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; }
@@ -839,6 +832,9 @@
     @media (max-width: 768px) {
       .upgrade-grid img { 
         max-width: 220px !important; 
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 300/608 !important;
         margin: 0 auto !important; 
         display: block !important; 
         transform: scale(1) rotate(0deg) !important; /* Remove zoom e rotação no mobile para caber melhor */
@@ -856,10 +852,19 @@
 <!-- 1. HERO -->
 <section class="hero" style="padding-top:100px; padding-bottom:60px;">
   <div class="hero-inner" style="display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 900px; gap: 0;">
-    <div data-aos="fade-up" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
       
       <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 32px;">
-        <img src="assets/logo.webp" alt="Fantoni PDV" style="height: 36px; width: auto; object-fit: contain;" width="36" height="36" fetchpriority="high">
+        <img
+          src="assets/logo.webp"
+          srcset="assets/logo.webp 1x, assets/logo-240.webp 2x"
+          alt="Fantoni PDV"
+          style="height: 36px; width: auto; aspect-ratio: 1/1; object-fit: contain;"
+          width="36"
+          height="36"
+          fetchpriority="high"
+          decoding="async"
+        >
         <span style="font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; color: #fff;">Fantoni</span>
       </div>
       
@@ -871,9 +876,26 @@
         Com o nosso Sistema PDV você agiliza suas vendas através de uma plataforma segura, completa e <strong>100% offline</strong>. Conheça o sistema que vai trazer mais eficiência e acabar com as filas no seu horário de pico.
       </p>
       
-      
-      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 64px;">
-        <a href="https://wa.me/5551996034862?text=Olá, quero falar com um especialista sobre o Fantoni PDV." target="_blank" class="btn btn-primary btn-lg" style="background-color: #10b981; border-color: #10b981; padding: 18px 48px; font-size: 18px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);">
+      </div>
+
+      <!-- Imagem do sistema: candidato LCP real (grande, visível, above-the-fold) -->
+      <div style="width:100%; display:flex; justify-content:center; margin-bottom:48px;">
+        <picture>
+          <source srcset="assets/Dispositivos.webp" type="image/webp">
+          <img
+            src="assets/Dispositivos.png"
+            alt="Fantoni PDV rodando em computador, celular e tablet"
+            class="hero-screenshot"
+            fetchpriority="high"
+            decoding="sync"
+            width="949"
+            height="595"
+          >
+        </picture>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 64px; min-height: 68px;">
+        <a href="https://wa.me/5551996034862?text=Olá, quero falar com um especialista sobre o Fantoni PDV." target="_blank" class="btn btn-primary btn-lg" aria-label="Falar com especialista pelo WhatsApp" style="background-color: #047857; border-color: #047857; padding: 18px 48px; font-size: 18px; box-shadow: 0 10px 25px rgba(4, 120, 87, 0.4); display: inline-flex; align-items: center; justify-content: center; height: 68px; min-width: 290px;">
           Falar com especialista
         </a>
       </div>
@@ -1136,25 +1158,25 @@
          
          <div style="background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
            <svg style="color: #34d399; width: 20px; height: 20px; margin-bottom: 12px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-           <h4 style="color: #f1f5f9; font-size: 15px; margin-bottom: 8px; font-weight: 700;">Tudo em Um</h4>
+           <h3 style="color: #f1f5f9; font-size: 15px; margin-bottom: 8px; font-weight: 700;">Tudo em Um</h3>
            <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">PDV, pagamentos e emissão de Nota Fiscal em um único equipamento.</p>
          </div>
 
          <div style="background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
            <svg style="color: #34d399; width: 20px; height: 20px; margin-bottom: 12px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-           <h4 style="color: #f1f5f9; font-size: 15px; margin-bottom: 8px; font-weight: 700;">Integração Nativa</h4>
+           <h3 style="color: #f1f5f9; font-size: 15px; margin-bottom: 8px; font-weight: 700;">Integração Nativa</h3>
            <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">Transações enviadas automaticamente. Zero necessidade de TEF e sem erros de digitação.</p>
          </div>
 
          <div style="background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
            <svg style="color: #34d399; width: 20px; height: 20px; margin-bottom: 12px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-           <h4 style="color: #f1f5f9; font-size: 15px; margin-bottom: 8px; font-weight: 700;">Taxas Especiais</h4>
+           <h3 style="color: #f1f5f9; font-size: 15px; margin-bottom: 8px; font-weight: 700;">Taxas Especiais</h3>
            <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">Negocie as melhores taxas do mercado utilizando nossa integração direta.</p>
          </div>
 
          <div style="background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
            <svg style="color: #34d399; width: 20px; height: 20px; margin-bottom: 12px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-           <h4 style="color: #f1f5f9; font-size: 15px; margin-bottom: 8px; font-weight: 700;">Gestão Completa</h4>
+           <h3 style="color: #f1f5f9; font-size: 15px; margin-bottom: 8px; font-weight: 700;">Gestão Completa</h3>
            <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">Controle em tempo real e fechamento de caixa sem dor de cabeça no final do dia.</p>
          </div>
 
@@ -1163,19 +1185,27 @@
        <div style="margin-bottom: 32px;">
          <p style="color: #94a3b8; font-size: 12px; margin-bottom: 12px; font-weight: 600;">Já possui uma maquininha? Nosso PDV é compatível com:</p>
          <div style="display: flex; gap: 16px; align-items: center; filter: grayscale(1) brightness(1.5) opacity(0.6); flex-wrap: wrap;">
-           <img src="assets/Logos/logo-cielo.svg" style="height: 20px;" loading="lazy" decoding="async" width="173" height="60">
-           <img src="assets/Logos/logo-stone.svg" style="height: 20px;" loading="lazy" decoding="async" width="225" height="60">
-           <img src="assets/Logos/logo-safrapay.svg" style="height: 20px;" loading="lazy" decoding="async" width="246" height="60">
-           <img src="assets/Logos/logo-pagbank.svg" style="height: 20px;" loading="lazy" decoding="async" width="211" height="60">
+           <img src="assets/Logos/logo-cielo.svg" alt="Cielo" style="height: 20px; width: auto; aspect-ratio: 173/60; object-fit: contain;" loading="lazy" decoding="async" width="173" height="60">
+           <img src="assets/Logos/logo-stone.svg" alt="Stone" style="height: 20px; width: auto; aspect-ratio: 225/60; object-fit: contain;" loading="lazy" decoding="async" width="225" height="60">
+           <img src="assets/Logos/logo-safrapay.svg" alt="Safrapay" style="height: 20px; width: auto; aspect-ratio: 246/60; object-fit: contain;" loading="lazy" decoding="async" width="246" height="60">
+           <img src="assets/Logos/logo-pagbank.svg" alt="PagBank" style="height: 20px; width: auto; aspect-ratio: 211/60; object-fit: contain;" loading="lazy" decoding="async" width="211" height="60">
          </div>
        </div>
        
-       <a href="https://wa.me/5551996034862?text=Quero saber mais sobre a integração da Maquininha com PDV" target="_blank" class="btn btn-primary" style="background-color: #10b981; border-color: #10b981; padding: 14px 32px;">Quero saber mais</a>
+       <a href="https://wa.me/5551996034862?text=Quero saber mais sobre a integração da Maquininha com PDV" target="_blank" class="btn btn-primary" aria-label="Quero saber mais sobre a integração da Maquininha com PDV no WhatsApp" style="background-color: #047857; border-color: #047857; padding: 14px 32px;">Quero saber mais</a>
     </div>
     
-    <div data-aos="fade-left" style="display: flex; justify-content: center;">
-       <img src="assets/Maquininhas/Navi-POS-Stone.webp" alt="Smart POS Fantoni" style="width: 100%; max-width: 380px; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.4)); transform: scale(1.1) rotate(2deg);" loading="lazy" decoding="async" width="300" height="608">
-    </div>
+    <div data-aos="fade-left" style="display: flex; justify-content: center; align-items: center;">
+       <img
+         src="assets/Maquininhas/Navi-POS-Stone.webp"
+         alt="Smart POS Fantoni com PDV integrado"
+         style="width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/608; object-fit: contain; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.4)); transform: scale(1.05) rotate(2deg);"
+         loading="lazy"
+         decoding="async"
+         width="300"
+         height="608"
+       >
+     </div>
     
   </div>
 </section>
@@ -1205,7 +1235,7 @@
           </p>
         </div>
         <div style="flex: 1; display: flex; justify-content: center; min-width: 300px;" data-aos="fade-left">
-          <div id="yt-facade" style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); background: #000; width: 100%; max-width: 320px; aspect-ratio: 9/16; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center;" onclick="this.innerHTML='<iframe width=100% height=100% src=https://www.youtube.com/embed/rQRBtZUJ36Y?autoplay=1 title=Bares+e+restaurantes frameborder=0 allow=accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share referrerpolicy=strict-origin-when-cross-origin allowfullscreen style=display:block></iframe>'; this.style.cursor='default';">
+          <div id="yt-facade" role="button" aria-label="Assistir vídeo demonstrativo do sistema PDV para bares e restaurantes" style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); background: #000; width: 100%; max-width: 320px; aspect-ratio: 9/16; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center;" onclick="this.innerHTML='<iframe width=100% height=100% src=https://www.youtube.com/embed/rQRBtZUJ36Y?autoplay=1 title=Bares+e+restaurantes frameborder=0 allow=accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share referrerpolicy=strict-origin-when-cross-origin allowfullscreen style=display:block></iframe>'; this.style.cursor='default';">
             <img src="https://i.ytimg.com/vi/rQRBtZUJ36Y/hqdefault.jpg" alt="Vídeo: Bares e restaurantes" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;" loading="lazy" decoding="async">
             <div style="position: relative; z-index: 2; width: 72px; height: 72px; background: rgba(255,0,0,0.85); border-radius: 16px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
@@ -1278,7 +1308,7 @@
         Impressoras & Balanças
       </div>
     </div>
-    <img src="assets/Dispositivos.webp" alt="PDV em vários dispositivos" style="width: 100%; max-width: 800px; margin: 0 auto; display: block; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.5));" loading="lazy" decoding="async" width="949" height="595">
+    <img src="assets/Dispositivos.webp" alt="PDV em vários dispositivos" style="width: 100%; max-width: 800px; height: auto; aspect-ratio: 949/595; margin: 0 auto; display: block; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.5));" loading="lazy" decoding="async" width="949" height="595">
   </div>
 </section>
 
@@ -1294,9 +1324,10 @@
       
       <!-- ITEM 1 -->
       <div data-aos="fade-up" style="background: #1e293b; border-radius: 16px; overflow: hidden; display: flex; flex-direction: row; border: 1px solid rgba(255,255,255,0.05); min-height: 350px;">
-        <div style="flex: 1; padding: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-          <img src="assets/Dispositivos.webp" alt="Sistema para todos os Dispositivos" style="width: 100%; height: 100%; object-fit: cover; object-position: center; min-height: 350px;" loading="lazy" decoding="async" width="949" height="595">
-        </div>
+         <!-- Item 1: Dispositivos — AR 949/595 = 1.595 -->
+          <div style="flex: 1; min-width: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden; aspect-ratio: 949/595;">
+            <img src="assets/Dispositivos.webp" alt="Sistema para todos os Dispositivos" style="width: 100%; height: auto; aspect-ratio: 949/595; object-fit: contain;" loading="lazy" decoding="async" width="949" height="595">
+          </div>
         <div style="flex: 1; padding: 48px; display: flex; flex-direction: column; justify-content: center;">
           <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 16px;">Sistema PDV Híbrido</h3>
           <p style="color: #f8fafc; font-size: 15px; margin-bottom: 24px; line-height: 1.6;">
@@ -1311,9 +1342,10 @@
 
       <!-- ITEM 2 -->
       <div data-aos="fade-up" style="background: #1e293b; border-radius: 16px; overflow: hidden; display: flex; flex-direction: row-reverse; border: 1px solid rgba(255,255,255,0.05); min-height: 350px;">
-        <div style="flex: 1; padding: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-          <img src="assets/Delivery (1).webp" alt="Hub Delivery" style="width: 100%; height: 100%; object-fit: contain; padding: 24px; min-height: 350px;" loading="lazy" decoding="async" width="1024" height="1280">
-        </div>
+         <!-- Item 2: Delivery — AR 1024/1280 = 0.8 (retrato) -->
+          <div style="flex: 1; min-width: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden; aspect-ratio: 1/1;">
+            <img src="assets/Delivery (1).webp" alt="Hub Delivery" style="width: auto; height: 100%; max-height: 400px; aspect-ratio: 1024/1280; object-fit: contain; padding: 24px;" loading="lazy" decoding="async" width="1024" height="1280">
+          </div>
         <div style="flex: 1; padding: 48px; display: flex; flex-direction: column; justify-content: center;">
           <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 16px;">Hub Delivery</h3>
           <p style="color: #f8fafc; font-size: 15px; margin-bottom: 24px; line-height: 1.6;">
@@ -1328,9 +1360,10 @@
 
       <!-- ITEM 3 -->
       <div data-aos="fade-up" style="background: #1e293b; border-radius: 16px; overflow: hidden; display: flex; flex-direction: row; border: 1px solid rgba(255,255,255,0.05); min-height: 350px;">
-        <div style="flex: 1; padding: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-          <img src="assets/img-menu-digital.webp" alt="Cardápio Digital e Catálogo" style="width: 100%; height: 100%; object-fit: cover; object-position: left top; min-height: 350px;" loading="lazy" decoding="async" width="630" height="530">
-        </div>
+         <!-- Item 3: Menu Digital — AR 630/530 = 1.189 -->
+          <div style="flex: 1; min-width: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden; aspect-ratio: 630/530;">
+            <img src="assets/img-menu-digital.webp" alt="Cardápio Digital e Catálogo" style="width: 100%; height: auto; aspect-ratio: 630/530; object-fit: contain;" loading="lazy" decoding="async" width="630" height="530">
+          </div>
         <div style="flex: 1; padding: 48px; display: flex; flex-direction: column; justify-content: center;">
           <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 16px;">Menu Digital e Catálogo Delivery</h3>
           <p style="color: #f8fafc; font-size: 15px; margin-bottom: 24px; line-height: 1.6;">
@@ -1345,9 +1378,10 @@
 
       <!-- ITEM 4 -->
       <div data-aos="fade-up" style="background: #1e293b; border-radius: 16px; overflow: hidden; display: flex; flex-direction: row-reverse; border: 1px solid rgba(255,255,255,0.05); min-height: 350px;">
-        <div style="flex: 1; padding: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-          <img src="assets/Hero.webp" alt="Autoatendimento" style="width: 100%; height: 100%; object-fit: cover; object-position: left; min-height: 350px;" loading="lazy" decoding="async" width="1260" height="595">
-        </div>
+         <!-- Item 4: Hero/Autoatendimento — AR 1260/595 = 2.118 (wide) -->
+          <div style="flex: 1; min-width: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden; aspect-ratio: 1260/595;">
+            <img src="assets/Hero.webp" alt="Autoatendimento" style="width: 100%; height: auto; aspect-ratio: 1260/595; object-fit: contain;" loading="lazy" decoding="async" width="1260" height="595">
+          </div>
         <div style="flex: 1; padding: 48px; display: flex; flex-direction: column; justify-content: center;">
           <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 16px;">Sistema de Autoatendimento</h3>
           <p style="color: #f8fafc; font-size: 15px; margin-bottom: 24px; line-height: 1.6;">
@@ -1362,9 +1396,10 @@
 
       <!-- ITEM 5 -->
       <div data-aos="fade-up" style="background: #1e293b; border-radius: 16px; overflow: hidden; display: flex; flex-direction: row; border: 1px solid rgba(255,255,255,0.05); min-height: 350px;">
-        <div style="flex: 1; padding: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-          <img src="assets/img-monitor-cozinha.webp" alt="Monitor KDS" style="width: 100%; height: 100%; object-fit: contain; padding: 24px; min-height: 350px;" loading="lazy" decoding="async" width="620" height="465">
-        </div>
+         <!-- Item 5: Monitor Cozinha — AR 620/465 = 1.333 -->
+          <div style="flex: 1; min-width: 0; background: #0c1225; display: flex; align-items: center; justify-content: center; overflow: hidden; aspect-ratio: 620/465;">
+            <img src="assets/img-monitor-cozinha.webp" alt="Monitor KDS" style="width: 100%; height: auto; aspect-ratio: 620/465; object-fit: contain; padding: 24px;" loading="lazy" decoding="async" width="620" height="465">
+          </div>
         <div style="flex: 1; padding: 48px; display: flex; flex-direction: column; justify-content: center;">
           <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 16px;">Monitor KDS (Cozinha e Bar)</h3>
           <p style="color: #f8fafc; font-size: 15px; margin-bottom: 24px; line-height: 1.6;">
@@ -1481,7 +1516,7 @@
     <h2>A velocidade do Offline com a segurança da Nuvem</h2>
     <p>O sistema é instalado no seu computador, garantindo velocidade máxima e imunidade a quedas de internet. Enquanto você vende, ele sincroniza automaticamente todas as informações com a nuvem, mantendo seu backup seguro em tempo real.</p>
     <div class="cta-final-btns">
-      <a href="https://wa.me/5551996034862" class="btn btn-primary btn-lg" target="_blank">Começar meu teste grátis</a>
+      <a href="https://wa.me/5551996034862" class="btn btn-primary btn-lg" aria-label="Começar meu teste grátis e conversar no WhatsApp" target="_blank">Começar meu teste grátis</a>
     </div>
   </div>
 </section>
@@ -1520,7 +1555,7 @@
     <div class="footer-top" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding-bottom:0; border:none;">
       <h2 style="color:#fff; font-size:32px; font-weight:800; margin-bottom:16px;">Pronto para transformar sua operação?</h2>
       <p style="color: #cbd5e1; font-size:18px; margin-bottom:32px; max-width:600px;">Junte-se a dezenas de estabelecimentos que não perdem vendas e não deixam o cliente esperando na fila.</p>
-      <a href="https://wa.me/5551996034862" class="btn btn-primary btn-lg" target="_blank" style="margin-bottom:60px;">Falar com Especialista</a>
+      <a href="https://wa.me/5551996034862" class="btn btn-primary btn-lg" aria-label="Falar com especialista pelo WhatsApp" target="_blank" style="margin-bottom:60px;">Falar com Especialista</a>
       
       <div style="border-top:1px solid rgba(255,255,255,0.1); width:100%; padding-top:40px; margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
         <span style="font-size:20px; font-weight:900; color:#fff;">Fantoni Software</span>
@@ -1531,7 +1566,7 @@
 </footer>
 
 <!-- WHATSAPP FLOAT -->
-<a href="https://wa.me/5551996034862" target="_blank" class="testar-float">
+<a href="https://wa.me/5551996034862" target="_blank" class="testar-float" aria-label="Falar no WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   <span class="testar-float-label">Falar no WhatsApp</span>
 </a>
@@ -1555,6 +1590,7 @@
 
 <a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20Fantoni%20PDV" 
    target="_blank" 
+   aria-label="Conversar no WhatsApp com o suporte"
    style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #25d366; color: white; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: transform 0.3s ease;"
    onmouseover="this.style.transform='scale(1.1)'"
    onmouseout="this.style.transform='scale(1)'">
@@ -1562,5 +1598,42 @@
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.8 5.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
   </svg>
 </a>
+<!-- ===== META PIXEL (diferido — não bloqueia LCP) ===== -->
+<script>
+(function() {
+  if (window.fbq) return;
+  var n = window.fbq = function() {
+    n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+  };
+  if (!window._fbq) window._fbq = n;
+  n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+})();
+// Carrega o Pixel na primeira interação do usuário (scroll, click ou touch)
+// mais inteligente que timer fixo: só carrega se houver engajamento real
+var __fbLoaded = false;
+function __loadFbPixel() {
+  if (__fbLoaded) return;
+  __fbLoaded = true;
+  ['scroll','click','touchstart','keydown'].forEach(function(e) {
+    window.removeEventListener(e, __loadFbPixel, {passive:true});
+  });
+  var t = document.createElement('script');
+  t.async = true;
+  t.src = 'https://connect.facebook.net/en_US/fbevents.js';
+  document.head.appendChild(t);
+  t.onload = function() {
+    fbq('init', window.__fbPixelId || '2035088657416576');
+    fbq('track', 'PageView');
+  };
+}
+['scroll','click','touchstart','keydown'].forEach(function(e) {
+  window.addEventListener(e, __loadFbPixel, {once:true, passive:true});
+});
+// Fallback: carrega após 8s caso não haja interação
+setTimeout(__loadFbPixel, 8000);
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
+/></noscript>
 </body>
 </html>

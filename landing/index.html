@@ -21,7 +21,7 @@
   <meta property="og:site_name" content="Fantoni Software" />
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="icon" type="image/webp" href="assets/logo.webp" />
 
   <!-- SEO: Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -108,31 +108,21 @@
   <!-- SEO: Canônico -->
   <link rel="canonical" href="https://fantonisoftware.com.br/" />
 
-  <!-- Meta Pixel Code -->
+  <!-- Meta Pixel: carregado após load para não bloquear LCP -->
   <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '2035088657416576');
-  fbq('track', 'PageView');
+  window.__fbPixelId = '2035088657416576';
   </script>
-  <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
-  /></noscript>
-  <!-- End Meta Pixel Code -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://connect.facebook.net" crossorigin />
+  <link rel="preconnect" href="https://i.ytimg.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" /></noscript>
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'" />
-  <link rel="preload" as="image" href="assets/Dispositivos.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/Dispositivos.webp" fetchpriority="high" type="image/webp">
+  <link rel="preload" as="image" href="assets/Hero.webp" fetchpriority="high" type="image/webp">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -688,7 +678,7 @@
       .recurso-item.reverse { direction: ltr; }
       /* Hero img: mostra abaixo do texto em tablet/mobile médio */
       .hero-img { display: flex; justify-content: center; margin-top: 0; }
-      .hero-screenshot { max-width: min(380px, 88vw); max-height: 200px; object-fit: contain; animation: none; }
+      .hero-screenshot { max-width: min(380px, 88vw); height: auto !important; max-height: 200px; aspect-ratio: 949/595; object-fit: contain; animation: none; }
       .footer-top { grid-template-columns: 1fr 1fr; }
       .stats-inner { grid-template-columns: repeat(3,1fr); }
     }
@@ -704,7 +694,7 @@
       .stats-inner { grid-template-columns: 1fr !important; gap: 16px !important; }
       /* Hero: imagem menor em telas muito pequenas */
       .hero-img { display: flex; }
-      .hero-screenshot { max-width: min(260px, 78vw) !important; max-height: 150px !important; object-fit: contain !important; }
+      .hero-screenshot { max-width: min(260px, 78vw) !important; height: auto !important; max-height: 150px !important; aspect-ratio: 949/595 !important; object-fit: contain !important; }
     }
     /* ---- FOOTER BOTTOM ---- */
     .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; }
@@ -794,7 +784,10 @@
 <nav>
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <img src="assets/logo.png" alt="Fantoni Software" style="height:38px;width:auto;object-fit:contain;">
+      <picture>
+        <source srcset="assets/logo.webp 1x, assets/logo-240.webp 2x" type="image/webp">
+        <img src="assets/logo.png" alt="Fantoni Software" width="38" height="38" style="height:38px; width:auto; aspect-ratio: 1/1; object-fit: contain;" fetchpriority="high" decoding="async">
+      </picture>
       <span style="font-size:19px;font-weight:900;letter-spacing:-0.5px;line-height:1;">Fantoni <span class="logo-text-dark">Software</span></span>
     </a>
     <ul class="nav-links">
@@ -882,14 +875,14 @@
   </style>
 
   <!-- Video Background -->
-  <video id="hero-broll" autoplay loop muted playsinline preload="none" poster="assets/Hero.png" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: blur(8px) brightness(0.6) scale(1.06);">
+  <video id="hero-broll" autoplay loop muted playsinline preload="none" poster="assets/Hero.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: blur(8px) brightness(0.6) scale(1.06);">
     <source src="assets/Video b-rooll.mp4" type="video/mp4">
   </video>
   
   <!-- Overlay Elegante -->
   <div style="position: absolute; inset: 0; z-index: 1; background: linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(29,78,216,0.4) 100%); pointer-events: none;"></div>
 
-  <div class="hero-inner" data-aos="fade-up" style="position:relative; z-index:2; max-width:1200px; width:100%;">
+  <div class="hero-inner" style="position:relative; z-index:2; max-width:1200px; width:100%;">
 
     <!-- Coluna esquerda: texto -->
     <div class="hero-text-col bg-glass-dark" style="border-radius:20px;padding:40px 36px;">
@@ -941,15 +934,18 @@
     <div class="hero-img bg-glass-dark" style="display:flex;align-items:center;justify-content:center;position:relative;border-radius:20px;padding:28px;">
       <!-- Glow de fundo -->
       <div style="position:absolute;inset:-20%;border-radius:50%;background:radial-gradient(ellipse,rgba(59,130,246,0.35) 0%,transparent 65%);pointer-events:none;"></div>
-      <img
-        src="assets/Dispositivos.png"
-        alt="Fantoni PDV — disponível em qualquer dispositivo"
-        class="hero-screenshot"
-        loading="eager"
-        fetchpriority="high"
-        width="949"
-        height="595"
-      >
+      <picture>
+        <source srcset="assets/Dispositivos.webp" type="image/webp">
+        <img
+          src="assets/Dispositivos.png"
+          alt="Fantoni PDV — disponível em qualquer dispositivo"
+          class="hero-screenshot"
+          loading="eager"
+          fetchpriority="high"
+          width="949"
+          height="595"
+        >
+      </picture>
     </div>
 
   </div>
@@ -1073,126 +1069,126 @@
       <!-- ===================== LISTA ORIGINAL ===================== -->
 
       <div class="marquee-item">
-        <img src="assets/Clientes/A%20Mesa.png" alt="A Mesa" loading="lazy">
+        <picture><source srcset="assets/Clientes/A%20Mesa.webp" type="image/webp"><img src="assets/Clientes/A%20Mesa.png" alt="A Mesa" loading="lazy"></picture>
         <span>A Mesa</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Adri%20Gourmet.png" alt="Adri Gourmet" loading="lazy">
+        <picture><source srcset="assets/Clientes/Adri%20Gourmet.webp" type="image/webp"><img src="assets/Clientes/Adri%20Gourmet.png" alt="Adri Gourmet" loading="lazy"></picture>
         <span>Adri Gourmet</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Berlin%20Tap%20House.png" alt="Berlin Tap House" loading="lazy">
+        <picture><source srcset="assets/Clientes/Berlin%20Tap%20House.webp" type="image/webp"><img src="assets/Clientes/Berlin%20Tap%20House.png" alt="Berlin Tap House" loading="lazy"></picture>
         <span>Berlin Tap House</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Cantinho%20do%20Memel.png" alt="Cantinho do Memel" loading="lazy">
+        <picture><source srcset="assets/Clientes/Cantinho%20do%20Memel.webp" type="image/webp"><img src="assets/Clientes/Cantinho%20do%20Memel.png" alt="Cantinho do Memel" loading="lazy"></picture>
         <span>Cantinho do Memel</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Clube%20do%20Garfo.png" alt="Clube do Garfo" loading="lazy">
+        <picture><source srcset="assets/Clientes/Clube%20do%20Garfo.webp" type="image/webp"><img src="assets/Clientes/Clube%20do%20Garfo.png" alt="Clube do Garfo" loading="lazy"></picture>
         <span>Clube do Garfo</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Country%20Pub%2B.png" alt="Country Pub+" loading="lazy">
+        <picture><source srcset="assets/Clientes/Country%20Pub%2B.webp" type="image/webp"><img src="assets/Clientes/Country%20Pub%2B.png" alt="Country Pub+" loading="lazy"></picture>
         <span>Country Pub+</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Coutry%20Pub.png" alt="Country Pub" loading="lazy">
+        <picture><source srcset="assets/Clientes/Coutry%20Pub.webp" type="image/webp"><img src="assets/Clientes/Coutry%20Pub.png" alt="Country Pub" loading="lazy"></picture>
         <span>Country Pub</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Hemeli%20Vivian%20Confeitaria.png" alt="Hemeli Vivian Confeitaria" loading="lazy">
+        <picture><source srcset="assets/Clientes/Hemeli%20Vivian%20Confeitaria.webp" type="image/webp"><img src="assets/Clientes/Hemeli%20Vivian%20Confeitaria.png" alt="Hemeli Vivian Confeitaria" loading="lazy"></picture>
         <span>Hemeli Vivian</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Hot%20%2B.png" alt="Hot +" loading="lazy">
+        <picture><source srcset="assets/Clientes/Hot%20%2B.webp" type="image/webp"><img src="assets/Clientes/Hot%20%2B.png" alt="Hot +" loading="lazy"></picture>
         <span>Hot +</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/La%20Epinoza.png" alt="La Epinoza" loading="lazy">
+        <picture><source srcset="assets/Clientes/La%20Epinoza.webp" type="image/webp"><img src="assets/Clientes/La%20Epinoza.png" alt="La Epinoza" loading="lazy"></picture>
         <span>La Epinoza</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Pier%2077.png" alt="Pier 77" loading="lazy">
+        <picture><source srcset="assets/Clientes/Pier%2077.webp" type="image/webp"><img src="assets/Clientes/Pier%2077.png" alt="Pier 77" loading="lazy"></picture>
         <span>Pier 77</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Restaurante%20Dumer.png" alt="Restaurante Dumer" loading="lazy">
+        <picture><source srcset="assets/Clientes/Restaurante%20Dumer.webp" type="image/webp"><img src="assets/Clientes/Restaurante%20Dumer.png" alt="Restaurante Dumer" loading="lazy"></picture>
         <span>Rest. Dumer</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/SBE%20Sposts.png" alt="SBE Sports" loading="lazy">
+        <picture><source srcset="assets/Clientes/SBE%20Sposts.webp" type="image/webp"><img src="assets/Clientes/SBE%20Sposts.png" alt="SBE Sports" loading="lazy"></picture>
         <span>SBE Sports</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Saint%20Lager.png" alt="Saint Lager" loading="lazy">
+        <picture><source srcset="assets/Clientes/Saint%20Lager.webp" type="image/webp"><img src="assets/Clientes/Saint%20Lager.png" alt="Saint Lager" loading="lazy"></picture>
         <span>Saint Lager</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Yolis%20Cosm%C3%A9tica.png" alt="Yolis Cosmética" loading="lazy">
+        <picture><source srcset="assets/Clientes/Yolis%20Cosm%C3%A9tica.webp" type="image/webp"><img src="assets/Clientes/Yolis%20Cosm%C3%A9tica.png" alt="Yolis Cosmética" loading="lazy"></picture>
         <span>Yolis Cosmética</span>
       </div>
 
       <!-- =========== DUPLICATA (necessária para o loop sem salto) =========== -->
 
       <div class="marquee-item">
-        <img src="assets/Clientes/A%20Mesa.png" alt="A Mesa" loading="lazy">
+        <picture><source srcset="assets/Clientes/A%20Mesa.webp" type="image/webp"><img src="assets/Clientes/A%20Mesa.png" alt="A Mesa" loading="lazy"></picture>
         <span>A Mesa</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Adri%20Gourmet.png" alt="Adri Gourmet" loading="lazy">
+        <picture><source srcset="assets/Clientes/Adri%20Gourmet.webp" type="image/webp"><img src="assets/Clientes/Adri%20Gourmet.png" alt="Adri Gourmet" loading="lazy"></picture>
         <span>Adri Gourmet</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Berlin%20Tap%20House.png" alt="Berlin Tap House" loading="lazy">
+        <picture><source srcset="assets/Clientes/Berlin%20Tap%20House.webp" type="image/webp"><img src="assets/Clientes/Berlin%20Tap%20House.png" alt="Berlin Tap House" loading="lazy"></picture>
         <span>Berlin Tap House</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Cantinho%20do%20Memel.png" alt="Cantinho do Memel" loading="lazy">
+        <picture><source srcset="assets/Clientes/Cantinho%20do%20Memel.webp" type="image/webp"><img src="assets/Clientes/Cantinho%20do%20Memel.png" alt="Cantinho do Memel" loading="lazy"></picture>
         <span>Cantinho do Memel</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Clube%20do%20Garfo.png" alt="Clube do Garfo" loading="lazy">
+        <picture><source srcset="assets/Clientes/Clube%20do%20Garfo.webp" type="image/webp"><img src="assets/Clientes/Clube%20do%20Garfo.png" alt="Clube do Garfo" loading="lazy"></picture>
         <span>Clube do Garfo</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Country%20Pub%2B.png" alt="Country Pub+" loading="lazy">
+        <picture><source srcset="assets/Clientes/Country%20Pub%2B.webp" type="image/webp"><img src="assets/Clientes/Country%20Pub%2B.png" alt="Country Pub+" loading="lazy"></picture>
         <span>Country Pub+</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Coutry%20Pub.png" alt="Country Pub" loading="lazy">
+        <picture><source srcset="assets/Clientes/Coutry%20Pub.webp" type="image/webp"><img src="assets/Clientes/Coutry%20Pub.png" alt="Country Pub" loading="lazy"></picture>
         <span>Country Pub</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Hemeli%20Vivian%20Confeitaria.png" alt="Hemeli Vivian Confeitaria" loading="lazy">
+        <picture><source srcset="assets/Clientes/Hemeli%20Vivian%20Confeitaria.webp" type="image/webp"><img src="assets/Clientes/Hemeli%20Vivian%20Confeitaria.png" alt="Hemeli Vivian Confeitaria" loading="lazy"></picture>
         <span>Hemeli Vivian</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Hot%20%2B.png" alt="Hot +" loading="lazy">
+        <picture><source srcset="assets/Clientes/Hot%20%2B.webp" type="image/webp"><img src="assets/Clientes/Hot%20%2B.png" alt="Hot +" loading="lazy"></picture>
         <span>Hot +</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/La%20Epinoza.png" alt="La Epinoza" loading="lazy">
+        <picture><source srcset="assets/Clientes/La%20Epinoza.webp" type="image/webp"><img src="assets/Clientes/La%20Epinoza.png" alt="La Epinoza" loading="lazy"></picture>
         <span>La Epinoza</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Pier%2077.png" alt="Pier 77" loading="lazy">
+        <picture><source srcset="assets/Clientes/Pier%2077.webp" type="image/webp"><img src="assets/Clientes/Pier%2077.png" alt="Pier 77" loading="lazy"></picture>
         <span>Pier 77</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Restaurante%20Dumer.png" alt="Restaurante Dumer" loading="lazy">
+        <picture><source srcset="assets/Clientes/Restaurante%20Dumer.webp" type="image/webp"><img src="assets/Clientes/Restaurante%20Dumer.png" alt="Restaurante Dumer" loading="lazy"></picture>
         <span>Rest. Dumer</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/SBE%20Sposts.png" alt="SBE Sports" loading="lazy">
+        <picture><source srcset="assets/Clientes/SBE%20Sposts.webp" type="image/webp"><img src="assets/Clientes/SBE%20Sposts.png" alt="SBE Sports" loading="lazy"></picture>
         <span>SBE Sports</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Saint%20Lager.png" alt="Saint Lager" loading="lazy">
+        <picture><source srcset="assets/Clientes/Saint%20Lager.webp" type="image/webp"><img src="assets/Clientes/Saint%20Lager.png" alt="Saint Lager" loading="lazy"></picture>
         <span>Saint Lager</span>
       </div>
       <div class="marquee-item">
-        <img src="assets/Clientes/Yolis%20Cosm%C3%A9tica.png" alt="Yolis Cosmética" loading="lazy">
+        <picture><source srcset="assets/Clientes/Yolis%20Cosm%C3%A9tica.webp" type="image/webp"><img src="assets/Clientes/Yolis%20Cosm%C3%A9tica.png" alt="Yolis Cosmética" loading="lazy"></picture>
         <span>Yolis Cosmética</span>
       </div>
 
@@ -1525,7 +1521,10 @@
           </ul>
         </div>
         <div style="display:flex; justify-content:center;">
-          <img src="assets/Gestão Completa (1).png" alt="Gestão Completa" loading="lazy" width="1024" height="1280" style="width:100%; height:auto; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          <picture>
+            <source srcset="assets/Gestão Completa (1).webp" type="image/webp">
+            <img src="assets/Gestão Completa (1).png" alt="Gestão Completa" loading="lazy" width="1024" height="1280" style="width:100%; height:auto; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          </picture>
         </div>
       </div>
 
@@ -1542,7 +1541,10 @@
           </ul>
         </div>
         <div style="display:flex; justify-content:center;">
-          <img src="assets/Delivery (1).png" alt="Delivery PDV" loading="lazy" width="1024" height="1280" style="width:100%; height:auto; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          <picture>
+            <source srcset="assets/Delivery (1).webp" type="image/webp">
+            <img src="assets/Delivery (1).png" alt="Delivery PDV" loading="lazy" width="1024" height="1280" style="width:100%; height:auto; max-width:500px; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.06)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          </picture>
         </div>
       </div>
 
@@ -1562,7 +1564,7 @@
           </ul>
         </div>
         <div style="display:flex; justify-content:center;">
-          <img src="assets/NF.png" alt="Emissão de NFC-e e NF-e — Fantoni PDV" loading="lazy" width="335" height="600" style="width:100%; height:auto; max-width:420px; max-height:360px; object-fit:contain; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.07)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="assets/NF.webp" alt="Emissão de NFC-e e NF-e — Fantoni PDV" loading="lazy" width="335" height="600" style="width:100%; height:auto; max-width:420px; max-height:360px; object-fit:contain; filter:drop-shadow(0 24px 40px rgba(0,0,0,0.07)); transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
         </div>
       </div>
 
@@ -1589,7 +1591,7 @@
     </div>
 
     <div style="display:flex; justify-content:center; transform: translateY(15px);">
-      <img src="assets/Dispositivos.png" alt="Fantoni PDV totalmente integrado" loading="lazy" width="949" height="595" style="width:100%; height:auto; max-width:850px; margin:0 auto; display:block; filter:drop-shadow(0 24px 50px rgba(0,0,0,0.12)); transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.02) translateY(-10px)'" onmouseout="this.style.transform='scale(1) translateY(0)'">
+      <img src="assets/Dispositivos.webp" alt="Fantoni PDV totalmente integrado" loading="lazy" width="949" height="595" style="width:100%; height:auto; max-width:850px; margin:0 auto; display:block; filter:drop-shadow(0 24px 50px rgba(0,0,0,0.12)); transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.02) translateY(-10px)'" onmouseout="this.style.transform='scale(1) translateY(0)'">
     </div>
   </div>
 </section>
@@ -1834,7 +1836,7 @@
     return (
       '<div class="maq-img-col" style="display:flex;align-items:center;justify-content:center;position:relative;">' +
         '<div style="position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(ellipse,rgba(59,130,246,0.1) 0%,transparent 70%);pointer-events:none;"></div>' +
-        '<img class="maq-img-float" src="' + m.imagem + '" alt="Maquininha ' + m.nome + '" loading="lazy" style="width:100%;max-width:240px;filter:drop-shadow(0 28px 48px rgba(0,0,0,0.2));position:relative;z-index:1;">' +
+        '<img class="maq-img-float" src="' + m.imagem + '" alt="Maquininha ' + m.nome + '" loading="lazy" width="300" height="608" style="width:100%;max-width:240px;height:auto;aspect-ratio:300/608;object-fit:contain;filter:drop-shadow(0 28px 48px rgba(0,0,0,0.2));position:relative;z-index:1;">' +
       '</div>' +
       '<div>' +
         '<img src="' + m.logo + '" alt="' + m.nome + '" style="height:38px;width:auto;max-width:140px;margin-bottom:24px;display:block;object-fit:contain;">' +
@@ -1967,7 +1969,7 @@
       <div class="depo-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Sistema tá impecável. Ponto de impressão resolveu um baita problema por aqui. Grato pelo atendimento."</p>
-        <img src="assets/feedback-screenshot.png" alt="Depoimento de cliente via WhatsApp" loading="lazy" width="1289" height="280" style="width:100%;height:auto;border-radius:10px;margin-bottom:16px;border:1px solid #e2e8f0;">
+        <img src="assets/feedback-screenshot.webp" alt="Depoimento de cliente via WhatsApp" loading="lazy" width="1289" height="280" style="width:100%;height:auto;border-radius:10px;margin-bottom:16px;border:1px solid #e2e8f0;">
         <div class="depo-autor" style="display:flex; align-items:center; gap:12px;">
           <div style="width:40px; height:40px; background:#dcfce7; color:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"/></svg>
@@ -2038,7 +2040,7 @@
 
   <!-- Sede -->
   <div style="max-width:900px;margin:32px auto 0;display:flex;align-items:center;gap:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;flex-wrap:wrap;">
-    <img src="assets/Cede.jpeg" alt="Sede da Fantoni Software em Santa Cruz do Sul" loading="lazy" width="1200" height="1600" style="width:160px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+    <img src="assets/Cede.webp" alt="Sede da Fantoni Software em Santa Cruz do Sul" loading="lazy" width="1200" height="1600" style="width:160px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0;">
     <div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
@@ -2923,5 +2925,45 @@
   });
 })();
 </script>
+
+<!-- ===== META PIXEL (diferido — não bloqueia LCP) ===== -->
+<script>
+// Stub do fbq para chamadas que ocorrem antes do Pixel carregar
+(function() {
+  if (window.fbq) return;
+  var n = window.fbq = function() {
+    n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+  };
+  if (!window._fbq) window._fbq = n;
+  n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+})();
+
+// Carrega o Pixel na primeira interação do usuário (scroll, click, touch, keydown)
+var __fbLoaded = false;
+function __loadFbPixel() {
+  if (__fbLoaded) return;
+  __fbLoaded = true;
+  ['scroll', 'click', 'touchstart', 'keydown'].forEach(function(e) {
+    window.removeEventListener(e, __loadFbPixel, { passive: true });
+  });
+  var t = document.createElement('script');
+  t.async = true;
+  t.src = 'https://connect.facebook.net/en_US/fbevents.js';
+  document.head.appendChild(t);
+  t.onload = function() {
+    fbq('init', window.__fbPixelId || '2035088657416576');
+    fbq('track', 'PageView');
+  };
+}
+['scroll', 'click', 'touchstart', 'keydown'].forEach(function(e) {
+  window.addEventListener(e, __loadFbPixel, { once: true, passive: true });
+});
+// Fallback: carrega após 8s caso não haja interação
+setTimeout(__loadFbPixel, 8000);
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
+/></noscript>
 </body>
 </html>
+
