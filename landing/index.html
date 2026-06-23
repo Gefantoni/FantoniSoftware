@@ -685,6 +685,41 @@
     @media (max-width: 768px) {
       .pricing-grid { grid-template-columns: 1fr; }
       .pricing-card-featured { transform: none !important; padding: 48px 32px !important; }
+
+      /* Bug do Logo (No Topo) */
+      .nav-logo {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+      }
+      .nav-logo picture,
+      .nav-logo img {
+        width: 38px !important;
+        height: 38px !important;
+        max-width: 38px !important;
+        max-height: 38px !important;
+        flex-shrink: 0 !important;
+        object-fit: contain !important;
+        display: inline-block !important;
+      }
+      .nav-logo span {
+        display: inline-block !important;
+        line-height: 1 !important;
+        align-self: center !important;
+        margin: 0 !important;
+      }
+      
+      /* Correção de Redimensionamento Hero Screenshot */
+      .hero-screenshot {
+        width: 100% !important;
+        max-width: 637px !important;
+        height: auto !important;
+        max-height: none !important;
+        aspect-ratio: 949 / 595 !important;
+        object-fit: contain !important;
+      }
     }
     @media (max-width: 640px) {
       .nav-links, .nav-cta { display: none; }
