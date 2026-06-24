@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discovery Operacional - S3Capital CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#1a2b4c',
+                            900: '#0b162c',
+                            950: '#050a14',
+                        },
+                        graphite: {
+                            700: '#3f434a',
+                            800: '#2c2e33',
+                            900: '#1a1b1e',
+                        },
+                        primary: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(59, 130, 246, 0.5)',
+                        'card': '0 10px 30px -10px rgba(0, 0, 0, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f4f7f9;
+            background-image: radial-gradient(circle at top right, #eef2f6 0%, #f4f7f9 100%);
+        }
+        .form-section {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .form-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(26, 43, 76, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .input-field {
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        .input-field:focus {
+            background: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .checkbox-custom:checked + div {
+            background-color: #eef2ff;
+            border-color: #3b82f6;
+        }
+        .checkbox-custom:checked + div i {
+            color: #2563eb;
+            opacity: 1;
+        }
+        
+        /* Floating particles effect for header */
+        .particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; z-index: 0; pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="text-graphite-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+    
+    <!-- Header -->
+    <header class="bg-navy-950 text-white shadow-xl sticky top-0 z-50 border-b border-navy-800 overflow-hidden relative">
+        <div class="particles">
+            <div class="particle w-4 h-4 left-[10%] animation-delay-1000" style="animation-duration: 10s;"></div>
+            <div class="particle w-6 h-6 left-[30%] animation-delay-2000" style="animation-duration: 15s;"></div>
+            <div class="particle w-3 h-3 left-[70%] animation-delay-3000" style="animation-duration: 8s;"></div>
+            <div class="particle w-5 h-5 left-[90%] animation-delay-4000" style="animation-duration: 12s;"></div>
+        </div>
+        
+        <div class="max-w-5xl mx-auto px-6 py-5 flex justify-between items-center relative z-10">
+            <div class="flex items-center gap-4" data-aos="fade-right">
+                <!-- Logo S3Capital com fallback seguro se a imagem não existir -->
+                <img src="assets/S3capital.png" alt="S3Capital" class="h-10 object-contain" onerror="this.onerror=null; this.outerHTML='<div class=\'text-2xl font-bold tracking-tight text-white\'>S3<span class=\'text-primary-500 font-light\'>Capital</span></div>'"/>
+            </div>
+            
+            <div class="flex items-center gap-6" data-aos="fade-left">
+                <div class="hidden sm:block text-xs font-medium text-primary-400 border border-primary-500/30 bg-primary-500/10 rounded-full px-4 py-1.5 uppercase tracking-wider">
+                    Discovery Operacional
+                </div>
+                <div class="h-8 w-px bg-navy-800 hidden sm:block"></div>
+                <img src="assets/logo.png" alt="Fantoni Software" class="h-8 object-contain" onerror="this.onerror=null; this.outerHTML='<div class=\'text-lg font-bold text-gray-300\'>Fantoni<span class=\'font-light\'>Software</span></div>'"/>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow py-16 px-4 sm:px-6 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Intro Card -->
+            <div class="bg-white rounded-2xl shadow-card p-8 md:p-10 mb-12 border border-gray-100 relative overflow-hidden" data-aos="fade-up">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 to-navy-900"></div>
+                
+                <h1 class="text-3xl md:text-4xl font-bold text-navy-900 mb-6 flex items-center gap-3">
+                    <i data-lucide="compass" class="w-8 h-8 text-primary-500"></i>
+                    Documento de Descoberta Operacional
+                </h1>
+                
+                <div class="prose prose-lg text-gray-600 max-w-none space-y-4">
+                    <p class="font-medium text-navy-800">Prezado(a) Cliente,</p>
+                    <p>Para garantirmos o desenvolvimento de uma arquitetura de CRM robusta, escalável e <strong>100% alinhada</strong> aos seus processos de captação de crédito, elaboramos este documento de Discovery.</p>
+                    <p>As informações abaixo formarão a matriz estrutural do sistema. Por favor, detalhe cada etapa do seu processo atual para que possamos mapear o fluxo de dados, a esteira de aprovação e os gatilhos de automação com precisão.</p>
+                </div>
+            </div>
+
+            <form id="discoveryForm" class="space-y-8" onsubmit="submitForm(event)">
+                
+                <!-- 1. Inteligência de Negócio e Escopo -->
+                <div class="bg-white p-8 rounded-2xl shadow-card border border-transparent form-section relative overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-blue-50 text-primary-600 rounded-xl flex items-center justify-center shadow-sm">
+                            <i data-lucide="target" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-primary-500 tracking-wider uppercase mb-1">Seção 1</div>
+                            <h2 class="text-2xl font-bold text-navy-900">Inteligência de Negócio e Escopo</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">1.1 Quais são as modalidades exatas de crédito trabalhadas pela operação?</label>
+                            <p class="text-xs text-gray-500 mb-2">Ex: Home Equity, Consignado Público, Antecipação de FGTS, Financiamento Imobiliário, Capital de Giro PJ.</p>
+                            <textarea name="q1_1" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Digite as modalidades aqui..."></textarea>
+                        </div>
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">1.2 Qual é o Volume Médio Mensal (VMM) estimado de novas solicitações (Leads) que entrarão no sistema?</label>
+                            <input type="text" name="q1_2" required class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm" placeholder="Ex: 500 leads/mês">
+                        </div>
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">1.3 Qual é a principal origem de aquisição de clientes hoje?</label>
+                            <p class="text-xs text-gray-500 mb-2">Ex: Tráfego pago direto, rede de corretores parceiros, base de dados própria, call center.</p>
+                            <textarea name="q1_3" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Descreva as origens..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Jornada do Lead e Esteira de Crédito -->
+                <div class="bg-white p-8 rounded-2xl shadow-card border border-transparent form-section relative overflow-hidden" data-aos="fade-up" data-aos-delay="150">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-blue-50 text-primary-600 rounded-xl flex items-center justify-center shadow-sm">
+                            <i data-lucide="git-merge" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-primary-500 tracking-wider uppercase mb-1">Seção 2</div>
+                            <h2 class="text-2xl font-bold text-navy-900">Jornada do Lead e Esteira de Crédito</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">2.1 Mapeamento de Funil: Quais são as etapas obrigatórias pelas quais um cliente passa?</label>
+                            <p class="text-xs text-gray-500 mb-2">Por favor, liste o passo a passo sequencial. Ex: Novo Lead > Qualificação > Coleta de Docs > Análise Mesa > Aprovado > Assinado.</p>
+                            <textarea name="q2_1" required rows="3" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="1. Novo Lead&#10;2. Qualificação&#10;..."></textarea>
+                        </div>
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">2.2 SLA (Service Level Agreement): Existe um tempo máximo estipulado por etapa?</label>
+                            <p class="text-xs text-gray-500 mb-2">Antes de ser considerado "frio" ou necessitar de intervenção da gerência.</p>
+                            <textarea name="q2_2" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Descreva os SLAs (Ex: 24h na etapa Novo Lead)..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Matriz de Documentação e Compliance -->
+                <div class="bg-white p-8 rounded-2xl shadow-card border border-transparent form-section relative overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-blue-50 text-primary-600 rounded-xl flex items-center justify-center shadow-sm">
+                            <i data-lucide="file-check-2" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-primary-500 tracking-wider uppercase mb-1">Seção 3</div>
+                            <h2 class="text-2xl font-bold text-navy-900">Matriz de Documentação e Compliance</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">3.1 Quais documentos são mandatórios para a abertura de uma OS/Proposta?</label>
+                            <p class="text-xs text-gray-500 mb-2">Liste por categoria (Ex: PF e PJ).</p>
+                            <textarea name="q3_1" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="PF: RG, CPF, Comprovante de Residência..."></textarea>
+                        </div>
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">3.2 Qual é o fluxo de validação desses arquivos?</label>
+                            <p class="text-xs text-gray-500 mb-2">Upload via link externo pelo cliente ou anexado pela equipe internamente?</p>
+                            <textarea name="q3_2" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Descreva o fluxo de upload..."></textarea>
+                        </div>
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">3.3 Quais devem ser os status de controle documental?</label>
+                            <p class="text-xs text-gray-500 mb-2">Ex: Arquivo Corrompido, Ilegível, Aprovado, Pendente de Assinatura.</p>
+                            <input type="text" name="q3_3" required class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm" placeholder="Aprovado, Reprovado, Pendente...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Controle de Acessos e Governança -->
+                <div class="bg-white p-8 rounded-2xl shadow-card border border-transparent form-section relative overflow-hidden" data-aos="fade-up" data-aos-delay="250">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-blue-50 text-primary-600 rounded-xl flex items-center justify-center shadow-sm">
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-primary-500 tracking-wider uppercase mb-1">Seção 4</div>
+                            <h2 class="text-2xl font-bold text-navy-900">Controle de Acessos e Governança</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">4.1 Quais são os perfis hierárquicos que operarão o sistema?</label>
+                            <p class="text-xs text-gray-500 mb-2">Ex: Administrador/Sócio, Gerente de Vendas, Analista de Crédito/Backoffice, Consultor Comercial.</p>
+                            <textarea name="q4_1" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Perfis de usuários..."></textarea>
+                        </div>
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">4.2 Regras de Visibilidade:</label>
+                            <p class="text-xs text-gray-500 mb-2">Um consultor comercial pode visualizar os leads ou aprovações de outro consultor?</p>
+                            <textarea name="q4_2" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Regras de quem vê o quê..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Arquitetura de Automação e Comunicação -->
+                <div class="bg-white p-8 rounded-2xl shadow-card border border-transparent form-section relative overflow-hidden" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-blue-50 text-primary-600 rounded-xl flex items-center justify-center shadow-sm">
+                            <i data-lucide="bot" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-primary-500 tracking-wider uppercase mb-1">Seção 5</div>
+                            <h2 class="text-2xl font-bold text-navy-900">Arquitetura de Automação e Comunicação</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 mb-4">5.1 Quais réguas de relacionamento automático (WhatsApp/E-mail) são cruciais para reduzir o abandono de funil?</label>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-start gap-3 cursor-pointer group">
+                                    <input type="checkbox" name="q5_1_boasvindas" class="peer sr-only checkbox-custom">
+                                    <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center transition-all bg-white group-hover:border-primary-400 mt-0.5">
+                                        <i data-lucide="check" class="w-3.5 h-3.5 text-transparent transition-all opacity-0"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-700 select-none font-medium">Notificação de Boas-vindas / Entrada no Sistema</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-3 cursor-pointer group">
+                                    <input type="checkbox" name="q5_1_pendencia" class="peer sr-only checkbox-custom">
+                                    <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center transition-all bg-white group-hover:border-primary-400 mt-0.5">
+                                        <i data-lucide="check" class="w-3.5 h-3.5 text-transparent transition-all opacity-0"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-700 select-none font-medium">Alerta de pendência de documentos (Cobrança automática)</span>
+                                </label>
+                                
+                                <label class="flex items-start gap-3 cursor-pointer group">
+                                    <input type="checkbox" name="q5_1_status" class="peer sr-only checkbox-custom">
+                                    <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center transition-all bg-white group-hover:border-primary-400 mt-0.5">
+                                        <i data-lucide="check" class="w-3.5 h-3.5 text-transparent transition-all opacity-0"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-700 select-none font-medium">Atualização de mudança de status (Ex: "Seu crédito foi pré-aprovado!")</span>
+                                </label>
+
+                                <div class="mt-4 pt-3 border-t border-gray-100">
+                                    <p class="text-xs font-semibold text-gray-600 mb-2">Outras réguas? Especifique abaixo:</p>
+                                    <input type="text" name="q5_1_outras" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm" placeholder="Outras automações...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">5.2 A equipe interna precisa receber alertas automáticos para tarefas atrasadas ou retornos agendados?</label>
+                            <textarea name="q5_2" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Descreva a necessidade de alertas internos..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Ecossistema de Integrações e Dados -->
+                <div class="bg-white p-8 rounded-2xl shadow-card border border-transparent form-section relative overflow-hidden" data-aos="fade-up" data-aos-delay="350">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-blue-50 text-primary-600 rounded-xl flex items-center justify-center shadow-sm">
+                            <i data-lucide="network" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-primary-500 tracking-wider uppercase mb-1">Seção 6</div>
+                            <h2 class="text-2xl font-bold text-navy-900">Ecossistema de Integrações e Dados</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">6.1 O novo CRM precisará consumir ou enviar dados para ferramentas legadas?</label>
+                            <p class="text-xs text-gray-500 mb-2">Ex: ERP contábil, Clicksign/Zapsign, ferramentas de marketing.</p>
+                            <textarea name="q6_1" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Liste as ferramentas a serem integradas..."></textarea>
+                        </div>
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors">6.2 Quais são os KPIs (Indicadores-Chave de Performance) que devem estar visíveis no painel gerencial?</label>
+                            <p class="text-xs text-gray-500 mb-2">Ex: Taxa de conversão por modalidade, gargalo de pendências documentais, volume aprovado.</p>
+                            <textarea name="q6_2" required rows="2" class="input-field w-full px-4 py-3 border border-gray-200 rounded-xl outline-none text-sm resize-y" placeholder="Liste os indicadores essenciais..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Próximos Passos & Submit -->
+                <div class="bg-navy-900 text-white p-8 md:p-10 rounded-2xl shadow-2xl border border-navy-800 mt-12 relative overflow-hidden group" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary-600 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-blue-400 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                    
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <i data-lucide="forward" class="w-6 h-6 text-primary-400"></i> Próximos Passos
+                        </h3>
+                        <p class="text-gray-300 mb-8 leading-relaxed text-lg">
+                            Após o recebimento destas respostas, nossa equipe técnica processará as informações para desenhar o Fluxograma Operacional e o Modelo de Dados (Database Schema) que apresentaremos em nossa reunião de alinhamento técnico.<br><br>
+                            <span class="font-bold text-white">Agradecemos o tempo dedicado.</span>
+                        </p>
+                        
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-navy-800/50 pt-8">
+                            <div id="successMsg" class="hidden text-green-400 font-medium items-center gap-2 bg-green-500/10 px-4 py-3 rounded-xl border border-green-500/20 w-full sm:w-auto">
+                                <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                                Respostas enviadas com sucesso!
+                            </div>
+                            
+                            <button type="submit" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white font-bold py-4 px-10 rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 ml-auto group/btn">
+                                <span class="text-lg">Enviar Documento de Discovery</span>
+                                <i data-lucide="arrow-right" class="w-5 h-5 group-hover/btn:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navy-950 py-8 border-t border-navy-900 mt-12">
+        <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-sm text-gray-500">
+                &copy; 2026 S3Capital. Desenvolvido por <span class="text-gray-300 font-medium">Fantoni Software</span>.
+            </div>
+            <div class="flex gap-6 opacity-50">
+                <div class="flex items-center gap-2"><i data-lucide="shield" class="w-4 h-4 text-gray-400"></i> <span class="text-xs text-gray-400">Seguro</span></div>
+                <div class="flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4 text-gray-400"></i> <span class="text-xs text-gray-400">Criptografado</span></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Inicializar Lucide Icons
+        lucide.createIcons();
+        
+        // Inicializar AOS Animations
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50,
+        });
+
+        // Máscara visual simples ao interagir
+        const inputs = document.querySelectorAll('.input-field');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if(this.value.trim() !== '') {
+                    this.classList.add('border-primary-400', 'bg-blue-50/50');
+                } else {
+                    this.classList.remove('border-primary-400', 'bg-blue-50/50');
+                }
+            });
+        });
+
+        // Função de envio
+        function submitForm(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('discoveryForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Estruturação do JSON final
+            const discoveryJSON = {
+                timestamp: new Date().toISOString(),
+                cliente: "S3Capital",
+                documento: "Discovery Operacional",
+                respostas: {
+                    inteligenciaNegocio: {
+                        modalidades: data.q1_1,
+                        volumeMensal: data.q1_2,
+                        origemLeads: data.q1_3
+                    },
+                    jornadaLead: {
+                        mapeamentoFunil: data.q2_1,
+                        sla: data.q2_2
+                    },
+                    matrizDocumentacao: {
+                        documentosObrigatorios: data.q3_1,
+                        fluxoValidacao: data.q3_2,
+                        statusControle: data.q3_3
+                    },
+                    controleAcessos: {
+                        perfisHierarquicos: data.q4_1,
+                        regrasVisibilidade: data.q4_2
+                    },
+                    automacaoComunicacao: {
+                        reguasRelacionamento: {
+                            boasVindas: !!data.q5_1_boasvindas,
+                            pendencia: !!data.q5_1_pendencia,
+                            mudancaStatus: !!data.q5_1_status,
+                            outras: data.q5_1_outras
+                        },
+                        alertasInternos: data.q5_2
+                    },
+                    ecossistemaIntegracoes: {
+                        ferramentasLegadas: data.q6_1,
+                        kpis: data.q6_2
+                    }
+                }
+            };
+
+            console.log("=== RESULTADO DO DISCOVERY ===");
+            console.log(JSON.stringify(discoveryJSON, null, 2));
+
+            // Efeito visual no botão
+            const btn = form.querySelector('button[type="submit"]');
+            const msg = document.getElementById('successMsg');
+            
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Processando...';
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            lucide.createIcons();
+
+            // Envio via FormSubmit (AJAX)
+            fetch("https://formsubmit.co/ajax/fantonisoftware@gmail.com", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: "Novo Discovery S3Capital",
+                    _template: "box",
+                    JSON_Data: JSON.stringify(discoveryJSON, null, 2)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'shadow-[0_0_20px_rgba(37,99,235,0.4)]');
+                btn.classList.add('bg-green-600', 'hover:bg-green-500', 'shadow-[0_0_20px_rgba(22,163,74,0.4)]');
+                
+                // Change icon to check
+                btn.innerHTML = '<span class="text-lg">Enviado!</span> <i data-lucide="check" class="w-5 h-5"></i>';
+                lucide.createIcons();
+                
+                msg.classList.remove('hidden');
+                msg.classList.add('flex');
+                
+                // Reseta botão após 5 seg
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.remove('bg-green-600', 'hover:bg-green-500', 'shadow-[0_0_20px_rgba(22,163,74,0.4)]');
+                    btn.classList.add('bg-primary-600', 'hover:bg-primary-500', 'shadow-[0_0_20px_rgba(37,99,235,0.4)]');
+                    msg.classList.add('hidden');
+                    msg.classList.remove('flex');
+                    lucide.createIcons();
+                }, 5000);
+            })
+            .catch(error => {
+                console.error("Erro no envio:", error);
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                alert("Ocorreu um erro ao enviar. Por favor, tente novamente.");
+            });
+        }
+    </script>
+</body>
+</html>
