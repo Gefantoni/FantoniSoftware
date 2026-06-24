@@ -112,6 +112,11 @@ async function build() {
   if (!fs.existsSync(DIST_DIR)) fs.mkdirSync(DIST_DIR, { recursive: true });
   fs.writeFileSync(DIST, html, 'utf8');
 
+  // Copia o arquivo S3Capital.html para a pasta dist para que seja incluído no deploy
+  if (fs.existsSync('S3Capital.html')) {
+    fs.copyFileSync('S3Capital.html', path.join(DIST_DIR, 'S3Capital.html'));
+  }
+
   const saved = srcHtml.length - html.length;
   console.log('\n--- Resultado Final ---');
   console.log(`Input : ${kb(srcHtml.length)}`);
