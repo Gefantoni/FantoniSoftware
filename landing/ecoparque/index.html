@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta Comercial Exclusiva - Fantoni Software & Gramado Ecoparque</title>
+    <meta name="description" content="Sistema de Gestão Completo para o Gramado Ecoparque.">
+    <meta property="og:title" content="Proposta Comercial - Fantoni Software">
+    <meta property="og:description" content="Sistema de Gestão Completo para o Gramado Ecoparque.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1d4ed8;
+            --secondary: #06B6D4;
+            --bg: #0D1117;
+            --card-bg: #161B22;
+            --card-glass: rgba(22, 27, 34, 0.7);
+            --text-main: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --gradient-text: linear-gradient(135deg, #2563EB, #06B6D4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Utility Classes */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .text-center { text-align: center; }
+        .text-gradient {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-hover);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-hover);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Particles Background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Sections Specifics --- */
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        .hero-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .hero-logos .fa-times {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .hero-logos div {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.05em;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+
+        /* Challenges */
+        .challenge-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .challenge-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+        }
+
+        .challenge-card h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Solution Items */
+        .solution-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .solution-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(37, 99, 235, 0.5);
+            transform: translateX(5px);
+        }
+
+        .solution-item i {
+            color: var(--secondary);
+            font-size: 1.25rem;
+        }
+
+        /* Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1.5rem;
+            grid-auto-rows: 250px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            border-color: var(--border-hover);
+            transform: scale(1.02);
+            z-index: 2;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .gallery-item.large { grid-column: span 4; grid-row: span 2; }
+        .gallery-item.medium { grid-column: span 2; grid-row: span 2; }
+        .gallery-item.small { grid-column: span 3; }
+
+        .gallery-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #161B22, #1c2128);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .gallery-placeholder i {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Infra */
+        .highlight-box {
+            background: linear-gradient(90deg, rgba(37,99,235,0.1), rgba(6,182,212,0.1));
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin-top: 2rem;
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        /* Implementation */
+        .implementation-section {
+            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="100" height="100" fill="%230D1117"/><path d="M0 0 L50 50 L100 0 Z" fill="rgba(37,99,235,0.03)"/></svg>') center;
+        }
+
+        .price-tag {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 1rem 0;
+        }
+
+        .price-tag span {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Investment */
+        .investment-card {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .investment-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--gradient-text);
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+        }
+
+        .special-price-container {
+            padding: 2rem;
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: 16px;
+            margin: 2rem 0;
+            border: 1px dashed rgba(37, 99, 235, 0.3);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            background: #161B22;
+            padding: 10px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover { color: var(--secondary); }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .gallery-grid { grid-template-columns: 1fr; grid-auto-rows: 200px; }
+            .gallery-item.large, .gallery-item.medium, .gallery-item.small { grid-column: span 1; grid-row: span 1; }
+            .section { padding: 60px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+
+    <!-- SEÇÃO 1 - HERO -->
+    <section class="hero section">
+        <div class="container fade-up">
+            <div class="hero-logos">
+                <img src="./ecoparque/Ecoparque.jpg" alt="Gramado Ecoparque" style="height: 80px; border-radius: 50%;">
+                <i class="fas fa-times"></i>
+                <div class="text-gradient">Fantoni Software</div>
+            </div>
+            
+            <span class="badge">
+                <i class="fas fa-star" style="margin-right: 8px;"></i>
+                PROPOSTA COMERCIAL EXCLUSIVA
+            </span>
+            
+            <h1>Sistema de Gestão Completo para o <span class="text-gradient">Gramado Ecoparque</span></h1>
+            
+            <p>Uma plataforma moderna para gestão de restaurante, eventos, consumo por pulseiras QR Code, emissão fiscal, controle financeiro e operação integrada.</p>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="#solucao" class="btn btn-primary">
+                    Conhecer Solução <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#investimento" class="btn btn-secondary">
+                    Ver Investimento
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 2 - DESAFIOS DA OPERAÇÃO -->
+    <section class="section" id="desafios">
+        <div class="container fade-up">
+            <div class="text-center">
+                <h2 class="section-title">Desafios da operação atual</h2>
+                <p class="section-subtitle">Compreendemos as complexidades do seu negócio e desenhamos uma solução focada em resolver cada um destes pontos.</p>
+            </div>
+
+            <div class="grid-4">
+                <div class="glass-card challenge-card">
+                    <div class="challenge-icon"><i class="fas fa-utensils"></i></div>
+                    <div>
+                        <h3>Controle de restaurante</h3>
+                        <p class="text-muted" style="font-size: 0.875rem;">Agilidade no atendimento e produção.</p>
+                    </div>
+                </div>
+                <div class="glass-card challenge-card">
+                    <div class="challenge-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div>
+                        <h3>Gestão de eventos</h3>
+                        <p class="text-muted" style="font-size: 0.875rem;">Controle preciso de participantes.</p>
+                    </div>
+                </div>
+                <div class="glass-card challenge-card">
+                    <div class="challenge-icon"><i class="fas fa-qrcode"></i></div>
+                    <div>
+                        <h3>Pulseiras</h3>
+                        <p class="text-muted" style="font-size: 0.875rem;">Consumo seguro e prático.</p>
+                    </div>
+                </div>
+                <div class="glass-card challenge-card">
+                    <div class="challenge-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <div>
+                        <h3>Emissão fiscal</h3>
+                        <p class="text-muted" style="font-size: 0.875rem;">NF-e, NFC-e e NFS-e integradas.</p>
+                    </div>
+                </div>
+                <div class="glass-card challenge-card">
+                    <div class="challenge-icon"><i class="fas fa-chart-line"></i></div>
+                    <div>
+                        <h3>Controle financeiro</h3>
+                        <p class="text-muted" style="font-size: 0.875rem;">Fluxo de caixa em tempo real.</p>
+                    </div>
+                </div>
+                <div class="glass-card challenge-card">
+                    <div class="challenge-icon"><i class="fas fa-users"></i></div>
+                    <div>
+                        <h3>Atendimento</h3>
+                        <p class="text-muted" style="font-size: 0.875rem;">Múltiplos clientes simultâneos.</p>
+                    </div>
+                </div>
+                <div class="glass-card challenge-card">
+                    <div class="challenge-icon"><i class="fas fa-concierge-bell"></i></div>
+                    <div>
+                        <h3>Produção</h3>
+                        <p class="text-muted" style="font-size: 0.875rem;">KDS organizado para cozinha.</p>
+                    </div>
+                </div>
+                <div class="glass-card challenge-card">
+                    <div class="challenge-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div>
+                        <h3>Operação segura</h3>
+                        <p class="text-muted" style="font-size: 0.875rem;">Sem quedas ou perda de dados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 3 - SOLUÇÃO PROPOSTA -->
+    <section class="section" id="solucao" style="background: rgba(255,255,255,0.01);">
+        <div class="container fade-up">
+            <div class="text-center">
+                <h2 class="section-title">Solução <span class="text-gradient">Proposta</span></h2>
+                <p class="section-subtitle">Um ecossistema tecnológico completo projetado para elevar a gestão do Gramado Ecoparque a um nível premium.</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="grid-3" style="gap: 1rem;">
+                    <div class="solution-item"><i class="fas fa-desktop"></i> 2 PDVs completos</div>
+                    <div class="solution-item"><i class="fas fa-tv"></i> 1 KDS para cozinha</div>
+                    <div class="solution-item"><i class="fas fa-mobile-alt"></i> 4 acessos mobile (Garçons)</div>
+                    <div class="solution-item"><i class="fas fa-link"></i> Link Garçom</div>
+                    <div class="solution-item"><i class="fas fa-qrcode"></i> Controle por QR Code</div>
+                    <div class="solution-item"><i class="fas fa-band-aid"></i> Controle por pulseiras</div>
+                    <div class="solution-item"><i class="fas fa-user-friends"></i> Até 8 usuários</div>
+                    <div class="solution-item"><i class="fas fa-receipt"></i> Emissão de NFC-e</div>
+                    <div class="solution-item"><i class="fas fa-file-invoice"></i> Emissão de NFS-e</div>
+                    <div class="solution-item"><i class="fas fa-file-invoice-dollar"></i> Emissão de NF-e</div>
+                    <div class="solution-item"><i class="fas fa-wallet"></i> Módulo Financeiro</div>
+                    <div class="solution-item"><i class="fas fa-chart-pie"></i> Relatórios Gerenciais</div>
+                    <div class="solution-item"><i class="fas fa-tachometer-alt"></i> Dashboard em tempo real</div>
+                    <div class="solution-item"><i class="fas fa-ticket-alt"></i> Controle de eventos</div>
+                    <div class="solution-item"><i class="fas fa-cocktail"></i> Controle de consumo</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 4 - GALERIA DO SISTEMA -->
+    <section class="section">
+        <div class="container fade-up">
+            <div class="text-center">
+                <h2 class="section-title">Interface Premium</h2>
+                <p class="section-subtitle">Design moderno e intuitivo, pensado para reduzir a curva de aprendizado da sua equipe.</p>
+            </div>
+
+            <div class="gallery-grid">
+                <div class="gallery-item large" onclick="openModal('./ecoparque/%23003 [Link Garçom] Página 02.png')">
+                    <img src="./ecoparque/%23003 [Link Garçom] Página 02.png" alt="PDV Garçom" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="gallery-item medium" onclick="openModal('./ecoparque/%23001 [Link] Página 01.png')">
+                    <img src="./ecoparque/%23001 [Link] Página 01.png" alt="Link Checkout" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="gallery-item small" onclick="openModal('./ecoparque/%23009 [Pagamento Integrado no Link] Página 01.png')">
+                    <img src="./ecoparque/%23009 [Pagamento Integrado no Link] Página 01.png" alt="Pagamento Integrado" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="gallery-item small" onclick="openModal('./ecoparque/%23003 [Link Garçom] Página 01.png')">
+                    <img src="./ecoparque/%23003 [Link Garçom] Página 01.png" alt="Mobile" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 5 - INFRAESTRUTURA E SEGURANÇA -->
+    <section class="section" style="background: rgba(255,255,255,0.01);">
+        <div class="container fade-up">
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <h2 class="section-title">Infraestrutura e <span class="text-gradient">Segurança</span></h2>
+                    <p class="section-subtitle" style="margin-left: 0;">Tecnologia de ponta para garantir que sua operação nunca pare.</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="solution-item" style="background: transparent; border-color: rgba(255,255,255,0.1);"><i class="fas fa-server"></i> Banco de dados híbrido local</div>
+                        <div class="solution-item" style="background: transparent; border-color: rgba(255,255,255,0.1);"><i class="fas fa-cloud-upload-alt"></i> Backup automático em nuvem</div>
+                        <div class="solution-item" style="background: transparent; border-color: rgba(255,255,255,0.1);"><i class="fas fa-sync-alt"></i> Sincronização automática</div>
+                        <div class="solution-item" style="background: transparent; border-color: rgba(255,255,255,0.1);"><i class="fas fa-wifi"></i> Operação offline</div>
+                        <div class="solution-item" style="background: transparent; border-color: rgba(255,255,255,0.1);"><i class="fas fa-shield-virus"></i> Proteção contra perda de conexão</div>
+                        <div class="solution-item" style="background: transparent; border-color: rgba(255,255,255,0.1);"><i class="fas fa-arrow-up"></i> Alta disponibilidade</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="glass-card text-center" style="padding: 4rem 2rem;">
+                        <i class="fas fa-network-wired text-gradient" style="font-size: 4rem; margin-bottom: 2rem;"></i>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Blindagem Operacional</h3>
+                        <p class="text-muted">A arquitetura híbrida Fantoni garante resiliência máxima para o seu negócio.</p>
+                        <div class="highlight-box">
+                            "O sistema continua operando mesmo em situações de instabilidade ou queda total da internet."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 6 - PULSEIRAS QR CODE -->
+    <section class="section">
+        <div class="container fade-up">
+            <div class="glass-card" style="position: relative; overflow: hidden; padding: 4rem;">
+                <div style="position: absolute; top: -50%; right: -10%; width: 50%; height: 200%; background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%); transform: rotate(45deg); pointer-events: none;"></div>
+                
+                <div class="grid-2" style="align-items: center; position: relative; z-index: 1;">
+                    <div>
+                        <h2 class="section-title">Controle de Consumo por <span class="text-gradient">Pulseiras QR Code</span></h2>
+                        <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;">
+                            <li style="display: flex; gap: 1rem; align-items: center;"><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Registro de consumo rápido</li>
+                            <li style="display: flex; gap: 1rem; align-items: center;"><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Registro de serviços integrados</li>
+                            <li style="display: flex; gap: 1rem; align-items: center;"><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Controle absoluto de eventos</li>
+                            <li style="display: flex; gap: 1rem; align-items: center;"><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Gestão de consumo de alimentos</li>
+                            <li style="display: flex; gap: 1rem; align-items: center;"><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Integração completa com o PDV e Financeiro</li>
+                        </ul>
+                        
+                        <div style="padding: 1rem; border-radius: 8px; background: rgba(255,255,255,0.05); border-left: 3px solid var(--text-muted); font-size: 0.9rem; color: var(--text-muted);">
+                            <i class="fas fa-info-circle"></i> Destacamos que existem fornecedores homologados no mercado com valores médios entre R$ 4,00 e R$ 7,00 por pulseira física, garantindo viabilidade e qualidade.
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div style="width: 280px; height: 280px; margin: 0 auto; background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(6,182,212,0.2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); position: relative; animation: float 6s ease-in-out infinite;">
+                            <i class="fas fa-qrcode" style="font-size: 6rem; color: var(--text-main);"></i>
+                            <i class="fas fa-expand" style="position: absolute; font-size: 10rem; color: rgba(255,255,255,0.05);"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 7 - IMPLANTAÇÃO PRESENCIAL -->
+    <section class="section implementation-section">
+        <div class="container fade-up">
+            <div class="text-center">
+                <span class="badge">ONBOARDING VIP</span>
+                <h2 class="section-title">Implantação Presencial</h2>
+                <p class="section-subtitle">No Gramado Ecoparque. Nossa equipe com você para garantir o sucesso desde o primeiro dia.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="glass-card">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                        <i class="fas fa-tasks text-gradient"></i> Cronograma
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="solution-item"><i class="fas fa-cog"></i> Configuração completa do ambiente</div>
+                        <div class="solution-item"><i class="fas fa-file-signature"></i> Parametrização fiscal e tributária</div>
+                        <div class="solution-item"><i class="fas fa-database"></i> Cadastro inicial auxiliado</div>
+                        <div class="solution-item"><i class="fas fa-chalkboard-teacher"></i> Treinamento dedicado da equipe</div>
+                        <div class="solution-item"><i class="fas fa-eye"></i> Acompanhamento operacional ao vivo</div>
+                        <div class="solution-item"><i class="fas fa-clock"></i> Até 5 horas de dedicação presencial</div>
+                    </div>
+                </div>
+                
+                <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center;">
+                    <div class="text-center">
+                        <div style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 0.5rem;">Investimento Único de Implantação</div>
+                        <div class="price-tag">R$ 555,55</div>
+                        
+                        <div class="highlight-box" style="text-align: left; margin-top: 2rem; font-size: 1rem;">
+                            <i class="fas fa-exclamation-circle" style="color: var(--primary); margin-right: 8px;"></i>
+                            O valor da implantação <strong>não representa licença de uso</strong>.<br><br>
+                            Ele possui como finalidade exclusiva cobrir custos operacionais de deslocamento e logística da equipe técnica da Fantoni Software no trajeto entre Santa Cruz do Sul e Gramado.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 8 - SUPORTE -->
+    <section class="section" style="background: rgba(255,255,255,0.01);">
+        <div class="container fade-up">
+            <div class="text-center">
+                <h2 class="section-title">Suporte e <span class="text-gradient">Acompanhamento</span></h2>
+                <p class="section-subtitle">Não entregamos apenas software, entregamos parceria tecnológica contínua.</p>
+            </div>
+
+            <div class="grid-3" style="margin-bottom: 2rem;">
+                <div class="glass-card text-center" style="padding: 2rem 1.5rem;">
+                    <i class="fas fa-headset text-gradient" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">Suporte Comercial</h3>
+                    <p class="text-muted">Segunda a Sexta</p>
+                    <div style="font-size: 1.25rem; font-weight: 700; margin-top: 1rem;">08:00 às 18:00</div>
+                </div>
+                <div class="glass-card text-center" style="padding: 2rem 1.5rem; border-color: rgba(37, 99, 235, 0.3);">
+                    <i class="fas fa-ambulance text-gradient" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">Plantão Emergencial</h3>
+                    <p class="text-muted">Segunda a Sexta</p>
+                    <div style="font-size: 1.25rem; font-weight: 700; margin-top: 1rem; color: #f59e0b;">18:00 às 22:00</div>
+                </div>
+                <div class="glass-card text-center" style="padding: 2rem 1.5rem;">
+                    <i class="fas fa-calendar-day text-gradient" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">Finais de Semana</h3>
+                    <p class="text-muted">Sábados e Domingos</p>
+                    <div style="font-size: 1.25rem; font-weight: 700; margin-top: 1rem;">09:00 às 22:00</div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="grid-4 text-center">
+                    <div>
+                        <i class="fab fa-whatsapp" style="font-size: 2rem; color: #25D366; margin-bottom: 1rem;"></i>
+                        <h4 style="font-size: 1rem;">Atendimento via WhatsApp</h4>
+                    </div>
+                    <div>
+                        <i class="fas fa-laptop-medical" style="font-size: 2rem; color: var(--secondary); margin-bottom: 1rem;"></i>
+                        <h4 style="font-size: 1rem;">Acesso Remoto</h4>
+                    </div>
+                    <div>
+                        <i class="fas fa-sync" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h4 style="font-size: 1rem;">Atualizações Contínuas</h4>
+                    </div>
+                    <div>
+                        <i class="fas fa-bug-slash" style="font-size: 2rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                        <h4 style="font-size: 1rem;">Correções Inclusas</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 9 - PROGRAMA DE INDICAÇÃO -->
+    <section class="section">
+        <div class="container fade-up">
+            <div class="glass-card" style="background: linear-gradient(135deg, rgba(22,27,34,0.9), rgba(37,99,235,0.1)); border: 1px solid rgba(37,99,235,0.3); padding: 4rem;">
+                <div class="grid-2" style="align-items: center;">
+                    <div>
+                        <span class="badge" style="background: rgba(6,182,212,0.1); color: var(--secondary); border-color: rgba(6,182,212,0.3);">WIN-WIN</span>
+                        <h2 class="section-title">Programa de Indicação <span class="text-gradient">Fantoni</span></h2>
+                        <p class="text-muted" style="font-size: 1.1rem; margin-bottom: 2rem;">Crescemos juntos. Transforme sua rede de contatos em benefícios reais para o seu negócio.</p>
+                        
+                        <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.5rem;">
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: var(--primary); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 3px;"><i class="fas fa-gift"></i></div>
+                                <div>O Gramado Ecoparque recebe <strong>crédito equivalente à primeira mensalidade</strong> do cliente indicado.</div>
+                            </li>
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: var(--secondary); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 3px; color: #000;"><i class="fas fa-percentage"></i></div>
+                                <div>A empresa indicada ganha <strong>30% de desconto</strong> na primeira mensalidade.</div>
+                            </li>
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: var(--card-bg); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 3px;"><i class="fas fa-infinity"></i></div>
+                                <div><strong>Sem limite</strong> de indicações.</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card" style="background: rgba(0,0,0,0.4); text-align: center; border-color: rgba(255,255,255,0.05);">
+                        <div style="font-size: 0.875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">Exemplo Prático</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 1rem;">
+                            <span>Mensalidade do Indicado</span>
+                            <span style="font-weight: 600;">R$ 489,00</span>
+                        </div>
+                        <i class="fas fa-arrow-down" style="color: var(--text-muted); margin: 0.5rem 0;"></i>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(37,99,235,0.1); border: 1px solid rgba(37,99,235,0.3); border-radius: 8px;">
+                            <span>Seu Crédito</span>
+                            <span style="font-weight: 800; color: var(--secondary); font-size: 1.25rem;">R$ 489,00</span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.4;">Este valor é abatido diretamente da sua próxima fatura, podendo zerar seu custo mensal a depender do número de indicações.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 10 - DIFERENCIAIS FANTONI -->
+    <section class="section" style="background: rgba(255,255,255,0.01);">
+        <div class="container fade-up">
+            <div class="text-center">
+                <h2 class="section-title">A Filosofia <span class="text-gradient">Fantoni</span></h2>
+                <p class="section-subtitle">Retemos clientes pelo valor entregue, não por correntes contratuais.</p>
+            </div>
+
+            <div class="grid-3" style="margin-bottom: 3rem;">
+                <div class="solution-item" style="justify-content: center; padding: 1.5rem;"><i class="fas fa-lock-open text-gradient"></i> Sem fidelidade</div>
+                <div class="solution-item" style="justify-content: center; padding: 1.5rem;"><i class="fas fa-file-contract text-gradient"></i> Contrato mensal</div>
+                <div class="solution-item" style="justify-content: center; padding: 1.5rem;"><i class="fas fa-calendar-check text-gradient"></i> Renovação auto (dia 10)</div>
+                <div class="solution-item" style="justify-content: center; padding: 1.5rem;"><i class="fas fa-ban text-gradient"></i> Sem multas abusivas</div>
+                <div class="solution-item" style="justify-content: center; padding: 1.5rem;"><i class="fas fa-heart text-gradient"></i> Suporte humanizado</div>
+                <div class="solution-item" style="justify-content: center; padding: 1.5rem;"><i class="fas fa-cogs text-gradient"></i> Sistema híbrido & offline</div>
+                <div class="solution-item" style="justify-content: center; padding: 1.5rem; grid-column: 1 / -1;"><i class="fas fa-flag text-gradient"></i> Tecnologia nacional de alto desempenho</div>
+            </div>
+
+            <div class="glass-card text-center" style="padding: 3rem; background: linear-gradient(to right, rgba(22,27,34,0.8), rgba(22,27,34,0.4), rgba(22,27,34,0.8));">
+                <i class="fas fa-quote-left text-gradient" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                <h3 style="font-size: 1.5rem; font-weight: 400; font-style: italic; max-width: 800px; margin: 0 auto; line-height: 1.6;">"Acreditamos que nossos clientes devem permanecer conosco pela <strong>qualidade do serviço entregue no dia a dia</strong>, e não por força de cláusulas contratuais."</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 11 - INVESTIMENTO -->
+    <section class="section" id="investimento">
+        <div class="container fade-up">
+            <div class="text-center">
+                <h2 class="section-title">Plano de <span class="text-gradient">Investimento</span></h2>
+                <p class="section-subtitle">Transparência total. Uma solução de alto padrão ajustada para o seu momento.</p>
+            </div>
+
+            <div class="glass-card investment-card text-center" style="padding: 4rem 2rem;">
+                <div style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 0.5rem;">Valor Comercial Padrão</div>
+                <div class="old-price">R$ 697,00/mês</div>
+
+                <div class="special-price-container">
+                    <div style="font-weight: 700; color: var(--secondary); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">Condição Especial Gramado Ecoparque</div>
+                    <div style="display: flex; align-items: flex-end; justify-content: center; gap: 0.25rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem; font-weight: 600;">R$</span>
+                        <span style="font-size: 4.5rem; font-weight: 800; line-height: 1; color: var(--text-main);">489<span style="font-size: 2rem;">,00</span></span>
+                        <span style="font-size: 1.5rem; color: var(--text-muted); margin-bottom: 0.5rem;">/mês</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted);"><i class="fas fa-handshake"></i> Condição concedida mediante a indicações futuras (Programa de Indicação).</div>
+                </div>
+
+                <div style="display: inline-flex; align-items: center; gap: 1rem; padding: 1rem 2rem; background: rgba(255,255,255,0.05); border-radius: 50px; border: 1px solid var(--border);">
+                    <i class="fas fa-tools text-gradient"></i>
+                    <span>Taxa Única de Implantação Presencial: <strong>R$ 555,55</strong></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 12 - ACEITE -->
+    <section class="section" style="padding-bottom: 0;">
+        <div class="container fade-up text-center">
+            <h2 class="section-title">Próximos Passos</h2>
+            <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 3rem;">Estamos prontos para iniciar a implantação, configuração e treinamento da sua equipe.</p>
+            
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                <a href="#" class="btn btn-primary" style="padding: 1.25rem 3rem; font-size: 1.1rem; border-radius: 50px;" onclick="alert('Obrigado por escolher a Fantoni Software! Entraremos em contato para alinhar a data de implantação.')">
+                    <i class="fas fa-check-circle"></i> ACEITAR PROPOSTA
+                </a>
+                <a href="https://wa.me/5551996034862" target="_blank" class="btn btn-secondary" style="padding: 1.25rem 3rem; font-size: 1.1rem; border-radius: 50px;">
+                    <i class="fab fa-whatsapp"></i> FALAR COM CONSULTOR
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;" class="text-gradient">Fantoni Software</div>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Tecnologia, automação e gestão para empresas em crescimento.</p>
+                <div style="margin-top: 2rem; font-size: 0.8rem; color: rgba(255,255,255,0.2);">
+                    &copy; 2026 Fantoni Software. Todos os direitos reservados.
+                </div>
+            </div>
+        </footer>
+    </section>
+
+    <!-- Modal Image Viewer -->
+    <div class="modal" id="imageModal" onclick="closeModal()">
+        <span class="close-modal">&times;</span>
+        <div class="modal-content glass-card" onclick="event.stopPropagation()" style="padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+            <img id="modalImage" src="" alt="Ampliado" style="max-width: 100%; max-height: 85vh; display: block; border-radius: 12px;">
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Particles JS Config
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ffffff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.1, "random": false },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#2563EB", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": false },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Intersection Observer for Fade-Up animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Modal Functions
+        function openModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageSrc;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
