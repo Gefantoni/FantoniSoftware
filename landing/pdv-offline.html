@@ -122,8 +122,8 @@
   <!-- SEO: Canônico -->
   <link rel="canonical" href="https://fantonisoftware.com.br/" />
 
-  <!-- Meta Pixel: movido para o final do body para não bloquear LCP -->
-  <script>window.__fbPixelId = '2035088657416576';</script>
+  <!-- Meta Pixel Config: O ID pode vir da variável de ambiente (em Next.js/builds) ou ser definido aqui -->
+  <script>window.__fbPixelId = window.__fbPixelId || (typeof process !== 'undefined' && process.env ? process.env.NEXT_PUBLIC_META_PIXEL_ID : null) || '2035088657416576';</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -965,7 +965,7 @@
       </div>
 
       <div class="hero-btn-container">
-        <a href="https://wa.me/5551996034862?text=Olá, quero falar com um especialista sobre o Fantoni PDV." target="_blank" class="btn btn-primary btn-lg" aria-label="Falar com especialista pelo WhatsApp" style="background-color: #047857; border-color: #047857; padding: 18px 48px; font-size: 18px; box-shadow: 0 10px 25px rgba(4, 120, 87, 0.4); display: inline-flex; align-items: center; justify-content: center; height: 68px; min-width: 290px;">
+        <a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20sistema" target="_blank" class="btn btn-primary btn-lg" aria-label="Falar com especialista pelo WhatsApp" style="background-color: #047857; border-color: #047857; padding: 18px 48px; font-size: 18px; box-shadow: 0 10px 25px rgba(4, 120, 87, 0.4); display: inline-flex; align-items: center; justify-content: center; height: 68px; min-width: 290px;">
           Falar com especialista
         </a>
       </div>
@@ -1262,7 +1262,7 @@
          </div>
        </div>
        
-       <a href="https://wa.me/5551996034862?text=Quero saber mais sobre a integração da Maquininha com PDV" target="_blank" class="btn btn-primary" aria-label="Quero saber mais sobre a integração da Maquininha com PDV no WhatsApp" style="background-color: #047857; border-color: #047857; padding: 14px 32px;">Quero saber mais</a>
+       <a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20a%20integração%20da%20Maquininha%20com%20o%20sistema" target="_blank" class="btn btn-primary" aria-label="Quero saber mais sobre a integração da Maquininha com PDV no WhatsApp" style="background-color: #047857; border-color: #047857; padding: 14px 32px;">Quero saber mais</a>
     </div>
     
     <div data-aos="fade-left" style="display: flex; justify-content: center; align-items: center;">
@@ -1361,27 +1361,7 @@
 
 
 
-<!-- DISPOSITIVOS -->
-<section style="background: #0f172a; padding: 80px 24px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
-  <div style="max-width: 900px; margin: 0 auto;" data-aos="fade-up">
-    <span style="background: rgba(52, 211, 153, 0.1); color: #34d399; padding: 6px 16px; border-radius: 100px; font-weight: 800; font-size: 12px; letter-spacing: 1px;">INTEGRAÇÃO TOTAL</span>
-    <h2 style="font-size: clamp(32px, 5vw, 48px); font-weight: 900; color: #fff; margin-top: 24px; margin-bottom: 16px; line-height: 1.1; letter-spacing: -1px;">Disponível em qualquer dispositivo</h2>
-    <p style="color: #cbd5e1; font-size: 18px; margin-bottom: 40px; line-height: 1.6; max-width: 650px; margin-left: auto; margin-right: auto;">
-      Use no computador, celular, tablet ou direto na maquininha Smart. Conecte balanças, gavetas e impressoras com apenas um clique.
-    </p>
-    <div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 48px; flex-wrap: wrap;">
-      <div style="background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 100px; color: #e2e8f0; font-weight: 600; display: flex; align-items: center; gap: 10px; font-size: 15px;">
-        <svg style="color: #60a5fa; width: 18px; height: 18px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> 
-        Windows, Android & iOS
-      </div>
-      <div style="background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 100px; color: #e2e8f0; font-weight: 600; display: flex; align-items: center; gap: 10px; font-size: 15px;">
-        <svg style="color: #60a5fa; width: 18px; height: 18px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg> 
-        Impressoras & Balanças
-      </div>
-    </div>
-    <img src="assets/Dispositivos.webp" alt="PDV em vários dispositivos" style="width: 100%; max-width: 800px; height: auto; aspect-ratio: 949/595; margin: 0 auto; display: block; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.5));" loading="lazy" decoding="async" width="949" height="595">
-  </div>
-</section>
+
 
 <!-- 5. LINHA DE PRODUTOS (ZIG-ZAG) -->
 <section id="produtos" style="background: #0f172a; padding: 80px 24px; color: #fff;">
@@ -1587,7 +1567,7 @@
     <h2>A velocidade do Offline com a segurança da Nuvem</h2>
     <p>O sistema é instalado no seu computador, garantindo velocidade máxima e imunidade a quedas de internet. Enquanto você vende, ele sincroniza automaticamente todas as informações com a nuvem, mantendo seu backup seguro em tempo real.</p>
     <div class="cta-final-btns">
-      <a href="https://wa.me/5551996034862" class="btn btn-primary btn-lg" aria-label="Começar meu teste grátis e conversar no WhatsApp" target="_blank">Começar meu teste grátis</a>
+      <a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20testar%20o%20sistema" class="btn btn-primary btn-lg" aria-label="Começar meu teste grátis e conversar no WhatsApp" target="_blank">Começar meu teste grátis</a>
     </div>
   </div>
 </section>
@@ -1626,7 +1606,7 @@
     <div class="footer-top" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding-bottom:0; border:none;">
       <h2 style="color:#fff; font-size:32px; font-weight:800; margin-bottom:16px;">Pronto para transformar sua operação?</h2>
       <p style="color: #cbd5e1; font-size:18px; margin-bottom:32px; max-width:600px;">Junte-se a dezenas de estabelecimentos que não perdem vendas e não deixam o cliente esperando na fila.</p>
-      <a href="https://wa.me/5551996034862" class="btn btn-primary btn-lg" aria-label="Falar com especialista pelo WhatsApp" target="_blank" style="margin-bottom:60px;">Falar com Especialista</a>
+      <a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20sistema" class="btn btn-primary btn-lg" aria-label="Falar com especialista pelo WhatsApp" target="_blank" style="margin-bottom:60px;">Falar com Especialista</a>
       
       <div style="border-top:1px solid rgba(255,255,255,0.1); width:100%; padding-top:40px; margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
         <span style="font-size:20px; font-weight:900; color:#fff;">Fantoni Software</span>
@@ -1637,7 +1617,7 @@
 </footer>
 
 <!-- WHATSAPP FLOAT -->
-<a href="https://wa.me/5551996034862" target="_blank" class="testar-float" aria-label="Falar no WhatsApp">
+<a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20sistema" target="_blank" class="testar-float" aria-label="Falar no WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   <span class="testar-float-label">Falar no WhatsApp</span>
 </a>
@@ -1659,7 +1639,7 @@
   }
 </script>
 
-<a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20Fantoni%20PDV" 
+<a href="https://wa.me/5551996034862?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20sistema" 
    target="_blank" 
    aria-label="Conversar no WhatsApp com o suporte"
    style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #25d366; color: white; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: transform 0.3s ease;"
@@ -1669,7 +1649,7 @@
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.8 5.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
   </svg>
 </a>
-<!-- ===== META PIXEL (diferido — não bloqueia LCP) ===== -->
+<!-- ===== META PIXEL IMPLEMENTAÇÃO COMPLETA ===== -->
 <script>
 (function() {
   if (window.fbq) return;
@@ -1679,8 +1659,7 @@
   if (!window._fbq) window._fbq = n;
   n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
 })();
-// Carrega o Pixel na primeira interação do usuário (scroll, click ou touch)
-// mais inteligente que timer fixo: só carrega se houver engajamento real
+
 var __fbLoaded = false;
 function __loadFbPixel() {
   if (__fbLoaded) return;
@@ -1693,15 +1672,55 @@ function __loadFbPixel() {
   t.src = 'https://connect.facebook.net/en_US/fbevents.js';
   document.head.appendChild(t);
   t.onload = function() {
-    fbq('init', window.__fbPixelId || '2035088657416576');
-    fbq('track', 'PageView');
+    var pixelId = window.__fbPixelId || (typeof process !== 'undefined' && process.env ? process.env.NEXT_PUBLIC_META_PIXEL_ID : null) || '2035088657416576';
+    if (!window.__fbPixelInitialized) {
+      fbq('init', pixelId);
+      window.__fbPixelInitialized = true;
+    }
+    // Evitar eventos duplicados
+    if (!window.__fbPageViewTracked) {
+      fbq('track', 'PageView');
+      window.__fbPageViewTracked = true;
+    }
+    if (!window.__fbViewContentTracked) {
+      fbq('track', 'ViewContent', { content_name: 'Landing Page PDV Offline' });
+      window.__fbViewContentTracked = true;
+    }
   };
 }
 ['scroll','click','touchstart','keydown'].forEach(function(e) {
   window.addEventListener(e, __loadFbPixel, {once:true, passive:true});
 });
-// Fallback: carrega após 8s caso não haja interação
 setTimeout(__loadFbPixel, 8000);
+
+// Rastreamento automático de eventos (Contact, Lead, Schedule) via delegação sem duplicidades
+document.addEventListener('click', function(e) {
+  var target = e.target.closest('a, button, [role="button"]');
+  if (!target || typeof fbq !== 'function') return;
+
+  var href = (target.getAttribute('href') || '').toLowerCase();
+  var text = (target.innerText || target.getAttribute('aria-label') || '').toLowerCase();
+
+  // Clique em qualquer botão de WhatsApp -> Contact
+  if (href.indexOf('wa.me') !== -1 || href.indexOf('whatsapp') !== -1 || text.indexOf('whatsapp') !== -1) {
+    fbq('track', 'Contact', { channel: 'WhatsApp', label: target.innerText?.trim() });
+  }
+  // Clique no botão "Solicitar Demonstração" ou "teste grátis" -> Lead
+  else if (text.indexOf('demonstração') !== -1 || text.indexOf('demonstracao') !== -1 || text.indexOf('teste grátis') !== -1 || text.indexOf('testar') !== -1) {
+    fbq('track', 'Lead', { action: target.innerText?.trim() });
+  }
+  // Clique em agendamento -> Schedule
+  else if (text.indexOf('agendar') !== -1 || text.indexOf('agendamento') !== -1) {
+    fbq('track', 'Schedule', { action: target.innerText?.trim() });
+  }
+});
+
+// Envio de formulário -> Lead
+document.addEventListener('submit', function(e) {
+  if (typeof fbq === 'function') {
+    fbq('track', 'Lead', { form_id: e.target.id || 'form_lead' });
+  }
+});
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
