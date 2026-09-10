@@ -826,6 +826,11 @@
   </style>
 </head>
 <body>
+<!-- ===== SPRITE DE ÍCONES ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ico-whatsapp" viewBox="0 0 24 24"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></symbol>
+</svg>
+
 
 <!-- ===== NAVBAR ===== -->
 <nav>
@@ -1826,114 +1831,7 @@
   </div>
 </section>
 
-<script>
-(function(){
-  const MAQUININHAS = [
-    { id:'azulzinha', nome:'Azulzinha', logo:'assets/Logos/logo-azulzinha.svg', imagem:'assets/Maquininhas/Navi-POS-Azulzinha.png', cor:'#0057a8', modelos:['A8 Plus','A8 Pro','A920 Pro'] },
-    { id:'bin',       nome:'Bin',       logo:'assets/Logos/logo-bin.svg',       imagem:'assets/Maquininhas/Navi-POS-Bin.png',       cor:'#e30613', modelos:['D195','D210','A8'] },
-    { id:'cielo',     nome:'Cielo',     logo:'assets/Logos/logo-cielo.svg',     imagem:'assets/Maquininhas/Navi-POS-Cielo.png',     cor:'#00a0df', modelos:['Lio V1','Lio V2','Lio V3 (Lio On)','Ingenico Dx8000'] },
-    { id:'getnet',    nome:'Getnet',    logo:'assets/Logos/logo-getnet.svg',    imagem:'assets/Maquininhas/Navi-POS-Getnet.png',    cor:'#ff6900', modelos:['Getnet Smart','PAX A920','S920'] },
-    { id:'pagbank',   nome:'PagBank',   logo:'assets/Logos/logo-pagbank.svg',   imagem:'assets/Maquininhas/Navi-POS-PagSeguro.png', cor:'#00c247', modelos:['Smart F10','Smart D195','Smart A8'] },
-    { id:'rede',      nome:'Rede',      logo:'assets/Logos/logo-rede.svg',      imagem:'assets/Maquininhas/Navi-POS-Rede.png',      cor:'#003087', modelos:['PAX A920','Verifone VX680','D195'] },
-    { id:'safrapay',  nome:'Safrapay',  logo:'assets/Logos/logo-safrapay.svg',  imagem:'assets/Maquininhas/Navi-POS-Safrapay.png',  cor:'#e8352a', modelos:['D195','A8 Pro','S920'] },
-    { id:'sicredi',   nome:'Sicredi',   logo:'assets/Logos/logo-sicredi.svg',   imagem:'assets/Maquininhas/Navi-POS-Sicredi.png',   cor:'#00843d', modelos:['Smart POS A8','Smart POS D195'] },
-    { id:'stone',     nome:'Stone',     logo:'assets/Logos/logo-stone.svg',     imagem:'assets/Maquininhas/Navi-POS-Stone.png',     cor:'#00a868', modelos:['S920','Gpos700','D195 (Ton)'] },
-    { id:'vero',      nome:'Vero',      logo:'assets/Logos/logo-vero.svg',      imagem:'assets/Maquininhas/Navi-POS-Vero.png',      cor:'#6d28d9', modelos:['D195','A8 Pro','Smart S920'] },
-  ];
 
-  let current = 0;
-
-  function buildLogos() {
-    const strip = document.getElementById('maqLogosStrip');
-    MAQUININHAS.forEach((m, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'maq-logo-btn' + (i === 0 ? ' maq-active' : '');
-      btn.setAttribute('aria-label', m.nome);
-      btn.dataset.idx = i;
-      // Nunca renderizar src="" — o navegador requisitaria a própria página como imagem.
-      btn.innerHTML = m.logo
-        ? '<img src="' + m.logo + '" alt="' + m.nome + '" loading="lazy" width="88" height="26">'
-        : '<span class="maq-nome">' + m.nome + '</span>';
-      btn.addEventListener('click', () => goTo(i));
-      strip.appendChild(btn);
-    });
-  }
-
-  function buildDots() {
-    const dotsEl = document.getElementById('maqDots');
-    MAQUININHAS.forEach((_, i) => {
-      const d = document.createElement('button');
-      d.style.cssText = 'width:' + (i===0?'24px':'8px') + ';height:8px;border-radius:' + (i===0?'4px':'50%') + ';border:none;background:' + (i===0?'#1d4ed8':'#cbd5e1') + ';cursor:pointer;padding:0;transition:all 0.25s ease;';
-      d.setAttribute('aria-label', 'Slide ' + (i+1));
-      d.addEventListener('click', () => goTo(i));
-      dotsEl.appendChild(d);
-    });
-  }
-
-  function updateDots() {
-    document.querySelectorAll('#maqDots button').forEach((d, i) => {
-      d.style.background    = i === current ? '#1d4ed8' : '#cbd5e1';
-      d.style.width         = i === current ? '24px'   : '8px';
-      d.style.borderRadius  = i === current ? '4px'    : '50%';
-    });
-  }
-
-  var _maqTimer = null;
-
-  function buildSlideHTML(m) {
-    return (
-      '<div class="maq-img-col" style="display:flex;align-items:center;justify-content:center;position:relative;">' +
-        '<div style="position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(ellipse,rgba(59,130,246,0.1) 0%,transparent 70%);pointer-events:none;"></div>' +
-        '<img class="maq-img-float" src="' + m.imagem + '" alt="Maquininha ' + m.nome + '" loading="lazy" width="300" height="608" style="width:100%;max-width:240px;height:auto;aspect-ratio:300/608;object-fit:contain;filter:drop-shadow(0 28px 48px rgba(0,0,0,0.2));position:relative;z-index:1;">' +
-      '</div>' +
-      '<div>' +
-        '<img src="' + m.logo + '" alt="' + m.nome + '" style="height:38px;width:auto;max-width:140px;margin-bottom:24px;display:block;object-fit:contain;">' +
-        '<p style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Modelos compatíveis</p>' +
-        '<div style="display:flex;flex-direction:column;gap:14px;">' +
-          m.modelos.map(function(mod){ return '<div class="maq-modelo-item"><span class="maq-modelo-dot"></span>' + mod + '</div>'; }).join('') +
-        '</div>' +
-      '</div>'
-    );
-  }
-
-  function renderSlide(m) {
-    var el = document.getElementById('maqSlideContent');
-    if (_maqTimer) clearTimeout(_maqTimer); // cancela transição anterior se clicou rápido
-
-    // 1. Fade out
-    el.style.opacity = '0';
-    el.style.transform = 'translateX(10px)';
-
-    // 2. Depois de sair, troca conteúdo e entra
-    _maqTimer = setTimeout(function() {
-      el.innerHTML = buildSlideHTML(m);
-      // Força reflow para a transição CSS "ver" a mudança de opacity
-      void el.offsetWidth;
-      el.style.opacity = '1';
-      el.style.transform = 'translateX(0)';
-    }, 160);
-  }
-
-  function updateLogos() {
-    document.querySelectorAll('.maq-logo-btn').forEach((btn, i) => {
-      btn.classList.toggle('maq-active', i === current);
-    });
-  }
-
-  function goTo(i) {
-    current = ((i % MAQUININHAS.length) + MAQUININHAS.length) % MAQUININHAS.length;
-    renderSlide(MAQUININHAS[current]);
-    updateLogos();
-    updateDots();
-  }
-
-  window.maqGo = function(dir) { goTo(current + dir); };
-
-  buildLogos();
-  buildDots();
-  renderSlide(MAQUININHAS[0]);
-})();
-</script>
 
 <!-- ===== VÍDEOS ===== -->
 <section id="videos" style="padding:72px 24px; background:#f8fafc;">
@@ -2117,7 +2015,7 @@
       <p style="font-size:15px;color:#64748b;margin:22px auto 0;font-weight:600;">Planos a partir de <strong style="color:#0f172a;font-weight:800;">R$ 99/mês</strong> — o valor exato depende do seu negócio. Fale com a gente e monte o seu.</p>
 
       <a href="#" onclick="openConsultorModal(); return false;" class="btn-wa-plans" style="margin-top:20px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        <svg width="18" height="18" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
         Falar com consultor
       </a>
     </div>
@@ -2285,7 +2183,7 @@
           Testar 7 dias grátis
         </a>
         <a href="#" onclick="openConsultorModal(); return false;" class="btn btn-lg shadow-hover" style="background:#25d366;color:#fff;border:2px solid #25d366;box-shadow:0 4px 18px rgba(37,211,102,.4);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          <svg width="20" height="20" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
           Falar com consultor
         </a>
       </div>
@@ -2444,7 +2342,7 @@
 
         <button type="submit" class="btn btn-primary btn-block shadow-hover" id="btn-consultor-submit">
           Falar com consultor no WhatsApp
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-left:6px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          <svg width="16" height="16" aria-hidden="true" style="margin-left:6px;"><use href="#ico-whatsapp"/></svg>
         </button>
       </form>
     </div>
@@ -2667,7 +2565,7 @@
     document.getElementById('consultor-form').reset();
     const btn = document.getElementById('btn-consultor-submit');
     btn.disabled = false;
-    btn.innerHTML = 'Falar com consultor no WhatsApp <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-left:6px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>';
+    btn.innerHTML = 'Falar com consultor no WhatsApp <svg width="16" height="16" aria-hidden="true" style="margin-left:6px;"><use href="#ico-whatsapp"/></svg>';
     modalConsultor.style.display = 'flex';
   }
   function closeConsultorModal() {
@@ -2858,114 +2756,11 @@
   AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic' });
 });</script>
 
-<script>
-// ---- ContainerScroll ----
-(function(){
-  const card = document.getElementById('cs-card');
-  const wrap = document.getElementById('cs-perspective');
-  if (!card || !wrap) return;
-  function update(){
-    const rect = wrap.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.9)));
-    const isMobile = window.innerWidth <= 768;
-    const scaleFrom = isMobile ? 0.75 : 1.04;
-    const scaleTo   = isMobile ? 0.92 : 1.0;
-    const rotate = 20 * (1 - progress);
-    const scale  = scaleFrom + (scaleTo - scaleFrom) * progress;
-    card.style.transform = `rotateX(${rotate}deg) scale(${scale})`;
-  }
-  window.addEventListener('scroll', update, {passive:true});
-  window.addEventListener('resize', update);
-  update();
-})();
-</script>
-<script>
-// ---- Header Scroll ----
-(function(){
-  const nav = document.querySelector('nav');
-  function handleScroll() {
-    if (window.scrollY > 50) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
-    }
-  }
-  window.addEventListener('scroll', handleScroll, {passive: true});
-  handleScroll();
-})();
-</script>
-<script>
-// ---- Hero B-Roll: carrega o vídeo só quando vale a pena ----
-// Em conexão econômica, celular ou movimento reduzido, fica só o poster.
-(function () {
-  var v = document.getElementById('hero-broll');
-  if (!v) return;
 
-  v.playbackRate = 0.8;
 
-  var conn = navigator.connection || {};
-  var economico = conn.saveData === true ||
-                  /(^|\b)(2g|slow-2g|3g)($|\b)/.test(conn.effectiveType || '');
-  var reduzido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (economico || reduzido || window.innerWidth < 768) return;
-  if (!('IntersectionObserver' in window)) return;
 
-  var io = new IntersectionObserver(function (entries, obs) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      var s = document.createElement('source');
-      s.src  = 'assets/hero-broll.mp4';
-      s.type = 'video/mp4';
-      v.appendChild(s);
-      v.load();
-      v.play().catch(function () {});
-      obs.disconnect();
-    });
-  }, { rootMargin: '200px' });
-  io.observe(v);
-})();
-</script>
-<script>
-// ---- Lazy Video (IntersectionObserver) ----
-(function(){
-  if (!('IntersectionObserver' in window)) return;
-  const observer = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (!entry.isIntersecting) return;
-      const video = entry.target;
-      video.querySelectorAll('source[data-src]').forEach(function(source){
-        source.src = source.dataset.src;
-      });
-      video.load();
-      video.play().catch(function(){});
-      observer.unobserve(video);
-    });
-  }, { rootMargin: '200px' });
-  document.querySelectorAll('video.lazy-video').forEach(function(v){ observer.observe(v); });
-})();
-</script>
-<script>
-// ---- YouTube Facade ----
-(function(){
-  document.querySelectorAll('.yt-facade').forEach(function(facade){
-    facade.addEventListener('click', function(){
-      const id = facade.dataset.videoid;
-      const title = facade.dataset.title || '';
-      const iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
-      iframe.title = title;
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.allowFullscreen = true;
-      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;display:block;';
-      facade.innerHTML = '';
-      facade.appendChild(iframe);
-      facade.style.cursor = 'default';
-    });
-  });
-})();
-</script>
+
 
 <!-- ===== META PIXEL (diferido — não bloqueia LCP) ===== -->
 <script>
@@ -3005,6 +2800,12 @@ setTimeout(__loadFbPixel, 8000);
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
 /></noscript>
+<script src="/assets/js/maquininhas.js" defer></script>
+<script src="/assets/js/container-scroll.js" defer></script>
+<script src="/assets/js/header-scroll.js" defer></script>
+<script src="/assets/js/hero-broll.js" defer></script>
+<script src="/assets/js/lazy-video.js" defer></script>
+<script src="/assets/js/youtube-facade.js" defer></script>
 </body>
 </html>
 
