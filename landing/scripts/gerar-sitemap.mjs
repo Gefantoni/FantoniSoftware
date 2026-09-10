@@ -15,6 +15,7 @@ const PAGINAS = [
   { arquivo: 'pdv-offline.html',  url: '/pdv-offline',  priority: '0.8', changefreq: 'monthly' },
   { arquivo: 'certificados.html', url: '/certificados', priority: '0.8', changefreq: 'monthly' },
   { arquivo: 'downloads.html',    url: '/downloads',    priority: '0.5', changefreq: 'monthly' },
+  { arquivo: 'politica-de-privacidade.html', url: '/politica-de-privacidade', priority: '0.3', changefreq: 'yearly' },
 ];
 
 const raiz = path.resolve(import.meta.dirname, '..');

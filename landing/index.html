@@ -67,6 +67,7 @@
     "url": "https://fantonisoftware.com.br",
     "telephone": "+55-51-99603-4862",
     "email": "fantonisoftware@gmail.com",
+    "priceRange": "$$",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Santa Cruz do Sul",
@@ -94,16 +95,80 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O sistema funciona sem internet?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. O Fantoni PDV opera 100% offline: você registra a venda, abre a gaveta, imprime o cupom e emite NFC-e em contingência. Quando a conexão volta, tudo sincroniza sozinho."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quanto custa o Fantoni PDV?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Os planos começam em R$ 99 por mês. Todos incluem 7 dias de teste grátis, sem cartão de crédito e sem fidelidade. O valor exato depende do porte do seu negócio — fale com um consultor e montamos o plano certo para você."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Serve para bar e restaurante com comanda?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. O plano Essencial inclui gestão de comandas para bar e restaurante. O plano Premium adiciona controle de mesas, cardápio digital por QR code, monitor de cozinha (KDS) e integração com iFood e delivery."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Preciso pagar alguma coisa para testar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Não. São 7 dias completos sem pagar nada e sem informar cartão de crédito. Você instala, cadastra os seus produtos e usa no dia a dia. Só depois do teste conversamos sobre plano."
+        }
+      }
+    ]
+  }
+  </script>
+
   <!-- Google Search Console -->
   <meta name="google-site-verification" content="rfXft4Km3EHF1HqNyaCY4r4oHtaMzRRQXCCBFgaCkyo" />
 
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LJ8G03VLL6"></script>
+  <!-- Consent Mode v2 — precisa vir ANTES do gtag.js e do config.
+       Sem isso o Google Ads perde a modelagem de conversão. -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    (function () {
+      var salvo = null;
+      try { salvo = localStorage.getItem('fs_consent'); } catch (e) {}
+      if (salvo === 'granted') {
+        gtag('consent', 'default', {
+          ad_storage: 'granted', ad_user_data: 'granted',
+          ad_personalization: 'granted', analytics_storage: 'granted'
+        });
+        window.__fsConsent = 'granted';
+      } else {
+        gtag('consent', 'default', {
+          ad_storage: 'denied', ad_user_data: 'denied',
+          ad_personalization: 'denied', analytics_storage: 'denied',
+          wait_for_update: 500
+        });
+        window.__fsConsent = salvo === 'denied' ? 'denied' : 'pendente';
+      }
+    })();
+  </script>
 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LJ8G03VLL6"></script>
+  <script>
+    // dataLayer e gtag() já definidos no bloco de consentimento acima
+    gtag('js', new Date());
     gtag('config', 'G-LJ8G03VLL6');
   </script>
 
@@ -2173,6 +2238,45 @@
       </div>
     </div>
 
+
+    <!-- ===== FAQ (o texto precisa bater com o schema FAQPage do <head>) ===== -->
+    <div id="faq" style="max-width:760px;margin:80px auto 0;" data-aos="fade-up">
+      <h2 style="font-size:clamp(24px,3vw,34px);color:#0f172a;text-align:center;margin-bottom:32px;">Perguntas frequentes</h2>
+      <details class="faq-item">
+        <summary>O sistema funciona sem internet?</summary>
+        <p>Sim. O Fantoni PDV opera 100% offline: você registra a venda, abre a gaveta, imprime o cupom e emite NFC-e em contingência. Quando a conexão volta, tudo sincroniza sozinho.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Quanto custa o Fantoni PDV?</summary>
+        <p>Os planos começam em R$ 99 por mês. Todos incluem 7 dias de teste grátis, sem cartão de crédito e sem fidelidade. O valor exato depende do porte do seu negócio — fale com um consultor e montamos o plano certo para você.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Serve para bar e restaurante com comanda?</summary>
+        <p>Sim. O plano Essencial inclui gestão de comandas para bar e restaurante. O plano Premium adiciona controle de mesas, cardápio digital por QR code, monitor de cozinha (KDS) e integração com iFood e delivery.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Preciso pagar alguma coisa para testar?</summary>
+        <p>Não. São 7 dias completos sem pagar nada e sem informar cartão de crédito. Você instala, cadastra os seus produtos e usa no dia a dia. Só depois do teste conversamos sobre plano.</p>
+      </details>
+    </div>
+
+    <style>
+      .faq-item {
+        background:#fff; border:1px solid var(--slate-200); border-radius:14px;
+        padding:18px 22px; margin-bottom:12px;
+      }
+      .faq-item summary {
+        cursor:pointer; font-size:16px; font-weight:700; color:#0f172a;
+        list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;
+      }
+      .faq-item summary::-webkit-details-marker { display:none; }
+      .faq-item summary::after {
+        content:'+'; font-size:22px; font-weight:400; color:#1d4ed8; flex-shrink:0; line-height:1;
+      }
+      .faq-item[open] summary::after { content:'−'; }
+      .faq-item p { margin-top:14px; font-size:15px; color:#475569; line-height:1.7; }
+    </style>
+
     <!-- CTA inline dentro da seção de preços -->
     <div id="preco-cta" data-aos="fade-up" style="margin-top:64px;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 100%);border-radius:24px;padding:56px 40px;text-align:center;color:#fff;">
       <h2 style="font-size:clamp(22px,3vw,36px);font-weight:800;margin-bottom:12px;">Ainda tem dúvidas?</h2>
@@ -2235,7 +2339,7 @@
         <ul>
           <li><a href="#">Sobre nós</a></li>
           <li><a href="#depoimentos">Depoimentos</a></li>
-          <li><a href="#">Política de privacidade</a></li>
+          <li><a href="/politica-de-privacidade">Política de privacidade</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -2778,6 +2882,8 @@
 var __fbLoaded = false;
 function __loadFbPixel() {
   if (__fbLoaded) return;
+  // Sem consentimento não criamos o cookie _fbp.
+  if (window.__fsConsent !== 'granted') return;
   __fbLoaded = true;
   ['scroll', 'click', 'touchstart', 'keydown'].forEach(function(e) {
     window.removeEventListener(e, __loadFbPixel, { passive: true });
@@ -2806,6 +2912,43 @@ src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
 <script src="/assets/js/hero-broll.js" defer></script>
 <script src="/assets/js/lazy-video.js" defer></script>
 <script src="/assets/js/youtube-facade.js" defer></script>
+
+<!-- ===== BANNER DE CONSENTIMENTO (LGPD + Consent Mode v2) ===== -->
+<div id="cookie-banner" hidden>
+  <p>
+    Usamos cookies para medir o desempenho do site e das nossas campanhas.
+    Você escolhe. <a href="/politica-de-privacidade">Saber mais</a>.
+  </p>
+  <div class="cookie-acoes">
+    <button type="button" id="cookie-recusar">Recusar</button>
+    <button type="button" id="cookie-aceitar">Aceitar</button>
+  </div>
+</div>
+
+<style>
+  #cookie-banner {
+    position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 3000;
+    max-width: 720px; margin: 0 auto; background: #0f172a; color: #e2e8f0;
+    border: 1px solid rgba(255,255,255,.12); border-radius: 16px;
+    padding: 18px 20px; display: flex; gap: 18px; align-items: center;
+    justify-content: space-between; flex-wrap: wrap;
+    box-shadow: 0 18px 50px rgba(0,0,0,.35); font-size: 14px; line-height: 1.6;
+  }
+  #cookie-banner p { margin: 0; flex: 1 1 320px; }
+  #cookie-banner a { color: #93c5fd; }
+  .cookie-acoes { display: flex; gap: 10px; flex-shrink: 0; }
+  .cookie-acoes button {
+    padding: 10px 20px; border-radius: 100px; font-size: 14px; font-weight: 700;
+    cursor: pointer; border: 1px solid transparent; font-family: inherit;
+  }
+  #cookie-recusar { background: transparent; color: #cbd5e1; border-color: rgba(255,255,255,.2); }
+  #cookie-recusar:hover { background: rgba(255,255,255,.06); }
+  #cookie-aceitar { background: #1d4ed8; color: #fff; }
+  #cookie-aceitar:hover { background: #1e40af; }
+  @media (max-width: 560px) { .cookie-acoes { width: 100%; } .cookie-acoes button { flex: 1; } }
+</style>
+
+<script src="/assets/js/consent.js" defer></script>
 </body>
 </html>
 
