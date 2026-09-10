@@ -27,12 +27,27 @@
 - [x] `node scripts/exportar-conversoes.mjs` gera CSV no formato do Google Ads
 - [x] Leads separados por `origem`: `Teste Site`, `Consultor Site`, `LP Bar e Restaurante`
 
-## Pendente de deploy
+## Verificado em produção (deploy de 10/09, `ef28add`)
 
-- [~] `/index.html` → 301 → `/` (rota adicionada ao `vercel.json`, não publicada)
-- [~] `/precos` e `/sistema-pdv/bar-restaurante` no ar
-- [~] `/politica-de-privacidade` no ar (hoje ainda 404 em produção)
-- [~] Cabeçalhos COOP, Permissions-Policy e CSP Report-Only ativos
+- [x] `/precos`, `/sistema-pdv/bar-restaurante` e `/politica-de-privacidade` respondendo 200
+- [x] `/api/lp-lead` no ar; lead da LP gravado com `origem: LP Bar e Restaurante`, gclid e UTMs
+- [x] Sitemap servindo as 7 URLs
+- [x] Os 8 cabeçalhos de segurança respondendo, CSP em Report-Only
+- [x] `/index.html` redireciona permanentemente para `/` — **308, não 301**
+
+> O `cleanUrls` do Vercel resolve o redirecionamento antes da nossa rota e
+> devolve 308. É permanente e o Google trata como equivalente ao 301 para fins
+> de canonicalização, então o efeito de SEO é o mesmo.
+
+### Onde os cabeçalhos de segurança realmente funcionam
+
+O `vercel.json` da raiz usa `builds` + `routes` (schema legacy) e nele o
+Vercel **ignora `headers`** — no topo, em rota com `continue: true` e em rota
+com `dest`. As três formas foram testadas em deploys separados e nenhuma
+chegou ao cliente; só respondia o HSTS padrão do Vercel, sem `includeSubDomains`.
+
+Os cabeçalhos vivem em `landing/vercel.json`, que usa o schema moderno e é
+aplicado. **Ao mexer em cabeçalho, é esse o arquivo.**
 
 ## Pendente de navegador
 
