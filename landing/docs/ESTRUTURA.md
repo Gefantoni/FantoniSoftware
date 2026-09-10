@@ -67,7 +67,15 @@ o lead é perdido sem nenhum sinal para o usuário nem para o cliente. Ver Taref
 
 ## PageSpeed (mobile)
 
-| Momento | Score | LCP |
-|---|---|---|
-| Antes da Tarefa 09 | *(a preencher)* | *(a preencher)* |
-| Depois da Tarefa 09 | *(a preencher)* | *(a preencher)* |
+Medido em Moto G Power emulado, Lighthouse 13.4.1, 4G lento.
+
+| Momento | Desemp. | Acess. | Práticas | SEO | LCP | TBT | CLS | Payload |
+|---|---|---|---|---|---|---|---|---|
+| **Antes** (10/09/2026 11:36) | 96 | 93 | 96 | 100 | 2,6 s | 90 ms | 0 | 3.568 KiB |
+| **Depois** | *(a medir)* | | | | | | | |
+
+Metas: Desempenho ≥ 98 · LCP ≤ 2,2 s · Payload ≤ 900 KiB · TBT ≤ 60 ms ·
+Acessibilidade ≥ 98 · Práticas ≥ 96 · SEO 100 · zero erro no console.
+
+> O painel de campo (CrUX) veio **sem dados** — não há tráfego real suficiente.
+> Depois da campanha no ar, ele passa a valer mais que o laboratório.
