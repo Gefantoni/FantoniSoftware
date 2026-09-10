@@ -44,17 +44,7 @@
     },
     {
       "src": "/((?!central-negocio-old/|landing/).*)",
-      "dest": "/landing/$1",
-      "headers": {
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "SAMEORIGIN",
-        "X-XSS-Protection": "1; mode=block",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
-        "Cross-Origin-Opener-Policy": "same-origin",
-        "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
-        "Content-Security-Policy-Report-Only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: ; media-src 'self'; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://connect.facebook.net https://graph.facebook.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com; base-uri 'self'; form-action 'self'"
-      }
+      "dest": "/landing/$1"
     }
   ]
 }
