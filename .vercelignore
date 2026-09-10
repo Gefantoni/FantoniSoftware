@@ -1,3 +1,19 @@
-*
-!landing
+# Ignores para Vercel
+**/node_modules
+.git
+.env*
+*.log
+logs/
+ngrok.zip
+ngrok-bin/
 landing/assets/Bares e restaurantes.mp4
+
+# Pastas de trabalho local — nada disso é servido pelo site
+Lading_Trocar_de_sistema/
+MegaBrain/
+Projeto Bruno/
+Propostas/
+FantoniSoftware/
+admin/
+pagespeed-plano-acao.md
+*.tmp

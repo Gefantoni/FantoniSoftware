@@ -24,6 +24,10 @@
     {
       "src": "landing/api/*.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "landing/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -34,10 +38,10 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/landing/api/$1"
+      "dest": "/landing/api/$1.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/((?!central-negocio-old/|landing/).*)",
       "dest": "/landing/$1"
     }
   ]

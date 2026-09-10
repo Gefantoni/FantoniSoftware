@@ -3,7 +3,8 @@ require('dotenv').config();
 const axios = require('axios');
 
 const REF   = 'xkeqoljarybjgekcwmfw';
-const TOKEN = 'REMOVIDO_TOKEN_REVOGADO';
+const TOKEN = process.env.SUPABASE_ACCESS_TOKEN;
+if (!TOKEN) throw new Error('Defina SUPABASE_ACCESS_TOKEN no .env antes de rodar este script.');
 const BASE_TUTORIAL = 'https://ajuda.navivendas.com.br/tutoriais';
 
 const headers = {

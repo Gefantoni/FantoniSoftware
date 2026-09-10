@@ -39,12 +39,6 @@
     "operatingSystem": "Windows, Android, iOS",
     "description": "Sistema PDV completo para varejo, bares, restaurantes e comércio em geral. Emissão de NFC-e, controle de estoque, gestão financeira e acesso remoto.",
     "url": "https://fantonisoftware.com.br",
-    "offers": {
-      "@type": "Offer",
-      "price": "99.00",
-      "priceCurrency": "BRL",
-      "availability": "https://schema.org/InStock"
-    },
     "provider": {
       "@type": "Organization",
       "name": "Fantoni Software",
@@ -950,7 +944,7 @@
         <span style="font-size:13px;font-weight:600;color:#fcd34d;">Planos a partir de</span>
         <span style="font-size:24px;font-weight:900;color:#fbbf24;letter-spacing:-1px;line-height:1;">R$ 99<span style="font-size:14px;font-weight:600;color:#fcd34d;">/mês</span></span>
         <span style="width:1px;height:20px;background:rgba(251,191,36,0.3);"></span>
-        <span style="font-size:12px;color:#fcd34d;font-weight:500;">Sem fidelidade</span>
+        <span style="font-size:12px;color:#fcd34d;font-weight:500;">7 dias grátis · sem cartão</span>
         <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
       </a>
 
@@ -2097,35 +2091,57 @@
 <section id="preco" style="background:#f8fafc; padding:100px 24px;">
   <div style="max-width:1200px; margin:0 auto;">
     <div style="text-align:center; margin-bottom:40px;" data-aos="fade-up">
-      <span class="section-eyebrow" style="margin-bottom:20px;">Planos e Preços</span>
-      <h2 style="font-size:clamp(32px,4vw,48px); color:#0f172a; margin-bottom:16px;">Preço Ideal para o seu Negócio</h2>
-      <p style="font-size:18px; color:#475569; line-height:1.6; max-width:600px; margin:0 auto;">Mais flexibilidade, mais controle. Escolha o plano perfeito para você e comece a testar hoje mesmo.</p>
-    </div>
+      <span class="section-eyebrow" style="margin-bottom:20px;">Planos</span>
+      <h2 style="font-size:clamp(32px,4vw,48px); color:#0f172a; margin-bottom:16px;">Teste 7 dias grátis. Depois a gente conversa.</h2>
+      <p style="font-size:18px; color:#475569; line-height:1.6; max-width:640px; margin:0 auto 28px;">Instale o sistema, cadastre os seus produtos e use por 7 dias sem pagar nada. Sem cartão de crédito, sem cobrança e sem compromisso — só depois do teste falamos de plano e de valor.</p>
 
-    <!-- Seletor de período: Mensal / Semestral / Anual -->
-    <style>
-      .billing-tabs { display:flex; justify-content:center; align-items:center; gap:16px; margin-bottom:56px; flex-wrap:wrap; }
-      .billing-tab-group { display:flex; background:#f1f5f9; border-radius:100px; padding:4px; }
-      .billing-tab { padding:10px 22px; border-radius:100px; border:none; background:transparent; font-size:15px; font-weight:600; color:#64748b; cursor:pointer; transition:all 0.2s; white-space:nowrap; display:flex; align-items:center; gap:6px; }
-      .billing-tab.active { background:#fff; color:#0f172a; font-weight:800; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
-      .badge-cert-tab { background:#dcfce7; color:#16a34a; font-size:10px; font-weight:800; padding:2px 7px; border-radius:100px; text-transform:uppercase; letter-spacing:0.4px; }
-      .btn-wa-plans { display:inline-flex; align-items:center; gap:9px; background:#25d366; color:#fff; font-size:14px; font-weight:700; padding:10px 22px; border-radius:100px; text-decoration:none; border:none; cursor:pointer; box-shadow:0 4px 14px rgba(37,211,102,.35); transition:all 0.2s; white-space:nowrap; }
-      .btn-wa-plans:hover { background:#1ebe5d; transform:translateY(-2px); box-shadow:0 6px 20px rgba(37,211,102,.45); }
-      @media(max-width:540px) { .billing-tab { padding:8px 14px; font-size:13px; } .badge-cert-tab { display:none; } .btn-wa-plans { font-size:13px; padding:9px 18px; } }
-    </style>
-    <div class="billing-tabs" data-aos="fade-up">
-      <div class="billing-tab-group">
-        <button class="billing-tab active" id="tab-mensal" onclick="setBilling('mensal')">Mensal</button>
-        <button class="billing-tab" id="tab-semestral" onclick="setBilling('semestral')">Semestral</button>
-        <button class="billing-tab" id="tab-anual" onclick="setBilling('anual')">Anual <span class="badge-cert-tab">+ Cert. Digital</span></button>
+      <div class="trial-strip">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> 7 dias grátis de verdade</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Não pedimos cartão de crédito</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Nenhuma mensalidade durante o teste</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Sem fidelidade, cancele quando quiser</span>
       </div>
-      <a href="#" onclick="openConsultorModal(); return false;" class="btn-wa-plans">
+      <p style="font-size:15px;color:#64748b;margin:22px auto 0;font-weight:600;">Planos a partir de <strong style="color:#0f172a;font-weight:800;">R$ 99/mês</strong> — o valor exato depende do seu negócio. Fale com a gente e monte o seu.</p>
+
+      <a href="#" onclick="openConsultorModal(); return false;" class="btn-wa-plans" style="margin-top:20px;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
         Falar com consultor
       </a>
     </div>
 
     <style>
+      .btn-wa-plans {
+        display:inline-flex; align-items:center; gap:9px;
+        background:#25d366; color:#fff; font-size:15px; font-weight:700;
+        padding:13px 26px; border-radius:100px; text-decoration:none;
+        border:none; cursor:pointer; box-shadow:0 4px 14px rgba(37,211,102,.35);
+        transition:all 0.2s; white-space:nowrap;
+      }
+      .btn-wa-plans:hover { background:#1ebe5d; transform:translateY(-2px); box-shadow:0 6px 20px rgba(37,211,102,.45); }
+      @media(max-width:540px) { .btn-wa-plans { font-size:14px; padding:12px 20px; } }
+
+      .trial-strip {
+        display:flex; flex-wrap:wrap; justify-content:center; gap:10px 14px;
+        max-width:820px; margin:0 auto;
+      }
+      .trial-strip span {
+        display:inline-flex; align-items:center; gap:8px;
+        background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;
+        font-size:14px; font-weight:700; padding:9px 16px; border-radius:100px;
+      }
+      .trial-strip svg { width:16px; height:16px; flex-shrink:0; }
+      @media(max-width:540px) { .trial-strip span { font-size:13px; padding:8px 13px; } }
+
+      .plan-trial-tag {
+        display:inline-flex; align-items:center; gap:8px;
+        background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8;
+        font-size:14px; font-weight:800; padding:10px 16px; border-radius:12px;
+        margin-bottom:28px;
+      }
+      .plan-trial-tag-dark {
+        background:rgba(96,165,250,0.14); border-color:rgba(147,197,253,0.35); color:#bfdbfe;
+      }
+
       .pricing-grid-new { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:32px; align-items:center; }
       @media(max-width:992px) { .pricing-grid-new { align-items:stretch; } }
       @media(max-width:768px) { .pricing-card-new.pricing-card-featured { transform:scale(1) !important; } }
@@ -2190,10 +2206,9 @@
         <div>
           <h3>MEI</h3>
           <p class="plan-label">Para quem está começando</p>
-          <div class="price-block" id="price-mei">R$ 99<span class="price-suffix">/mês</span></div>
+          <div class="plan-trial-tag">7 dias grátis para testar</div>
           
           <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
-            <li class="benefit-anual" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#16a34a; background:#dcfce7; padding:8px 12px; border-radius:8px; margin-bottom:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado Digital Incluído</li>
             <li class="hint-cert" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#16a34a; background:#f0fdf4; padding:7px 10px; border-radius:8px; margin-bottom:4px; border:1px solid #bbf7d0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Assine anual e ganhe o Certificado Digital</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Apenas 1 dispositivo</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Frente de Caixa (PDV) completo</li>
@@ -2202,7 +2217,7 @@
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#94a3b8; text-decoration:line-through;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg> Emissão de NF-e / NFC-e</li>
           </ul>
         </div>
-        <button onclick="openCheckout('mei')" class="btn btn-lg btn-light btn-block shadow-hover">Assinar MEI</button>
+        <button onclick="openLeadModal()" class="btn btn-lg btn-light btn-block shadow-hover">Testar 7 dias grátis</button>
       </div>
 
       <!-- Card 2: Essencial -->
@@ -2211,10 +2226,9 @@
         <div>
           <h3>Essencial</h3>
           <p class="plan-label plan-label-dark">Varejo com emissão fiscal</p>
-          <div class="price-block price-block-dark" id="price-essencial">R$ 119<span class="price-suffix">/mês</span></div>
+          <div class="plan-trial-tag plan-trial-tag-dark">7 dias grátis para testar</div>
           
           <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
-            <li class="benefit-anual" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#22c55e; background:rgba(34,197,94,0.15); padding:8px 12px; border-radius:8px; margin-bottom:4px; border:1px solid rgba(34,197,94,0.3);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado Digital Incluído</li>
             <li class="hint-cert" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#4ade80; background:rgba(34,197,94,0.1); padding:7px 10px; border-radius:8px; margin-bottom:4px; border:1px solid rgba(74,222,128,0.3);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Assine anual e ganhe o Certificado Digital</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#fff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Banco de dados local</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#e2e8f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Tudo do Plano MEI</li>
@@ -2223,7 +2237,7 @@
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#e2e8f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Integração com Maquininhas Card</li>
           </ul>
         </div>
-        <button onclick="openCheckout('essencial')" class="btn btn-lg btn-primary btn-block shadow-hover">Assinar Essencial</button>
+        <button onclick="openLeadModal()" class="btn btn-lg btn-primary btn-block shadow-hover">Testar 7 dias grátis</button>
       </div>
 
       <!-- Card 3: Premium -->
@@ -2231,10 +2245,9 @@
         <div>
           <h3>Premium</h3>
           <p class="plan-label">Bares, Restaurantes e Delivery</p>
-          <div class="price-block" id="price-premium">R$ 139<span class="price-suffix">/mês</span></div>
+          <div class="plan-trial-tag">7 dias grátis para testar</div>
           
           <ul style="list-style:none; padding:0; margin:0 0 40px; text-align:left; display:flex; flex-direction:column; gap:12px;">
-            <li class="benefit-anual" style="display:none; align-items:center; gap:10px; font-size:14px; font-weight:800; color:#16a34a; background:#dcfce7; padding:8px 12px; border-radius:8px; margin-bottom:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Certificado Digital Incluído</li>
             <li class="hint-cert" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#16a34a; background:#f0fdf4; padding:7px 10px; border-radius:8px; margin-bottom:4px; border:1px solid #bbf7d0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Assine anual e ganhe o Certificado Digital</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Banco de dados em nuvem</li>
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:#0f172a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Dispositivos Ilimitados</li>
@@ -2245,9 +2258,8 @@
             <li style="display:flex; align-items:center; gap:10px; font-size:15px; color:#475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Integração com iFood / Delivery</li>
           </ul>
         </div>
-        <button onclick="openCheckout('premium')" class="btn btn-lg btn-light btn-block shadow-hover">Assinar Premium</button>
+        <button onclick="openLeadModal()" class="btn btn-lg btn-light btn-block shadow-hover">Testar 7 dias grátis</button>
       </div>
-    </div>
     </div>
 
     <!-- CTA inline dentro da seção de preços -->
@@ -2391,58 +2403,30 @@
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
         <h2 class="modal-title" style="margin-bottom:6px;">Falar com Consultor</h2>
-        <p style="font-size:14px;color:var(--cinza);margin:0;">Responda 3 perguntas rápidas e entraremos em contato pelo WhatsApp.</p>
+        <p style="font-size:14px;color:var(--cinza);margin:0;">Conte um pouco do seu negócio e um consultor entra em contato com o valor do plano ideal para você.</p>
       </div>
 
       <form id="consultor-form" onsubmit="handleConsultorSubmit(event)">
 
-        <!-- Pergunta 1: Faturamento -->
-        <div class="form-group" style="margin-bottom:20px;">
-          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:10px;">
-            Qual é o faturamento mensal do seu negócio?
-          </label>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <label class="consultor-radio">
-              <input type="radio" name="faturamento" value="Ainda não faturo" required>
-              <span>Ainda não faturo</span>
-            </label>
-            <label class="consultor-radio">
-              <input type="radio" name="faturamento" value="R$ 1 a R$ 10.000">
-              <span>R$ 1 a R$ 10.000</span>
-            </label>
-            <label class="consultor-radio">
-              <input type="radio" name="faturamento" value="R$ 10.000 a R$ 100.000">
-              <span>R$ 10.000 a R$ 100.000</span>
-            </label>
-            <label class="consultor-radio">
-              <input type="radio" name="faturamento" value="Acima de R$ 100.000">
-              <span>Acima de R$ 100.000</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Pergunta 2: Ramo -->
-        <div class="form-group" style="margin-bottom:20px;">
-          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">
-            Qual é o ramo do seu negócio?
-          </label>
-          <input type="text" id="consultor-ramo" class="form-input" required
-            placeholder="Ex: Restaurante, Bar, Mercado, Farmácia…">
-        </div>
-
-        <!-- Pergunta 3: Nome -->
         <div class="form-group" style="margin-bottom:16px;">
-          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">
-            Como podemos te chamar?
-          </label>
-          <input type="text" id="consultor-nome" class="form-input" required
-            placeholder="Seu nome">
+          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">Nome da empresa</label>
+          <input type="text" id="consultor-empresa" class="form-input" required placeholder="Nome do seu negócio">
         </div>
 
-        <!-- WhatsApp para contato -->
+        <div class="form-group" style="margin-bottom:16px;">
+          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">Ramo de atuação</label>
+          <input type="text" id="consultor-ramo" class="form-input" required placeholder="Ex: Restaurante, Bar, Mercado, Farmácia…">
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">E-mail</label>
+          <input type="email" id="consultor-email" class="form-input" required placeholder="seu@email.com.br">
+        </div>
+
+        <!-- Telefone para contato -->
         <div class="form-group" style="margin-bottom:24px;">
           <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">
-            Seu WhatsApp <span style="font-weight:400;color:#94a3b8;">(para o consultor entrar em contato)</span>
+            Telefone <span style="font-weight:400;color:#94a3b8;">(WhatsApp, para o consultor entrar em contato)</span>
           </label>
           <input type="tel" id="consultor-whatsapp" class="form-input" required
             placeholder="(00) 00000-0000">
@@ -2652,41 +2636,9 @@
     }
   }
 
-  function setBilling(mode) {
-    billingMode = mode;
-    ['mensal', 'semestral', 'anual'].forEach(m => {
-      document.getElementById('tab-' + m).classList.toggle('active', m === mode);
-    });
-
-    const note = s => '<span style="font-size:13px;font-weight:500;color:#94a3b8;margin-top:6px;display:block;line-height:1;">' + s + '</span>';
-
-    if (mode === 'mensal') {
-      document.getElementById('price-mei').innerHTML = 'R$ 99<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Assinatura mensal recorrente');
-      document.getElementById('price-essencial').innerHTML = 'R$ 119<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Assinatura mensal recorrente');
-      document.getElementById('price-premium').innerHTML = 'R$ 139<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Assinatura mensal recorrente');
-      document.querySelectorAll('.benefit-anual').forEach(el => el.style.display = 'none');
-      document.querySelectorAll('.hint-cert').forEach(el => el.style.display = 'flex');
-    } else if (mode === 'semestral') {
-      document.getElementById('price-mei').innerHTML = 'R$ 89<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Total à vista: R$ 534 por 6 meses');
-      document.getElementById('price-essencial').innerHTML = 'R$ 109<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Total à vista: R$ 654 por 6 meses');
-      document.getElementById('price-premium').innerHTML = 'R$ 119<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Total à vista: R$ 714 por 6 meses');
-      document.querySelectorAll('.benefit-anual').forEach(el => el.style.display = 'none');
-      document.querySelectorAll('.hint-cert').forEach(el => el.style.display = 'flex');
-    } else {
-      document.getElementById('price-mei').innerHTML = 'R$ 79<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Total à vista: R$ 948 por 12 meses • Cert. Digital incluso');
-      document.getElementById('price-essencial').innerHTML = 'R$ 99<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Total à vista: R$ 1.188 por 12 meses • Cert. Digital incluso');
-      document.getElementById('price-premium').innerHTML = 'R$ 109<span style="font-size:18px;font-weight:600;color:#94a3b8;">/mês</span>' + note('Total à vista: R$ 1.308 por 12 meses • Cert. Digital incluso');
-      document.querySelectorAll('.benefit-anual').forEach(el => el.style.display = 'flex');
-      document.querySelectorAll('.hint-cert').forEach(el => el.style.display = 'none');
-    }
-  }
-
   function closeCheckout() {
     modalCheckout.style.display = 'none';
   }
-
-  // Inicializa com mensal como padrão
-  setBilling('mensal');
 
   function openLeadModal() {
     modalLead.style.display = 'flex';
@@ -2715,15 +2667,10 @@
   async function handleConsultorSubmit(event) {
     event.preventDefault();
 
-    const nome        = document.getElementById('consultor-nome').value.trim();
-    const ramo        = document.getElementById('consultor-ramo').value.trim();
-    const whatsapp    = document.getElementById('consultor-whatsapp').value.trim();
-    const faturamento = document.querySelector('input[name="faturamento"]:checked')?.value;
-
-    if (!faturamento) {
-      alert('Por favor, selecione o faturamento do seu negócio.');
-      return;
-    }
+    const empresa  = document.getElementById('consultor-empresa').value.trim();
+    const ramo     = document.getElementById('consultor-ramo').value.trim();
+    const email    = document.getElementById('consultor-email').value.trim();
+    const whatsapp = document.getElementById('consultor-whatsapp').value.trim();
 
     // Mostra loading
     document.getElementById('consultor-form-wrap').style.display = 'none';
@@ -2740,34 +2687,22 @@
       await fetch('/api/consultor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, faturamento, ramo, whatsapp, _meta: meta }),
+        body: JSON.stringify({ empresa, ramo, email, whatsapp, _meta: meta }),
       });
     } catch (e) {
       console.warn('Aviso: não foi possível salvar lead consultor:', e.message);
     }
 
-    if (faturamento === 'Ainda não faturo' || faturamento.startsWith('Ainda')) {
-      // Não redireciona — exibe confirmação e aguarda contato do consultor
-      document.getElementById('consultor-loading').innerHTML = `
-        <div style="width:56px;height:56px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-        </div>
-        <p style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:8px;">Recebemos seu contato, ${nome.split(' ')[0]}!</p>
-        <p style="font-size:14px;color:#64748b;margin-bottom:24px;line-height:1.6;">Um consultor da Fantoni Software entrará em contato com você em breve para entender melhor o seu negócio.</p>
-        <button onclick="closeConsultorModal()" style="width:100%;padding:13px;background:#1d4ed8;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Fechar</button>`;
-    } else {
-      // Fatura algum valor → redireciona para WhatsApp com contexto
-      const msg = encodeURIComponent(
-        `Olá! Me chamo ${nome}.\n` +
-        `Ramo: ${ramo}\n` +
-        `Faturamento mensal: ${faturamento}\n\n` +
-        `Tenho interesse no Fantoni PDV e gostaria de falar com um consultor.`
-      );
-      setTimeout(() => {
-        window.open(`https://wa.me/5551996034862?text=${msg}`, '_blank');
-        closeConsultorModal();
-      }, 1200);
-    }
+    const msg = encodeURIComponent(
+      `Olá! Sou da empresa ${empresa}.\n` +
+      `Ramo: ${ramo}\n` +
+      `E-mail: ${email}\n\n` +
+      `Tenho interesse no Fantoni PDV e gostaria de falar com um consultor sobre os planos.`
+    );
+    setTimeout(() => {
+      window.open(`https://wa.me/5551996034862?text=${msg}`, '_blank');
+      closeConsultorModal();
+    }, 1200);
   }
 
   // Fecha modal ao clicar no overlay
@@ -2872,7 +2807,7 @@
 
     } catch (e) {
       console.error(e);
-      alert('Erro ao enviar. Verifique se o servidor da API (Vercel) está rodando localmente, pois o endpoint /api/lead falhou.');
+      alert('Não conseguimos enviar seus dados agora. Chame a gente no WhatsApp (51) 99603-4862 que liberamos seu teste na hora.');
       btn.innerText = originalText;
       btn.disabled = false;
     }

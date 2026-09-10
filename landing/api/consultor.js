@@ -21,11 +21,12 @@ async function saveLeadConsultor(lead) {
       'Prefer': 'return=minimal',
     },
     body: JSON.stringify({
-      name:      lead.nome,
-      whatsapp:  lead.whatsapp,
-      segmento:  lead.ramo,
-      notas:     `Faturamento: ${lead.faturamento}`,
-      origem:    'Consultor Site',
+      name:       lead.empresa,
+      empresa:    lead.empresa,
+      email:      lead.email,
+      whatsapp:   lead.whatsapp,
+      segmento:   lead.ramo,
+      origem:     'Consultor Site',
       created_at: new Date().toISOString(),
     }),
   });
@@ -56,23 +57,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
-  const { nome, faturamento, ramo, whatsapp, _meta } = req.body ?? {};
+  const { empresa, ramo, email, whatsapp, _meta } = req.body ?? {};
 
   const errors = [];
-  if (!nome || nome.trim().length < 2)       errors.push('Nome inválido.');
-  if (!faturamento)                           errors.push('Faturamento obrigatório.');
+  if (!empresa || empresa.trim().length < 2)  errors.push('Nome da empresa inválido.');
   if (!ramo || ramo.trim().length < 2)        errors.push('Ramo de atuação obrigatório.');
-  if (!whatsapp || whatsapp.replace(/\D/g, '').length < 10) errors.push('WhatsApp inválido.');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('E-mail inválido.');
+  if (!whatsapp || whatsapp.replace(/\D/g, '').length < 10) errors.push('Telefone inválido.');
 
   if (errors.length > 0) {
     return res.status(400).json({ success: false, errors });
   }
 
   const lead = {
-    nome:        nome.trim(),
-    faturamento: faturamento.trim(),
-    ramo:        ramo.trim(),
-    whatsapp:    whatsapp.replace(/\D/g, ''),
+    empresa:  empresa.trim(),
+    ramo:     ramo.trim(),
+    email:    email.trim().toLowerCase(),
+    whatsapp: whatsapp.replace(/\D/g, ''),
   };
 
   // IP real do cliente (considera proxy Vercel)
@@ -86,7 +87,8 @@ export default async function handler(req, res) {
       eventId:   _meta?.event_id || `consultor_${Date.now()}`,
       sourceUrl: _meta?.page_url,
       userData:  {
-        name:  lead.nome,
+        name:  lead.empresa,
+        email: lead.email,
         phone: lead.whatsapp,
         fbp:   _meta?.fbp,
         fbc:   _meta?.fbc,

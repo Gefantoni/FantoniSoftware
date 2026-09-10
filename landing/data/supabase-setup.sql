@@ -24,7 +24,12 @@ alter table leads add column if not exists cpf_cnpj   text;
 alter table leads add column if not exists origem      text;
 alter table leads add column if not exists created_at timestamptz default now();
 
+alter table leads add column if not exists empresa    text;
+alter table leads add column if not exists segmento   text;
+alter table leads add column if not exists notas      text;
+
 create index if not exists leads_email_idx on leads (email);
+create index if not exists leads_origem_idx on leads (origem);
 
 alter table leads enable row level security;
 
@@ -78,6 +83,50 @@ alter table checkouts enable row level security;
 
 drop policy if exists "service only" on checkouts;
 create policy "service only" on checkouts
+  for all
+  to service_role
+  using (true)
+  with check (true);
+
+
+-- ── TABELA: checkouts_certificados (certificado digital) ─────
+
+create table if not exists checkouts_certificados (
+  id          bigint generated always as identity primary key,
+  name        text,
+  email       text,
+  whatsapp    text,
+  cpf_cnpj    text,
+  plan        text,
+  plan_label  text,
+  plan_value  numeric(10,2),
+  asaas_id    text,
+  customer_id text,
+  invoice_url text,
+  status      text        default 'pending',
+  created_at  timestamptz not null default now()
+);
+
+alter table checkouts_certificados add column if not exists name        text;
+alter table checkouts_certificados add column if not exists email       text;
+alter table checkouts_certificados add column if not exists whatsapp    text;
+alter table checkouts_certificados add column if not exists cpf_cnpj    text;
+alter table checkouts_certificados add column if not exists plan        text;
+alter table checkouts_certificados add column if not exists plan_label  text;
+alter table checkouts_certificados add column if not exists plan_value  numeric(10,2);
+alter table checkouts_certificados add column if not exists asaas_id    text;
+alter table checkouts_certificados add column if not exists customer_id text;
+alter table checkouts_certificados add column if not exists invoice_url text;
+alter table checkouts_certificados add column if not exists status      text default 'pending';
+alter table checkouts_certificados add column if not exists created_at  timestamptz default now();
+
+create index if not exists checkouts_cert_email_idx  on checkouts_certificados (email);
+create index if not exists checkouts_cert_status_idx on checkouts_certificados (status);
+
+alter table checkouts_certificados enable row level security;
+
+drop policy if exists "service only" on checkouts_certificados;
+create policy "service only" on checkouts_certificados
   for all
   to service_role
   using (true)
