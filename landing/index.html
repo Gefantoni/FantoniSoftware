@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema PDV para Bares, Restaurantes e Varejo | Emita NFC-e e Controle Suas Vendas | Fantoni Software</title>
-  <meta name="description" content="Sistema PDV completo: emita NFC-e, controle estoque e gerencie suas vendas — funciona 100% offline, em qualquer dispositivo. Para bares, restaurantes, mercados e varejo em geral. Teste grátis por 7 dias, sem cartão." />
+  <title>Sistema PDV para Bar e Restaurante que Funciona Offline | Fantoni</title>
+  <meta name="description" content="Sistema PDV para bar e restaurante: comanda, KDS, NFC-e e controle de estoque. Funciona 100% offline. Teste 7 dias grátis, sem cartão. +100 negócios ativos." />
 
-  <!-- SEO: Keywords -->
-  <meta name="keywords" content="PDV Santa Cruz do Sul, sistema PDV Santa Cruz do Sul, ponto de venda Santa Cruz do Sul, PDV Venâncio Aires, PDV Lajeado, PDV Rio Grande do Sul, sistema PDV RS, sistema de vendas RS, PDV para varejo, PDV para bar, PDV para restaurante, PDV para mercado, PDV para lanchonete, sistema PDV, ponto de venda, nota fiscal eletrônica, NFC-e, NF-e, controle de caixa, controle de estoque, gestão financeira, PDV offline, PDV para MEI, PDV para Simples Nacional, sistema para açougue, sistema para farmácia, sistema para pet shop, Fantoni Software, Fantoni PDV, software PDV Brasil" />
 
   <!-- SEO: Open Graph -->
-  <meta property="og:title" content="Sistema PDV em Santa Cruz do Sul | Fantoni Software" />
-  <meta property="og:description" content="PDV completo para varejo, bares, restaurantes e comércio em geral. NFC-e, controle de estoque e acesso remoto. Atendemos em todo o Brasil. Teste 7 dias grátis." />
+  <meta property="og:title" content="Sistema PDV para Bar e Restaurante que Funciona Offline | Fantoni" />
+  <meta property="og:description" content="Sistema PDV para bar e restaurante: comanda, KDS, NFC-e e controle de estoque. Funciona 100% offline. Teste 7 dias grátis, sem cartão. +100 negócios ativos." />
   <meta property="og:image" content="https://fantonisoftware.com.br/assets/Arte.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -25,8 +23,8 @@
 
   <!-- SEO: Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Sistema PDV em Santa Cruz do Sul | Fantoni Software" />
-  <meta name="twitter:description" content="PDV completo para varejo, bares, restaurantes. NFC-e, controle de estoque e acesso remoto. Teste grátis." />
+  <meta name="twitter:title" content="Sistema PDV para Bar e Restaurante que Funciona Offline | Fantoni" />
+  <meta name="twitter:description" content="Sistema PDV para bar e restaurante: comanda, KDS, NFC-e e controle de estoque. Funciona 100% offline. Teste 7 dias grátis, sem cartão. +100 negócios ativos." />
   <meta name="twitter:image" content="https://fantonisoftware.com.br/assets/Arte.png" />
 
   <!-- SEO: Dados estruturados (Schema.org) -->
@@ -108,6 +106,9 @@
 
     gtag('config', 'G-LJ8G03VLL6');
   </script>
+
+  <!-- Camada GA4 + Google Ads (eventos, gclid, conversões) -->
+  <script src="/assets/js/tracking-google.js" defer></script>
 
   <!-- SEO: Canônico -->
   <link rel="canonical" href="https://fantonisoftware.com.br/" />
@@ -2683,15 +2684,33 @@
       fbq('track', 'Lead', { content_name: 'Consultor Site' }, { eventID: meta.event_id });
     }
 
+    let salvou = false;
     try {
-      await fetch('/api/consultor', {
+      const resp = await fetch('/api/consultor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ empresa, ramo, email, whatsapp, _meta: meta }),
+        body: JSON.stringify({ empresa, ramo, email, whatsapp, ...campanha(), _meta: meta }),
       });
+      salvou = resp.ok;
+      if (!salvou) console.error('Falha ao salvar lead consultor:', resp.status);
     } catch (e) {
-      console.warn('Aviso: não foi possível salvar lead consultor:', e.message);
+      console.error('Falha ao salvar lead consultor:', e.message);
     }
+
+    // Se não gravou, avisamos em vez de fingir sucesso — mas mantemos o caminho
+    // para o WhatsApp, senão o cliente é perdido junto com o registro.
+    if (!salvou) {
+      document.getElementById('consultor-loading').innerHTML =
+        '<div style="width:56px;height:56px;background:#fef3c7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">' +
+        '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><path stroke-linecap="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>' +
+        '<p style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:8px;">Não conseguimos registrar seu contato</p>' +
+        '<p style="font-size:14px;color:#64748b;margin-bottom:24px;line-height:1.6;">Fale com a gente direto no WhatsApp que resolvemos na hora.</p>' +
+        '<a href="https://wa.me/5551996034862" target="_blank" rel="noopener" style="display:block;padding:13px;background:#25d366;color:#fff;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;">Abrir WhatsApp</a>';
+      return;
+    }
+
+    // GA4 + Google Ads — só após a confirmação de que o lead foi gravado
+    if (window.FSTrack) FSTrack.lead('consultor', { email: email, whatsapp: whatsapp });
 
     const msg = encodeURIComponent(
       `Olá! Sou da empresa ${empresa}.\n` +
@@ -2711,6 +2730,12 @@
   });
 
   // ---- Formulário de Checkout ----
+  // gclid + UTMs guardados em cookie pelo tracking-google.js
+  function campanha() {
+    if (!window.FSTrack) return {};
+    return Object.assign({ gclid: FSTrack.getGclid() }, FSTrack.getUtms());
+  }
+
   async function handleCheckout(event) {
     event.preventDefault();
     const btn = document.getElementById('btn-checkout-submit');
@@ -2733,11 +2758,12 @@
       const resp = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, ...campanha() })
       });
       const data = await resp.json();
-      
+
       if (data.success && data.invoiceUrl) {
+        if (window.FSTrack) FSTrack.checkout(formData.plan, PLAN_PRICES[formData.plan] || 0);
         window.location.href = data.invoiceUrl;
       } else {
         alert('Erro ao processar: ' + (data.error || 'Tente novamente.'));
@@ -2777,7 +2803,7 @@
       const resp = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, _meta: meta })
+        body: JSON.stringify({ ...formData, ...campanha(), _meta: meta })
       });
       const data = await resp.json();
 
@@ -2787,6 +2813,9 @@
         btn.disabled = false;
         return;
       }
+
+      // GA4 + Google Ads — só após a confirmação de que o lead foi gravado
+      if (window.FSTrack) FSTrack.lead('teste_gratis', { email: formData.email, whatsapp: formData.whatsapp });
 
       // Exibe a tela de sucesso com os links de download
       document.getElementById('lead-form').style.display = 'none';

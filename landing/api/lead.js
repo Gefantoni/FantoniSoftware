@@ -54,6 +54,27 @@ function isValidCnpj(d) {
   return r === parseInt(d[13]);
 }
 
+
+// Campos de campanha vindos do front (gclid + UTMs) e carimbo de data/hora BRT.
+function dadosCampanha(body) {
+  const dh = new Date().toLocaleString('sv-SE', { timeZone: 'America/Sao_Paulo' });
+  return {
+    gclid:        body?.gclid        || null,
+    utm_source:   body?.utm_source   || null,
+    utm_medium:   body?.utm_medium   || null,
+    utm_campaign: body?.utm_campaign || null,
+    utm_term:     body?.utm_term     || null,
+    data_hora:    dh.replace(' ', 'T') + '-03:00',
+  };
+}
+
+// Nunca logar CPF/CNPJ em texto claro: mantém só os 3 últimos dígitos.
+function mascaraDocumento(doc) {
+  if (!doc) return '';
+  const d = String(doc);
+  return d.length <= 3 ? '***' : '*'.repeat(d.length - 3) + d.slice(-3);
+}
+
 async function saveToSupabase(lead) {
   const url  = process.env.SUPABASE_URL;
   const key  = process.env.SUPABASE_SERVICE_KEY;
@@ -77,6 +98,7 @@ async function saveToSupabase(lead) {
       cpf_cnpj:   lead.cpfCnpj,
       origem:     'Teste Site',
       created_at: lead.createdAt,
+      ...lead.campanha,
     }),
   });
 
@@ -124,11 +146,12 @@ export default async function handler(req, res) {
     whatsapp:  whatsapp.replace(/\D/g, ''),
     cpfCnpj:   cpfCnpj.replace(/\D/g, ''),
     createdAt: new Date().toISOString(),
+    campanha:  dadosCampanha(req.body),
   };
 
   const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress;
 
-  await Promise.allSettled([
+  const [gravacao] = await Promise.allSettled([
     saveToSupabase(lead),
     notifyWebhook(lead),
     sendCapiEvent({
@@ -146,6 +169,22 @@ export default async function handler(req, res) {
       userAgent: _meta?.user_agent || req.headers['user-agent'],
     }),
   ]);
+
+  // A gravação é o que importa: se ela falhar, NÃO devolvemos sucesso.
+  // Antes o erro era engolido pelo allSettled e o lead sumia em silêncio.
+  if (gravacao.status === 'rejected') {
+    console.error('[lead] Falha ao gravar lead:', JSON.stringify({
+      name:     lead.name,
+      email:    lead.email,
+      whatsapp: lead.whatsapp,
+      cpfCnpj:  mascaraDocumento(lead.cpfCnpj),
+      erro:     gravacao.reason?.message || String(gravacao.reason),
+    }));
+    return res.status(502).json({
+      success: false,
+      errors: ['Não conseguimos registrar seu cadastro agora. Chame a gente no WhatsApp (51) 99603-4862 que liberamos seu teste na hora.'],
+    });
+  }
 
   return res.status(200).json({
     success: true,

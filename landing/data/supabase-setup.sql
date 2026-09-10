@@ -131,3 +131,24 @@ create policy "service only" on checkouts_certificados
   to service_role
   using (true)
   with check (true);
+
+
+-- ── RASTREAMENTO DE CAMPANHA (Google Ads) ────────────────────
+-- Necessário para importar conversão offline no Google Ads.
+
+alter table leads add column if not exists gclid        text;
+alter table leads add column if not exists utm_source   text;
+alter table leads add column if not exists utm_medium   text;
+alter table leads add column if not exists utm_campaign text;
+alter table leads add column if not exists utm_term     text;
+alter table leads add column if not exists data_hora    text;
+
+alter table checkouts add column if not exists gclid        text;
+alter table checkouts add column if not exists utm_source   text;
+alter table checkouts add column if not exists utm_medium   text;
+alter table checkouts add column if not exists utm_campaign text;
+alter table checkouts add column if not exists utm_term     text;
+alter table checkouts add column if not exists data_hora    text;
+
+create index if not exists leads_gclid_idx     on leads (gclid);
+create index if not exists checkouts_gclid_idx on checkouts (gclid);

@@ -4,6 +4,20 @@
 
 import { sendCapiEvent } from './_capi.js';
 
+
+// Campos de campanha vindos do front (gclid + UTMs) e carimbo de data/hora BRT.
+function dadosCampanha(body) {
+  const dh = new Date().toLocaleString('sv-SE', { timeZone: 'America/Sao_Paulo' });
+  return {
+    gclid:        body?.gclid        || null,
+    utm_source:   body?.utm_source   || null,
+    utm_medium:   body?.utm_medium   || null,
+    utm_campaign: body?.utm_campaign || null,
+    utm_term:     body?.utm_term     || null,
+    data_hora:    dh.replace(' ', 'T') + '-03:00',
+  };
+}
+
 async function saveLeadConsultor(lead) {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
@@ -28,6 +42,7 @@ async function saveLeadConsultor(lead) {
       segmento:   lead.ramo,
       origem:     'Consultor Site',
       created_at: new Date().toISOString(),
+      ...lead.campanha,
     }),
   });
 
@@ -74,12 +89,13 @@ export default async function handler(req, res) {
     ramo:     ramo.trim(),
     email:    email.trim().toLowerCase(),
     whatsapp: whatsapp.replace(/\D/g, ''),
+    campanha: dadosCampanha(req.body),
   };
 
   // IP real do cliente (considera proxy Vercel)
   const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress;
 
-  await Promise.allSettled([
+  const [gravacao] = await Promise.allSettled([
     saveLeadConsultor(lead),
     notifyWebhook(lead),
     sendCapiEvent({
@@ -97,6 +113,21 @@ export default async function handler(req, res) {
       userAgent: _meta?.user_agent || req.headers['user-agent'],
     }),
   ]);
+
+  // Se a gravação falhar, não devolvemos sucesso — senão o lead some em silêncio.
+  if (gravacao.status === 'rejected') {
+    console.error('[consultor] Falha ao gravar lead:', JSON.stringify({
+      empresa:  lead.empresa,
+      ramo:     lead.ramo,
+      email:    lead.email,
+      whatsapp: lead.whatsapp,
+      erro:     gravacao.reason?.message || String(gravacao.reason),
+    }));
+    return res.status(502).json({
+      success: false,
+      errors: ['Não conseguimos registrar seu contato agora. Chame a gente no WhatsApp (51) 99603-4862.'],
+    });
+  }
 
   return res.status(200).json({ success: true });
 }
