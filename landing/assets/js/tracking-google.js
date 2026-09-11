@@ -15,6 +15,16 @@
 
   /* Um rótulo real do Google Ads pode conter a letra X, então checamos o
      marcador completo de placeholder em vez de um X solto. */
+  /* O GTM só dispara em objetos com a chave `event`; o gtag() empurra um
+     arguments, que ele ignora. Este push é o que torna os eventos visíveis
+     como Custom Event no container — e não envia nada sozinho. */
+  function paraGTM(nome, dados) {
+    window.dataLayer = window.dataLayer || [];
+    var payload = { event: nome };
+    if (dados) Object.keys(dados).forEach(function (k) { payload[k] = dados[k]; });
+    window.dataLayer.push(payload);
+  }
+
   function configurado(valor) {
     return typeof valor === 'string' && valor.indexOf('XXXXXXXXX') === -1;
   }
@@ -87,10 +97,9 @@
     if (!a) return;
 
     if (typeof gtag === 'function') {
-      gtag('event', 'whatsapp_click', {
-        origem: origem(),
-        secao:  (a.closest('section') || {}).id || 'indefinida'
-      });
+      var ctx = { origem: origem(), secao: (a.closest('section') || {}).id || 'indefinida' };
+      gtag('event', 'whatsapp_click', ctx);
+      paraGTM('fs_whatsapp_click', ctx);
       if (configurado(AW.whatsapp)) {
         gtag('event', 'conversion', {
           send_to: AW.whatsapp, value: 40.0, currency: 'BRL'
@@ -116,6 +125,7 @@
       gtag('event', 'generate_lead', {
         currency: 'BRL', value: 80.0, tipo_lead: tipo, origem: origem()
       });
+      paraGTM('fs_lead', { tipo_lead: tipo, origem: origem(), value: 80.0, currency: 'BRL' });
       if (configurado(AW.lead)) {
         gtag('set', 'user_data', {
           email: ((dados && dados.email) || '').trim().toLowerCase(),
@@ -131,6 +141,7 @@
       gtag('event', 'begin_checkout', {
         currency: 'BRL', value: valor || 0, items: [{ item_name: plano }]
       });
+      paraGTM('fs_checkout', { plano: plano, value: valor || 0, currency: 'BRL' });
       if (configurado(AW.checkout)) {
         gtag('event', 'conversion', {
           send_to: AW.checkout, value: valor || 0, currency: 'BRL'
