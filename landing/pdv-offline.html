@@ -1,11 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Consent Mode v2 — precisa vir antes do GTM e do gtag.js -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    (function () {
+      var salvo = null;
+      try { salvo = localStorage.getItem('fs_consent'); } catch (e) {}
+      if (salvo === 'granted') {
+        gtag('consent', 'default', { ad_storage:'granted', ad_user_data:'granted', ad_personalization:'granted', analytics_storage:'granted' });
+        window.__fsConsent = 'granted';
+      } else {
+        gtag('consent', 'default', { ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied', analytics_storage:'denied', wait_for_update: 500 });
+        window.__fsConsent = salvo === 'denied' ? 'denied' : 'pendente';
+      }
+    })();
+  </script>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WFD67JCD');</script>
+  <!-- End Google Tag Manager -->
   <title>Fantoni PDV | O Sistema que não trava no horário de pico</title>
   <meta name="description" content="PDV para Bares e Restaurantes 100% offline. Evite filas, emita NFC-e e faça gestão de mesas sem depender da internet. Teste grátis." />
-
 
   <!-- SEO: Open Graph -->
   <meta property="og:title" content="Sistema PDV em Santa Cruz do Sul | Fantoni Software" />
@@ -345,7 +370,6 @@
     }
     nav.scrolled .nav-mobile a { color: var(--texto); }
 
-
     /* ---- HERO ---- */
     .hero {
       background: #0f172a; color: var(--branco);
@@ -558,7 +582,6 @@
       background: rgba(255,255,255,.1); color: #cbd5e1;
       padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600;
     }
-
 
     /* ---- DEPOIMENTOS ---- */
     .depo-grid {
@@ -927,12 +950,14 @@
     }
   </style>
 
-
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WFD67JCD"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <!-- NAVBAR -->
-
 
 <!-- 1. HERO -->
 <section class="hero" style="padding-top:100px; padding-bottom:60px;">
@@ -1299,8 +1324,6 @@
     </div>
   </div>
 
-
-
       <!-- Video e Texto -->
       <div class="video-flex" style="display: flex; gap: 48px; max-width: 1000px; width: 100%; margin: 0 auto 64px; align-items: center; text-align: left; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 300px;" data-aos="fade-right">
@@ -1364,10 +1387,6 @@
 
   
 </section>
-
-
-
-
 
 <!-- 5. LINHA DE PRODUTOS (ZIG-ZAG) -->
 <section id="produtos" style="background: #0f172a; padding: 80px 24px; color: #fff;">
@@ -1486,7 +1505,6 @@
     }
   </style>
 </section>
-
 
 <!-- 6. COMPARATIVO ANTES E DEPOIS -->
 <section id="comparativo" style="background:var(--bg);">
@@ -1733,5 +1751,6 @@ document.addEventListener('submit', function(e) {
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=2035088657416576&ev=PageView&noscript=1"
 /></noscript>
+<script src="/assets/js/consent.js" defer></script>
 </body>
 </html>

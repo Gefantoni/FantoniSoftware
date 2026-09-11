@@ -1,8 +1,34 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Consent Mode v2 — precisa vir antes do GTM e do gtag.js -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    (function () {
+      var salvo = null;
+      try { salvo = localStorage.getItem('fs_consent'); } catch (e) {}
+      if (salvo === 'granted') {
+        gtag('consent', 'default', { ad_storage:'granted', ad_user_data:'granted', ad_personalization:'granted', analytics_storage:'granted' });
+        window.__fsConsent = 'granted';
+      } else {
+        gtag('consent', 'default', { ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied', analytics_storage:'denied', wait_for_update: 500 });
+        window.__fsConsent = salvo === 'denied' ? 'denied' : 'pendente';
+      }
+    })();
+  </script>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WFD67JCD');</script>
+  <!-- End Google Tag Manager -->
   <title>Política de Privacidade | Fantoni Software</title>
   <meta name="description" content="Como a Fantoni Software coleta, usa e protege os seus dados pessoais, em conformidade com a LGPD (Lei 13.709/2018)." />
   <meta name="robots" content="index, follow" />
@@ -38,6 +64,10 @@
   </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WFD67JCD"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <header>
   <div class="inner">
@@ -151,5 +181,6 @@
   © 2026 Fantoni Software · CNPJ 60.388.739/0001-44 · <a href="/">Voltar ao site</a>
 </footer>
 
+<script src="/assets/js/consent.js" defer></script>
 </body>
 </html>
