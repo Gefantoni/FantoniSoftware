@@ -113,7 +113,7 @@
         "name": "Quanto custa o Fantoni PDV?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Os planos começam em R$ 99 por mês. Todos incluem 7 dias de teste grátis, sem cartão de crédito e sem fidelidade. O valor exato depende do porte do seu negócio — fale com um consultor e montamos o plano certo para você."
+          "text": "Os planos começam em R$ 89 por mês. Todos incluem 7 dias de teste grátis, sem cartão de crédito e sem fidelidade. O valor exato depende do porte do seu negócio — fale com um consultor e montamos o plano certo para você."
         }
       },
       {
@@ -935,6 +935,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <a href="#videos">Demonstração</a>
     <a href="#depoimentos">Depoimentos</a>
     <a href="#" class="btn btn-block btn-primary" onclick="openLeadModal(); return false;" style="margin-top: 16px;">Testar 7 dias grátis</a>
+    <a href="#" class="btn btn-block" onclick="openConsultorModal(); return false;" style="margin-top: 10px; background:rgba(37,211,102,0.12); border:2px solid rgba(37,211,102,0.55);">Falar com um consultor</a>
   </div>
 </nav>
 
@@ -942,7 +943,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="hero" id="inicio" style="padding: 100px 24px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; min-height:85vh;">
   
   <style>
-    .hero-btn-group { display: flex; gap: 16px; justify-content: flex-start; width: 100%; margin-bottom: 32px; flex-wrap: wrap; }
+    .hero-btn-group {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px; width: 100%; max-width: 540px; margin: 0 0 18px;
+    }
+    .hero-btn-group .btn { width: 100%; padding-left: 18px; padding-right: 18px; font-size: 15px; }
+    .btn-consultor { background: rgba(37,211,102,0.10); color: #fff; border-color: rgba(37,211,102,0.55); }
+    .btn-consultor:hover { background: rgba(37,211,102,0.18); border-color: #25d366; transform: translateY(-2px); }
+    .hero-demo-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #cbd5e1; font-size: 15px; font-weight: 600;
+      text-decoration: none; margin-bottom: 30px; transition: color 0.2s ease;
+    }
+    .hero-demo-link:hover { color: #fff; }
+    .hero-demo-link svg { opacity: 0.7; }
     .btn-hero-primary { background: #2563eb; color: #fff; border: none; padding: 16px 32px; border-radius: 12px; font-size: 16px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: all 0.2s ease; text-decoration: none; }
     .btn-hero-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); background: #1d4ed8; }
     .btn-hero-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.3); padding: 16px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; }
@@ -982,12 +996,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     @media (max-width: 900px) {
       .hero-text-col { text-align: center; padding: 28px 24px !important; }
-      .hero-btn-group { justify-content: center; }
+      .hero-btn-group { margin-left: auto; margin-right: auto; }
       .hero-trust { justify-content: center !important; }
       .hero-img { padding: 18px !important; }
     }
     @media (max-width: 640px) {
-      .hero-btn-group { flex-direction: column; gap: 12px; align-items: stretch; }
+      .hero-btn-group { grid-template-columns: 1fr; gap: 12px; max-width: none; }
       .btn-hero-primary, .btn-hero-outline { width: 100%; justify-content: center; padding: 14px 20px !important; font-size: 15px !important; }
       .hide-mobile { display: none; }
       .hero-price-badge { font-size: 11px; padding: 10px 16px !important; gap: 8px; justify-content: center; text-align: center; border-radius: 20px; }
@@ -1036,9 +1050,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <a href="#preco" class="hero-price-badge">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
         <span style="font-size:13px;font-weight:600;color:#fcd34d;">Planos a partir de</span>
-        <span style="font-size:24px;font-weight:900;color:#fbbf24;letter-spacing:-1px;line-height:1;">R$ 99<span style="font-size:14px;font-weight:600;color:#fcd34d;">/mês</span></span>
+        <span style="font-size:24px;font-weight:900;color:#fbbf24;letter-spacing:-1px;line-height:1;">R$ 89<span style="font-size:14px;font-weight:600;color:#fcd34d;">/mês</span></span>
         <span style="width:1px;height:20px;background:rgba(251,191,36,0.3);"></span>
-        <span style="font-size:12px;color:#fcd34d;font-weight:500;">7 dias grátis · sem cartão</span>
+        <span style="font-size:12px;color:#fcd34d;font-weight:500;">≈ R$ 2,96 por dia</span>
         <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
       </a>
 
@@ -1047,8 +1061,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="#" onclick="openLeadModal(); return false;" class="btn btn-lg btn-primary">
           Testar 7 dias grátis
         </a>
-        <a href="#videos" class="btn btn-lg btn-outline">Ver demonstração</a>
+        <a href="#" onclick="openConsultorModal(); return false;" class="btn btn-lg btn-consultor">
+          <svg width="20" height="20" aria-hidden="true" style="color:#4ade80;"><use href="#ico-whatsapp"/></svg>
+          Falar com um consultor
+        </a>
       </div>
+
+      <a href="#videos" class="hero-demo-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        Ver demonstração
+      </a>
 
       <!-- Trust Badges -->
       <div class="hero-trust" style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
@@ -1810,7 +1832,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div style="font-size:18px; font-weight:800; color:#0f172a;">Recupere horas do seu dia</div>
         <div style="font-size:15px; color:#64748b;">Automatize o que é chato e foque em vender.</div>
       </div>
-      <a href="#" onclick="openLeadModal(); return false;" class="btn btn-lg btn-primary shadow-hover">Testar 7 dias grátis</a>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <a href="#" onclick="openLeadModal(); return false;" class="btn btn-lg btn-primary shadow-hover">Testar 7 dias grátis</a>
+        <a href="#" onclick="openConsultorModal(); return false;" style="font-size:14px;font-weight:700;color:#1d4ed8;text-decoration:none;">ou falar com um consultor →</a>
+      </div>
     </div>
 
   </div>
@@ -2091,11 +2116,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Nenhuma mensalidade durante o teste</span>
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Sem fidelidade, cancele quando quiser</span>
       </div>
-      <p style="font-size:15px;color:#64748b;margin:22px auto 0;font-weight:600;">Planos a partir de <strong style="color:#0f172a;font-weight:800;">R$ 99/mês</strong> — o valor exato depende do seu negócio. Fale com a gente e monte o seu.<br><a href="/precos" style="color:#1d4ed8;font-weight:700;">Ver o comparativo completo dos planos</a></p>
+      <p style="font-size:15px;color:#64748b;margin:22px auto 0;font-weight:600;">Planos a partir de <strong style="color:#0f172a;font-weight:800;">R$ 89/mês</strong> — cerca de <strong style="color:#0f172a;font-weight:800;">R$ 2,96 por dia</strong>. O valor exato depende do seu negócio. Fale com a gente e monte o seu.<br><a href="/precos" style="color:#1d4ed8;font-weight:700;">Ver o comparativo completo dos planos</a></p>
 
       <a href="#" onclick="openConsultorModal(); return false;" class="btn-wa-plans" style="margin-top:20px;">
         <svg width="18" height="18" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
-        Falar com consultor
+        Falar com um consultor
       </a>
     </div>
 
@@ -2208,6 +2233,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </ul>
         </div>
         <button onclick="openLeadModal()" class="btn btn-lg btn-light btn-block shadow-hover">Testar 7 dias grátis</button>
+        <a href="#" onclick="openConsultorModal(); return false;" style="display:block;text-align:center;margin-top:14px;font-size:14px;font-weight:700;color:#1d4ed8;text-decoration:none;">Falar com um consultor</a>
       </div>
 
       <!-- Card 2: Essencial -->
@@ -2228,6 +2254,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </ul>
         </div>
         <button onclick="openLeadModal()" class="btn btn-lg btn-primary btn-block shadow-hover">Testar 7 dias grátis</button>
+        <a href="#" onclick="openConsultorModal(); return false;" style="display:block;text-align:center;margin-top:14px;font-size:14px;font-weight:700;color:#bfdbfe;text-decoration:none;">Falar com um consultor</a>
       </div>
 
       <!-- Card 3: Premium -->
@@ -2249,6 +2276,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </ul>
         </div>
         <button onclick="openLeadModal()" class="btn btn-lg btn-light btn-block shadow-hover">Testar 7 dias grátis</button>
+        <a href="#" onclick="openConsultorModal(); return false;" style="display:block;text-align:center;margin-top:14px;font-size:14px;font-weight:700;color:#1d4ed8;text-decoration:none;">Falar com um consultor</a>
       </div>
     </div>
 
@@ -2262,7 +2290,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </details>
       <details class="faq-item">
         <summary>Quanto custa o Fantoni PDV?</summary>
-        <p>Os planos começam em R$ 99 por mês. Todos incluem 7 dias de teste grátis, sem cartão de crédito e sem fidelidade. O valor exato depende do porte do seu negócio — fale com um consultor e montamos o plano certo para você.</p>
+        <p>Os planos começam em R$ 89 por mês. Todos incluem 7 dias de teste grátis, sem cartão de crédito e sem fidelidade. O valor exato depende do porte do seu negócio — fale com um consultor e montamos o plano certo para você.</p>
       </details>
       <details class="faq-item">
         <summary>Serve para bar e restaurante com comanda?</summary>
@@ -2302,7 +2330,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </a>
         <a href="#" onclick="openConsultorModal(); return false;" class="btn btn-lg shadow-hover" style="background:#25d366;color:#fff;border:2px solid #25d366;box-shadow:0 4px 18px rgba(37,211,102,.4);">
           <svg width="20" height="20" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
-          Falar com consultor
+          Falar com um consultor
         </a>
       </div>
       <p style="margin-top:20px;font-size:13px;color:#94a3b8;">Sem fidelidade · Cancele quando quiser</p>
