@@ -31,7 +31,10 @@
   <!-- End Google Tag Manager -->
   <title>Certificado Digital e-CPF e e-CNPJ | Emissão Online | Fantoni Software</title>
   <meta name="description" content="Emita seu Certificado Digital A1 via Videoconferência. e-CPF por R$ 139 e e-CNPJ por R$ 159. Rápido, seguro e 100% online." />
-  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="icon" type="image/svg+xml" href="/assets/brand/fantoni-perfil.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/fantoni-favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/fantoni-favicon-180.png" />
+  <meta name="theme-color" content="#2A1B5E" />
 
   <!-- Meta Pixel Code -->
   <script>
@@ -67,7 +70,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     /* Fallback do AOS: são 55 elementos que começam invisíveis. Se o JS falhar
        ou o usuário pedir menos movimento, o conteúdo tem que aparecer mesmo assim. */
@@ -80,102 +83,110 @@
 
   <style>
     :root {
-      --blue-400: #60a5fa;
-      --blue-500: #3b82f6;
-      --blue-600: #2563eb;
-      --slate-50: #f8fafc;
-      --slate-100: #f1f5f9;
-      --slate-200: #e2e8f0;
-      --slate-400: #94a3b8;
-      --slate-800: #1e293b;
-      --slate-900: #0f172a;
-      --emerald: #10b981;
-      --font-main: 'Inter', sans-serif;
-      --font-title: 'Outfit', sans-serif;
+      --roxo: #2a1b5e; --noite: #1a1040; --elev: #3a2a78;
+      --verde: #12c9a8; --verde-claro: #3fe0c2; --laranja: #ff6a3d; --laranja-hover: #f2582a;
+      --texto: #ffffff; --suave: #d2cce6; --apoio: #b9b0d9; --linha: rgba(255,255,255,0.12);
+      --font-main: 'Figtree', 'Segoe UI', system-ui, sans-serif;
+      --font-title: 'Bricolage Grotesque', 'Trebuchet MS', system-ui, sans-serif;
+      /* nomes antigos, usados em estilos dentro do HTML */
+      --blue-400: var(--verde); --slate-400: var(--apoio);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-main); background: #020617; color: #f8fafc; line-height: 1.6; overflow-x: hidden; }
-    h1, h2, h3, h4 { font-family: var(--font-title); font-weight: 800; }
+    body { font-family: var(--font-main); background: var(--roxo); color: var(--texto); line-height: 1.6; overflow-x: hidden; }
+    h1, h2, h3, h4 { font-family: var(--font-title); font-weight: 800; letter-spacing: -0.02em; }
+    a:focus-visible, button:focus-visible, .faq-item:focus-visible { outline: 3px solid var(--verde); outline-offset: 3px; }
 
-    /* NAVBAR */
-    nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 20px; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 900; font-size: 1.2rem; }
+    /* MENU (mesmo padrão da home) */
+    nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 0 24px; background: var(--roxo); border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; height: 72px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .nav-logo { display: flex; align-items: baseline; gap: 8px; color: var(--verde); text-decoration: none; }
+    .nav-logo .brand-logo { height: 28px; width: auto; display: block; align-self: center; }
+    .nav-logo .brand-sub { font-family: var(--font-title); font-weight: 600; font-size: 15px; color: var(--apoio); }
+    .nav-voltar { color: #e4e0ee; text-decoration: none; font-weight: 600; font-size: 15px; padding: 9px 18px; border-radius: 999px; border: 1.5px solid var(--linha); transition: background .2s, border-color .2s; }
+    .nav-voltar:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); }
 
     /* HERO */
-    .hero { padding: 160px 24px 80px; text-align: center; background: radial-gradient(circle at top, rgba(37, 99, 235, 0.15) 0%, transparent 70%); }
-    .hero h1 { font-size: clamp(32px, 5vw, 64px); line-height: 1.1; margin-bottom: 24px; }
-    .hero span { color: var(--blue-400); }
-    .hero p { font-size: 1.2rem; color: var(--slate-400); max-width: 700px; margin: 0 auto 40px; }
+    .hero { padding: 152px 24px 88px; text-align: center; }
+    .hero-eyebrow { display: inline-block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--verde); letter-spacing: 3px; margin-bottom: 16px; }
+    .hero h1 { font-size: clamp(34px, 5vw, 60px); line-height: 1.08; margin-bottom: 24px; }
+    .hero h1 span { color: var(--verde); }
+    .hero p { font-size: 1.2rem; color: var(--suave); max-width: 700px; margin: 0 auto 40px; }
+    .hero-parceiro { background: #fff; padding: 18px 28px; border-radius: 18px; display: inline-block; }
 
-    /* STATS BAR */
-    .stats-bar { max-width: 1000px; margin: -40px auto 80px; display: grid; grid-template-columns: repeat(4, 1fr); background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; gap: 20px; }
+    /* FAIXA DE NÚMEROS (verde-água, como na home) */
+    .stats-bar { max-width: 1000px; margin: -32px auto 80px; display: grid; grid-template-columns: repeat(4, 1fr); background: var(--verde); border-radius: 20px; padding: 28px; gap: 20px; }
     .stat-item { text-align: center; }
-    .stat-num { display: block; font-size: 1.8rem; font-weight: 800; color: #fff; }
-    .stat-text { font-size: 0.8rem; color: var(--slate-400); text-transform: uppercase; letter-spacing: 1px; }
+    .stat-num { display: block; font-family: var(--font-title); font-size: 1.9rem; font-weight: 800; color: var(--noite); line-height: 1.15; }
+    .stat-text { font-size: 0.85rem; font-weight: 600; color: #06352c; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* TABS SYSTEM */
-    .tabs-container { max-width: 1100px; margin: 0 auto 80px; padding: 0 24px; }
-    .tabs-nav { display: flex; justify-content: center; gap: 12px; margin-bottom: 48px; }
-    .tab-btn { padding: 12px 28px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #fff; cursor: pointer; font-weight: 700; transition: all 0.3s; }
-    .tab-btn.active { background: var(--blue-600); border-color: var(--blue-600); box-shadow: 0 0 20px rgba(37,99,235,0.4); }
+    /* ABAS */
+    .tabs-container { max-width: 1100px; margin: 0 auto 88px; padding: 0 24px; }
+    .tabs-nav { display: flex; justify-content: center; gap: 12px; margin-bottom: 48px; flex-wrap: wrap; }
+    .tab-btn { padding: 12px 26px; border-radius: 999px; border: 1.5px solid var(--linha); background: transparent; color: var(--texto); cursor: pointer; font-weight: 700; font-size: 1rem; font-family: inherit; transition: all 0.2s; }
+    .tab-btn:hover { border-color: var(--verde); }
+    .tab-btn.active { background: var(--verde); border-color: var(--verde); color: var(--noite); }
 
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; display: none; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; display: none; }
     .pricing-grid.active { display: grid; }
 
-    /* CARDS */
-    .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 32px; padding: 48px 40px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-    .card:hover { transform: translateY(-12px); border-color: var(--blue-500); background: rgba(255,255,255,0.05); }
-    .card-popular { border-color: var(--blue-600); box-shadow: 0 20px 50px rgba(37,99,235,0.1); }
-    .badge-pop { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--blue-600); padding: 6px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
-    
+    /* CARTÃO DE PREÇO */
+    .card { background: var(--elev); border: 1px solid var(--linha); border-radius: 28px; padding: 48px 40px; transition: transform 0.3s ease, border-color 0.3s ease; position: relative; }
+    .card:hover { transform: translateY(-8px); border-color: var(--verde); }
+    .card-popular { border: 2px solid var(--verde); }
+    .badge-pop { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--laranja); color: var(--roxo); padding: 6px 16px; border-radius: 999px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; white-space: nowrap; }
+
     .card h3 { font-size: 2rem; margin-bottom: 8px; }
-    .card .subtitle { display: block; color: var(--slate-400); font-size: 0.9rem; margin-bottom: 32px; }
-    .price { font-size: 3.5rem; font-weight: 900; margin-bottom: 32px; display: flex; align-items: baseline; gap: 6px; }
-    .price small { font-size: 1.2rem; color: var(--slate-400); }
+    .card .subtitle { display: block; color: var(--apoio); font-size: 0.95rem; margin-bottom: 24px; }
+    .price { font-family: var(--font-title); font-size: 3.5rem; font-weight: 800; margin-bottom: 32px; display: flex; align-items: baseline; gap: 6px; color: var(--laranja); }
+    .price small { font-size: 1.2rem; color: var(--suave); }
 
     .feat-list { list-style: none; margin-bottom: 40px; }
-    .feat-list li { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: var(--slate-200); margin-bottom: 14px; }
-    .feat-list li svg { width: 20px; color: var(--emerald); }
-    /* BUTTONS */
-    .btn-buy { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 16px; background: #fff; color: #000; text-decoration: none; border: none; cursor: pointer; font-weight: 800; transition: 0.3s; }
-    .btn-buy:hover { background: var(--blue-500); color: #fff; transform: translateY(-2px); }
-    
-    .btn-contact { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 16px; background: rgba(255,255,255,0.05); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); font-weight: 800; transition: 0.3s; }
-    .btn-contact:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+    .feat-list li { display: flex; align-items: center; gap: 12px; font-size: 1rem; color: #e4e0ee; margin-bottom: 14px; }
+    .feat-list li svg { width: 20px; flex: none; color: var(--verde-claro); }
 
-    /* CHECKOUT MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-    .checkout-modal { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 440px; padding: 40px; border-radius: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; box-sizing: border-box; margin: 0 12px; }
-    .modal-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--slate-400); font-size: 1.5rem; transition: 0.2s; }
+    /* BOTÕES */
+    .btn-buy { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 999px; background: var(--laranja); color: var(--roxo); text-decoration: none; border: none; cursor: pointer; font-weight: 800; font-size: 1rem; font-family: inherit; transition: background .2s, transform .2s; }
+    .btn-buy:hover { background: var(--laranja-hover); transform: translateY(-2px); }
+    .btn-contact { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 999px; background: transparent; color: var(--verde); text-decoration: none; border: 2px solid var(--verde); font-weight: 800; transition: 0.2s; }
+    .btn-contact:hover { background: rgba(18,201,168,0.12); transform: translateY(-2px); }
+
+    /* JANELA DE DADOS */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(26,16,64,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; }
+    .checkout-modal { background: var(--roxo); border: 1px solid var(--linha); width: 100%; max-width: 440px; padding: 40px; border-radius: 28px; box-shadow: 0 25px 50px rgba(10,6,30,0.5); position: relative; margin: 0 12px; }
+    .modal-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--apoio); font-size: 1.5rem; transition: 0.2s; }
     .modal-close:hover { color: #fff; }
     .form-group { margin-bottom: 20px; }
-    .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--slate-400); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-    .form-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; color: #fff; font-size: 1rem; outline: none; transition: 0.2s; }
-    .form-input:focus { border-color: var(--blue-500); background: rgba(255,255,255,0.08); }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--apoio); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .form-input { width: 100%; background: var(--elev); border: 1px solid var(--linha); border-radius: 12px; padding: 14px 18px; color: #fff; font-size: 1rem; font-family: inherit; outline: none; transition: 0.2s; }
+    .form-input:focus { border-color: var(--verde); }
     .modal-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 24px; text-align: center; color: #fff; }
 
-    /* HOW IT WORKS */
-    .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 64px; }
-    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 24px 100px; }
+    /* COMO FUNCIONA */
+    .section-title { text-align: center; font-size: clamp(28px, 3.5vw, 40px); margin-bottom: 56px; padding: 0 24px; }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 24px 100px; }
     .step-item { text-align: center; }
-    .step-num { width: 64px; height: 64px; background: var(--blue-600); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; margin: 0 auto 24px; box-shadow: 0 0 30px rgba(37,99,235,0.3); }
-    .step-item h4 { margin-bottom: 12px; }
-    .step-item p { color: var(--slate-400); font-size: 0.9rem; }
+    .step-num { width: 64px; height: 64px; background: var(--verde); color: var(--noite); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-title); font-size: 1.6rem; font-weight: 800; margin: 0 auto 20px; }
+    .step-item h4 { font-size: 1.25rem; margin-bottom: 10px; }
+    .step-item p { color: var(--suave); font-size: 1rem; }
 
-    /* FAQ */
+    /* PERGUNTAS */
     .faq { max-width: 800px; margin: 0 auto 100px; padding: 0 24px; }
-    .faq-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; margin-bottom: 12px; cursor: pointer; }
-    .faq-q { font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-    .faq-a { display: none; color: var(--slate-400); margin-top: 16px; font-size: 0.9rem; }
+    .faq-item { background: var(--elev); border: 1px solid var(--linha); border-radius: 16px; padding: 22px 24px; margin-bottom: 12px; cursor: pointer; }
+    .faq-q { font-weight: 700; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .faq-q span { color: var(--verde); font-size: 1.3rem; }
+    .faq-a { display: none; color: var(--suave); margin-top: 14px; font-size: 1rem; }
 
-    footer { padding: 40px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); opacity: 0.6; }
+    /* RODAPÉ */
+    footer { padding: 40px 24px; text-align: center; background: var(--noite); color: var(--apoio); font-size: 0.95rem; }
+    footer .brand-logo-footer { height: 44px; width: auto; display: inline-block; margin-bottom: 14px; }
 
     @media (max-width: 768px) {
-      .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 20px; }
-      .hero h1 { font-size: 2.5rem; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 20px; margin: -24px 16px 64px; }
+      .hero { padding: 120px 20px 72px; }
+      .card { padding: 40px 24px; }
       .price-buttons { flex-direction: column; }
+      .nav-logo .brand-sub { display: none; }
     }
   </style>
   <link rel="canonical" href="https://fantonisoftware.com.br/certificados" />
@@ -188,21 +199,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <nav>
     <div class="nav-inner">
-      <a href="/" class="nav-logo">
-        <img src="assets/logo.png" style="height:32px;"> Fantoni <span style="font-weight:400; opacity:0.6;">Software</span>
+      <a href="/" class="nav-logo" aria-label="Fantoni Software, início">
+        <svg xmlns="http://www.w3.org/2000/svg" class="brand-logo" role="img" aria-label="Fantoni Software" viewBox="0 0 704.20 172.60"><g transform="translate(8.40 -42.20)"><path fill="currentColor" d="M19.8 200V133.2H3.6V112.2L33 113.8V110.8Q24.2 109.4 19.1 105.5Q14 101.6 11.9 96.5Q9.8 91.4 9.8 86Q9.8 77.2 14.3 70.8Q18.8 64.4 26.9 60.9Q35 57.4 45.8 57.4Q54.8 57.4 62 59.7Q69.2 62 74.4 66L72.2 92.2Q67.2 88.4 61.5 86.3Q55.8 84.2 50.6 84.2Q44.4 84.2 40.5 87.4Q36.6 90.6 36.6 97.2Q36.6 101.6 38.6 104.6Q40.6 107.6 43.9 109.1Q47.2 110.6 51.6 110.8H73.6V133.2H48V200Z"/><path fill="currentColor" d="M108.2 202.8Q99.8 202.8 92.9 199.6Q86 196.4 81.9 189.9Q77.8 183.4 77.8 173.4Q77.8 164.4 81.2 158.5Q84.6 152.6 91 148.9Q97.4 145.2 106.1 143Q114.8 140.8 125 139.2Q133.2 137.8 137.8 136.8Q142.4 135.8 144.3 133.9Q146.2 132 146.2 128.4Q146.2 122.2 141.9 118.4Q137.6 114.6 129.2 114.6Q124 114.6 119.1 116.5Q114.2 118.4 110.9 122.6Q107.6 126.8 106.8 133.6L81.2 128.2Q82.4 118.4 86.8 111.6Q91.2 104.8 97.8 100.5Q104.4 96.2 112.7 94.2Q121 92.2 130 92.2Q145.2 92.2 155 97.4Q164.8 102.6 169.6 113Q174.4 123.4 174.4 139.2V157.6Q174.6 164.4 174.7 171.6Q174.8 178.8 175.1 185.9Q175.4 193 176 200H150.6Q150.2 193.8 149.8 186.9Q149.4 180 149.2 172.4H146.6Q144.6 180.8 139.4 187.7Q134.2 194.6 126.3 198.7Q118.4 202.8 108.2 202.8ZM120.2 181.6Q124 181.6 128.1 180.2Q132.2 178.8 136 175.9Q139.8 173 142.6 168.4Q145.4 163.8 146.6 157.6L146.4 145.8L151.2 146Q148.4 148.6 144 150.1Q139.6 151.6 134.5 152.5Q129.4 153.4 124.3 154.4Q119.2 155.4 115.1 157Q111 158.6 108.5 161.4Q106 164.2 106 169Q106 175 110 178.3Q114 181.6 120.2 181.6Z"/><path fill="currentColor" d="M191.4 200V139V95H215.4L215 131.8H218Q220 118.4 224.5 109.6Q229 100.8 236.4 96.5Q243.8 92.2 254.4 92.2Q272.2 92.2 281.4 104.5Q290.6 116.8 290.6 142.6V200H261.6V145.8Q261.6 130.8 257.2 123.7Q252.8 116.6 243.8 116.6Q236.2 116.6 231 121.5Q225.8 126.4 223 135.5Q220.2 144.6 220.2 157.4V200Z"/><path fill="currentColor" d="M346.2 202.4Q328.8 202.4 320.3 193.1Q311.8 183.8 311.8 164.2V117.6H298L298.2 96.6H305.2Q313.2 96.2 316.9 92.7Q320.6 89.2 321.6 81.4L323.2 71.4H339.8V95H365.6V118.4H339.8V162.4Q339.8 169.8 343.3 173.1Q346.8 176.4 353.2 176.4Q356.6 176.4 360 175.5Q363.4 174.6 366.2 173V199.4Q360.2 201.2 355.2 201.8Q350.2 202.4 346.2 202.4Z"/><path fill="currentColor" d="M424.8 202.8Q409.4 202.8 397.5 196.6Q385.6 190.4 378.9 178.1Q372.2 165.8 372.2 147.4Q372.2 128.6 379 116.4Q385.8 104.2 397.8 98.2Q409.8 92.2 424.8 92.2Q440.4 92.2 452.3 98.4Q464.2 104.6 470.9 116.8Q477.6 129 477.6 147.6Q477.6 166.4 470.7 178.7Q463.8 191 451.8 196.9Q439.8 202.8 424.8 202.8ZM425.6 181.4Q433 181.4 438.1 177.7Q443.2 174 445.9 166.7Q448.6 159.4 448.6 149.2Q448.6 138.2 445.8 130.6Q443 123 437.5 118.9Q432 114.8 424.2 114.8Q416.8 114.8 411.7 118.4Q406.6 122 403.9 129.3Q401.2 136.6 401.2 147Q401.2 163.6 407.6 172.5Q414 181.4 425.6 181.4Z"/><path fill="currentColor" d="M491 200V139V95H515L514.6 131.8H517.6Q519.6 118.4 524.1 109.6Q528.6 100.8 536 96.5Q543.4 92.2 554 92.2Q571.8 92.2 581 104.5Q590.2 116.8 590.2 142.6V200H561.2V145.8Q561.2 130.8 556.8 123.7Q552.4 116.6 543.4 116.6Q535.8 116.6 530.6 121.5Q525.4 126.4 522.6 135.5Q519.8 144.6 519.8 157.4V200Z"/><path fill="currentColor" d="M606.8 200V95H635.6V200ZM621.2 82Q612.8 82 608.3 78.5Q603.8 75 603.8 68.2Q603.8 61.2 608.3 57.7Q612.8 54.2 621.2 54.2Q629.8 54.2 634.2 57.8Q638.6 61.4 638.6 68.2Q638.6 74.8 634.1 78.4Q629.6 82 621.2 82Z"/><path fill="#FF6A3D" d="M665 202.6Q655.6 202.6 651 198.6Q646.4 194.6 646.4 186.2Q646.4 177.6 651 173.6Q655.6 169.6 665 169.6Q674.4 169.6 679.1 173.6Q683.8 177.6 683.8 186.2Q683.8 202.6 665 202.6Z"/></g></svg>
+        <span class="brand-sub">software</span>
       </a>
-      <a href="/" class="tab-btn" style="text-decoration:none; font-size:0.8rem;">Voltar ao PDV</a>
+      <a href="/" class="nav-voltar">Voltar ao PDV</a>
     </div>
   </nav>
 
   <section class="hero" data-aos="fade-in">
     <div class="container">
-      <span style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--blue-400); letter-spacing:3px;">Certificação Digital de Alta Performance</span>
+      <span class="hero-eyebrow">Certificação Digital de Alta Performance</span>
       <h1>Seu Certificado <span>A1</span> em <span>24h</span><br>Sem sair de casa</h1>
       <p>Emita seu e-CPF ou e-CNPJ 100% online por videoconferência. Focado exclusivamente em certificados A1 em arquivo para máxima agilidade.</p>
       
       <div style="margin-top: 40px; display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap;">
-        <div style="background: rgba(255,255,255,0.05); padding: 20px 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="hero-parceiro">
           <img src="assets/Certificados/download-1.png" alt="Syngular" style="height: 45px; display: block;">
         </div>
       </div>
@@ -294,6 +306,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </section>
 
   <footer>
+    <a href="/" aria-label="Fantoni Software, início"><svg xmlns="http://www.w3.org/2000/svg" class="brand-logo-footer" role="img" aria-label="Fantoni Software" viewBox="0 0 704.20 242.91"><g transform="translate(8.40 -42.20)"><path fill="#12C9A8" d="M19.8 200V133.2H3.6V112.2L33 113.8V110.8Q24.2 109.4 19.1 105.5Q14 101.6 11.9 96.5Q9.8 91.4 9.8 86Q9.8 77.2 14.3 70.8Q18.8 64.4 26.9 60.9Q35 57.4 45.8 57.4Q54.8 57.4 62 59.7Q69.2 62 74.4 66L72.2 92.2Q67.2 88.4 61.5 86.3Q55.8 84.2 50.6 84.2Q44.4 84.2 40.5 87.4Q36.6 90.6 36.6 97.2Q36.6 101.6 38.6 104.6Q40.6 107.6 43.9 109.1Q47.2 110.6 51.6 110.8H73.6V133.2H48V200Z"/><path fill="#12C9A8" d="M108.2 202.8Q99.8 202.8 92.9 199.6Q86 196.4 81.9 189.9Q77.8 183.4 77.8 173.4Q77.8 164.4 81.2 158.5Q84.6 152.6 91 148.9Q97.4 145.2 106.1 143Q114.8 140.8 125 139.2Q133.2 137.8 137.8 136.8Q142.4 135.8 144.3 133.9Q146.2 132 146.2 128.4Q146.2 122.2 141.9 118.4Q137.6 114.6 129.2 114.6Q124 114.6 119.1 116.5Q114.2 118.4 110.9 122.6Q107.6 126.8 106.8 133.6L81.2 128.2Q82.4 118.4 86.8 111.6Q91.2 104.8 97.8 100.5Q104.4 96.2 112.7 94.2Q121 92.2 130 92.2Q145.2 92.2 155 97.4Q164.8 102.6 169.6 113Q174.4 123.4 174.4 139.2V157.6Q174.6 164.4 174.7 171.6Q174.8 178.8 175.1 185.9Q175.4 193 176 200H150.6Q150.2 193.8 149.8 186.9Q149.4 180 149.2 172.4H146.6Q144.6 180.8 139.4 187.7Q134.2 194.6 126.3 198.7Q118.4 202.8 108.2 202.8ZM120.2 181.6Q124 181.6 128.1 180.2Q132.2 178.8 136 175.9Q139.8 173 142.6 168.4Q145.4 163.8 146.6 157.6L146.4 145.8L151.2 146Q148.4 148.6 144 150.1Q139.6 151.6 134.5 152.5Q129.4 153.4 124.3 154.4Q119.2 155.4 115.1 157Q111 158.6 108.5 161.4Q106 164.2 106 169Q106 175 110 178.3Q114 181.6 120.2 181.6Z"/><path fill="#12C9A8" d="M191.4 200V139V95H215.4L215 131.8H218Q220 118.4 224.5 109.6Q229 100.8 236.4 96.5Q243.8 92.2 254.4 92.2Q272.2 92.2 281.4 104.5Q290.6 116.8 290.6 142.6V200H261.6V145.8Q261.6 130.8 257.2 123.7Q252.8 116.6 243.8 116.6Q236.2 116.6 231 121.5Q225.8 126.4 223 135.5Q220.2 144.6 220.2 157.4V200Z"/><path fill="#12C9A8" d="M346.2 202.4Q328.8 202.4 320.3 193.1Q311.8 183.8 311.8 164.2V117.6H298L298.2 96.6H305.2Q313.2 96.2 316.9 92.7Q320.6 89.2 321.6 81.4L323.2 71.4H339.8V95H365.6V118.4H339.8V162.4Q339.8 169.8 343.3 173.1Q346.8 176.4 353.2 176.4Q356.6 176.4 360 175.5Q363.4 174.6 366.2 173V199.4Q360.2 201.2 355.2 201.8Q350.2 202.4 346.2 202.4Z"/><path fill="#12C9A8" d="M424.8 202.8Q409.4 202.8 397.5 196.6Q385.6 190.4 378.9 178.1Q372.2 165.8 372.2 147.4Q372.2 128.6 379 116.4Q385.8 104.2 397.8 98.2Q409.8 92.2 424.8 92.2Q440.4 92.2 452.3 98.4Q464.2 104.6 470.9 116.8Q477.6 129 477.6 147.6Q477.6 166.4 470.7 178.7Q463.8 191 451.8 196.9Q439.8 202.8 424.8 202.8ZM425.6 181.4Q433 181.4 438.1 177.7Q443.2 174 445.9 166.7Q448.6 159.4 448.6 149.2Q448.6 138.2 445.8 130.6Q443 123 437.5 118.9Q432 114.8 424.2 114.8Q416.8 114.8 411.7 118.4Q406.6 122 403.9 129.3Q401.2 136.6 401.2 147Q401.2 163.6 407.6 172.5Q414 181.4 425.6 181.4Z"/><path fill="#12C9A8" d="M491 200V139V95H515L514.6 131.8H517.6Q519.6 118.4 524.1 109.6Q528.6 100.8 536 96.5Q543.4 92.2 554 92.2Q571.8 92.2 581 104.5Q590.2 116.8 590.2 142.6V200H561.2V145.8Q561.2 130.8 556.8 123.7Q552.4 116.6 543.4 116.6Q535.8 116.6 530.6 121.5Q525.4 126.4 522.6 135.5Q519.8 144.6 519.8 157.4V200Z"/><path fill="#12C9A8" d="M606.8 200V95H635.6V200ZM621.2 82Q612.8 82 608.3 78.5Q603.8 75 603.8 68.2Q603.8 61.2 608.3 57.7Q612.8 54.2 621.2 54.2Q629.8 54.2 634.2 57.8Q638.6 61.4 638.6 68.2Q638.6 74.8 634.1 78.4Q629.6 82 621.2 82Z"/><path fill="#FF6A3D" d="M665 202.6Q655.6 202.6 651 198.6Q646.4 194.6 646.4 186.2Q646.4 177.6 651 173.6Q655.6 169.6 665 169.6Q674.4 169.6 679.1 173.6Q683.8 177.6 683.8 186.2Q683.8 202.6 665 202.6Z"/><path fill="#D2CCE6" d="M21.48 273.12Q17.9 273.12 15.1 272.43Q12.29 271.74 10.34 270.31Q8.39 268.88 7.34 266.74Q6.29 264.59 6.19 261.79L12.35 259.92Q12.35 262.56 13.5 264.29Q14.66 266.02 16.83 266.85Q19 267.67 21.81 267.67Q24.5 267.67 26.34 267.01Q28.19 266.35 29.15 265.22Q30.11 264.1 30.11 262.67Q30.11 261.07 28.93 260.11Q27.75 259.15 25.79 258.51Q23.84 257.88 21.37 257.33Q18.67 256.73 16.11 256.01Q13.56 255.3 11.46 254.09Q9.38 252.88 8.11 250.98Q6.85 249.08 6.85 246.17Q6.85 242.87 8.52 240.47Q10.2 238.08 13.34 236.73Q16.47 235.39 20.93 235.39Q25.27 235.39 28.52 236.68Q31.76 237.97 33.58 240.42Q35.39 242.87 35.5 246.28L29.18 247.98Q29.18 246.22 28.6 244.87Q28.02 243.53 26.92 242.62Q25.82 241.71 24.31 241.27Q22.8 240.83 20.87 240.83Q18.56 240.83 16.91 241.44Q15.26 242.04 14.35 243.11Q13.45 244.19 13.45 245.62Q13.45 247.38 14.79 248.42Q16.14 249.47 18.31 250.1Q20.49 250.73 23.07 251.34Q25.44 251.83 27.83 252.55Q30.22 253.26 32.26 254.42Q34.29 255.57 35.53 257.52Q36.77 259.48 36.77 262.45Q36.77 265.64 35.06 268.06Q33.36 270.48 29.95 271.8Q26.54 273.12 21.48 273.12Z"/><path fill="#D2CCE6" d="M76.48 273.12Q72.52 273.12 69.41 271.85Q66.3 270.59 64.13 268.19Q61.96 265.8 60.83 262.34Q59.7 258.87 59.7 254.42Q59.7 247.98 61.9 243.77Q64.1 239.57 67.95 237.48Q71.8 235.39 76.64 235.39Q80.44 235.39 83.52 236.62Q86.6 237.86 88.8 240.25Q91 242.65 92.21 246.19Q93.42 249.74 93.42 254.31Q93.42 258.87 92.23 262.36Q91.05 265.86 88.85 268.25Q86.65 270.64 83.52 271.88Q80.38 273.12 76.48 273.12ZM76.64 267.51Q79.72 267.51 81.87 265.99Q84.01 264.48 85.14 261.62Q86.27 258.76 86.27 254.64Q86.27 250.4 85.11 247.38Q83.96 244.35 81.78 242.78Q79.61 241.22 76.48 241.22Q73.45 241.22 71.28 242.73Q69.11 244.24 67.95 247.18Q66.8 250.13 66.8 254.36Q66.8 257.55 67.46 260Q68.12 262.45 69.35 264.1Q70.59 265.75 72.43 266.62Q74.28 267.51 76.64 267.51Z"/><path fill="#D2CCE6" d="M118.28 272.4V236.1H125.26V272.4ZM121.47 258.16V252.38H142.59V258.16ZM121.47 242.1V236.1H144.73V242.1Z"/><path fill="#D2CCE6" d="M177.79 272.4V236.1H184.77V272.4ZM166.95 241.99V236.1H195.61V241.99Z"/><path fill="#D2CCE6" d="M225.97 272.4 217.44 236.1H225.03L231.03 266.35H231.63L238.34 236.1H247.36L254.07 266.35H254.68L260.78 236.1H267.99L259.35 272.4H249.56L243.02 242.15H242.52L235.98 272.4Z"/><path fill="#D2CCE6" d="M285.42 272.4 297.96 236.1H308.19L320.73 272.4H313.14L303.46 241.66H302.69L293.01 272.4ZM292.13 264.92V260.03H315.01V264.92Z"/><path fill="#D2CCE6" d="M343.83 272.4V236.1H357.91Q360.77 236.1 363.16 236.57Q365.56 237.04 367.4 237.92Q369.24 238.8 370.51 240.09Q371.77 241.38 372.43 243.06Q373.09 244.74 373.09 246.77Q373.09 248.7 372.49 250.26Q371.88 251.83 370.7 252.99Q369.52 254.14 367.76 254.88Q366 255.63 363.63 255.96V256.67Q366.16 257 367.76 257.94Q369.35 258.87 370.34 260.52Q371.33 262.17 372.05 264.7L374.3 272.4H366.66L364.9 265.36Q364.4 263.11 363.38 261.81Q362.37 260.52 360.83 259.97Q359.29 259.42 357.09 259.42H350.82V272.4ZM350.82 254.09H357.42Q361.54 254.09 363.71 252.55Q365.89 251.01 365.89 247.82Q365.89 244.63 363.82 243.09Q361.76 241.55 357.53 241.55H350.82Z"/><path fill="#D2CCE6" d="M398.34 272.4V236.1H405.32V272.4ZM402.85 272.4V266.68H425.56V272.4ZM402.85 256.62V251.34H422.81V256.62ZM402.85 241.82V236.1H425.45V241.82Z"/></g></svg></a>
     <p>&copy; 2024 Fantoni Software & Parceiros Homologados. Tecnologia e agilidade em certificação.</p>
   </footer>
 
@@ -397,6 +410,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
     }
   </script>
-<script src="/assets/js/consent.js" defer></script>
+<script src="/assets/js/consent.js?v=2" defer></script>
 </body>
 </html>
