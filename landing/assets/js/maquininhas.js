@@ -54,7 +54,7 @@
   function buildSlideHTML(m) {
     return (
       '<div class="maq-img-col" style="display:flex;align-items:center;justify-content:center;position:relative;">' +
-        '<div style="position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(ellipse,rgba(59,130,246,0.1) 0%,transparent 70%);pointer-events:none;"></div>' +
+        '' +
         '<img class="maq-img-float" src="' + m.imagem + '" alt="Maquininha ' + m.nome + '" loading="lazy" width="300" height="608" style="width:100%;max-width:240px;height:auto;aspect-ratio:300/608;object-fit:contain;filter:drop-shadow(0 28px 48px rgba(0,0,0,0.2));position:relative;z-index:1;">' +
       '</div>' +
       '<div>' +
