@@ -34,7 +34,7 @@
     const dotsEl = document.getElementById('maqDots');
     MAQUININHAS.forEach((_, i) => {
       const d = document.createElement('button');
-      d.style.cssText = 'width:' + (i===0?'24px':'8px') + ';height:8px;border-radius:' + (i===0?'4px':'50%') + ';border:none;background:' + (i===0?'#1d4ed8':'#cbd5e1') + ';cursor:pointer;padding:0;transition:all 0.25s ease;';
+      d.style.cssText = 'width:' + (i===0?'24px':'8px') + ';height:8px;border-radius:' + (i===0?'4px':'50%') + ';border:none;background:' + (i===0?'#2a1b5e':'#d2cce6') + ';cursor:pointer;padding:0;transition:all 0.25s ease;';
       d.setAttribute('aria-label', 'Slide ' + (i+1));
       d.addEventListener('click', () => goTo(i));
       dotsEl.appendChild(d);
@@ -43,7 +43,7 @@
 
   function updateDots() {
     document.querySelectorAll('#maqDots button').forEach((d, i) => {
-      d.style.background    = i === current ? '#1d4ed8' : '#cbd5e1';
+      d.style.background    = i === current ? '#2a1b5e' : '#d2cce6';
       d.style.width         = i === current ? '24px'   : '8px';
       d.style.borderRadius  = i === current ? '4px'    : '50%';
     });
@@ -59,7 +59,7 @@
       '</div>' +
       '<div>' +
         '<img src="' + m.logo + '" alt="' + m.nome + '" style="height:38px;width:auto;max-width:140px;margin-bottom:24px;display:block;object-fit:contain;">' +
-        '<p style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Modelos compatíveis</p>' +
+        '<p style="font-size:12px;font-weight:700;color:#5a5280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Modelos compatíveis</p>' +
         '<div style="display:flex;flex-direction:column;gap:14px;">' +
           m.modelos.map(function(mod){ return '<div class="maq-modelo-item"><span class="maq-modelo-dot"></span>' + mod + '</div>'; }).join('') +
         '</div>' +
